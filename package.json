@@ -1,6 +1,6 @@
 {
   "name": "fantoccini",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "official fantoccini repository",
   "main": "index.js",
   "repository": "https://github.com/dragonworx/fantoccini.git",
