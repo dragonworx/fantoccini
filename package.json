@@ -1,0 +1,9 @@
+{
+  "name": "fantoccini",
+  "version": "0.0.0",
+  "description": "official fantoccini repository",
+  "main": "index.js",
+  "repository": "https://github.com/dragonworx/fantoccini.git",
+  "author": "Ali Chamas",
+  "license": "MIT"
+}
