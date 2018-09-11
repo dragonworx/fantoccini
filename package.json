@@ -1,9 +1,32 @@
 {
   "name": "fantoccini",
   "version": "0.0.1",
-  "description": "official fantoccini repository",
+  "description": "Official fantoccini repository",
   "main": "index.js",
-  "repository": "https://github.com/dragonworx/fantoccini.git",
-  "author": "Ali Chamas",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@types/color": "^3.0.0",
+    "@types/pixi.js": "^4.8.0",
+    "@types/react": "^16.4.7",
+    "@types/react-dom": "^16.0.6",
+    "@types/socket.io-client": "^1.4.32",
+    "color": "^3.0.0",
+    "pixi.js": "^4.8.1"
+  },
+  "devDependencies": {
+    "@babel/generator": "^7.0.0-beta.56",
+    "@babel/parser": "^7.0.0-beta.56",
+    "awesome-typescript-loader": "^5.2.0",
+    "source-map-loader": "^0.2.3",
+    "tslint": "^5.11.0",
+    "typescript": "2.x",
+    "webpack": "^4.16.4",
+    "webpack-cli": "^3.1.0",
+    "webpack-livereload-plugin": "^2.1.1"
+  },
+  "scripts": {
+    "build": "./node_modules/.bin/webpack",
+    "build-dev": "./node_modules/.bin/webpack --watch",
+    "start": "yarn build-dev"
+  }
 }
