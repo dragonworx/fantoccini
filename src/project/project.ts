@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import { Scene } from '../scene';
 import { StringProperty } from '../property';
 import { Timeline } from '../timeline';
+import { Sprite } from '../sprite';
 import { ProjectOptions, SceneMap } from './types';
 import {
   DEFAULT_PROJECT_BACKGROUND_COLOR,
@@ -12,9 +13,9 @@ import {
 
 export class Project {
   private app: PIXI.Application;
-  private scenes: SceneMap;
+  private scenes: SceneMap = {};
   private currentSceneName: StringProperty;
-  private timeline: Timeline;
+  public timeline: Timeline;
 
   constructor (options: ProjectOptions = DEFAULT_PROJECT_OPTIONS) {
     // startup, test for WebGL
@@ -27,8 +28,15 @@ export class Project {
       backgroundColor: options.backgroundColor || DEFAULT_PROJECT_BACKGROUND_COLOR,
     });
 
+    // create timeline
+    this.timeline = new Timeline(this);
+
     // set default scene
-    this.currentSceneName = new StringProperty(this, 'currentSceneName', 'default');
+    this.scenes['default'] = new Scene('default', this);
+    this.currentSceneName = new StringProperty('currentSceneName', 'default', this.timeline);
+
+    // mount project view
+    document.body.appendChild(this.view);
   }
 
   addScene (scene: Scene) {
@@ -49,5 +57,18 @@ export class Project {
 
   get scene (): Scene {
     return this.scenes[this.currentSceneName.value];
+  }
+
+  addTicker (fn) {
+    this.app.ticker.add(fn);
+  }
+
+  newSprite (): Sprite {
+    const sprite = new Sprite(this);
+    return sprite;
+  }
+
+  addSprite (sprite: Sprite) {
+    this.app.stage.addChild(sprite.container);
   }
 }

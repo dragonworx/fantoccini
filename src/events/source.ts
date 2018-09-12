@@ -1,18 +1,18 @@
-import { EventListener } from './listener';
+type Listener<T> = (T) => void;
 
 export class EventSource<T> {
-  private listeners: EventListener<T>[];
+  private listeners: Listener<T>[];
 
   constructor () {
     this.listeners = [];
   }
 
-  addListener (target: any): EventSource<T> {
+  addListener (target: Listener<T>): EventSource<T> {
     this.listeners.push(target);
     return this;
   }
 
-  removeListener (target: any): EventSource<T> {
+  removeListener (target: Listener<T>): EventSource<T> {
     const index = this.listeners.indexOf(target);
     if (index) {
       this.listeners.splice(index, 1);
@@ -25,7 +25,7 @@ export class EventSource<T> {
     const l = listeners.length;
     for (let i = 0; i < l; i++) {
       const target = listeners[i];
-      target.receiveEvent(event);
+      target(event);
     }
     return this;
   }

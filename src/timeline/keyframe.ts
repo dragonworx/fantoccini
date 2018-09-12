@@ -13,4 +13,8 @@ export class Keyframe<T> {
     this.prevKeyframe = prevKeyframe;
     this.prevKeyframe.nextKeyframe = this;
   }
+
+  get isLast () {
+    return !this.nextKeyframe;
+  }
 }

@@ -12,7 +12,8 @@ export class Scene {
 
   constructor (name: string, project: Project) {
     this.name = name || 'default';
+    this.project = project;
     this.cameras = {};
-    this.currentCameraName = new StringProperty(this, 'currentCameraName', 'default');
+    this.currentCameraName = new StringProperty('currentCameraName', 'default', project.timeline);
   }
 }

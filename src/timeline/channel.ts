@@ -14,17 +14,36 @@ export class Channel<T> {
     const keyframe = new Keyframe<T>(timeMs, value);
     const { keyframes } = this;
     keyframes.push(keyframe);
-    keyframe.linkPrev(keyframes[keyframes.length - 2]);
+    if (keyframes.length > 1) {
+      keyframe.linkPrev(keyframes[keyframes.length - 2]);
+    }
+  }
+  
+  valueAtMs (timeMs: number): T {
+    const keyframe = this.getKeyframeForTime(timeMs);
+    if (keyframe) {
+      return keyframe.value;
+    }
   }
 
-  valueAtMs (timeMs: number): T {
+  getKeyframeForTime (timeMs: number): Keyframe<T> {
     const { keyframes } = this;
     const l = keyframes.length;
-    for (let i = l - 1; i >= 0; i--) {
+    for (let i = 0; i < l; i++) {
       const keyframe = keyframes[i];
-      if (keyframe.timeMs <= timeMs) {
-        return keyframe.value;
+      if (keyframe.isLast) {
+        return keyframe;
+      } else if (timeMs >= keyframe.timeMs && timeMs < keyframe.nextKeyframe.timeMs) {
+        return keyframe;
       }
     }
+  }
+
+  get isEmpty () {
+    return !this.keyframes.length;
+  }
+
+  hasKeyframeForTime (timeMs: number): boolean {
+    return this.keyframes[0].timeMs <= timeMs;
   }
 }
