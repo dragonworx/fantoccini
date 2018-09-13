@@ -11,8 +11,13 @@ export class Channel<T> {
   }
 
   addKeyframe (timeMs: number, value: T) {
-    const keyframe = new Keyframe<T>(timeMs, value);
     const { keyframes } = this;
+    if (keyframes.length > 0) {
+      if (timeMs < keyframes[keyframes.length - 1].timeMs) {
+        throw new Error('Keyframes must be in time order, cannot add keyframe with time before last keyframe');
+      }
+    }
+    const keyframe = new Keyframe<T>(timeMs, value);
     keyframes.push(keyframe);
     if (keyframes.length > 1) {
       keyframe.linkPrev(keyframes[keyframes.length - 2]);

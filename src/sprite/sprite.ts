@@ -1,12 +1,17 @@
 import * as PIXI from 'pixi.js';
-import * as Color from 'color';
+import { color } from '../index';
 import { TimelineElement } from '../timeline';
-import { NumericProperty } from '../property';
-import { Project } from '../project';
+import { NumericProperty, DynamicPropertyTarget } from '../property';
+import { Scene } from '../scene';
 import { degToRad } from '../geom';
 
-export class Sprite implements TimelineElement {
-  private project: Project;
+function defaultValue (defaults, key, value) {
+  return defaults.hasOwnProperty(key) ? defaults[key] : value;
+}
+
+export class Sprite implements TimelineElement, DynamicPropertyTarget {
+  private scene: Scene;
+  private children: Sprite[];
   public container: PIXI.Container;
   private graphics: PIXI.Graphics;
   public x: NumericProperty;
@@ -17,24 +22,23 @@ export class Sprite implements TimelineElement {
   public bgFill: NumericProperty;
   public opacity: NumericProperty;
 
-  constructor (project) {
-    this.project = project;
-    const timeline = project.timeline;
+  constructor (scene, defaults = {}) {
+    this.scene = scene;
+    this.scene.addSprite(this);
+    this.children = [];
     this.container = new PIXI.Container();
     this.container.cursor = 'pointer';
     this.container.interactive = true;
-
+    
     // setup dynamic properties
-    this.x = new NumericProperty('x', 0, timeline);
-    this.y = new NumericProperty('y', 0, timeline);
-    this.width = new NumericProperty('width', 100, timeline);
-    this.height = new NumericProperty('height', 100, timeline);
-    this.rotation = new NumericProperty('rotation', 0, timeline);
-    this.bgFill = new NumericProperty('bgFill', Color.rgb(0, 255, 0).rgbNumber(), timeline);
-    this.opacity = new NumericProperty('opacity', 1, timeline);
-
-    // register as element with timeline
-    timeline.addElement(this);
+    const timeline = scene.project.timeline;
+    this.x = new NumericProperty(this, 'x', defaultValue(defaults, 'x', 0), timeline);
+    this.y = new NumericProperty(this, 'y', defaultValue(defaults, 'y', 0), timeline);
+    this.width = new NumericProperty(this, 'width', defaultValue(defaults, 'width', 100), timeline);
+    this.height = new NumericProperty(this, 'height', defaultValue(defaults, 'height', 100), timeline);
+    this.rotation = new NumericProperty(this, 'rotation', defaultValue(defaults, 'rotation', 0), timeline);
+    this.bgFill = new NumericProperty(this, 'bgFill', defaultValue(defaults, 'bgFill', color(0, 0, 255)), timeline);
+    this.opacity = new NumericProperty(this, 'opacity', defaultValue(defaults, 'opacity', 1), timeline);
 
     // create graphics for bgFill
     const graphics = new PIXI.Graphics();
@@ -53,5 +57,16 @@ export class Sprite implements TimelineElement {
     graphics.height = height.value;
     container.rotation = degToRad(rotation.value);
     container.alpha = opacity.value;
+
+    // cascade
+    const children = this.children;
+    const l = children.length;
+    for (let i = 0; i < l; i++) {
+      children[i].update();
+    }
+  }
+
+  onChange (propertyName: string, newValue: any, oldValue: any) {
+
   }
 }

@@ -1,8 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { Scene } from '../scene';
-import { StringProperty } from '../property';
+import { StringProperty, DynamicPropertyTarget } from '../property';
 import { Timeline } from '../timeline';
-import { Sprite } from '../sprite';
 import { ProjectOptions, SceneMap } from './types';
 import {
   DEFAULT_PROJECT_BACKGROUND_COLOR,
@@ -11,36 +10,32 @@ import {
   DEFAULT_PROJECT_WIDTH,
 } from './const';
 
-export class Project {
-  private app: PIXI.Application;
+export class Project implements DynamicPropertyTarget {
   private scenes: SceneMap = {};
-  private currentSceneName: StringProperty;
+  public app: PIXI.Application;
+  public currentSceneName: StringProperty;
   public timeline: Timeline;
 
   constructor (options: ProjectOptions = DEFAULT_PROJECT_OPTIONS) {
-    // startup, test for WebGL
     PIXI.utils.sayHello(`fantoccini ~ ${PIXI.utils.isWebGLSupported() ? 'WebGL' : 'Canvas'}`);
 
-    // setup pixi app
     this.app = new PIXI.Application({
       width: options.width || DEFAULT_PROJECT_WIDTH,
       height: options.height || DEFAULT_PROJECT_HEIGHT,
       backgroundColor: options.backgroundColor || DEFAULT_PROJECT_BACKGROUND_COLOR,
     });
 
-    // create timeline
     this.timeline = new Timeline(this);
 
-    // set default scene
-    this.scenes['default'] = new Scene('default', this);
-    this.currentSceneName = new StringProperty('currentSceneName', 'default', this.timeline);
+    this.currentSceneName = new StringProperty(this, 'currentSceneName', null, this.timeline);
 
-    // mount project view
     document.body.appendChild(this.view);
+
+    this.app.ticker.add(this.onTick);
   }
 
-  addScene (scene: Scene) {
-    this.scenes[scene.name]
+  getScene (name: string): Scene {
+    return this.scenes[name];
   }
 
   get view () {
@@ -59,16 +54,34 @@ export class Project {
     return this.scenes[this.currentSceneName.value];
   }
 
-  addTicker (fn) {
-    this.app.ticker.add(fn);
+  onTick = () => {
+    this.timeline.update();
+    if (this.scene) {
+      this.scene.update();
+    }
+  };
+
+  onChange (propertyName: string, newValue: any, oldValue: any) {
+    if (propertyName === 'currentSceneName') {
+      const newSceneName = newValue as string;
+      const oldSceneName = oldValue as string;
+      const oldScene = this.scenes[oldSceneName];
+      const newScene = this.scenes[newSceneName];
+      if (oldScene) {
+        console.log('leave ' + oldScene.name);
+        oldScene.leave();
+      }
+      if (newScene) {
+        console.log('enter ' + newScene.name);
+        newScene.enter();
+      }
+    }
   }
 
-  newSprite (): Sprite {
-    const sprite = new Sprite(this);
-    return sprite;
-  }
-
-  addSprite (sprite: Sprite) {
-    this.app.stage.addChild(sprite.container);
+  addScene (scene: Scene) {
+    if (this.scenes[scene.name]) {
+      throw new Error(`Scene names must be unique, "${scene.name}" already exists`);
+    }
+    this.scenes[scene.name] = scene;
   }
 }
