@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Ticker, FrameInfo } from '../../core/ticker';
+import { Ticker, TickerEvent } from '../../core/ticker';
 
 const ticker = new Ticker();
 
 export function TickerTest() {
-  const [frameInfo, setFrameInfo] = useState<FrameInfo>();
+  const [frameIndex, setFrameIndex] = useState<number>(0);
   const [secs, setSecs] = useState(0);
   useEffect(() => {
-    ticker.on('tick', (info: FrameInfo) => setFrameInfo(info));
+    ticker.on(TickerEvent.Tick, (frameIndex) => setFrameIndex(frameIndex));
     const secTick = () => {
       setSecs(new Date().getSeconds());
       requestAnimationFrame(secTick);
@@ -32,10 +32,10 @@ export function TickerTest() {
         Secs: <span>{secs}</span>
       </label>
       <label>
-        FrameCount: <span>{frameInfo?.frameCount || 0}</span>
+        FrameCount: <span>{frameIndex}</span>
       </label>
       <label>
-        Delta: <span>{frameInfo?.delta.toFixed(1) || '-'}</span>
+        Delta: <span>{ticker.lastDelta.toFixed(1) || '-'}</span>
       </label>
     </fieldset>
   );

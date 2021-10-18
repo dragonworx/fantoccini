@@ -1,18 +1,17 @@
 import { EventEmitter } from 'eventemitter3';
 
-export interface FrameInfo {
-  fps: number;
-  frameCount: number;
-  delta: number;
+export enum TickerEvent {
+  Tick = 'tick',
 }
 
 export class Ticker extends EventEmitter {
   private _fps: number;
-  private _frameCount: number = 0;
+  private _frameIndex: number = 0;
   private startTime: number = -1;
   private msPerFrame: number = 0;
   private timeoutId?: number;
   private expectedNextFrameTime: number = 0;
+  lastDelta: number = 0;
 
   constructor(fps: number = 24) {
     super();
@@ -24,7 +23,7 @@ export class Ticker extends EventEmitter {
   }
 
   get frameCount() {
-    return this._frameCount;
+    return this._frameIndex;
   }
 
   private clearTimeout() {
@@ -34,15 +33,11 @@ export class Ticker extends EventEmitter {
   }
 
   private tick = () => {
-    const { expectedNextFrameTime, _fps, _frameCount, msPerFrame } = this;
+    const { expectedNextFrameTime, _frameIndex, msPerFrame } = this;
     const now = Date.now();
-    const delta = now - expectedNextFrameTime;
-    this.emit('tick', {
-      fps: _fps,
-      frameCount: _frameCount,
-      delta,
-    } as FrameInfo);
-    this._frameCount++;
+    const delta = (this.lastDelta = now - expectedNextFrameTime);
+    this.emit(TickerEvent.Tick, _frameIndex + 1);
+    this._frameIndex++;
     const adjustedMsPerFrame = msPerFrame - delta;
     this.expectedNextFrameTime = now + adjustedMsPerFrame;
     this.timeoutId = window.setTimeout(this.tick, adjustedMsPerFrame);
@@ -56,7 +51,7 @@ export class Ticker extends EventEmitter {
   start() {
     this.clearTimeout();
     this.msPerFrame = 1000 / this._fps;
-    this._frameCount = 0;
+    this._frameIndex = 0;
     this.resume();
   }
 
@@ -73,6 +68,6 @@ export class Ticker extends EventEmitter {
 
   stop() {
     this.clearTimeout();
-    this._frameCount = 0;
+    this._frameIndex = 0;
   }
 }
