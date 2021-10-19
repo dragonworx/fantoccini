@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Test } from './test/functional';
+// import { Test } from './test/functional';
+import { App } from './app';
 
-ReactDOM.render(<Test />, document.getElementById('main'));
+ReactDOM.render(<App />, document.getElementById('main'));
