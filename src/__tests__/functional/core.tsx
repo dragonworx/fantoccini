@@ -1,5 +1,4 @@
 /** @jsx jsx */
-
 import { css, jsx } from '@emotion/react';
 import { TickerTest } from './core/ticker';
 

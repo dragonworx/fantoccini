@@ -1,10 +1,13 @@
-import * as React from 'react';
-import { TickerTest } from './core/ticker';
+/** @jsx jsx */
+import { css, jsx } from '@emotion/react';
+import { Button } from '../../ui/button';
+
+const style = css``;
 
 export function App() {
   return (
-    <div id="functional-tests">
-      <TickerTest />
+    <div css={style}>
+      <Button>Click!</Button>
     </div>
   );
 }
