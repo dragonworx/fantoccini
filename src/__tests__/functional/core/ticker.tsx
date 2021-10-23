@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Ticker, TickerEvent } from '../../core/ticker';
+import { Ticker, TickerEvent } from '../../../core/ticker';
 
 const ticker = new Ticker();
 

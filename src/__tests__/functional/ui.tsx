@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { TickerTest } from './ticker';
+import { TickerTest } from './core/ticker';
 
-export function Test() {
+export function App() {
   return (
     <div id="functional-tests">
       <TickerTest />

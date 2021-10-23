@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
+    "sourceRoot": "./src",
     "strict": true,
     "outDir": "./ts-build/",
+    "lib": ["es2015", "DOM"],
+    "types": ["@emotion/react/types/css-prop", "jest"],
     "noImplicitAny": true,
     "module": "es6",
     "target": "es5",
