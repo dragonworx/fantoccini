@@ -19,15 +19,15 @@ export const defaultProps: Props = {
 export const style = (props: Props) => {
   const { enabled, link, onClick } = props;
   const shadowColor = enabled ? '#080808' : '#383838';
-  const textColor = Color(link ? '#57b1ff' : '#bdbec0');
+  const textColor = Color(link && enabled ? '#57b1ff' : '#bdbec0');
   const isInteractive = !!(link || onClick) && enabled;
   return css`
     box-sizing: border-box;
     user-select: none;
     text-shadow: 1px 1px 1px ${shadowColor};
-    color: ${enabled ? textColor.hex() : textColor.darken(0.5).hex()};
+    color: ${enabled ? textColor.hex() : textColor.darken(0.35).hex()};
     text-decoration: ${link ? 'underline' : 'normal'};
-    cursor: ${isInteractive ? 'pointer' : 'default'};
+    cursor: ${isInteractive ? 'pointer' : 'inherit'};
     &:active {
       ${isInteractive ? 'color:' + textColor.lighten(0.2).hex() : ''};
     }

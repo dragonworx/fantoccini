@@ -1,8 +1,9 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { Button } from '../../ui/button';
+import { AbstractButton } from '../../ui/abstractButton';
 import { Icon } from '../../ui/icon';
 import { Label } from '../../ui/label';
+import { PushButton } from '../../ui/pushButton';
 
 const style = css`
   .row {
@@ -41,13 +42,16 @@ export function App() {
         />
       </div>
       <div className="row">
-        <Button onClick={() => alert('Clicked!')}>Click this now!</Button>
-        <Button onClick={() => alert('Should not be clicked!')} enabled={false}>
-          Click this now!
-        </Button>
-        <Button>
-          <Icon src="img/test.jpg" width={20} /> With Icon
-        </Button>
+        <AbstractButton>Abstract Button</AbstractButton>
+      </div>
+      <div className="row">
+        <PushButton onClick={() => alert('Clicked!')} label="Enabled" />
+        <PushButton
+          onClick={() => alert('Should not be clicked!')}
+          label="Disabled"
+          enabled={false}
+        />
+        <PushButton label="With Icon" icon="img/test.jpg" iconWidth={20} />
       </div>
     </div>
   );
