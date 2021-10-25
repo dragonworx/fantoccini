@@ -2,28 +2,44 @@
 import { jsx } from '@emotion/react';
 import { Label } from './label';
 import { Icon } from './icon';
-import { AbstractButton } from './abstractButton';
+import { AbstractButton, Props as AbstractButtonProps } from './abstractButton';
 
-export interface Props {
+export type Props = {
   label?: string;
   icon?: string;
   iconWidth?: number;
-  enabled?: boolean;
-  onClick?: () => void;
-}
+  iconBorder?: boolean;
+} & Pick<AbstractButtonProps, 'enabled' | 'toggle' | 'onClick' | 'onToggled'>;
 
 export const defaultProps: Props = {
   enabled: true,
 };
 
 export function PushButton(props: Props) {
-  const { label, icon, iconWidth, enabled, onClick } = {
+  const {
+    label,
+    icon,
+    iconWidth,
+    iconBorder,
+    enabled,
+    toggle,
+    onClick,
+    onToggled,
+  } = {
     ...defaultProps,
     ...props,
   };
+  const abstractButtonProps: Partial<AbstractButtonProps> = {
+    enabled,
+    toggle,
+    onClick,
+    onToggled,
+  };
   return (
-    <AbstractButton enabled={enabled} onClick={onClick}>
-      {icon !== undefined ? <Icon src={icon} width={iconWidth} /> : null}
+    <AbstractButton {...abstractButtonProps}>
+      {icon !== undefined ? (
+        <Icon src={icon} width={iconWidth} border={iconBorder} />
+      ) : null}
       {label !== undefined ? <Label text={label} enabled={enabled} /> : null}
     </AbstractButton>
   );

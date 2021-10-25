@@ -42,7 +42,13 @@ export function App() {
         />
       </div>
       <div className="row">
-        <AbstractButton>Abstract Button</AbstractButton>
+        <Icon src="img/test.jpg" width={32} />
+        <Icon src="img/test.jpg" width={32} border={true} />
+      </div>
+      <div className="row">
+        <AbstractButton></AbstractButton>
+        <AbstractButton enabled={false}></AbstractButton>
+        <AbstractButton toggle={true}></AbstractButton>
       </div>
       <div className="row">
         <PushButton onClick={() => alert('Clicked!')} label="Enabled" />
@@ -52,6 +58,17 @@ export function App() {
           enabled={false}
         />
         <PushButton label="With Icon" icon="img/test.jpg" iconWidth={20} />
+        <PushButton
+          label="Toggle Enabled"
+          toggle={true}
+          onToggled={(isToggled: boolean) => isToggled && alert('Is Toggled!')}
+        />
+        <PushButton
+          label="Toggle Disabled"
+          enabled={false}
+          toggle={true}
+          onClick={() => alert('Should not be clicked!')}
+        />
       </div>
     </div>
   );

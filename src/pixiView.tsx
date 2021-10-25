@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import * as PIXI from 'pixi.js';
-import { degToRad } from './util';
+import { degToRad } from './geom-util';
 
 export function PixiView() {
   const ref = useRef<HTMLDivElement>(null);
