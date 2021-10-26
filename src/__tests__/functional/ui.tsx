@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import { AbstractButton } from '../../ui/components/abstractButton';
-import { BoxLayout } from '../../ui/layout/box';
+import { HBoxLayout, VBoxLayout } from '../../ui/layout/box';
 import { Icon } from '../../ui/components/icon';
 import { Label } from '../../ui/components/label';
 import { PushButton } from '../../ui/components/pushButton';
@@ -25,7 +25,7 @@ const style = css`
   }
 `;
 
-const createIcons = (width: number = 32, amount: number = 3) => {
+const createIcons = (width: number = 16, amount: number = 3) => {
   const icons = [];
   for (let i = 0; i < amount; i++) {
     icons.push(<Icon src="img/test.jpg" width={width} />);
@@ -61,10 +61,12 @@ export function App() {
       </div>
       <div className="row">
         <div className="border">
-          <BoxLayout direction="horizontal">{createIcons()}</BoxLayout>
+          <HBoxLayout>{createIcons()}</HBoxLayout>
         </div>
+      </div>
+      <div className="row">
         <div className="border">
-          <BoxLayout direction="vertical">{createIcons()}</BoxLayout>
+          <VBoxLayout>{createIcons()}</VBoxLayout>
         </div>
       </div>
       <div className="row">

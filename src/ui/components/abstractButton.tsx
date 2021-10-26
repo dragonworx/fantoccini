@@ -8,6 +8,8 @@ export interface Props {
   enabled?: boolean;
   toggle?: boolean;
   isToggled?: boolean;
+  width?: number;
+  height?: number;
   onClick?: () => void;
   onToggled?: (isToggled: boolean) => void;
 }
@@ -20,7 +22,7 @@ const isInteractive = ({ enabled, toggle, onClick }: Props) =>
   !!(enabled && (onClick || toggle));
 
 export const style = (props: Props, toggled: boolean) => {
-  const { enabled } = props;
+  const { enabled, width, height } = props;
 
   const darkColor = enabled ? '#24282f' : '#363c47';
 
@@ -51,6 +53,8 @@ export const style = (props: Props, toggled: boolean) => {
     border: 1px solid #030c17;
     min-width: 20px;
     min-height: 20px;
+    width: ${width ? `${width}px` : 'auto'};
+    height: ${height ? `${height}px` : 'auto'};
     cursor: ${isInteractive(props) ? 'pointer' : 'inherit'};
     color: ${enabled ? '#bdbec0' : '#808080'};
     display: inline-block;

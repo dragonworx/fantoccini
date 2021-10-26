@@ -3,6 +3,7 @@ import { css, jsx } from '@emotion/react';
 import { Label } from './label';
 import { Icon } from './icon';
 import { AbstractButton, Props as AbstractButtonProps } from './abstractButton';
+import { HBoxLayout } from '../layout/box';
 
 export type CheckBoxStyle = 'tick' | 'cross';
 
@@ -18,9 +19,6 @@ export const defaultProps: Props = {
 
 export const cssStyle = () => {
   return css`
-    width: 20px;
-    height: 20px;
-
     & .button-content {
       position: absolute;
     }
@@ -38,10 +36,12 @@ export function CheckBox(props: Props) {
   };
   return (
     <div css={cssStyle()} className="checkbox">
-      <AbstractButton {...abstractButtonProps} toggle={true}>
-        <Icon src={`img/icons/${style}.svg`} width={10} />
-      </AbstractButton>
-      {label !== undefined ? <Label text={label} enabled={enabled} /> : null}
+      <HBoxLayout margin={0}>
+        <AbstractButton {...abstractButtonProps} toggle={true}>
+          <Icon src={`img/icons/${style}.svg`} width={10} />
+        </AbstractButton>
+        {label !== undefined ? <Label text={label} enabled={enabled} /> : null}
+      </HBoxLayout>
     </div>
   );
 }
