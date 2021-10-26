@@ -35,11 +35,17 @@ export const style = (props: Props) => {
 };
 
 export function Label(props: Props) {
-  props = { ...defaultProps, ...props };
+  props = {
+    ...defaultProps,
+    ...props,
+  };
+  const { enabled, onClick } = props;
   return (
     <label
       css={style(props)}
-      onClick={props.enabled ? props.onClick : undefined}
+      className="label"
+      onClick={enabled ? onClick : undefined}
+      tabIndex={enabled && onClick ? 0 : undefined}
     >
       {props.text}
     </label>

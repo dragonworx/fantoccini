@@ -4,6 +4,7 @@ import { AbstractButton } from '../../ui/abstractButton';
 import { Icon } from '../../ui/icon';
 import { Label } from '../../ui/label';
 import { PushButton } from '../../ui/pushButton';
+import { CheckBox } from '../../ui/checkbox';
 
 const style = css`
   .row {
@@ -42,13 +43,14 @@ export function App() {
         />
       </div>
       <div className="row">
-        <Icon src="img/test.jpg" width={32} />
+        <Icon src="img/icons/tick.svg" width={32} />
         <Icon src="img/test.jpg" width={32} border={true} />
       </div>
       <div className="row">
         <AbstractButton></AbstractButton>
         <AbstractButton enabled={false}></AbstractButton>
         <AbstractButton toggle={true}></AbstractButton>
+        <AbstractButton toggle={true} isToggled={true}></AbstractButton>
       </div>
       <div className="row">
         <PushButton onClick={() => alert('Clicked!')} label="Enabled" />
@@ -69,6 +71,11 @@ export function App() {
           toggle={true}
           onClick={() => alert('Should not be clicked!')}
         />
+      </div>
+      <div className="row">
+        <CheckBox />
+        <CheckBox style={'tick'} />
+        <CheckBox label="With Label" />
       </div>
     </div>
   );

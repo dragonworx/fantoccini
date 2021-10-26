@@ -1,12 +1,13 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { ReactNode, useState } from 'react';
+import { KeyboardEvent, ReactNode, useState, useRef } from 'react';
 import Color from 'color';
 
 export interface Props {
   children?: ReactNode;
   enabled?: boolean;
   toggle?: boolean;
+  isToggled?: boolean;
   onClick?: () => void;
   onToggled?: (isToggled: boolean) => void;
 }
@@ -53,6 +54,11 @@ export const style = (props: Props, toggled: boolean) => {
     cursor: ${isInteractive(props) ? 'pointer' : 'inherit'};
     color: ${enabled ? '#bdbec0' : '#808080'};
     display: inline-block;
+    position: relative;
+
+    &:focus {
+      outline: 1px outset #ccc;
+    }
 
     & * {
       box-sizing: border-box;
@@ -62,13 +68,13 @@ export const style = (props: Props, toggled: boolean) => {
       background: linear-gradient(180deg, ${darkColor} 0, #3b424c 100%);
     }
 
-    &:active {
+    &:active,
+    &.active {
       ${activeStyle}
     }
 
     & > .button-content {
       border-radius: 5px;
-      position: absolute;
       width: 100%;
       height: 100%;
       border: 1px solid #999;
@@ -80,18 +86,6 @@ export const style = (props: Props, toggled: boolean) => {
       justify-content: center;
       position: relative;
       user-select: none;
-
-      & > * {
-        margin: 3px 5px;
-      }
-
-      & > *:first-child {
-        margin-left: 10px;
-      }
-
-      & > *:last-child {
-        margin-right: 10px;
-      }
     }
 
     ${toggled ? activeStyle : undefined}
@@ -100,8 +94,10 @@ export const style = (props: Props, toggled: boolean) => {
 
 export function AbstractButton(props: Props) {
   props = { ...defaultProps, ...props };
-  const { children, toggle, onClick, onToggled } = props;
-  const [toggled, setToggled] = useState(false);
+  const { children, enabled, toggle, isToggled, onClick, onToggled } = props;
+  const [toggled, setToggled] = useState(!!isToggled);
+  const ref = useRef<HTMLDivElement>(null);
+
   const onClickHandler = () => {
     if (isInteractive(props)) {
       if (toggle) {
@@ -112,8 +108,26 @@ export function AbstractButton(props: Props) {
       onClick && onClick();
     }
   };
+
+  const onKeyDownHandler = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === ' ' || e.key === 'Enter') {
+      ref.current?.classList.add('active');
+      setTimeout(() => {
+        onClickHandler();
+        setTimeout(() => ref.current?.classList.remove('active'), 150);
+      }, 0);
+    }
+  };
+
   return (
-    <div css={style(props, toggled)} onClick={onClickHandler}>
+    <div
+      className="abstract-button"
+      css={style(props, toggled)}
+      onClick={onClickHandler}
+      onKeyDown={onKeyDownHandler}
+      tabIndex={enabled ? 0 : undefined}
+      ref={ref}
+    >
       <div className="button-content">{children}</div>
     </div>
   );
