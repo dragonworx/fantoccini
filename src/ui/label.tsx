@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { ReactNode } from 'react';
+import { KeyboardEvent, useRef } from 'react';
 import Color from 'color';
 
 export interface Props {
@@ -21,6 +21,7 @@ export const style = (props: Props) => {
   const shadowColor = enabled ? '#080808' : '#383838';
   const textColor = Color(link && enabled ? '#57b1ff' : '#bdbec0');
   const isInteractive = !!(link || onClick) && enabled;
+
   return css`
     box-sizing: border-box;
     user-select: none;
@@ -28,8 +29,10 @@ export const style = (props: Props) => {
     color: ${enabled ? textColor.hex() : textColor.darken(0.35).hex()};
     text-decoration: ${link ? 'underline' : 'normal'};
     cursor: ${isInteractive ? 'pointer' : 'inherit'};
-    &:active {
-      ${isInteractive ? 'color:' + textColor.lighten(0.2).hex() : ''};
+
+    &:active,
+    &.active {
+      ${isInteractive ? 'color:' + textColor.lighten(0.2).hex() : ''}
     }
   `;
 };
@@ -40,12 +43,27 @@ export function Label(props: Props) {
     ...props,
   };
   const { enabled, onClick } = props;
+  const ref = useRef<HTMLLabelElement>(null);
+  const isInteractive = !!(enabled && onClick);
+
+  const onKeyDownHandler = (e: KeyboardEvent<HTMLLabelElement>) => {
+    if ((e.key === ' ' || e.key === 'Enter') && isInteractive) {
+      ref.current?.classList.add('active');
+      setTimeout(() => {
+        onClick();
+        setTimeout(() => ref.current?.classList.remove('active'), 150);
+      }, 0);
+    }
+  };
+
   return (
     <label
+      ref={ref}
       css={style(props)}
       className="label"
-      onClick={enabled ? onClick : undefined}
-      tabIndex={enabled && onClick ? 0 : undefined}
+      tabIndex={isInteractive ? 0 : undefined}
+      onClick={isInteractive ? onClick : undefined}
+      onKeyDown={onKeyDownHandler}
     >
       {props.text}
     </label>

@@ -121,12 +121,12 @@ export function AbstractButton(props: Props) {
 
   return (
     <div
+      ref={ref}
       className="abstract-button"
       css={style(props, toggled)}
+      tabIndex={enabled ? 0 : undefined}
       onClick={onClickHandler}
       onKeyDown={onKeyDownHandler}
-      tabIndex={enabled ? 0 : undefined}
-      ref={ref}
     >
       <div className="button-content">{children}</div>
     </div>
