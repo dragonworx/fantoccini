@@ -34,6 +34,7 @@ export function Icon(props: Props) {
     <img
       src={props.src}
       css={style(props)}
+      className="icon"
       draggable={false}
       onClick={props.enabled ? props.onClick : undefined}
     />

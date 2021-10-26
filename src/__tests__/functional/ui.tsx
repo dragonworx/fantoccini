@@ -1,10 +1,11 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { AbstractButton } from '../../ui/abstractButton';
-import { Icon } from '../../ui/icon';
-import { Label } from '../../ui/label';
-import { PushButton } from '../../ui/pushButton';
-import { CheckBox } from '../../ui/checkbox';
+import { AbstractButton } from '../../ui/components/abstractButton';
+import { BoxLayout } from '../../ui/layout/box';
+import { Icon } from '../../ui/components/icon';
+import { Label } from '../../ui/components/label';
+import { PushButton } from '../../ui/components/pushButton';
+import { CheckBox } from '../../ui/components/checkbox';
 
 const style = css`
   .row {
@@ -18,7 +19,19 @@ const style = css`
       margin-right: 0;
     }
   }
+
+  .border {
+    outline: 1px solid lime;
+  }
 `;
+
+const createIcons = (width: number = 32, amount: number = 3) => {
+  const icons = [];
+  for (let i = 0; i < amount; i++) {
+    icons.push(<Icon src="img/test.jpg" width={width} />);
+  }
+  return icons;
+};
 
 export function App() {
   return (
@@ -45,6 +58,14 @@ export function App() {
       <div className="row">
         <Icon src="img/icons/tick.svg" width={32} />
         <Icon src="img/test.jpg" width={32} border={true} />
+      </div>
+      <div className="row">
+        <div className="border">
+          <BoxLayout direction="horizontal">{createIcons()}</BoxLayout>
+        </div>
+        <div className="border">
+          <BoxLayout direction="vertical">{createIcons()}</BoxLayout>
+        </div>
       </div>
       <div className="row">
         <AbstractButton></AbstractButton>
