@@ -10,19 +10,23 @@ export interface Props {
   isToggled?: boolean;
   width?: number;
   height?: number;
+  round?: boolean;
   onClick?: () => void;
   onToggled?: (isToggled: boolean) => void;
 }
 
 export const defaultProps: Props = {
   enabled: true,
+  width: 20,
+  height: 20,
+  round: false,
 };
 
 const isInteractive = ({ enabled, toggle, onClick }: Props) =>
   !!(enabled && (onClick || toggle));
 
 export const style = (props: Props, toggled: boolean) => {
-  const { enabled, width, height } = props;
+  const { enabled, width, height, round } = props;
 
   const darkColor = enabled ? '#24282f' : '#363c47';
 
@@ -49,12 +53,10 @@ export const style = (props: Props, toggled: boolean) => {
   return css`
     box-sizing: border-box;
     background: linear-gradient(0deg, ${darkColor} 0, #2f343c 100%);
-    border-radius: 5px;
+    border-radius: ${round ? Math.max(width!, height!) / 2 : 5}px;
     border: 1px solid #030c17;
-    min-width: 20px;
-    min-height: 20px;
-    width: ${width ? `${width}px` : 'auto'};
-    height: ${height ? `${height}px` : 'auto'};
+    min-width: ${width}px;
+    min-height: ${height}px;
     cursor: ${isInteractive(props) ? 'pointer' : 'inherit'};
     color: ${enabled ? '#bdbec0' : '#808080'};
     display: inline-block;
@@ -78,7 +80,7 @@ export const style = (props: Props, toggled: boolean) => {
     }
 
     & > .button-content {
-      border-radius: 5px;
+      border-radius: ${round ? Math.max(width!, height!) / 2 : 5}px;
       width: 100%;
       height: 100%;
       border: 1px solid #999;
@@ -88,7 +90,7 @@ export const style = (props: Props, toggled: boolean) => {
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
+      position: ${round ? 'absolute' : 'relative'};
       user-select: none;
     }
 

@@ -70,7 +70,7 @@ export function App() {
         </div>
       </div>
       <div className="row">
-        <AbstractButton></AbstractButton>
+        <AbstractButton round={true}></AbstractButton>
         <AbstractButton enabled={false}></AbstractButton>
         <AbstractButton toggle={true}></AbstractButton>
         <AbstractButton toggle={true} isToggled={true}></AbstractButton>
@@ -97,8 +97,14 @@ export function App() {
       </div>
       <div className="row">
         <CheckBox />
+        <CheckBox enabled={false} />
         <CheckBox style={'tick'} />
+        <CheckBox style={'circle'} />
         <CheckBox label="With Label" />
+        <CheckBox label="Label Left" labelPosition="left" />
+        <CheckBox label="Label Right" labelPosition="right" />
+        <CheckBox label="Label Bottom" labelPosition="bottom" />
+        <CheckBox label="Label Top" labelPosition="top" />
       </div>
     </div>
   );

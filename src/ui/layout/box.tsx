@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 export type Props = {
   children?: ReactNode;
   direction?: 'horizontal' | 'vertical';
+  reversed?: boolean;
   spacing?: number;
   margin?: number;
 };
@@ -13,13 +14,20 @@ export const defaultProps: Props = {
   spacing: 3,
   margin: 3,
   direction: 'horizontal',
+  reversed: false,
 };
 
 export const cssStyle = (props: Props) => {
-  const { spacing, margin, direction } = props;
+  const { spacing, margin, direction, reversed } = props;
   return css`
     display: flex;
-    flex-direction: ${direction === 'horizontal' ? 'row' : 'column'};
+    flex-direction: ${direction === 'horizontal'
+      ? reversed
+        ? 'row-reverse'
+        : 'row'
+      : reversed
+      ? 'column-reverse'
+      : 'column'};
     flex-wrap: nowrap;
     padding: ${margin}px;
     justify-content: center;
