@@ -2,6 +2,7 @@
 import { css, jsx } from '@emotion/react';
 import { KeyboardEvent, useRef } from 'react';
 import Color from 'color';
+import { init } from './util';
 
 export interface Props {
   text: string;
@@ -16,8 +17,7 @@ export const defaultProps: Props = {
   link: false,
 };
 
-export const style = (props: Props) => {
-  const { enabled, link, onClick } = props;
+export const style = ({ enabled, link, onClick }: Required<Props>) => {
   const shadowColor = enabled ? '#080808' : '#383838';
   const textColor = Color(link && enabled ? '#57b1ff' : '#bdbec0');
   const isInteractive = !!(link || onClick) && enabled;
@@ -38,11 +38,7 @@ export const style = (props: Props) => {
 };
 
 export function Label(props: Props) {
-  props = {
-    ...defaultProps,
-    ...props,
-  };
-  const { enabled, onClick } = props;
+  const [{ enabled, onClick }, css] = init(props, defaultProps, style);
   const ref = useRef<HTMLLabelElement>(null);
   const isInteractive = !!(enabled && onClick);
 
@@ -59,7 +55,7 @@ export function Label(props: Props) {
   return (
     <label
       ref={ref}
-      css={style(props)}
+      css={css}
       className="label"
       tabIndex={isInteractive ? 0 : undefined}
       onClick={isInteractive ? onClick : undefined}

@@ -6,12 +6,13 @@ import { AbstractButton, Props as AbstractButtonProps } from './abstractButton';
 import { BoxLayout } from '../layout/box';
 import { getProps, getCss } from './util';
 
-export type CheckBoxStyle = 'tick' | 'cross' | 'circle';
+export type CheckBoxStyle = 'tick' | 'cross';
+export type ToggleButtonStyle = CheckBoxStyle | 'circle';
 
 export type Props = {
   label?: string;
   labelPosition?: 'left' | 'right' | 'top' | 'bottom';
-  style?: CheckBoxStyle;
+  style?: ToggleButtonStyle;
 } & Pick<AbstractButtonProps, 'enabled' | 'onToggled'>;
 
 export const defaultProps: Props = {
@@ -27,7 +28,7 @@ export const cssStyle = ({ enabled }: Required<Props>) => css`
   }
 `;
 
-export function CheckBox(props: Props) {
+export function ToggleButton(props: Props) {
   const { label, labelPosition, style, enabled, onToggled } = getProps(
     props,
     defaultProps
@@ -61,4 +62,21 @@ export function CheckBox(props: Props) {
       </BoxLayout>
     </div>
   );
+}
+
+export type CheckBoxProps = Omit<Props, 'style'> & {
+  style?: CheckBoxStyle;
+};
+
+export function CheckBox(props: CheckBoxProps) {
+  return ToggleButton(props);
+}
+
+export type RadioButtonProps = Omit<Props, 'style'>;
+
+export function RadioButton(props: CheckBoxProps) {
+  return ToggleButton({
+    ...props,
+    style: 'circle',
+  });
 }

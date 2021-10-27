@@ -4,6 +4,7 @@ import { Label } from './label';
 import { Icon } from './icon';
 import { AbstractButton, Props as AbstractButtonProps } from './abstractButton';
 import { HBoxLayout } from '../layout/box';
+import { getProps } from './util';
 
 export type Props = {
   label?: string;
@@ -26,10 +27,7 @@ export function PushButton(props: Props) {
     toggle,
     onClick,
     onToggled,
-  } = {
-    ...defaultProps,
-    ...props,
-  };
+  } = getProps(props, defaultProps);
 
   const abstractButtonProps: Partial<AbstractButtonProps> = {
     enabled,

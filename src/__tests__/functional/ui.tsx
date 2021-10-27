@@ -5,14 +5,14 @@ import { HBoxLayout, VBoxLayout } from '../../ui/layout/box';
 import { Icon } from '../../ui/components/icon';
 import { Label } from '../../ui/components/label';
 import { PushButton } from '../../ui/components/pushButton';
-import { CheckBox } from '../../ui/components/checkbox';
+import { CheckBox, RadioButton } from '../../ui/components/toggleButton';
 
 const style = css`
   .row {
-    padding: 10px;
+    padding: 5px 10px;
     display: flex;
     > * {
-      margin-right: 10px;
+      margin-right: 5px;
     }
 
     > *:last-child {
@@ -99,12 +99,20 @@ export function App() {
         <CheckBox />
         <CheckBox enabled={false} />
         <CheckBox style={'tick'} />
-        <CheckBox style={'circle'} />
-        <CheckBox label="With Label" />
-        <CheckBox label="Label Left" labelPosition="left" />
-        <CheckBox label="Label Right" labelPosition="right" />
-        <CheckBox label="Label Bottom" labelPosition="bottom" />
-        <CheckBox label="Label Top" labelPosition="top" />
+        <CheckBox label="Label" />
+        <CheckBox label="Left" labelPosition="left" />
+        <CheckBox label="Right" labelPosition="right" />
+        <CheckBox label="Bottom" labelPosition="bottom" />
+        <CheckBox label="Top" labelPosition="top" />
+      </div>
+      <div className="row">
+        <RadioButton />
+        <RadioButton enabled={false} />
+        <RadioButton label="Label" />
+        <RadioButton label="Left" labelPosition="left" />
+        <RadioButton label="Right" labelPosition="right" />
+        <RadioButton label="Bottom" labelPosition="bottom" />
+        <RadioButton label="Top" labelPosition="top" />
       </div>
     </div>
   );

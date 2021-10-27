@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
+import { init } from './util';
 
 export interface Props {
   onClick?: () => void;
@@ -15,28 +16,25 @@ export const defaultProps: Props = {
   border: false,
 };
 
-export const style = (props: Props) => {
-  const { width, height, border } = props;
-  return css`
-    box-sizing: border-box;
-    user-select: none;
-    display: inline-block;
-    vertical-align: middle;
-    width: ${width !== undefined ? `${width}px` : 'auto'};
-    height: ${height !== undefined ? `${height}px` : 'auto'};
-    border: ${border ? '1px outset #9c9c9c' : 'none'};
-  `;
-};
+export const style = ({ width, height, border }: Required<Props>) => css`
+  box-sizing: border-box;
+  user-select: none;
+  display: inline-block;
+  vertical-align: middle;
+  width: ${width !== undefined ? `${width}px` : 'auto'};
+  height: ${height !== undefined ? `${height}px` : 'auto'};
+  border: ${border ? '1px outset #9c9c9c' : 'none'};
+`;
 
 export function Icon(props: Props) {
-  props = { ...defaultProps, ...props };
+  const [{ src, enabled, onClick }, css] = init(props, defaultProps, style);
   return (
     <img
-      src={props.src}
-      css={style(props)}
+      src={src}
+      css={css}
       className="icon"
       draggable={false}
-      onClick={props.enabled ? props.onClick : undefined}
+      onClick={enabled ? onClick : undefined}
     />
   );
 }

@@ -17,3 +17,15 @@ export function getCss<Props>(
 ) {
   return style(getProps(props, defaultProps));
 }
+
+export function init<Props>(
+  props: Props,
+  defaultProps: Props,
+  style: (props: Required<Props>) => SerializedStyles
+): [Required<Props>, SerializedStyles] {
+  const requiredProps = {
+    ...defaultProps,
+    ...props,
+  } as Required<Props>;
+  return [requiredProps, style(requiredProps)];
+}
