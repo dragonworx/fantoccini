@@ -5,7 +5,8 @@ import { HBoxLayout, VBoxLayout } from '../../ui/layout/box';
 import { Icon } from '../../ui/components/icon';
 import { Label } from '../../ui/components/label';
 import { PushButton } from '../../ui/components/pushButton';
-import { CheckBox, RadioButton } from '../../ui/components/toggleButton';
+import { CheckBox } from '../../ui/components/checkbox';
+import { RadioButton } from '../../ui/components/radioButton';
 
 const style = css`
   .row {

@@ -28,7 +28,7 @@ export const cssStyle = ({ enabled }: Required<Props>) => css`
   }
 `;
 
-export function ToggleButton(props: Props) {
+export function AbstractToggleButton(props: Props) {
   const { label, labelPosition, style, enabled, onToggled } = getProps(
     props,
     defaultProps
@@ -62,21 +62,4 @@ export function ToggleButton(props: Props) {
       </BoxLayout>
     </div>
   );
-}
-
-export type CheckBoxProps = Omit<Props, 'style'> & {
-  style?: CheckBoxStyle;
-};
-
-export function CheckBox(props: CheckBoxProps) {
-  return ToggleButton(props);
-}
-
-export type RadioButtonProps = Omit<Props, 'style'>;
-
-export function RadioButton(props: CheckBoxProps) {
-  return ToggleButton({
-    ...props,
-    style: 'circle',
-  });
 }
