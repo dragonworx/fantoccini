@@ -56,7 +56,10 @@ export function AbstractToggleButton(props: Props) {
     onToggled && onToggled(isToggled, name, value);
 
   return (
-    <div css={getCss(cssStyle, props, defaultProps)} className="checkbox">
+    <div
+      css={getCss(cssStyle, props, defaultProps)}
+      className={style === 'circle' ? 'radiobutton' : 'checkbox'}
+    >
       <BoxLayout
         margin={0}
         direction={

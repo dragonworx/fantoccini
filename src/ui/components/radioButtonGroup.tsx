@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import { useState } from 'react';
-import { BoxLayout, Direction } from '../layout/box';
+import { Alignment, BoxLayout, Direction } from '../layout/box';
 import { getProps } from './util';
 import { RadioButton } from './radioButton';
 import { LabelPosition } from './abstractToggleButton';
@@ -12,11 +12,11 @@ export interface Option {
   value: any;
 }
 
-export type onChangeHandler = (name: string, value: any) => void;
+export type onChangeHandler = (value: any) => void;
 
 export interface Props {
   options: Option[];
-  selectedValue: any;
+  selectedValue?: any;
   enabled?: boolean;
   direction?: Direction;
   labelPosition?: LabelPosition;
@@ -31,6 +31,22 @@ export const defaultProps: Props = {
   selectedValue: undefined,
 };
 
+const getAlign = (
+  direction: Direction,
+  labelPosition: LabelPosition
+): Alignment => {
+  if (direction === 'vertical') {
+    if (labelPosition === 'left') {
+      return 'end';
+    } else if (labelPosition === 'right') {
+      return 'start';
+    }
+    return 'center';
+  } else {
+    return 'center';
+  }
+};
+
 export function RadioButtonGroup(props: Props) {
   const {
     options,
@@ -43,13 +59,21 @@ export function RadioButtonGroup(props: Props) {
 
   const [currentValue, setCurrentValue] = useState(selectedValue);
 
-  const onToggledCallback = (_isToggled: boolean, name: string, value: any) => {
+  const onToggledCallback = (
+    _isToggled: boolean,
+    _name: string,
+    value: any
+  ) => {
     setCurrentValue(value);
-    onChange && onChange(name, value);
+    onChange && onChange(value);
   };
 
   return (
-    <BoxLayout direction={direction}>
+    <BoxLayout
+      direction={direction}
+      align={getAlign(direction, labelPosition)}
+      justify="space-evenly"
+    >
       {options.map(({ name, label, value }) => (
         <RadioButton
           enabled={enabled}

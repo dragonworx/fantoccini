@@ -29,6 +29,7 @@ export const style = ({ enabled, link, onClick }: Required<Props>) => {
     color: ${enabled ? textColor.hex() : textColor.darken(0.25).hex()};
     text-decoration: ${link ? 'underline' : 'normal'};
     cursor: ${isInteractive ? 'pointer' : 'inherit'};
+    white-space: nowrap;
 
     &:active,
     &.active {

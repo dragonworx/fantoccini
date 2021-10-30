@@ -3,6 +3,8 @@ import { css, jsx } from '@emotion/react';
 import { ReactNode } from 'react';
 
 export type Direction = 'horizontal' | 'vertical';
+export type Alignment = 'start' | 'center' | 'end';
+export type Justification = 'start' | 'center' | 'end' | 'space-evenly';
 
 export type Props = {
   children?: ReactNode;
@@ -10,6 +12,8 @@ export type Props = {
   reversed?: boolean;
   spacing?: number;
   margin?: number;
+  align?: Alignment;
+  justify?: Justification;
 };
 
 export const defaultProps: Props = {
@@ -17,10 +21,12 @@ export const defaultProps: Props = {
   margin: 3,
   direction: 'horizontal',
   reversed: false,
+  align: 'center',
+  justify: 'center',
 };
 
 export const cssStyle = (props: Props) => {
-  const { spacing, margin, direction, reversed } = props;
+  const { spacing, margin, direction, reversed, align, justify } = props;
   return css`
     display: flex;
     flex-direction: ${direction === 'horizontal'
@@ -32,8 +38,8 @@ export const cssStyle = (props: Props) => {
       : 'column'};
     flex-wrap: nowrap;
     padding: ${margin}px;
-    justify-content: center;
-    align-items: center;
+    align-items: ${align};
+    justify-content: ${justify};
 
     & > * {
       margin: ${spacing}px;
