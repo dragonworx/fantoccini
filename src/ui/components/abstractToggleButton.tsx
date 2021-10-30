@@ -2,20 +2,32 @@
 import { css, jsx } from '@emotion/react';
 import { Label } from './label';
 import { Icon } from './icon';
-import { AbstractButton, Props as AbstractButtonProps } from './abstractButton';
+import { AbstractButton } from './abstractButton';
 import { BoxLayout } from '../layout/box';
 import { getProps, getCss } from './util';
 
 export type CheckBoxStyle = 'tick' | 'cross';
 export type ToggleButtonStyle = CheckBoxStyle | 'circle';
+export type LabelPosition = 'left' | 'right' | 'top' | 'bottom';
+export type onToggledHandler = (
+  isToggled: boolean,
+  name: string,
+  value: any
+) => void;
 
 export type Props = {
+  name?: string;
+  value?: any;
   label?: string;
-  labelPosition?: 'left' | 'right' | 'top' | 'bottom';
+  enabled?: boolean;
+  labelPosition?: LabelPosition;
   style?: ToggleButtonStyle;
-} & Pick<AbstractButtonProps, 'enabled' | 'onToggled'>;
+  isToggled?: boolean;
+  onToggled?: onToggledHandler;
+};
 
 export const defaultProps: Props = {
+  name: '',
   enabled: true,
   labelPosition: 'right',
   style: 'cross',
@@ -29,17 +41,20 @@ export const cssStyle = ({ enabled }: Required<Props>) => css`
 `;
 
 export function AbstractToggleButton(props: Props) {
-  const { label, labelPosition, style, enabled, onToggled } = getProps(
-    props,
-    defaultProps
-  );
-  const abstractButtonProps: Pick<
-    AbstractButtonProps,
-    'enabled' | 'onToggled'
-  > = {
+  const {
+    name,
+    value,
+    label,
+    labelPosition,
+    style,
     enabled,
+    isToggled,
     onToggled,
-  };
+  } = getProps(props, defaultProps);
+
+  const onToggledHandler = (isToggled: boolean) =>
+    onToggled && onToggled(isToggled, name, value);
+
   return (
     <div css={getCss(cssStyle, props, defaultProps)} className="checkbox">
       <BoxLayout
@@ -52,9 +67,12 @@ export function AbstractToggleButton(props: Props) {
         reversed={labelPosition === 'left' || labelPosition === 'top'}
       >
         <AbstractButton
-          {...abstractButtonProps}
-          toggle={true}
-          round={style === 'circle'}
+          enabled={enabled}
+          canToggle={true}
+          toggleMode={style === 'circle' ? 'single' : 'binary'}
+          isToggled={isToggled}
+          isRound={style === 'circle'}
+          onToggled={onToggledHandler}
         >
           <Icon src={`img/icons/${style}.svg`} width={10} />
         </AbstractButton>

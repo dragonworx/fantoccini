@@ -4,34 +4,48 @@ import { KeyboardEvent, ReactNode, useState, useRef } from 'react';
 import Color from 'color';
 import { getProps, getCss } from './util';
 
+export type ToggleMode = 'binary' | 'single';
+
 export interface Props {
   children?: ReactNode;
   enabled?: boolean;
-  toggle?: boolean;
+  canToggle?: boolean;
+  toggleMode?: ToggleMode;
   isToggled?: boolean;
   width?: number;
   height?: number;
-  round?: boolean;
+  isRound?: boolean;
   onClick?: () => void;
   onToggled?: (isToggled: boolean) => void;
 }
 
 export const defaultProps: Props = {
   enabled: true,
+  canToggle: false,
+  toggleMode: 'binary',
+  isToggled: false,
   width: 20,
   height: 20,
-  round: false,
+  isRound: false,
 };
 
 const isInteractive = (
   enabled: boolean,
-  toggle: boolean,
+  canToggle: boolean,
   onClick: () => void
-) => !!(enabled && (onClick || toggle));
+) => !!(enabled && (onClick || canToggle));
 
 export const cssStyle =
-  (toggled: boolean) =>
-  ({ enabled, toggle, onClick, width, height, round }: Required<Props>) => {
+  (isCurrentlyToggled: boolean) =>
+  ({
+    enabled,
+    canToggle,
+    toggleMode,
+    width,
+    height,
+    isRound,
+    onClick,
+  }: Required<Props>) => {
     const darkColor = enabled ? '#24282f' : '#363c47';
     const activeStyle = css`
       background: linear-gradient(
@@ -56,13 +70,10 @@ export const cssStyle =
     return css`
       box-sizing: border-box;
       background: linear-gradient(0deg, ${darkColor} 0, #2f343c 100%);
-      border-radius: ${round ? Math.max(width, height) / 2 : 5}px;
+      border-radius: ${isRound ? Number.MAX_SAFE_INTEGER : 5}px;
       border: 1px solid #030c17;
       min-width: ${width}px;
       min-height: ${height}px;
-      cursor: ${isInteractive(enabled, toggle, onClick)
-        ? 'pointer'
-        : 'inherit'};
       color: ${enabled ? '#bdbec0' : '#808080'};
       display: inline-block;
       position: relative;
@@ -85,7 +96,7 @@ export const cssStyle =
       }
 
       & > .button-content {
-        border-radius: ${round ? Math.max(width, height) / 2 : 5}px;
+        border-radius: ${isRound ? Number.MAX_SAFE_INTEGER : 5}px;
         width: 100%;
         height: 100%;
         border: 1px solid #999;
@@ -95,28 +106,46 @@ export const cssStyle =
         display: flex;
         align-items: center;
         justify-content: center;
-        position: ${round ? 'absolute' : 'relative'};
+        position: ${isRound && toggleMode === 'single'
+          ? 'absolute'
+          : 'relative'};
         user-select: none;
       }
 
-      ${toggled ? activeStyle : undefined}
+      ${isCurrentlyToggled ? activeStyle : undefined}
+
+      ${!isCurrentlyToggled && toggleMode === 'single'
+        ? css`
+            & > .button-content img {
+              display: none;
+            }
+          `
+        : undefined}
     `;
   };
 
 export function AbstractButton(props: Props) {
-  const { children, enabled, toggle, round, isToggled, onClick, onToggled } =
-    getProps(props, defaultProps);
-  const [toggled, setToggled] = useState(!!isToggled);
+  const {
+    children,
+    enabled,
+    canToggle,
+    isRound,
+    toggleMode,
+    isToggled,
+    onClick,
+    onToggled,
+  } = getProps(props, defaultProps);
+  const [isCurrentlyToggled, setIsCurrentlyToggled] = useState(!!isToggled);
   const ref = useRef<HTMLDivElement>(null);
 
   const onClickHandler = () => {
-    if (isInteractive(enabled, toggle, onClick)) {
-      if (toggle) {
-        if (round && toggled) {
+    if (isInteractive(enabled, canToggle, onClick)) {
+      if (canToggle) {
+        if (isRound && toggleMode === 'single' && isCurrentlyToggled) {
           return;
         }
-        const newValue = !toggled;
-        setToggled(newValue);
+        const newValue = !isCurrentlyToggled;
+        setIsCurrentlyToggled(newValue);
         onToggled && onToggled(newValue);
       }
       onClick && onClick();
@@ -137,7 +166,7 @@ export function AbstractButton(props: Props) {
     <div
       ref={ref}
       className="abstract-button"
-      css={getCss(cssStyle(toggled), props, defaultProps)}
+      css={getCss(cssStyle(isCurrentlyToggled), props, defaultProps)}
       tabIndex={enabled ? 0 : undefined}
       onClick={onClickHandler}
       onKeyDown={onKeyDownHandler}

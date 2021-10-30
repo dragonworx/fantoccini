@@ -2,9 +2,11 @@
 import { css, jsx } from '@emotion/react';
 import { ReactNode } from 'react';
 
+export type Direction = 'horizontal' | 'vertical';
+
 export type Props = {
   children?: ReactNode;
-  direction?: 'horizontal' | 'vertical';
+  direction?: Direction;
   reversed?: boolean;
   spacing?: number;
   margin?: number;

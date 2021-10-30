@@ -7,6 +7,7 @@ import { Label } from '../../ui/components/label';
 import { PushButton } from '../../ui/components/pushButton';
 import { CheckBox } from '../../ui/components/checkbox';
 import { RadioButton } from '../../ui/components/radioButton';
+import { RadioButtonGroup } from '../../ui/components/radioButtonGroup';
 
 const style = css`
   .row {
@@ -71,10 +72,10 @@ export function App() {
         </div>
       </div>
       <div className="row">
-        <AbstractButton round={true}></AbstractButton>
+        <AbstractButton isRound={true}></AbstractButton>
         <AbstractButton enabled={false}></AbstractButton>
-        <AbstractButton toggle={true}></AbstractButton>
-        <AbstractButton toggle={true} isToggled={true}></AbstractButton>
+        <AbstractButton canToggle={true}></AbstractButton>
+        <AbstractButton canToggle={true} isToggled={true}></AbstractButton>
       </div>
       <div className="row">
         <PushButton onClick={() => alert('Clicked!')} label="Enabled" />
@@ -86,21 +87,58 @@ export function App() {
         <PushButton label="With Icon" icon="img/test.jpg" iconWidth={20} />
         <PushButton
           label="Toggle Enabled"
-          toggle={true}
+          canToggle={true}
           onToggled={(isToggled: boolean) => isToggled && alert('Is Toggled!')}
         />
         <PushButton
           label="Toggle Disabled"
           enabled={false}
-          toggle={true}
+          canToggle={true}
           onClick={() => alert('Should not be clicked!')}
+        />
+      </div>
+      <div className="row">
+        <PushButton
+          icon="img/icons/record.svg"
+          isRound={true}
+          iconWidth={16}
+          canToggle={true}
+        />
+        <PushButton icon="img/icons/stop.svg" isRound={true} iconWidth={16} />
+        <PushButton
+          icon="img/icons/prev-frame.svg"
+          isRound={true}
+          iconWidth={16}
+        />
+        <PushButton
+          icon="img/icons/play.svg"
+          isRound={true}
+          iconWidth={16}
+          canToggle={true}
+        />
+        <PushButton icon="img/icons/pause.svg" isRound={true} iconWidth={16} />
+        <PushButton
+          icon="img/icons/next-frame.svg"
+          isRound={true}
+          iconWidth={16}
         />
       </div>
       <div className="row">
         <CheckBox />
         <CheckBox enabled={false} />
         <CheckBox style={'tick'} />
-        <CheckBox label="Label" />
+        <CheckBox
+          label="Click!"
+          name="clickableCheck"
+          value={'foo!'}
+          onToggled={(isToggled: boolean, name: string, value: any) =>
+            alert(
+              `${name} is ${
+                isToggled ? 'toggled' : 'un-toggled'
+              } with value "${value}"`
+            )
+          }
+        />
         <CheckBox label="Left" labelPosition="left" />
         <CheckBox label="Right" labelPosition="right" />
         <CheckBox label="Bottom" labelPosition="bottom" />
@@ -109,11 +147,33 @@ export function App() {
       <div className="row">
         <RadioButton />
         <RadioButton enabled={false} />
-        <RadioButton label="Label" />
+        <RadioButton label="Click!" onToggled={() => alert('Toggled!')} />
         <RadioButton label="Left" labelPosition="left" />
         <RadioButton label="Right" labelPosition="right" />
         <RadioButton label="Bottom" labelPosition="bottom" />
         <RadioButton label="Top" labelPosition="top" />
+      </div>
+      <div className="row">
+        <RadioButtonGroup
+          selectedValue={2}
+          options={[
+            {
+              name: 'option1',
+              label: 'Option1',
+              value: 1,
+            },
+            {
+              name: 'option2',
+              label: 'Option2',
+              value: 2,
+            },
+            {
+              name: 'option3',
+              label: 'Option3',
+              value: 3,
+            },
+          ]}
+        />
       </div>
     </div>
   );

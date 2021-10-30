@@ -11,7 +11,7 @@ export type Props = {
   icon?: string;
   iconWidth?: number;
   iconBorder?: boolean;
-} & Pick<AbstractButtonProps, 'enabled' | 'toggle' | 'onClick' | 'onToggled'>;
+} & Omit<AbstractButtonProps, 'children' | ''>;
 
 export const defaultProps: Props = {
   enabled: true,
@@ -24,14 +24,16 @@ export function PushButton(props: Props) {
     iconWidth,
     iconBorder,
     enabled,
-    toggle,
+    isRound,
+    canToggle,
     onClick,
     onToggled,
   } = getProps(props, defaultProps);
 
   const abstractButtonProps: Partial<AbstractButtonProps> = {
     enabled,
-    toggle,
+    isRound,
+    canToggle,
     onClick,
     onToggled,
   };
