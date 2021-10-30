@@ -26,7 +26,7 @@ export const style = ({ enabled, link, onClick }: Required<Props>) => {
     box-sizing: border-box;
     user-select: none;
     text-shadow: 1px 1px 1px ${shadowColor};
-    color: ${enabled ? textColor.hex() : textColor.darken(0.35).hex()};
+    color: ${enabled ? textColor.hex() : textColor.darken(0.25).hex()};
     text-decoration: ${link ? 'underline' : 'normal'};
     cursor: ${isInteractive ? 'pointer' : 'inherit'};
 

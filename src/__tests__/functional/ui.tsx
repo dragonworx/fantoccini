@@ -43,18 +43,18 @@ export function App() {
         <Label
           text="Label Disabled"
           enabled={false}
-          onClick={() => alert('Should not be clicked!')}
+          onClick={() => console.log('Should not be clicked!')}
         />
         <Label
           text="Label Link"
           link={true}
-          onClick={() => alert('Clicked!')}
+          onClick={() => console.log('Clicked!')}
         />
         <Label
           text="Label Link Disabled"
           link={true}
           enabled={false}
-          onClick={() => alert('Should not be clicked!')}
+          onClick={() => console.log('Should not be clicked!')}
         />
       </div>
       <div className="row">
@@ -78,9 +78,9 @@ export function App() {
         <AbstractButton canToggle={true} isToggled={true}></AbstractButton>
       </div>
       <div className="row">
-        <PushButton onClick={() => alert('Clicked!')} label="Enabled" />
+        <PushButton onClick={() => console.log('Clicked!')} label="Enabled" />
         <PushButton
-          onClick={() => alert('Should not be clicked!')}
+          onClick={() => console.log('Should not be clicked!')}
           label="Disabled"
           enabled={false}
         />
@@ -88,13 +88,16 @@ export function App() {
         <PushButton
           label="Toggle Enabled"
           canToggle={true}
-          onToggled={(isToggled: boolean) => isToggled && alert('Is Toggled!')}
+          isToggled={true}
+          onToggled={(isToggled: boolean) =>
+            console.log(`Is ${isToggled ? '' : 'Not '}Toggled!`)
+          }
         />
         <PushButton
           label="Toggle Disabled"
           enabled={false}
           canToggle={true}
-          onClick={() => alert('Should not be clicked!')}
+          onClick={() => console.log('Should not be clicked!')}
         />
       </div>
       <div className="row">
@@ -115,6 +118,7 @@ export function App() {
           isRound={true}
           iconWidth={16}
           canToggle={true}
+          isToggled={true}
         />
         <PushButton icon="img/icons/pause.svg" isRound={true} iconWidth={16} />
         <PushButton
@@ -132,7 +136,7 @@ export function App() {
           name="clickableCheck"
           value={'foo!'}
           onToggled={(isToggled: boolean, name: string, value: any) =>
-            alert(
+            console.log(
               `${name} is ${
                 isToggled ? 'toggled' : 'un-toggled'
               } with value "${value}"`
@@ -146,8 +150,8 @@ export function App() {
       </div>
       <div className="row">
         <RadioButton />
-        <RadioButton enabled={false} />
-        <RadioButton label="Click!" onToggled={() => alert('Toggled!')} />
+        <RadioButton label="Disabled" enabled={false} />
+        <RadioButton label="Click!" onToggled={() => console.log('Toggled!')} />
         <RadioButton label="Left" labelPosition="left" />
         <RadioButton label="Right" labelPosition="right" />
         <RadioButton label="Bottom" labelPosition="bottom" />
@@ -173,6 +177,9 @@ export function App() {
               value: 3,
             },
           ]}
+          onChange={(name, value) =>
+            console.log('RadioButtonGroup.onChange', name, value)
+          }
         />
       </div>
     </div>

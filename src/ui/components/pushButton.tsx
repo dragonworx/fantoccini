@@ -11,7 +11,7 @@ export type Props = {
   icon?: string;
   iconWidth?: number;
   iconBorder?: boolean;
-} & Omit<AbstractButtonProps, 'children' | ''>;
+} & Omit<AbstractButtonProps, 'children'>;
 
 export const defaultProps: Props = {
   enabled: true,
@@ -26,6 +26,7 @@ export function PushButton(props: Props) {
     enabled,
     isRound,
     canToggle,
+    isToggled,
     onClick,
     onToggled,
   } = getProps(props, defaultProps);
@@ -34,6 +35,7 @@ export function PushButton(props: Props) {
     enabled,
     isRound,
     canToggle,
+    isToggled,
     onClick,
     onToggled,
   };

@@ -1,10 +1,10 @@
 /** @jsx jsx */
-import { css, jsx } from '@emotion/react';
+import { jsx } from '@emotion/react';
 import { useState } from 'react';
 import { BoxLayout, Direction } from '../layout/box';
-import { getProps, getCss } from './util';
+import { getProps } from './util';
 import { RadioButton } from './radioButton';
-import { LabelPosition, onToggledHandler } from './abstractToggleButton';
+import { LabelPosition } from './abstractToggleButton';
 
 export interface Option {
   name: string;
@@ -12,13 +12,15 @@ export interface Option {
   value: any;
 }
 
+export type onChangeHandler = (name: string, value: any) => void;
+
 export interface Props {
   options: Option[];
   selectedValue: any;
   enabled?: boolean;
   direction?: Direction;
   labelPosition?: LabelPosition;
-  onToggled?: onToggledHandler;
+  onChange?: onChangeHandler;
 }
 
 export const defaultProps: Props = {
@@ -36,13 +38,14 @@ export function RadioButtonGroup(props: Props) {
     direction,
     enabled,
     labelPosition,
-    onToggled,
+    onChange,
   } = getProps(props, defaultProps);
 
   const [currentValue, setCurrentValue] = useState(selectedValue);
 
-  const onToggledCallback = (isToggled: boolean, name: string, value: any) => {
+  const onToggledCallback = (_isToggled: boolean, name: string, value: any) => {
     setCurrentValue(value);
+    onChange && onChange(name, value);
   };
 
   return (
@@ -53,6 +56,7 @@ export function RadioButtonGroup(props: Props) {
           name={name}
           label={label}
           value={value}
+          labelPosition={labelPosition}
           isToggled={value === currentValue}
           onToggled={onToggledCallback}
         />

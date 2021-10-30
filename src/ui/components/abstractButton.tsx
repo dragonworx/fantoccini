@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { KeyboardEvent, ReactNode, useState, useRef } from 'react';
+import { KeyboardEvent, ReactNode, useState, useRef, useEffect } from 'react';
 import Color from 'color';
 import { getProps, getCss } from './util';
 
@@ -37,15 +37,7 @@ const isInteractive = (
 
 export const cssStyle =
   (isCurrentlyToggled: boolean) =>
-  ({
-    enabled,
-    canToggle,
-    toggleMode,
-    width,
-    height,
-    isRound,
-    onClick,
-  }: Required<Props>) => {
+  ({ enabled, toggleMode, width, height, isRound }: Required<Props>) => {
     const darkColor = enabled ? '#24282f' : '#363c47';
     const activeStyle = css`
       background: linear-gradient(
@@ -137,6 +129,10 @@ export function AbstractButton(props: Props) {
   } = getProps(props, defaultProps);
   const [isCurrentlyToggled, setIsCurrentlyToggled] = useState(!!isToggled);
   const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setIsCurrentlyToggled(isToggled);
+  }, [isToggled]);
 
   const onClickHandler = () => {
     if (isInteractive(enabled, canToggle, onClick)) {
