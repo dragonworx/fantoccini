@@ -7,9 +7,16 @@ import { Label } from '../../ui/components/label';
 import { PushButton } from '../../ui/components/pushButton';
 import { CheckBox } from '../../ui/components/checkbox';
 import { RadioButton } from '../../ui/components/radioButton';
-import { RadioButtonGroup } from '../../ui/components/radioButtonGroup';
+import {
+  RadioButtonGroup,
+  Option as RadioButtonGroupOption,
+} from '../../ui/components/radioButtonGroup';
+import {
+  ToolButtonGroup,
+  Option as ToolButtonGroupOption,
+} from '../../ui/components/toolButtonGroup';
 
-const radioButtonGroupOptions = [
+const radioButtonGroupOptions: RadioButtonGroupOption[] = [
   {
     name: 'option1',
     label: 'Opt1',
@@ -24,6 +31,21 @@ const radioButtonGroupOptions = [
     name: 'option3',
     label: 'Opt3',
     value: 3,
+  },
+];
+
+const toolButtonGroupOptions: ToolButtonGroupOption[] = [
+  {
+    name: 'play',
+    icon: 'img/icons/play.svg',
+  },
+  {
+    name: 'pause',
+    icon: 'img/icons/pause.svg',
+  },
+  {
+    name: 'record',
+    icon: 'img/icons/record.svg',
   },
 ];
 
@@ -243,6 +265,12 @@ export function App() {
             onChange={onRadioGroupChange}
           />
         </div>
+      </div>
+      <div className="row">
+        <ToolButtonGroup
+          options={toolButtonGroupOptions}
+          onClick={(name: string) => console.log('Tool', name)}
+        />
       </div>
     </div>
   );

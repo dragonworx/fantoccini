@@ -52,6 +52,7 @@ export function BoxLayout(props: Props) {
     ...defaultProps,
     ...props,
   };
+
   const { children } = props;
   return (
     <div css={cssStyle(props)} className="box-layout">

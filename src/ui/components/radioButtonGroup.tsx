@@ -69,22 +69,24 @@ export function RadioButtonGroup(props: Props) {
   };
 
   return (
-    <BoxLayout
-      direction={direction}
-      align={getAlign(direction, labelPosition)}
-      justify="space-evenly"
-    >
-      {options.map(({ name, label, value }) => (
-        <RadioButton
-          enabled={enabled}
-          name={name}
-          label={label}
-          value={value}
-          labelPosition={labelPosition}
-          isToggled={value === currentValue}
-          onToggled={onToggledCallback}
-        />
-      ))}
-    </BoxLayout>
+    <div className="radioButtonGroup">
+      <BoxLayout
+        direction={direction}
+        align={getAlign(direction, labelPosition)}
+        justify="space-evenly"
+      >
+        {options.map(({ name, label, value }) => (
+          <RadioButton
+            enabled={enabled}
+            name={name}
+            label={label}
+            value={value}
+            labelPosition={labelPosition}
+            isToggled={value === currentValue}
+            onToggled={onToggledCallback}
+          />
+        ))}
+      </BoxLayout>
+    </div>
   );
 }

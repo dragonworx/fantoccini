@@ -3,7 +3,10 @@ import { jsx } from '@emotion/react';
 import { Label } from './label';
 import { Icon } from './icon';
 import { AbstractButton, Props as AbstractButtonProps } from './abstractButton';
-import { HBoxLayout } from '../layout/box';
+import {
+  HBoxLayout,
+  defaultProps as boxLayoutDefaultProps,
+} from '../layout/box';
 import { getProps } from './util';
 
 export type Props = {
@@ -11,10 +14,14 @@ export type Props = {
   icon?: string;
   iconWidth?: number;
   iconBorder?: boolean;
+  spacing?: number;
+  margin?: number;
 } & Omit<AbstractButtonProps, 'children'>;
 
 export const defaultProps: Props = {
   enabled: true,
+  margin: boxLayoutDefaultProps.margin,
+  spacing: boxLayoutDefaultProps.spacing,
 };
 
 export function PushButton(props: Props) {
@@ -27,6 +34,8 @@ export function PushButton(props: Props) {
     isRound,
     canToggle,
     isToggled,
+    spacing,
+    margin,
     onClick,
     onToggled,
   } = getProps(props, defaultProps);
@@ -42,7 +51,7 @@ export function PushButton(props: Props) {
 
   return (
     <AbstractButton {...abstractButtonProps}>
-      <HBoxLayout>
+      <HBoxLayout spacing={spacing} margin={margin}>
         {icon !== undefined ? (
           <Icon src={icon} width={iconWidth} border={iconBorder} />
         ) : null}
