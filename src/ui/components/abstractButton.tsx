@@ -3,6 +3,7 @@ import { css, jsx } from '@emotion/react';
 import { KeyboardEvent, ReactNode, useState, useRef, useEffect } from 'react';
 import Color from 'color';
 import { getProps, getCss } from './util';
+import { borderRadius, outline, borderDown } from './theme';
 
 export type ToggleMode = 'binary' | 'single';
 
@@ -71,7 +72,7 @@ export const cssStyle =
       position: relative;
 
       &:focus {
-        outline: 1px outset #ccc;
+        outline: ${outline};
       }
 
       & * {

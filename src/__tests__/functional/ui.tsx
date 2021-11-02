@@ -15,6 +15,7 @@ import {
   ToolButtonGroup,
   Option as ToolButtonGroupOption,
 } from '../../ui/components/toolButtonGroup';
+import { TextField } from '../../ui/components/textfield';
 
 const radioButtonGroupOptions: RadioButtonGroupOption[] = [
   {
@@ -271,6 +272,11 @@ export function App() {
           options={toolButtonGroupOptions}
           onClick={(name: string) => console.log('Tool', name)}
         />
+      </div>
+      <div className="row">
+        <TextField placeholder="Type some text..." />
+        <TextField placeholder="With icon..." icon="img/icons/play.svg" />
+        <TextField text="1234" width={40} />
       </div>
     </div>
   );
