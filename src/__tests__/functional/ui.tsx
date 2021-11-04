@@ -300,7 +300,7 @@ export function App() {
         />
         <TextField
           text="Click the icon (KeyUp)"
-          icon="img/icons/play.svg"
+          icon="img/icons/search.svg"
           onKeyUp={onHandleValue('TextField.onKeyUp')}
           onButtonClick={() => console.log('ButtonClick!')}
           onAccept={onHandleValue('TextField.onAccept')}
