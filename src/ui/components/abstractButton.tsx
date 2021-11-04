@@ -83,7 +83,7 @@ export const cssStyle =
       position: relative;
 
       &:focus {
-        outline: ${outline};
+        ${outline};
       }
 
       & * {

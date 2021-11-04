@@ -50,7 +50,8 @@ const toolButtonGroupOptions: ToolButtonGroupOption[] = [
   },
 ];
 
-const onRadioGroupChange = (value: any) => console.log('RadioGroup', value);
+const onHandleValue = (label: string) => (value: any) =>
+  console.log(`${label}: ${value}`);
 
 const style = css`
   .row {
@@ -233,37 +234,37 @@ export function App() {
         <RadioButtonGroup
           selectedValue={2}
           options={radioButtonGroupOptions}
-          onChange={onRadioGroupChange}
+          onChange={onHandleValue('RadioGroup.onChange')}
         />
         <RadioButtonGroup
           options={radioButtonGroupOptions}
           labelPosition="left"
-          onChange={onRadioGroupChange}
+          onChange={onHandleValue('RadioGroup.onChange')}
         />
         <RadioButtonGroup
           options={radioButtonGroupOptions}
           labelPosition="top"
-          onChange={onRadioGroupChange}
+          onChange={onHandleValue('RadioGroup.onChange')}
         />
         <RadioButtonGroup
           enabled={false}
           options={radioButtonGroupOptions}
           selectedValue={3}
           labelPosition="bottom"
-          onChange={onRadioGroupChange}
+          onChange={onHandleValue('RadioGroup.onChange')}
         />
         <div className="col">
           <RadioButtonGroup
             options={radioButtonGroupOptions}
             direction="horizontal"
             labelPosition="left"
-            onChange={onRadioGroupChange}
+            onChange={onHandleValue('RadioGroup.onChange')}
           />
           <RadioButtonGroup
             options={radioButtonGroupOptions}
             direction="horizontal"
             labelPosition="right"
-            onChange={onRadioGroupChange}
+            onChange={onHandleValue('RadioGroup.onChange')}
           />
         </div>
       </div>
@@ -274,8 +275,37 @@ export function App() {
         />
       </div>
       <div className="row">
-        <TextField placeholder="Type some text..." />
-        <TextField placeholder="With icon..." icon="img/icons/play.svg" />
+        <TextField
+          placeholder="Type some text..."
+          onChange={onHandleValue('TextField.onChange')}
+          onAccept={onHandleValue('TextField.onAccept')}
+        />
+        <TextField
+          placeholder="KeyDown (no 'a'!)..."
+          onKeyDown={(key: string) => {
+            if (key === 'a') {
+              console.log('TextField.onKeyDown but No press "a"!');
+              return false;
+            }
+            onHandleValue('TextField.onKeyDown')(key);
+          }}
+          onAccept={onHandleValue('TextField.onAccept')}
+        />
+        <TextField
+          placeholder="Filtered (numeric only)..."
+          onKeyFilter={(key: string) =>
+            ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(key) > -1
+          }
+          onAccept={onHandleValue('TextField.onAccept')}
+        />
+        <TextField
+          text="Click the icon (KeyUp)"
+          icon="img/icons/play.svg"
+          onKeyUp={onHandleValue('TextField.onKeyUp')}
+          onButtonClick={() => console.log('ButtonClick!')}
+          onAccept={onHandleValue('TextField.onAccept')}
+        />
+        <TextField text="Disabled..." enabled={false} />
       </div>
     </div>
   );

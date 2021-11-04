@@ -4,9 +4,7 @@ import { KeyboardEvent, useRef } from 'react';
 import Color from 'color';
 import { init } from './util';
 import { PushButton } from './pushButton';
-import { Label, LabelPosition } from './label';
-import { BoxLayout } from '../layout/box';
-import { borderRadius, outline, outlineColor, borderDown } from './theme';
+import { borderRadius, outline, textFieldBg, borderDown } from './theme';
 
 export interface Props {
   enabled?: boolean;
@@ -16,6 +14,12 @@ export interface Props {
   width?: number;
   height?: number;
   label?: string;
+  onKeyFilter?: (key: string) => boolean;
+  onKeyDown?: (key: string) => false | void;
+  onKeyUp?: (key: string) => void;
+  onChange?: (text: string) => void;
+  onAccept?: (text: string) => void;
+  onButtonClick?: () => void;
 }
 
 export const defaultProps: Props = {
@@ -31,8 +35,7 @@ export const style = ({ enabled, width, height }: Required<Props>) => {
     user-select: none;
     width: ${width ? `${width}px` : '100%'};
     height: ${height ? `${height}px` : 'auto'};
-    max-width: 200px;
-    background: linear-gradient(180deg, #000 0, #2f343c 100%);
+    ${textFieldBg(enabled)}
     border-radius: ${borderRadius};
     ${borderDown}
     display: flex;
@@ -44,8 +47,8 @@ export const style = ({ enabled, width, height }: Required<Props>) => {
       padding: 0px 3px;
       width: 100%;
       background-color: transparent;
-      color: #bdbec0;
-      text-shadow: 1px 1px 1px #080808;
+      color: ${enabled ? textColor.hex() : textColor.darken(0.35).hex()};
+      text-shadow: 1px 1px 1px ${shadowColor};
       border: none;
       font-family: inherit;
       font-size: inherit;
@@ -54,7 +57,7 @@ export const style = ({ enabled, width, height }: Required<Props>) => {
       flex-grow: 1;
 
       &:focus {
-        outline: ${outline};
+        ${outline};
       }
 
       &::selection {
@@ -71,12 +74,50 @@ export const style = ({ enabled, width, height }: Required<Props>) => {
 };
 
 export function TextField(props: Props) {
-  const [{ enabled, text, placeholder, icon }, css] = init(
-    props,
-    defaultProps,
-    style
-  );
+  const [
+    {
+      enabled,
+      text,
+      placeholder,
+      icon,
+      onKeyFilter,
+      onChange,
+      onAccept,
+      onKeyDown,
+      onKeyUp,
+      onButtonClick,
+    },
+    css,
+  ] = init(props, defaultProps, style);
   const ref = useRef<HTMLInputElement>(null);
+
+  const onChangeHandler = () => {
+    const { current } = ref;
+    current && onChange && onChange(current.value);
+  };
+
+  const onKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+    const { current } = ref;
+    if (current) {
+      const shouldCancel =
+        (onKeyFilter && onKeyFilter(e.key) === false) ||
+        (onKeyDown && onKeyDown(e.key) === false);
+      if (shouldCancel) {
+        e.preventDefault();
+      }
+    }
+  };
+
+  const onKeyUpHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+    const { current } = ref;
+    current && onKeyUp && onKeyUp(e.key);
+    e.key === 'Enter' && current && current.blur();
+  };
+
+  const onBlurHandler = () => {
+    const { current } = ref;
+    current && onAccept && onAccept(current.value);
+  };
 
   return (
     <div css={css} className="textfield">
@@ -88,9 +129,19 @@ export function TextField(props: Props) {
         tabIndex={0}
         placeholder={placeholder}
         spellCheck={false}
+        onChange={onChangeHandler}
+        onKeyUp={onKeyUpHandler}
+        onKeyDown={onKeyDownHandler}
+        onBlur={onBlurHandler}
       />
       {icon ? (
-        <PushButton icon={icon} iconWidth={16} height={30} fixedSize={true} />
+        <PushButton
+          icon={icon}
+          iconWidth={16}
+          height={30}
+          fixedSize={true}
+          onClick={onButtonClick}
+        />
       ) : null}
     </div>
   );
