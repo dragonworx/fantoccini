@@ -4,9 +4,8 @@ import { KeyboardEvent, useRef } from 'react';
 import Color from 'color';
 import { init } from './util';
 import { PushButton } from './pushButton';
-import { Label } from './label';
+import { Label, LabelPosition } from './label';
 import { BoxLayout } from '../layout/box';
-import { LabelPosition } from './abstractToggleButton';
 import { borderRadius, outline, outlineColor, borderDown } from './theme';
 
 export interface Props {

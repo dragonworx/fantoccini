@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Alignment, BoxLayout, Direction } from '../layout/box';
 import { getProps } from './util';
 import { RadioButton } from './radioButton';
-import { LabelPosition } from './abstractToggleButton';
+import { LabelPosition } from './label';
 
 export interface Option {
   name: string;

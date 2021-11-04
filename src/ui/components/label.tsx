@@ -1,13 +1,18 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { KeyboardEvent, useRef } from 'react';
+import { KeyboardEvent, useRef, ReactNode } from 'react';
 import Color from 'color';
+import { BoxLayout } from '../layout/box';
 import { init } from './util';
 
+export type LabelPosition = 'left' | 'right' | 'top' | 'bottom';
+
 export interface Props {
+  children?: ReactNode;
   text: string;
   enabled?: boolean;
   link?: boolean;
+  position?: LabelPosition;
   onClick?: () => void;
 }
 
@@ -15,6 +20,7 @@ export const defaultProps: Props = {
   text: 'Label',
   enabled: true,
   link: false,
+  position: 'right',
 };
 
 export const style = ({ enabled, link, onClick }: Required<Props>) => {
@@ -39,7 +45,11 @@ export const style = ({ enabled, link, onClick }: Required<Props>) => {
 };
 
 export function Label(props: Props) {
-  const [{ enabled, onClick }, css] = init(props, defaultProps, style);
+  const [{ children, enabled, position, onClick }, css] = init(
+    props,
+    defaultProps,
+    style
+  );
   const ref = useRef<HTMLLabelElement>(null);
   const isInteractive = !!(enabled && onClick);
 
@@ -54,15 +64,27 @@ export function Label(props: Props) {
   };
 
   return (
-    <label
-      ref={ref}
-      css={css}
-      className="label"
-      tabIndex={isInteractive ? 0 : undefined}
-      onClick={isInteractive ? onClick : undefined}
-      onKeyDown={onKeyDownHandler}
-    >
-      {props.text}
-    </label>
+    <div className={'label'}>
+      <BoxLayout
+        margin={0}
+        direction={
+          position === 'left' || position === 'right'
+            ? 'horizontal'
+            : 'vertical'
+        }
+        reversed={position === 'left' || position === 'top'}
+      >
+        {children}
+        <label
+          ref={ref}
+          css={css}
+          tabIndex={isInteractive ? 0 : undefined}
+          onClick={isInteractive ? onClick : undefined}
+          onKeyDown={onKeyDownHandler}
+        >
+          {props.text}
+        </label>
+      </BoxLayout>
+    </div>
   );
 }

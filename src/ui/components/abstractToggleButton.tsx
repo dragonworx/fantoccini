@@ -1,14 +1,12 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { Label } from './label';
+import { Label, LabelPosition } from './label';
 import { Icon } from './icon';
 import { AbstractButton } from './abstractButton';
-import { BoxLayout } from '../layout/box';
 import { getProps, getCss } from './util';
 
 export type CheckBoxStyle = 'tick' | 'cross';
 export type ToggleButtonStyle = CheckBoxStyle | 'circle';
-export type LabelPosition = 'left' | 'right' | 'top' | 'bottom';
 export type onToggledHandler = (
   isToggled: boolean,
   name: string,
@@ -43,12 +41,12 @@ export const cssStyle = ({ enabled }: Required<Props>) => css`
 
 export function AbstractToggleButton(props: Props) {
   const {
-    name,
-    value,
+    enabled,
     label,
     labelPosition,
+    name,
+    value,
     style,
-    enabled,
     isToggled,
     fixedSize,
     onToggled,
@@ -62,15 +60,7 @@ export function AbstractToggleButton(props: Props) {
       css={getCss(cssStyle, props, defaultProps)}
       className={style === 'circle' ? 'radiobutton' : 'checkbox'}
     >
-      <BoxLayout
-        margin={0}
-        direction={
-          labelPosition === 'left' || labelPosition === 'right'
-            ? 'horizontal'
-            : 'vertical'
-        }
-        reversed={labelPosition === 'left' || labelPosition === 'top'}
-      >
+      <Label enabled={enabled} text={label} position={labelPosition}>
         <AbstractButton
           enabled={enabled}
           canToggle={true}
@@ -82,8 +72,7 @@ export function AbstractToggleButton(props: Props) {
         >
           <Icon src={`img/icons/${style}.svg`} width={10} />
         </AbstractButton>
-        {label !== undefined ? <Label text={label} enabled={enabled} /> : null}
-      </BoxLayout>
+      </Label>
     </div>
   );
 }
