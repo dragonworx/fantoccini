@@ -276,7 +276,6 @@ export function App() {
       <div className="row">
         <TextField placeholder="Type some text..." />
         <TextField placeholder="With icon..." icon="img/icons/play.svg" />
-        <TextField text="1234" width={40} />
       </div>
     </div>
   );

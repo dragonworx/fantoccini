@@ -16,6 +16,7 @@ export interface Props {
   width?: number;
   height?: number;
   isRound?: boolean;
+  fixedSize?: boolean;
   onClick?: () => void;
   onToggled?: (isToggled: boolean) => void;
 }
@@ -28,6 +29,7 @@ export const defaultProps: Props = {
   width: 20,
   height: 20,
   isRound: false,
+  fixedSize: false,
 };
 
 const isInteractive = (
@@ -38,7 +40,14 @@ const isInteractive = (
 
 export const cssStyle =
   (isCurrentlyToggled: boolean) =>
-  ({ enabled, toggleMode, width, height, isRound }: Required<Props>) => {
+  ({
+    enabled,
+    toggleMode,
+    width,
+    height,
+    isRound,
+    fixedSize,
+  }: Required<Props>) => {
     const darkColor = enabled ? '#24282f' : '#363c47';
     const activeStyle = css`
       background: linear-gradient(
@@ -67,6 +76,8 @@ export const cssStyle =
       border: 1px solid #030c17;
       min-width: ${width}px;
       min-height: ${height}px;
+      width: ${fixedSize ? `${width}px` : 'auto'};
+      height: ${fixedSize ? `${height}px` : 'auto'};
       color: ${enabled ? '#bdbec0' : '#808080'};
       display: inline-block;
       position: relative;

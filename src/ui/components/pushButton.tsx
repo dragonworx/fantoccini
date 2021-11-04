@@ -36,6 +36,9 @@ export function PushButton(props: Props) {
     isToggled,
     spacing,
     margin,
+    fixedSize,
+    width,
+    height,
     onClick,
     onToggled,
   } = getProps(props, defaultProps);
@@ -45,6 +48,9 @@ export function PushButton(props: Props) {
     isRound,
     canToggle,
     isToggled,
+    fixedSize,
+    width,
+    height,
     onClick,
     onToggled,
   };

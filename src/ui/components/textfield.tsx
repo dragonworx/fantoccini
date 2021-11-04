@@ -15,6 +15,7 @@ export interface Props {
   placeholder?: string;
   icon?: string;
   width?: number;
+  height?: number;
   label?: string;
 }
 
@@ -22,14 +23,15 @@ export const defaultProps: Props = {
   enabled: true,
 };
 
-export const style = ({ enabled, width }: Required<Props>) => {
+export const style = ({ enabled, width, height }: Required<Props>) => {
   const shadowColor = enabled ? '#080808' : '#383838';
   const textColor = Color('#bdbec0');
 
   return css`
     box-sizing: border-box;
     user-select: none;
-    width: ${typeof width === 'number' ? `${width}px` : '100%'};
+    width: ${width ? `${width}px` : '100%'};
+    height: ${height ? `${height}px` : 'auto'};
     max-width: 200px;
     background: linear-gradient(180deg, #000 0, #2f343c 100%);
     border-radius: ${borderRadius};
@@ -40,7 +42,7 @@ export const style = ({ enabled, width }: Required<Props>) => {
 
     input[type='text'] {
       box-sizing: border-box;
-      padding: 3px 5px;
+      padding: 0px 3px;
       width: 100%;
       background-color: transparent;
       color: #bdbec0;
@@ -88,7 +90,9 @@ export function TextField(props: Props) {
         placeholder={placeholder}
         spellCheck={false}
       />
-      {icon ? <PushButton icon={icon} iconWidth={16} /> : null}
+      {icon ? (
+        <PushButton icon={icon} iconWidth={16} height={30} fixedSize={true} />
+      ) : null}
     </div>
   );
 }
