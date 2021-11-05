@@ -307,6 +307,24 @@ export function App() {
         />
         <TextField text="Disabled..." enabled={false} />
       </div>
+      <div className="row">
+        <TextField label="Left" placeholder="With Label..." />
+        <TextField
+          label="Right"
+          labelPosition="right"
+          placeholder="With Label..."
+        />
+        <TextField
+          label="Top"
+          labelPosition="top"
+          placeholder="With Label..."
+        />
+        <TextField
+          label="Bottom"
+          labelPosition="bottom"
+          placeholder="With Label..."
+        />
+      </div>
     </div>
   );
 }

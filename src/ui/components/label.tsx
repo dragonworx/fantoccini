@@ -2,7 +2,7 @@
 import { css, jsx } from '@emotion/react';
 import { KeyboardEvent, useRef, ReactNode } from 'react';
 import Color from 'color';
-import { BoxLayout } from '../layout/box';
+import { BoxLayout, Alignment } from '../layout/box';
 import { init } from './util';
 
 export type LabelPosition = 'left' | 'right' | 'top' | 'bottom';
@@ -13,6 +13,7 @@ export interface Props {
   enabled?: boolean;
   link?: boolean;
   position?: LabelPosition;
+  align?: Alignment;
   onClick?: () => void;
 }
 
@@ -21,6 +22,7 @@ export const defaultProps: Props = {
   enabled: true,
   link: false,
   position: 'right',
+  align: 'center',
 };
 
 export const style = ({ enabled, link, onClick }: Required<Props>) => {
@@ -45,7 +47,7 @@ export const style = ({ enabled, link, onClick }: Required<Props>) => {
 };
 
 export function Label(props: Props) {
-  const [{ children, enabled, position, onClick }, css] = init(
+  const [{ children, enabled, position, align, onClick }, css] = init(
     props,
     defaultProps,
     style
@@ -72,6 +74,7 @@ export function Label(props: Props) {
             ? 'horizontal'
             : 'vertical'
         }
+        align={align}
         reversed={position === 'left' || position === 'top'}
       >
         {children}

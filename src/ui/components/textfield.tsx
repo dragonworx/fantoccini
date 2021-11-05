@@ -4,7 +4,9 @@ import { KeyboardEvent, useRef } from 'react';
 import Color from 'color';
 import { init } from './util';
 import { PushButton } from './pushButton';
+import { Label, LabelPosition } from './label';
 import { borderRadius, outline, textFieldBg, borderDown } from './theme';
+import { Alignment } from '../layout/box';
 
 export interface Props {
   enabled?: boolean;
@@ -14,6 +16,7 @@ export interface Props {
   width?: number;
   height?: number;
   label?: string;
+  labelPosition?: LabelPosition;
   onKeyFilter?: (key: string) => boolean;
   onKeyDown?: (key: string) => false | void;
   onKeyUp?: (key: string) => void;
@@ -24,6 +27,7 @@ export interface Props {
 
 export const defaultProps: Props = {
   enabled: true,
+  labelPosition: 'left',
 };
 
 export const style = ({ enabled, width, height }: Required<Props>) => {
@@ -78,6 +82,8 @@ export function TextField(props: Props) {
     {
       enabled,
       text,
+      label,
+      labelPosition,
       placeholder,
       icon,
       onKeyFilter,
@@ -119,30 +125,65 @@ export function TextField(props: Props) {
     current && onAccept && onAccept(current.value);
   };
 
-  return (
-    <div css={css} className="textfield">
-      <input
-        ref={ref}
-        type="text"
-        defaultValue={text}
-        disabled={!enabled}
-        tabIndex={0}
-        placeholder={placeholder}
-        spellCheck={false}
-        onChange={onChangeHandler}
-        onKeyUp={onKeyUpHandler}
-        onKeyDown={onKeyDownHandler}
-        onBlur={onBlurHandler}
-      />
-      {icon ? (
-        <PushButton
-          icon={icon}
-          iconWidth={16}
-          height={30}
-          fixedSize={true}
-          onClick={onButtonClick}
+  if (label) {
+    const align: Alignment =
+      labelPosition === 'top' || labelPosition === 'bottom'
+        ? 'start'
+        : 'center';
+    return (
+      <Label text={label} position={labelPosition} align={align}>
+        <div css={css} className="textfield">
+          <input
+            ref={ref}
+            type="text"
+            defaultValue={text}
+            disabled={!enabled}
+            tabIndex={0}
+            placeholder={placeholder}
+            spellCheck={false}
+            onChange={onChangeHandler}
+            onKeyUp={onKeyUpHandler}
+            onKeyDown={onKeyDownHandler}
+            onBlur={onBlurHandler}
+          />
+          {icon ? (
+            <PushButton
+              icon={icon}
+              iconWidth={16}
+              height={30}
+              fixedSize={true}
+              onClick={onButtonClick}
+            />
+          ) : null}
+        </div>
+      </Label>
+    );
+  } else {
+    return (
+      <div css={css} className="textfield">
+        <input
+          ref={ref}
+          type="text"
+          defaultValue={text}
+          disabled={!enabled}
+          tabIndex={0}
+          placeholder={placeholder}
+          spellCheck={false}
+          onChange={onChangeHandler}
+          onKeyUp={onKeyUpHandler}
+          onKeyDown={onKeyDownHandler}
+          onBlur={onBlurHandler}
         />
-      ) : null}
-    </div>
-  );
+        {icon ? (
+          <PushButton
+            icon={icon}
+            iconWidth={16}
+            height={30}
+            fixedSize={true}
+            onClick={onButtonClick}
+          />
+        ) : null}
+      </div>
+    );
+  }
 }
