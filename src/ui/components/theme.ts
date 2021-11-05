@@ -1,19 +1,34 @@
 import { css } from '@emotion/react';
 
-// const
-export const borderRadius = '5px';
-export const outlineColor = '#2fb7eb';
+export const reset = css`
+  box-sizing: border-box;
 
-// css
-export const outline = css`
-  outline: 1px solid ${outlineColor};
+  & * {
+    box-sizing: border-box;
+  }
 `;
+
+export const noSelect = css`
+  user-select: none;
+`;
+
+export const borderRadiusSize = '5px';
+
+export const borderRadius = css`
+  border-radius: ${borderRadiusSize};
+`;
+
+export const outline = css`
+  outline: 1px solid #2fb7eb;
+`;
+
 export const borderDown = css`
   border: 1px solid #444;
   border-left-color: #555;
   border-right-color: #555;
   border-bottom-color: #999;
 `;
+
 export const textFieldBg = (enabled: boolean) =>
   css`
     background: linear-gradient(

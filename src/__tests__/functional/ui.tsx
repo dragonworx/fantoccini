@@ -16,6 +16,10 @@ import {
   Option as ToolButtonGroupOption,
 } from '../../ui/components/toolButtonGroup';
 import { TextField } from '../../ui/components/textfield';
+import {
+  NumericInput,
+  numericKeyFilter,
+} from '../../ui/components/numericInput';
 
 const radioButtonGroupOptions: RadioButtonGroupOption[] = [
   {
@@ -293,9 +297,7 @@ export function App() {
         />
         <TextField
           placeholder="Filtered (numeric only)..."
-          onKeyFilter={(key: string) =>
-            ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(key) > -1
-          }
+          onKeyFilter={numericKeyFilter}
           onAccept={onHandleValue('TextField.onAccept')}
         />
         <TextField
@@ -323,6 +325,12 @@ export function App() {
           label="Bottom"
           labelPosition="bottom"
           placeholder="With Label..."
+        />
+      </div>
+      <div className="row">
+        <NumericInput
+          onChange={onHandleValue('TextField.onChange')}
+          onAccept={onHandleValue('TextField.onAccept')}
         />
       </div>
     </div>

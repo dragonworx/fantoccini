@@ -39,6 +39,7 @@ export function PushButton(props: Props) {
     fixedSize,
     width,
     height,
+    radius,
     onClick,
     onToggled,
   } = getProps(props, defaultProps);
@@ -51,6 +52,7 @@ export function PushButton(props: Props) {
     fixedSize,
     width,
     height,
+    radius,
     onClick,
     onToggled,
   };

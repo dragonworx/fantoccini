@@ -1,14 +1,22 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { KeyboardEvent, useRef } from 'react';
+import { KeyboardEvent, useState, useRef, ReactNode } from 'react';
 import Color from 'color';
 import { init } from './util';
 import { PushButton } from './pushButton';
 import { Label, LabelPosition } from './label';
-import { borderRadius, outline, textFieldBg, borderDown } from './theme';
 import { Alignment } from '../layout/box';
+import {
+  reset,
+  noSelect,
+  borderRadius,
+  outline,
+  textFieldBg,
+  borderDown,
+} from './theme';
 
 export interface Props {
+  children?: ReactNode;
   enabled?: boolean;
   text?: string;
   placeholder?: string;
@@ -17,9 +25,9 @@ export interface Props {
   height?: number;
   label?: string;
   labelPosition?: LabelPosition;
-  onKeyFilter?: (key: string) => boolean;
-  onKeyDown?: (key: string) => false | void;
-  onKeyUp?: (key: string) => void;
+  onKeyFilter?: (key: string, text: string) => boolean;
+  onKeyDown?: (key: string, text: string) => false | string | void;
+  onKeyUp?: (key: string, text: string) => void;
   onChange?: (text: string) => void;
   onAccept?: (text: string) => void;
   onButtonClick?: () => void;
@@ -35,19 +43,19 @@ export const style = ({ enabled, width, height }: Required<Props>) => {
   const textColor = Color('#bdbec0');
 
   return css`
-    box-sizing: border-box;
-    user-select: none;
+    ${reset}
+    ${noSelect}
+    ${borderRadius}
+    ${borderDown}
+    ${textFieldBg(enabled)}
     width: ${width ? `${width}px` : '100%'};
     height: ${height ? `${height}px` : 'auto'};
-    ${textFieldBg(enabled)}
-    border-radius: ${borderRadius};
-    ${borderDown}
     display: flex;
     align-items: center;
     justify-content: center;
 
     input[type='text'] {
-      box-sizing: border-box;
+      ${borderRadius}
       padding: 0px 3px;
       width: 100%;
       background-color: transparent;
@@ -56,7 +64,6 @@ export const style = ({ enabled, width, height }: Required<Props>) => {
       border: none;
       font-family: inherit;
       font-size: inherit;
-      border-radius: ${borderRadius};
       margin: 0 3px;
       flex-grow: 1;
 
@@ -80,6 +87,7 @@ export const style = ({ enabled, width, height }: Required<Props>) => {
 export function TextField(props: Props) {
   const [
     {
+      children,
       enabled,
       text,
       label,
@@ -95,7 +103,9 @@ export function TextField(props: Props) {
     },
     css,
   ] = init(props, defaultProps, style);
+
   const ref = useRef<HTMLInputElement>(null);
+  const [currentValue, setCurrentValue] = useState(text);
 
   const onChangeHandler = () => {
     const { current } = ref;
@@ -105,18 +115,26 @@ export function TextField(props: Props) {
   const onKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
     const { current } = ref;
     if (current) {
-      const shouldCancel =
-        (onKeyFilter && onKeyFilter(e.key) === false) ||
-        (onKeyDown && onKeyDown(e.key) === false);
-      if (shouldCancel) {
+      if (onKeyFilter && onKeyFilter(e.key, current.value) === false) {
         e.preventDefault();
+      }
+      if (onKeyDown) {
+        const result = onKeyDown(e.key, current.value);
+        console.log('@@@', result);
+        if (result === false) {
+          e.preventDefault();
+        }
+        if (typeof result === 'string') {
+          console.log('!!!', result);
+          setCurrentValue(result);
+        }
       }
     }
   };
 
   const onKeyUpHandler = (e: KeyboardEvent<HTMLInputElement>) => {
     const { current } = ref;
-    current && onKeyUp && onKeyUp(e.key);
+    current && onKeyUp && onKeyUp(e.key, current.value);
     e.key === 'Enter' && current && current.blur();
   };
 
@@ -124,6 +142,18 @@ export function TextField(props: Props) {
     const { current } = ref;
     current && onAccept && onAccept(current.value);
   };
+
+  const button = children ? (
+    children
+  ) : icon ? (
+    <PushButton
+      icon={icon}
+      iconWidth={16}
+      height={30}
+      fixedSize={true}
+      onClick={onButtonClick}
+    />
+  ) : null;
 
   if (label) {
     const align: Alignment =
@@ -136,7 +166,8 @@ export function TextField(props: Props) {
           <input
             ref={ref}
             type="text"
-            defaultValue={text}
+            // defaultValue={text}
+            value={currentValue}
             disabled={!enabled}
             tabIndex={0}
             placeholder={placeholder}
@@ -146,15 +177,7 @@ export function TextField(props: Props) {
             onKeyDown={onKeyDownHandler}
             onBlur={onBlurHandler}
           />
-          {icon ? (
-            <PushButton
-              icon={icon}
-              iconWidth={16}
-              height={30}
-              fixedSize={true}
-              onClick={onButtonClick}
-            />
-          ) : null}
+          {button}
         </div>
       </Label>
     );
@@ -174,15 +197,7 @@ export function TextField(props: Props) {
           onKeyDown={onKeyDownHandler}
           onBlur={onBlurHandler}
         />
-        {icon ? (
-          <PushButton
-            icon={icon}
-            iconWidth={16}
-            height={30}
-            fixedSize={true}
-            onClick={onButtonClick}
-          />
-        ) : null}
+        {button}
       </div>
     );
   }

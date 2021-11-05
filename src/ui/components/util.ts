@@ -21,11 +21,11 @@ export function getCss<Props>(
 export function init<Props>(
   props: Props,
   defaultProps: Props,
-  style: (props: Required<Props>) => SerializedStyles
-): [Required<Props>, SerializedStyles] {
+  style?: (props: Required<Props>) => SerializedStyles
+): [Required<Props>, SerializedStyles | undefined] {
   const requiredProps = {
     ...defaultProps,
     ...props,
   } as Required<Props>;
-  return [requiredProps, style(requiredProps)];
+  return [requiredProps, style ? style(requiredProps) : undefined];
 }

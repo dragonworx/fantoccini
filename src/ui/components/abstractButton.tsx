@@ -3,7 +3,7 @@ import { css, jsx } from '@emotion/react';
 import { KeyboardEvent, ReactNode, useState, useRef, useEffect } from 'react';
 import Color from 'color';
 import { getProps, getCss } from './util';
-import { borderRadius, outline, borderDown } from './theme';
+import { reset, noSelect, borderRadiusSize, outline } from './theme';
 
 export type ToggleMode = 'binary' | 'single';
 
@@ -16,6 +16,7 @@ export interface Props {
   width?: number;
   height?: number;
   isRound?: boolean;
+  radius?: number;
   fixedSize?: boolean;
   onClick?: () => void;
   onToggled?: (isToggled: boolean) => void;
@@ -47,8 +48,10 @@ export const cssStyle =
     height,
     isRound,
     fixedSize,
+    radius,
   }: Required<Props>) => {
     const darkColor = enabled ? '#24282f' : '#363c47';
+
     const activeStyle = css`
       background: linear-gradient(
         180deg,
@@ -69,10 +72,18 @@ export const cssStyle =
       }
     `;
 
+    const borderRadius = css`
+      border-radius: ${radius !== undefined
+        ? radius
+        : isRound
+        ? Number.MAX_SAFE_INTEGER
+        : borderRadiusSize}px;
+    `;
+
     return css`
-      box-sizing: border-box;
+      ${reset}
+      ${borderRadius}
       background: linear-gradient(0deg, ${darkColor} 0, #2f343c 100%);
-      border-radius: ${isRound ? Number.MAX_SAFE_INTEGER : 5}px;
       border: 1px solid #030c17;
       min-width: ${width}px;
       min-height: ${height}px;
@@ -100,7 +111,7 @@ export const cssStyle =
       }
 
       & > .button-content {
-        border-radius: ${isRound ? Number.MAX_SAFE_INTEGER : 5}px;
+        ${borderRadius}
         width: 100%;
         height: 100%;
         border: 1px solid #999;

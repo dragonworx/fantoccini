@@ -4,6 +4,7 @@ import { KeyboardEvent, useRef, ReactNode } from 'react';
 import Color from 'color';
 import { BoxLayout, Alignment } from '../layout/box';
 import { init } from './util';
+import { reset, noSelect } from './theme';
 
 export type LabelPosition = 'left' | 'right' | 'top' | 'bottom';
 
@@ -31,8 +32,8 @@ export const style = ({ enabled, link, onClick }: Required<Props>) => {
   const isInteractive = !!(link || onClick) && enabled;
 
   return css`
-    box-sizing: border-box;
-    user-select: none;
+    ${reset}
+    ${noSelect}
     text-shadow: 1px 1px 1px ${shadowColor};
     color: ${enabled ? textColor.hex() : textColor.darken(0.25).hex()};
     text-decoration: ${link ? 'underline' : 'normal'};

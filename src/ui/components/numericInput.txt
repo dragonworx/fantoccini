@@ -1,0 +1,158 @@
+/** @jsx jsx */
+import { css, jsx } from '@emotion/react';
+import { KeyboardEvent, useRef } from 'react';
+import Color from 'color';
+import { init } from './util';
+import { PushButton } from './pushButton';
+import { Label, LabelPosition } from './label';
+import { Alignment } from '../layout/box';
+import {
+  reset,
+  noSelect,
+  borderRadius,
+  outline,
+  textFieldBg,
+  borderDown,
+} from './theme';
+
+export interface Props {
+  enabled?: boolean;
+  value?: number;
+  width?: number;
+  height?: number;
+  label?: string;
+  labelPosition?: LabelPosition;
+  onChange?: (value: number) => void;
+  onAccept?: (value: number) => void;
+}
+
+export const defaultProps: Props = {
+  enabled: true,
+  labelPosition: 'left',
+  value: 0,
+};
+
+export const style = ({ enabled, width, height }: Required<Props>) => {
+  const shadowColor = enabled ? '#080808' : '#383838';
+  const textColor = Color('#bdbec0');
+
+  return css`
+    ${reset}
+    ${noSelect}
+    ${borderRadius}
+    ${borderDown}
+    ${textFieldBg(enabled)}
+    width: ${width ? `${width}px` : '100%'};
+    height: ${height ? `${height}px` : 'auto'};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    input[type='text'] {
+      ${borderRadius}
+      padding: 0px 3px;
+      width: 100%;
+      background-color: transparent;
+      color: ${enabled ? textColor.hex() : textColor.darken(0.35).hex()};
+      text-shadow: 1px 1px 1px ${shadowColor};
+      border: none;
+      font-family: inherit;
+      font-size: inherit;
+      margin: 0 3px;
+      flex-grow: 1;
+
+      &:focus {
+        ${outline};
+      }
+
+      &::selection {
+        background: #eee;
+        color: #2f343c;
+        text-shadow: none;
+      }
+    }
+
+    &:active {
+      color: ${textColor.lighten(0.2).hex()};
+    }
+  `;
+};
+
+export function NumericInput(props: Props) {
+  const [{ enabled, value, label, labelPosition, onChange, onAccept }, css] =
+    init(props, defaultProps, style);
+  const ref = useRef<HTMLInputElement>(null);
+
+  const onChangeHandler = () => {
+    const { current } = ref;
+    current && onChange && onChange(parseFloat(current.value));
+  };
+
+  const onBlurHandler = () => {
+    const { current } = ref;
+    current && onAccept && onAccept(parseFloat(current.value));
+  };
+
+  if (label) {
+    // const align: Alignment =
+    //   labelPosition === 'top' || labelPosition === 'bottom'
+    //     ? 'start'
+    //     : 'center';
+    // return (
+    //   <Label text={label} position={labelPosition} align={align}>
+    //     <div css={css} className="textfield">
+    //       <input
+    //         ref={ref}
+    //         type="text"
+    //         defaultValue={text}
+    //         disabled={!enabled}
+    //         tabIndex={0}
+    //         placeholder={placeholder}
+    //         spellCheck={false}
+    //         onChange={onChangeHandler}
+    //         onKeyUp={onKeyUpHandler}
+    //         onKeyDown={onKeyDownHandler}
+    //         onBlur={onBlurHandler}
+    //       />
+    //       {icon ? (
+    //         <PushButton
+    //           icon={icon}
+    //           iconWidth={16}
+    //           height={30}
+    //           fixedSize={true}
+    //           onClick={onButtonClick}
+    //         />
+    //       ) : null}
+    //     </div>
+    //   </Label>
+    // );
+    return null;
+  } else {
+    return (
+      <div css={css} className="textfield">
+        <input
+          ref={ref}
+          type="text"
+          defaultValue={text}
+          disabled={!enabled}
+          tabIndex={0}
+          placeholder={placeholder}
+          spellCheck={false}
+          onChange={onChangeHandler}
+          onKeyUp={onKeyUpHandler}
+          onKeyDown={onKeyDownHandler}
+          onBlur={onBlurHandler}
+        />
+        {icon ? (
+          <PushButton
+            icon={icon}
+            iconWidth={16}
+            height={30}
+            fixedSize={true}
+            onClick={onButtonClick}
+          />
+        ) : null}
+      </div>
+    );
+  }
+}

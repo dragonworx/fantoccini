@@ -14,6 +14,8 @@ export type Props = {
   margin?: number;
   align?: Alignment;
   justify?: Justification;
+  width?: number;
+  height?: number;
 };
 
 export const defaultProps: Props = {
@@ -26,7 +28,16 @@ export const defaultProps: Props = {
 };
 
 export const cssStyle = (props: Props) => {
-  const { spacing, margin, direction, reversed, align, justify } = props;
+  const {
+    spacing,
+    margin,
+    direction,
+    reversed,
+    align,
+    justify,
+    width,
+    height,
+  } = props;
   return css`
     display: flex;
     flex-direction: ${direction === 'horizontal'
@@ -40,6 +51,8 @@ export const cssStyle = (props: Props) => {
     padding: ${margin}px;
     align-items: ${align};
     justify-content: ${justify};
+    width: ${width ? `${width}px` : 'auto'};
+    height: ${height ? `${height}px` : 'auto'};
 
     & > * {
       margin: ${spacing}px;
