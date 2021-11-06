@@ -65,6 +65,7 @@ export function NumericInput(props: Props) {
     init(props, defaultProps);
 
   const onKeyDownHandler = (key: string, text: string) => {
+    console.log('@@@', key, text);
     if (key === '-' && text.indexOf('-') === -1) {
       const txt = `-${text}`;
       onChangeHandler(txt);
@@ -75,6 +76,10 @@ export function NumericInput(props: Props) {
       if (!isNaN(val)) {
         return val + '';
       }
+    }
+    if (key === 'Backspace' && text.length === 2) {
+      onChangeHandler('0');
+      return '0';
     }
   };
 
