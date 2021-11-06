@@ -15,7 +15,7 @@ import {
   ToolButtonGroup,
   Option as ToolButtonGroupOption,
 } from '../../ui/components/toolButtonGroup';
-import { TextField } from '../../ui/components/textfield';
+import { TextField, InputKeyEvent } from '../../ui/components/textfield';
 import {
   NumericInput,
   numericKeyFilter,
@@ -283,13 +283,16 @@ export function App() {
           placeholder="Type some text..."
           onChange={onHandleValue('TextField.onChange')}
           onAccept={onHandleValue('TextField.onAccept')}
+          onFocus={() => console.log('TextField.onFocus')}
+          onBlur={() => console.log('TextField.onBlur')}
         />
         <TextField
           placeholder="KeyDown (no 'a'!)..."
-          onKeyDown={(key: string) => {
+          onKeyDown={(e: InputKeyEvent) => {
+            const { key } = e;
             if (key === 'a') {
               console.log('TextField.onKeyDown but No press "a"!');
-              return false;
+              return e.preventDefault();
             }
             onHandleValue('TextField.onKeyDown')(key);
           }}
@@ -329,6 +332,13 @@ export function App() {
       </div>
       <div className="row">
         <NumericInput
+          label="Integer"
+          onChange={onHandleValue('NumericInput.onChange')}
+          onAccept={onHandleValue('NumericInput.onAccept')}
+        />
+        <NumericInput
+          allowDecimal={true}
+          label="Decimal"
           onChange={onHandleValue('NumericInput.onChange')}
           onAccept={onHandleValue('NumericInput.onAccept')}
         />

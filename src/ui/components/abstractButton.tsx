@@ -1,6 +1,13 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { KeyboardEvent, ReactNode, useState, useRef, useEffect } from 'react';
+import {
+  KeyboardEvent,
+  MouseEvent,
+  ReactNode,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
 import Color from 'color';
 import { getProps, getCss } from './util';
 import { reset, noSelect, borderRadiusSize, outline } from './theme';
@@ -18,7 +25,7 @@ export interface Props {
   isRound?: boolean;
   radius?: number;
   fixedSize?: boolean;
-  onClick?: () => void;
+  onClick?: (e: MouseEvent) => void;
   onToggled?: (isToggled: boolean) => void;
 }
 
@@ -36,7 +43,7 @@ export const defaultProps: Props = {
 const isInteractive = (
   enabled: boolean,
   canToggle: boolean,
-  onClick: () => void
+  onClick: (e: MouseEvent) => void
 ) => !!(enabled && (onClick || canToggle));
 
 export const cssStyle =
@@ -83,6 +90,7 @@ export const cssStyle =
     return css`
       ${reset}
       ${borderRadius}
+      ${noSelect}
       background: linear-gradient(0deg, ${darkColor} 0, #2f343c 100%);
       border: 1px solid #030c17;
       min-width: ${width}px;
@@ -157,7 +165,7 @@ export function AbstractButton(props: Props) {
     setIsCurrentlyToggled(isToggled);
   }, [isToggled]);
 
-  const onClickHandler = () => {
+  const onClickHandler = (e: MouseEvent) => {
     if (isInteractive(enabled, canToggle, onClick)) {
       if (canToggle) {
         if (isRound && toggleMode === 'single' && isCurrentlyToggled) {
@@ -167,7 +175,7 @@ export function AbstractButton(props: Props) {
         setIsCurrentlyToggled(newValue);
         onToggled && onToggled(newValue);
       }
-      onClick && onClick();
+      onClick && onClick(e);
     }
   };
 
@@ -175,7 +183,7 @@ export function AbstractButton(props: Props) {
     if (e.key === ' ' || e.key === 'Enter') {
       ref.current?.classList.add('active');
       setTimeout(() => {
-        onClickHandler();
+        onClickHandler(e as any as MouseEvent);
         setTimeout(() => ref.current?.classList.remove('active'), 150);
       }, 0);
     }

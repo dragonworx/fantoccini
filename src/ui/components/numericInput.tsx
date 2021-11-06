@@ -1,10 +1,32 @@
 /** @jsx jsx */
-import { css, jsx } from '@emotion/react';
+import { jsx } from '@emotion/react';
 import { init } from './util';
+import { useState, useEffect, MouseEvent } from 'react';
 import { PushButton } from './pushButton';
-import { TextField } from './textfield';
+import { TextField, InputKeyEvent } from './textfield';
 import { LabelPosition } from './label';
 import { BoxLayout } from '../layout/box';
+
+export interface Props {
+  enabled?: boolean;
+  value?: number;
+  label?: string;
+  labelPosition?: LabelPosition;
+  allowDecimal?: boolean;
+  incrementMinor?: number;
+  incrementMajor?: number;
+  onChange?: (value: number) => void;
+  onAccept?: (value: number) => void;
+}
+
+export const defaultProps: Props = {
+  enabled: true,
+  labelPosition: 'left',
+  value: 0,
+  allowDecimal: false,
+  incrementMinor: 1,
+  incrementMajor: 10,
+};
 
 const textFieldWidth = 60;
 const textFieldHeight = 25;
@@ -27,72 +49,94 @@ const numericKeys = [
   'Backspace',
   'ArrowLeft',
   'ArrowRight',
+  'ArrowUp',
+  'ArrowDown',
   'Delete',
   'Tab',
   'Enter',
 ];
 
-export const numericKeyFilter = (key: string, text: string) => {
+export const preventDefault = (e: InputKeyEvent) => {
+  e.preventDefault();
+  return false;
+};
+
+export const numericKeyFilter = (e: InputKeyEvent) => {
+  const { key, currentTarget } = e;
+  const text = currentTarget.value;
+  const { selectionStart } = currentTarget;
   if (numericKeys.indexOf(key) === -1) {
-    return false;
+    return preventDefault(e);
   }
   if (key === '.' && text.indexOf('.') > -1) {
-    return false;
+    return preventDefault(e);
   }
-  if (key === '-' && text.indexOf('-') > -1) {
-    return false;
+  if (
+    key === '-' &&
+    (text.indexOf('-') > -1 || (selectionStart && selectionStart > 0))
+  ) {
+    return preventDefault(e);
   }
   return true;
 };
 
-export interface Props {
-  enabled?: boolean;
-  value?: number;
-  label?: string;
-  labelPosition?: LabelPosition;
-  onChange?: (value: number) => void;
-  onAccept?: (value: number) => void;
-}
-
-export const defaultProps: Props = {
-  enabled: true,
-  labelPosition: 'left',
-  value: 0,
-};
-
 export function NumericInput(props: Props) {
-  const [{ enabled, value, label, labelPosition, onChange, onAccept }, css] =
-    init(props, defaultProps);
+  const [
+    {
+      enabled,
+      value,
+      label,
+      labelPosition,
+      allowDecimal,
+      incrementMinor,
+      incrementMajor,
+      onChange,
+      onAccept,
+    },
+    css,
+  ] = init(props, defaultProps);
 
-  const onKeyDownHandler = (key: string, text: string) => {
-    console.log('@@@', key, text);
-    if (key === '-' && text.indexOf('-') === -1) {
-      const txt = `-${text}`;
-      onChangeHandler(txt);
-      return parseFloat(txt) + '';
+  const [currentValue, setCurrentValue] = useState(`${value}`);
+  useEffect(() => setCurrentValue(`${value}`), [value]);
+
+  const onKeyDownHandler = (e: InputKeyEvent) => {
+    const { key } = e;
+    if (!allowDecimal && key === '.') {
+      return e.preventDefault();
     }
-    if (text[0] === '0') {
-      const val = parseFloat(`${text}${key}`);
-      if (!isNaN(val)) {
-        return val + '';
-      }
-    }
-    if (key === 'Backspace' && text.length === 2) {
-      onChangeHandler('0');
-      return '0';
+    if (key === 'ArrowUp') {
+      incrementBy(e.altKey ? incrementMajor : incrementMinor);
+    } else if (key === 'ArrowDown') {
+      incrementBy((e.altKey ? incrementMajor : incrementMinor) * -1);
     }
   };
 
-  const onChangeHandler = (text: string) =>
+  const onChangeHandler = (text: string) => {
+    setCurrentValue(text);
     onChange && onChange(parseFloat(text));
+  };
 
   const onAcceptHandler = (text: string) =>
     onAccept && onAccept(parseFloat(text));
 
+  const incrementBy = (amount: number) => {
+    const newValue = parseFloat(currentValue) + amount;
+    onChange && onChange(newValue);
+    setCurrentValue(`${newValue}`);
+  };
+
+  const onIncrementUpClick = (e: MouseEvent) => {
+    incrementBy(e.altKey ? incrementMajor : incrementMinor);
+  };
+
+  const onIncrementDownClick = (e: MouseEvent) => {
+    incrementBy((e.altKey ? incrementMajor : incrementMinor) * -1);
+  };
+
   return (
     <TextField
       enabled={enabled}
-      text={`${value}`}
+      text={`${currentValue}`}
       label={label}
       labelPosition={labelPosition}
       width={textFieldWidth}
@@ -106,7 +150,7 @@ export function NumericInput(props: Props) {
         direction="vertical"
         height={textFieldHeight}
         margin={0}
-        spacing={0}
+        spacing={1}
       >
         <PushButton
           icon="img/icons/increment-up.svg"
@@ -115,6 +159,7 @@ export function NumericInput(props: Props) {
           height={buttonHeight}
           fixedSize={true}
           radius={0}
+          onClick={onIncrementUpClick}
         />
         <PushButton
           icon="img/icons/increment-down.svg"
@@ -123,6 +168,7 @@ export function NumericInput(props: Props) {
           height={buttonHeight}
           fixedSize={true}
           radius={0}
+          onClick={onIncrementDownClick}
         />
       </BoxLayout>
     </TextField>

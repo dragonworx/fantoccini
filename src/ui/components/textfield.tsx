@@ -1,6 +1,13 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { KeyboardEvent, useState, useRef, ReactNode } from 'react';
+import {
+  KeyboardEvent,
+  useRef,
+  useState,
+  useEffect,
+  ReactNode,
+  FocusEvent,
+} from 'react';
 import Color from 'color';
 import { init } from './util';
 import { PushButton } from './pushButton';
@@ -15,6 +22,9 @@ import {
   borderDown,
 } from './theme';
 
+export type InputKeyEvent = KeyboardEvent<HTMLInputElement>;
+export type InputFocusEvent = FocusEvent<HTMLInputElement>;
+
 export interface Props {
   children?: ReactNode;
   enabled?: boolean;
@@ -25,8 +35,10 @@ export interface Props {
   height?: number;
   label?: string;
   labelPosition?: LabelPosition;
-  onKeyFilter?: (key: string, text: string) => boolean;
-  onKeyDown?: (key: string, text: string) => false | string | void;
+  onFocus?: (e: InputFocusEvent) => void;
+  onBlur?: (e: InputFocusEvent) => void;
+  onKeyFilter?: (e: InputKeyEvent) => boolean;
+  onKeyDown?: (e: InputKeyEvent) => void;
   onKeyUp?: (key: string, text: string) => void;
   onChange?: (text: string) => void;
   onAccept?: (text: string) => void;
@@ -94,6 +106,8 @@ export function TextField(props: Props) {
       labelPosition,
       placeholder,
       icon,
+      onFocus,
+      onBlur,
       onKeyFilter,
       onChange,
       onAccept,
@@ -105,6 +119,8 @@ export function TextField(props: Props) {
   ] = init(props, defaultProps, style);
 
   const ref = useRef<HTMLInputElement>(null);
+  const [currentValue, setCurrentValue] = useState(text);
+  useEffect(() => setCurrentValue(text), [text]);
 
   const onChangeHandler = () => {
     const { current } = ref;
@@ -116,18 +132,9 @@ export function TextField(props: Props) {
   const onKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
     const { current } = ref;
     if (current) {
-      if (onKeyFilter && onKeyFilter(e.key, current.value) === false) {
-        e.preventDefault();
-      }
-      if (onKeyDown) {
-        const result = onKeyDown(e.key, current.value);
-        if (result === false) {
-          e.preventDefault();
-        }
-        if (typeof result === 'string') {
-          e.preventDefault();
-          current.value = result;
-        }
+      const result = onKeyFilter ? !!onKeyFilter(e) : true;
+      if (result) {
+        onKeyDown && onKeyDown(e);
       }
     }
   };
@@ -138,8 +145,9 @@ export function TextField(props: Props) {
     e.key === 'Enter' && current && current.blur();
   };
 
-  const onBlurHandler = () => {
+  const onBlurHandler = (e: InputFocusEvent) => {
     const { current } = ref;
+    current && onBlur && onBlur(e);
     current && onAccept && onAccept(current.value);
   };
 
@@ -166,12 +174,12 @@ export function TextField(props: Props) {
           <input
             ref={ref}
             type="text"
-            // defaultValue={text}
-            defaultValue={text}
+            value={currentValue}
             disabled={!enabled}
             tabIndex={0}
             placeholder={placeholder}
             spellCheck={false}
+            onFocus={onFocus}
             onChange={onChangeHandler}
             onKeyUp={onKeyUpHandler}
             onKeyDown={onKeyDownHandler}
@@ -187,11 +195,12 @@ export function TextField(props: Props) {
         <input
           ref={ref}
           type="text"
-          defaultValue={text}
+          value={currentValue}
           disabled={!enabled}
           tabIndex={0}
           placeholder={placeholder}
           spellCheck={false}
+          onFocus={onFocus}
           onChange={onChangeHandler}
           onKeyUp={onKeyUpHandler}
           onKeyDown={onKeyDownHandler}
