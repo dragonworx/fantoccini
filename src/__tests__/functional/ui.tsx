@@ -265,8 +265,8 @@ export function App() {
         />
       </div>
       <div className="row">
-        <Select />
-        <Select enabled={false} />
+        <Select label="Label" />
+        <Select label="Disabled" enabled={false} />
       </div>
     </div>
   );

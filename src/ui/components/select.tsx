@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import { useState } from 'react';
-import { Label } from './label';
+import { Label, LabelPosition } from './label';
 import { Icon } from './icon';
 import { AbstractButton } from './abstractButton';
 import { HBoxLayout } from '../layout/box';
@@ -10,11 +10,14 @@ import { init } from './util';
 export type Props = {
   enabled?: boolean;
   width?: number;
+  label?: string;
+  labelPosition?: LabelPosition;
 };
 
 export const defaultProps: Props = {
   enabled: true,
   width: 150,
+  labelPosition: 'left',
 };
 
 const height = 25;
@@ -28,7 +31,7 @@ export const style = ({ enabled, width }: Required<Props>) => {
     & .label {
       flex-grow: 1;
 
-      & label {
+      & .button-content label {
         max-width: ${width - 41}px;
         text-overflow: ellipsis;
         overflow: hidden;
@@ -38,7 +41,11 @@ export const style = ({ enabled, width }: Required<Props>) => {
 };
 
 export function Select(props: Props) {
-  const [{ enabled }, css] = init(props, defaultProps, style);
+  const [{ enabled, label, labelPosition }, css] = init(
+    props,
+    defaultProps,
+    style
+  );
 
   const [isToggled, setIsToggled] = useState(false);
 
@@ -54,20 +61,22 @@ export function Select(props: Props) {
 
   return (
     <div css={css} className="select">
-      <AbstractButton
-        enabled={enabled}
-        height={height}
-        canToggle={true}
-        toggleMode="binary"
-        isToggled={isToggled}
-        onClick={onClickHandler}
-        onBlur={onBlurHandler}
-      >
-        <HBoxLayout height={height}>
-          <Label enabled={enabled} text="Test as ds ds " justify="start" />
-          <Icon enabled={enabled} src="#select" width={iconHeight} />
-        </HBoxLayout>
-      </AbstractButton>
+      <Label text={label} position={labelPosition}>
+        <AbstractButton
+          enabled={enabled}
+          height={height}
+          canToggle={true}
+          toggleMode="binary"
+          isToggled={isToggled}
+          onClick={onClickHandler}
+          onBlur={onBlurHandler}
+        >
+          <HBoxLayout height={height}>
+            <Label enabled={enabled} text="Test as ds ds " justify="start" />
+            <Icon enabled={enabled} src="#select" width={iconHeight} />
+          </HBoxLayout>
+        </AbstractButton>
+      </Label>
     </div>
   );
 }
