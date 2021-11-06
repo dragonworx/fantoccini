@@ -12,10 +12,10 @@ export const noSelect = css`
   user-select: none;
 `;
 
-export const borderRadiusSize = '5px';
+export const borderRadiusSize = 5;
 
 export const borderRadius = css`
-  border-radius: ${borderRadiusSize};
+  border-radius: ${borderRadiusSize}px;
 `;
 
 export const outline = css`

@@ -1,5 +1,12 @@
 /** @jsx jsx */
-import { css, jsx } from '@emotion/react';
+import { jsx } from '@emotion/react';
+import {
+  createIcons,
+  onHandleValue,
+  radioButtonGroupOptions,
+  style,
+  toolButtonGroupOptions,
+} from './ui.setup';
 import { AbstractButton } from '../../ui/components/abstractButton';
 import { HBoxLayout, VBoxLayout } from '../../ui/layout/box';
 import { Icon } from '../../ui/components/icon';
@@ -7,103 +14,14 @@ import { Label } from '../../ui/components/label';
 import { PushButton } from '../../ui/components/pushButton';
 import { CheckBox } from '../../ui/components/checkbox';
 import { RadioButton } from '../../ui/components/radioButton';
-import {
-  RadioButtonGroup,
-  Option as RadioButtonGroupOption,
-} from '../../ui/components/radioButtonGroup';
-import {
-  ToolButtonGroup,
-  Option as ToolButtonGroupOption,
-} from '../../ui/components/toolButtonGroup';
+import { RadioButtonGroup } from '../../ui/components/radioButtonGroup';
+import { ToolButtonGroup } from '../../ui/components/toolButtonGroup';
 import { TextField, InputKeyEvent } from '../../ui/components/textfield';
 import {
   NumericInput,
   numericKeyFilter,
 } from '../../ui/components/numericInput';
-
-const radioButtonGroupOptions: RadioButtonGroupOption[] = [
-  {
-    name: 'option1',
-    label: 'Opt1',
-    value: 1,
-  },
-  {
-    name: 'option2',
-    label: 'Opt3 ++',
-    value: 2,
-  },
-  {
-    name: 'option3',
-    label: 'Opt3',
-    value: 3,
-  },
-];
-
-const toolButtonGroupOptions: ToolButtonGroupOption[] = [
-  {
-    name: 'play',
-    icon: '#play',
-  },
-  {
-    name: 'pause',
-    icon: '#pause',
-  },
-  {
-    name: 'record',
-    icon: '#record',
-  },
-  {
-    name: 'stop',
-    icon: '#stop',
-  },
-];
-
-const onHandleValue = (label: string) => (value: any) =>
-  console.log(`${label}: ${value}`);
-
-const style = css`
-  .row {
-    padding: 5px 10px;
-    display: flex;
-    > * {
-      margin-right: 5px;
-    }
-
-    > *:last-child {
-      margin-right: 0;
-    }
-  }
-
-  .col {
-    padding: 10px 5px;
-    display: flex;
-    flex-direction: column;
-    > * {
-      margin-bottom: 5px;
-    }
-
-    > *:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  .border {
-    outline: 1px solid lime;
-  }
-
-  .hsplit {
-    display: flex;
-    align-items: center;
-  }
-`;
-
-const createIcons = (width: number = 16, amount: number = 3) => {
-  const icons = [];
-  for (let i = 0; i < amount; i++) {
-    icons.push(<Icon src="img/test.jpg" width={width} />);
-  }
-  return icons;
-};
+import { Select } from '../../ui/components/select';
 
 export function App() {
   return (
@@ -345,6 +263,10 @@ export function App() {
           onChange={onHandleValue('NumericInput.onChange')}
           onAccept={onHandleValue('NumericInput.onAccept')}
         />
+      </div>
+      <div className="row">
+        <Select />
+        <Select enabled={false} />
       </div>
     </div>
   );

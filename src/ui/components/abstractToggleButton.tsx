@@ -21,7 +21,6 @@ export type Props = {
   labelPosition?: LabelPosition;
   style?: ToggleButtonStyle;
   isToggled?: boolean;
-  fixedSize?: boolean;
   onToggled?: onToggledHandler;
 };
 
@@ -48,7 +47,6 @@ export function AbstractToggleButton(props: Props) {
     value,
     style,
     isToggled,
-    fixedSize,
     onToggled,
   } = getProps(props, defaultProps);
 
@@ -67,7 +65,7 @@ export function AbstractToggleButton(props: Props) {
           toggleMode={style === 'circle' ? 'single' : 'binary'}
           isToggled={isToggled}
           isRound={style === 'circle'}
-          fixedSize={fixedSize}
+          fixedSize={true}
           onToggled={onToggledHandler}
         >
           <Icon src={`#${style}`} width={10} />

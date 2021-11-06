@@ -95,7 +95,7 @@ export const cssStyle =
       border: 1px solid #030c17;
       min-width: ${width}px;
       min-height: ${height}px;
-      width: ${fixedSize ? `${width}px` : 'auto'};
+      width: ${fixedSize ? `${width}px` : '100%'};
       height: ${fixedSize ? `${height}px` : 'auto'};
       color: ${enabled ? '#bdbec0' : '#808080'};
       display: inline-block;
@@ -120,6 +120,7 @@ export const cssStyle =
 
       & > .button-content {
         ${borderRadius}
+        ${noSelect}
         width: 100%;
         height: 100%;
         border: 1px solid #999;
@@ -132,7 +133,10 @@ export const cssStyle =
         position: ${isRound && toggleMode === 'single'
           ? 'absolute'
           : 'relative'};
-        user-select: none;
+
+        & > .box-layout {
+          flex-grow: 1;
+        }
       }
 
       ${isCurrentlyToggled ? activeStyle : undefined}
