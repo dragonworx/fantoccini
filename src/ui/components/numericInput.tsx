@@ -149,10 +149,11 @@ export function NumericInput(props: Props) {
       <BoxLayout
         direction="vertical"
         height={textFieldHeight}
-        margin={0}
+        margin={1}
         spacing={1}
       >
         <PushButton
+          enabled={enabled}
           icon="img/icons/increment-up.svg"
           iconWidth={iconSize}
           width={buttonWidth}
@@ -162,6 +163,7 @@ export function NumericInput(props: Props) {
           onClick={onIncrementUpClick}
         />
         <PushButton
+          enabled={enabled}
           icon="img/icons/increment-down.svg"
           iconWidth={iconSize}
           width={buttonWidth}

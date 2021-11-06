@@ -342,6 +342,13 @@ export function App() {
           onChange={onHandleValue('NumericInput.onChange')}
           onAccept={onHandleValue('NumericInput.onAccept')}
         />
+        <NumericInput
+          enabled={false}
+          allowDecimal={true}
+          label="Disabled"
+          onChange={onHandleValue('NumericInput.onChange')}
+          onAccept={onHandleValue('NumericInput.onAccept')}
+        />
       </div>
     </div>
   );
