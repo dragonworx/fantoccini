@@ -70,7 +70,7 @@ export function AbstractToggleButton(props: Props) {
           fixedSize={fixedSize}
           onToggled={onToggledHandler}
         >
-          <Icon src={`img/icons/${style}.svg`} width={10} />
+          <Icon src={`#${style}`} width={10} />
         </AbstractButton>
       </Label>
     </div>

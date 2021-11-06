@@ -154,7 +154,7 @@ export function NumericInput(props: Props) {
       >
         <PushButton
           enabled={enabled}
-          icon="img/icons/increment-up.svg"
+          icon="#increment-up"
           iconWidth={iconSize}
           width={buttonWidth}
           height={buttonHeight}
@@ -164,7 +164,7 @@ export function NumericInput(props: Props) {
         />
         <PushButton
           enabled={enabled}
-          icon="img/icons/increment-down.svg"
+          icon="#increment-down"
           iconWidth={iconSize}
           width={buttonWidth}
           height={buttonHeight}

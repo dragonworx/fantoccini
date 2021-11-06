@@ -42,15 +42,19 @@ const radioButtonGroupOptions: RadioButtonGroupOption[] = [
 const toolButtonGroupOptions: ToolButtonGroupOption[] = [
   {
     name: 'play',
-    icon: 'img/icons/play.svg',
+    icon: '#play',
   },
   {
     name: 'pause',
-    icon: 'img/icons/pause.svg',
+    icon: '#pause',
   },
   {
     name: 'record',
-    icon: 'img/icons/record.svg',
+    icon: '#record',
+  },
+  {
+    name: 'stop',
+    icon: '#stop',
   },
 ];
 
@@ -125,7 +129,7 @@ export function App() {
           />
         </div>
         <div className="row">
-          <Icon src="img/icons/tick.svg" width={32} />
+          <Icon src="#tick" width={32} />
           <Icon src="img/test.jpg" width={32} border={true} />
         </div>
         <div className="row">
@@ -173,35 +177,27 @@ export function App() {
       <div className="hsplit">
         <div className="row">
           <PushButton
-            icon="img/icons/record.svg"
+            icon="#record"
             isRound={true}
             iconWidth={16}
             canToggle={true}
           />
-          <PushButton icon="img/icons/stop.svg" isRound={true} iconWidth={16} />
+          <PushButton icon="#stop" isRound={true} iconWidth={16} />
+          <PushButton icon="#prev-frame" isRound={true} iconWidth={16} />
           <PushButton
-            icon="img/icons/prev-frame.svg"
-            isRound={true}
-            iconWidth={16}
-          />
-          <PushButton
-            icon="img/icons/play.svg"
+            icon="#play"
             isRound={true}
             iconWidth={16}
             canToggle={true}
             isToggled={true}
           />
           <PushButton
-            icon="img/icons/pause.svg"
+            icon="#pause"
             isRound={true}
             iconWidth={16}
             canToggle={true}
           />
-          <PushButton
-            icon="img/icons/next-frame.svg"
-            isRound={true}
-            iconWidth={16}
-          />
+          <PushButton icon="#next-frame" isRound={true} iconWidth={16} />
         </div>
         <div className="row">
           <CheckBox />
@@ -305,7 +301,7 @@ export function App() {
         />
         <TextField
           text="Click the icon (KeyUp)"
-          icon="img/icons/search.svg"
+          icon="#search"
           onKeyUp={onHandleValue('TextField.onKeyUp')}
           onButtonClick={() => console.log('ButtonClick!')}
           onAccept={onHandleValue('TextField.onAccept')}

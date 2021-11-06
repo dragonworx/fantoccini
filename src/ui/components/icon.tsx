@@ -28,9 +28,11 @@ export const style = ({ width, height, border }: Required<Props>) => css`
 
 export function Icon(props: Props) {
   const [{ src, enabled, onClick }, css] = init(props, defaultProps, style);
+  const iconPath =
+    src.indexOf('#') === 0 ? `img/icons/${src.replace('#', '')}.svg` : src;
   return (
     <img
-      src={src}
+      src={iconPath}
       css={css}
       className="icon"
       draggable={false}
