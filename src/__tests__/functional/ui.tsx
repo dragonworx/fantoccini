@@ -329,8 +329,8 @@ export function App() {
       </div>
       <div className="row">
         <NumericInput
-          onChange={onHandleValue('TextField.onChange')}
-          onAccept={onHandleValue('TextField.onAccept')}
+          onChange={onHandleValue('NumericInput.onChange')}
+          onAccept={onHandleValue('NumericInput.onAccept')}
         />
       </div>
     </div>

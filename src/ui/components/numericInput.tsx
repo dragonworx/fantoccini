@@ -29,10 +29,10 @@ const numericKeys = [
   'ArrowRight',
   'Delete',
   'Tab',
+  'Enter',
 ];
 
 export const numericKeyFilter = (key: string, text: string) => {
-  console.log(key);
   if (numericKeys.indexOf(key) === -1) {
     return false;
   }
@@ -65,11 +65,24 @@ export function NumericInput(props: Props) {
     init(props, defaultProps);
 
   const onKeyDownHandler = (key: string, text: string) => {
-    console.log('***', key, text);
     if (key === '-' && text.indexOf('-') === -1) {
-      return `-${text}`;
+      const txt = `-${text}`;
+      onChangeHandler(txt);
+      return parseFloat(txt) + '';
+    }
+    if (text[0] === '0') {
+      const val = parseFloat(`${text}${key}`);
+      if (!isNaN(val)) {
+        return val + '';
+      }
     }
   };
+
+  const onChangeHandler = (text: string) =>
+    onChange && onChange(parseFloat(text));
+
+  const onAcceptHandler = (text: string) =>
+    onAccept && onAccept(parseFloat(text));
 
   return (
     <TextField
@@ -81,6 +94,8 @@ export function NumericInput(props: Props) {
       height={textFieldHeight}
       onKeyFilter={numericKeyFilter}
       onKeyDown={onKeyDownHandler}
+      onChange={onChangeHandler}
+      onAccept={onAcceptHandler}
     >
       <BoxLayout
         direction="vertical"

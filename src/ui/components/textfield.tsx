@@ -105,11 +105,12 @@ export function TextField(props: Props) {
   ] = init(props, defaultProps, style);
 
   const ref = useRef<HTMLInputElement>(null);
-  const [currentValue, setCurrentValue] = useState(text);
 
   const onChangeHandler = () => {
     const { current } = ref;
-    current && onChange && onChange(current.value);
+    if (current) {
+      onChange && onChange(current.value);
+    }
   };
 
   const onKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -120,13 +121,12 @@ export function TextField(props: Props) {
       }
       if (onKeyDown) {
         const result = onKeyDown(e.key, current.value);
-        console.log('@@@', result);
         if (result === false) {
           e.preventDefault();
         }
         if (typeof result === 'string') {
-          console.log('!!!', result);
-          setCurrentValue(result);
+          e.preventDefault();
+          current.value = result;
         }
       }
     }
@@ -167,7 +167,7 @@ export function TextField(props: Props) {
             ref={ref}
             type="text"
             // defaultValue={text}
-            value={currentValue}
+            defaultValue={text}
             disabled={!enabled}
             tabIndex={0}
             placeholder={placeholder}
