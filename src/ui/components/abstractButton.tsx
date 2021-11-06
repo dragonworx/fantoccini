@@ -7,6 +7,7 @@ import {
   useState,
   useRef,
   useEffect,
+  FocusEvent,
 } from 'react';
 import Color from 'color';
 import { getProps, getCss } from './util';
@@ -26,6 +27,8 @@ export interface Props {
   radius?: number;
   fixedSize?: boolean;
   onClick?: (e: MouseEvent) => void;
+  onFocus?: (e: FocusEvent) => void;
+  onBlur?: (e: FocusEvent) => void;
   onToggled?: (isToggled: boolean) => void;
 }
 
@@ -160,6 +163,8 @@ export function AbstractButton(props: Props) {
     toggleMode,
     isToggled,
     onClick,
+    onFocus,
+    onBlur,
     onToggled,
   } = getProps(props, defaultProps);
   const [isCurrentlyToggled, setIsCurrentlyToggled] = useState(!!isToggled);
@@ -193,6 +198,14 @@ export function AbstractButton(props: Props) {
     }
   };
 
+  const onFocusHandler = (e: FocusEvent<HTMLDivElement>) => {
+    enabled && onFocus && onFocus(e);
+  };
+
+  const onBlurHandler = (e: FocusEvent<HTMLDivElement>) => {
+    enabled && onBlur && onBlur(e);
+  };
+
   return (
     <div
       ref={ref}
@@ -200,6 +213,8 @@ export function AbstractButton(props: Props) {
       css={getCss(cssStyle(isCurrentlyToggled), props, defaultProps)}
       tabIndex={enabled ? 0 : undefined}
       onClick={onClickHandler}
+      onFocus={onFocusHandler}
+      onBlur={onBlurHandler}
       onKeyDown={onKeyDownHandler}
     >
       <div className="button-content">{children}</div>

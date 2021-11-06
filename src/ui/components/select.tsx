@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
+import { useState } from 'react';
 import { Label } from './label';
 import { Icon } from './icon';
 import { AbstractButton } from './abstractButton';
@@ -39,9 +40,29 @@ export const style = ({ enabled, width }: Required<Props>) => {
 export function Select(props: Props) {
   const [{ enabled }, css] = init(props, defaultProps, style);
 
+  const [isToggled, setIsToggled] = useState(false);
+
+  const onClickHandler = () => {
+    console.log('!');
+    setIsToggled(true);
+  };
+
+  const onBlurHandler = () => {
+    console.log('@');
+    setIsToggled(false);
+  };
+
   return (
     <div css={css} className="select">
-      <AbstractButton height={height}>
+      <AbstractButton
+        enabled={enabled}
+        height={height}
+        canToggle={true}
+        toggleMode="binary"
+        isToggled={isToggled}
+        onClick={onClickHandler}
+        onBlur={onBlurHandler}
+      >
         <HBoxLayout height={height}>
           <Label enabled={enabled} text="Test as ds ds " justify="start" />
           <Icon enabled={enabled} src="#select" width={iconHeight} />
