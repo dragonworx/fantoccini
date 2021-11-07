@@ -1,81 +1,94 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Label, LabelPosition } from './label';
 import { Icon } from './icon';
 import { AbstractButton } from './abstractButton';
 import { HBoxLayout } from '../layout/box';
 import { init } from './util';
 
-export type Props = {
+export interface SelectOption {
+  label?: string;
+  value: any;
+}
+
+export interface Props {
   enabled?: boolean;
   width?: number;
   label?: string;
   labelPosition?: LabelPosition;
-};
+  options: SelectOption[];
+  selectedIndex?: number;
+}
 
 export const defaultProps: Props = {
   enabled: true,
-  width: 150,
+  width: 100,
   labelPosition: 'left',
+  options: [],
+  selectedIndex: -1,
 };
 
 const height = 25;
 const iconHeight = Math.round(height / 2);
 
-export const style = ({ enabled, width }: Required<Props>) => {
+export const style = ({ width }: Required<Props>) => {
   return css`
-    min-width: ${width}px;
+    width: ${width}px;
     height: ${height}px;
 
-    & .label {
+    & .button-content label,
+    & .button-content .label {
+      text-overflow: ellipsis;
+      overflow: hidden;
       flex-grow: 1;
-
-      & .button-content label {
-        max-width: ${width - 41}px;
-        text-overflow: ellipsis;
-        overflow: hidden;
-      }
     }
   `;
 };
 
 export function Select(props: Props) {
-  const [{ enabled, label, labelPosition }, css] = init(
+  const [{ enabled, label, labelPosition, options, selectedIndex }, css] = init(
     props,
     defaultProps,
     style
   );
 
   const [isToggled, setIsToggled] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(selectedIndex);
+  useEffect(() => setCurrentIndex(selectedIndex), [selectedIndex]);
 
   const onClickHandler = () => {
-    console.log('!');
     setIsToggled(true);
   };
 
   const onBlurHandler = () => {
-    console.log('@');
     setIsToggled(false);
   };
 
+  const labelText =
+    currentIndex === -1
+      ? ''
+      : options[currentIndex].label || `${options[currentIndex].label}`;
+
   return (
-    <div css={css} className="select">
+    <div className="select">
       <Label text={label} position={labelPosition}>
-        <AbstractButton
-          enabled={enabled}
-          height={height}
-          canToggle={true}
-          toggleMode="binary"
-          isToggled={isToggled}
-          onClick={onClickHandler}
-          onBlur={onBlurHandler}
-        >
-          <HBoxLayout height={height}>
-            <Label enabled={enabled} text="Test as ds ds " justify="start" />
-            <Icon enabled={enabled} src="#select" width={iconHeight} />
-          </HBoxLayout>
-        </AbstractButton>
+        <div css={css}>
+          <AbstractButton
+            enabled={enabled}
+            height={height}
+            canToggle={true}
+            toggleMode="binary"
+            isToggled={isToggled}
+            onClick={onClickHandler}
+            onBlur={onBlurHandler}
+          >
+            <HBoxLayout height={height}>
+              <Label enabled={enabled} text={labelText} justify="start" />
+              <Icon enabled={enabled} src="#select" width={iconHeight} />
+            </HBoxLayout>
+          </AbstractButton>
+        </div>
       </Label>
     </div>
   );

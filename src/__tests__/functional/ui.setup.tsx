@@ -2,6 +2,7 @@
 import { css, jsx } from '@emotion/react';
 import { Icon } from '../../ui/components/icon';
 import { Option as RadioButtonGroupOption } from '../../ui/components/radioButtonGroup';
+import { SelectOption } from '../../ui/components/select';
 import { Option as ToolButtonGroupOption } from '../../ui/components/toolButtonGroup';
 
 export const radioButtonGroupOptions: RadioButtonGroupOption[] = [
@@ -41,10 +42,50 @@ export const toolButtonGroupOptions: ToolButtonGroupOption[] = [
   },
 ];
 
+export const selectOptions1: SelectOption[] = [
+  {
+    label: 'Option1',
+    value: 1,
+  },
+  {
+    label: 'Option2',
+    value: 2,
+  },
+  {
+    label: 'Option3',
+    value: 3,
+  },
+  {
+    label: 'Option4',
+    value: 4,
+  },
+];
+
+export const selectOptions2: SelectOption[] = [
+  {
+    label: 'Option1 Long Very Very Text',
+    value: 1,
+  },
+  {
+    label: 'Option2 Long Text',
+    value: 2,
+  },
+  {
+    label: 'Option3 Long Text',
+    value: 3,
+  },
+  {
+    label: 'Option4 Long Text',
+    value: 4,
+  },
+];
+
 export const onHandleValue = (label: string) => (value: any) =>
   console.log(`${label}: ${value}`);
 
 export const style = css`
+  padding-bottom: 20px;
+
   .row {
     padding: 5px 10px;
     display: flex;

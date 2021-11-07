@@ -4,6 +4,8 @@ import {
   createIcons,
   onHandleValue,
   radioButtonGroupOptions,
+  selectOptions1,
+  selectOptions2,
   style,
   toolButtonGroupOptions,
 } from './ui.setup';
@@ -265,8 +267,21 @@ export function App() {
         />
       </div>
       <div className="row">
-        <Select label="Label" />
-        <Select label="Disabled" enabled={false} />
+        <Select label="Label" options={selectOptions1} />
+        <Select label="Label" options={selectOptions1} selectedIndex={2} />
+        <Select
+          label="Label"
+          options={selectOptions2}
+          selectedIndex={0}
+          width={150}
+        />
+        <Select
+          label="Disabled"
+          enabled={false}
+          options={selectOptions1}
+          selectedIndex={0}
+          width={80}
+        />
       </div>
     </div>
   );

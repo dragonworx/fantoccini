@@ -130,6 +130,7 @@ export const cssStyle =
         border-left-color: #555;
         border-right-color: #555;
         border-bottom-color: #444;
+        overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;

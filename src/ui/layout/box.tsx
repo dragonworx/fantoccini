@@ -51,8 +51,9 @@ export const cssStyle = (props: Props) => {
     padding: ${margin}px;
     align-items: ${align};
     justify-content: ${justify};
-    width: ${width ? `${width}px` : 'auto'};
+    width: ${width ? `${width}px` : '100%'};
     height: ${height ? `${height}px` : 'auto'};
+    position: relative;
 
     & > * {
       margin: ${spacing}px;
