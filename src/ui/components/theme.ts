@@ -33,7 +33,7 @@ export const textFieldBg = (enabled: boolean) =>
   css`
     background: linear-gradient(
       180deg,
-      ${enabled ? '#000' : '#333'} 0,
-      #2f343c 100%
+      ${enabled ? '#222' : '#333'} 0,
+      ${enabled ? '#2f343c' : '#444'} 100%
     );
   `;

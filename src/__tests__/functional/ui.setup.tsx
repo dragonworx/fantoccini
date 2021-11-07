@@ -2,7 +2,7 @@
 import { css, jsx } from '@emotion/react';
 import { Icon } from '../../ui/components/icon';
 import { Option as RadioButtonGroupOption } from '../../ui/components/radioButtonGroup';
-import { SelectOption } from '../../ui/components/select';
+import { MenuOption } from '../../ui/components/menu';
 import { Option as ToolButtonGroupOption } from '../../ui/components/toolButtonGroup';
 
 export const radioButtonGroupOptions: RadioButtonGroupOption[] = [
@@ -42,7 +42,7 @@ export const toolButtonGroupOptions: ToolButtonGroupOption[] = [
   },
 ];
 
-export const selectOptions1: SelectOption[] = [
+export const selectOptions1: MenuOption[] = [
   {
     label: 'Option1',
     value: 1,
@@ -61,7 +61,7 @@ export const selectOptions1: SelectOption[] = [
   },
 ];
 
-export const selectOptions2: SelectOption[] = [
+export const selectOptions2: MenuOption[] = [
   {
     label: 'Option1 Long Very Very Text',
     value: 1,

@@ -4,20 +4,16 @@ import { useState, useEffect } from 'react';
 import { Label, LabelPosition } from './label';
 import { Icon } from './icon';
 import { AbstractButton } from './abstractButton';
+import { Menu, MenuOption } from './menu';
 import { HBoxLayout } from '../layout/box';
 import { init } from './util';
-
-export interface SelectOption {
-  label?: string;
-  value: any;
-}
 
 export interface Props {
   enabled?: boolean;
   width?: number;
   label?: string;
   labelPosition?: LabelPosition;
-  options: SelectOption[];
+  options: MenuOption[];
   selectedIndex?: number;
 }
 
@@ -64,7 +60,7 @@ export function Select(props: Props) {
   };
 
   const onBlurHandler = () => {
-    setIsToggled(false);
+    setTimeout(() => setIsToggled(false), 500);
   };
 
   const labelText =
@@ -72,24 +68,30 @@ export function Select(props: Props) {
       ? ''
       : options[currentIndex].label || `${options[currentIndex].label}`;
 
+  const onSelectHandler = (selectedIndex: number) => {
+    setCurrentIndex(selectedIndex);
+  };
+
   return (
     <div className="select">
       <Label text={label} position={labelPosition}>
         <div css={css}>
-          <AbstractButton
-            enabled={enabled}
-            height={height}
-            canToggle={true}
-            toggleMode="binary"
-            isToggled={isToggled}
-            onClick={onClickHandler}
-            onBlur={onBlurHandler}
-          >
-            <HBoxLayout height={height}>
-              <Label enabled={enabled} text={labelText} justify="start" />
-              <Icon enabled={enabled} src="#select" width={iconHeight} />
-            </HBoxLayout>
-          </AbstractButton>
+          <Menu isOpen={isToggled} options={options} onSelect={onSelectHandler}>
+            <AbstractButton
+              enabled={enabled}
+              height={height}
+              canToggle={true}
+              toggleMode="binary"
+              isToggled={isToggled}
+              onClick={onClickHandler}
+              onBlur={onBlurHandler}
+            >
+              <HBoxLayout height={height}>
+                <Label enabled={enabled} text={labelText} justify="start" />
+                <Icon enabled={enabled} src="#select" width={iconHeight} />
+              </HBoxLayout>
+            </AbstractButton>
+          </Menu>
         </div>
       </Label>
     </div>
