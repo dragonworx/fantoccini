@@ -37,11 +37,13 @@ export const style = ({ width }: Required<Props>) => {
     width: ${width}px;
     height: ${height}px;
 
-    & .button-content label,
-    & .button-content .label {
-      text-overflow: ellipsis;
-      overflow: hidden;
-      flex-grow: 1;
+    & .buttoncontent {
+      & label,
+      & .label {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        flex-grow: 1;
+      }
     }
   `;
 };

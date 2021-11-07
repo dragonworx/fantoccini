@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { css, jsx } from '@emotion/react';
 import { init } from './util';
 import { useState, useEffect, MouseEvent } from 'react';
 import { PushButton } from './pushButton';
@@ -80,6 +80,21 @@ export const numericKeyFilter = (e: InputKeyEvent) => {
   return true;
 };
 
+export const style = ({}: Required<Props>) => {
+  return css`
+    & .textfield > .boxlayout {
+      padding-right: 0;
+      left: 1px;
+    }
+
+    & .buttoncontent {
+      & img {
+        margin: 0;
+      }
+    }
+  `;
+};
+
 export function NumericInput(props: Props) {
   const [
     {
@@ -94,7 +109,7 @@ export function NumericInput(props: Props) {
       onAccept,
     },
     css,
-  ] = init(props, defaultProps);
+  ] = init(props, defaultProps, style);
 
   const [currentValue, setCurrentValue] = useState(`${value}`);
   useEffect(() => setCurrentValue(`${value}`), [value]);
@@ -134,45 +149,47 @@ export function NumericInput(props: Props) {
   };
 
   return (
-    <TextField
-      enabled={enabled}
-      text={`${currentValue}`}
-      label={label}
-      labelPosition={labelPosition}
-      width={textFieldWidth}
-      height={textFieldHeight}
-      onKeyFilter={numericKeyFilter}
-      onKeyDown={onKeyDownHandler}
-      onChange={onChangeHandler}
-      onAccept={onAcceptHandler}
-    >
-      <BoxLayout
-        direction="vertical"
+    <div css={css} className="numericInput">
+      <TextField
+        enabled={enabled}
+        text={`${currentValue}`}
+        label={label}
+        labelPosition={labelPosition}
+        width={textFieldWidth}
         height={textFieldHeight}
-        margin={1}
-        spacing={1}
+        onKeyFilter={numericKeyFilter}
+        onKeyDown={onKeyDownHandler}
+        onChange={onChangeHandler}
+        onAccept={onAcceptHandler}
       >
-        <PushButton
-          enabled={enabled}
-          icon="#increment-up"
-          iconWidth={iconSize}
-          width={buttonWidth}
-          height={buttonHeight}
-          fixedSize={true}
-          radius={0}
-          onClick={onIncrementUpClick}
-        />
-        <PushButton
-          enabled={enabled}
-          icon="#increment-down"
-          iconWidth={iconSize}
-          width={buttonWidth}
-          height={buttonHeight}
-          fixedSize={true}
-          radius={0}
-          onClick={onIncrementDownClick}
-        />
-      </BoxLayout>
-    </TextField>
+        <BoxLayout
+          direction="vertical"
+          height={textFieldHeight}
+          margin={1}
+          spacing={1}
+        >
+          <PushButton
+            enabled={enabled}
+            icon="#increment-up"
+            iconWidth={iconSize}
+            width={buttonWidth}
+            height={buttonHeight}
+            fixedSize={true}
+            radius={0}
+            onClick={onIncrementUpClick}
+          />
+          <PushButton
+            enabled={enabled}
+            icon="#increment-down"
+            iconWidth={iconSize}
+            width={buttonWidth}
+            height={buttonHeight}
+            fixedSize={true}
+            radius={0}
+            onClick={onIncrementDownClick}
+          />
+        </BoxLayout>
+      </TextField>
+    </div>
   );
 }

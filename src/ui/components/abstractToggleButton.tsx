@@ -32,7 +32,7 @@ export const defaultProps: Props = {
 };
 
 export const cssStyle = ({ enabled }: Required<Props>) => css`
-  & .button-content {
+  & .buttoncontent {
     position: absolute;
     opacity: ${enabled ? 1 : 0.5};
   }

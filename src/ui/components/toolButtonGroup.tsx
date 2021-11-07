@@ -32,7 +32,7 @@ export const cssStyle = () => css`
     border-radius: 0;
     height: 26px;
 
-    .button-content {
+    .buttoncontent {
       border-radius: 0;
     }
   }
@@ -42,7 +42,7 @@ export const cssStyle = () => css`
     border-bottom-left-radius: ${radius};
     height: 26px;
 
-    .button-content {
+    .buttoncontent {
       border-top-left-radius: ${radius};
       border-bottom-left-radius: ${radius};
     }
@@ -53,7 +53,7 @@ export const cssStyle = () => css`
     border-bottom-right-radius: ${radius};
     height: 26px;
 
-    .button-content {
+    .buttoncontent {
       border-top-right-radius: ${radius};
       border-bottom-right-radius: ${radius};
     }

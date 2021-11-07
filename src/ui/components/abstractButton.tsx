@@ -72,7 +72,7 @@ export const cssStyle =
         #2f343c 100%
       );
 
-      & > .button-content {
+      & > .buttoncontent {
         border: 1px solid #444;
         border-left-color: #555;
         border-right-color: #555;
@@ -121,7 +121,7 @@ export const cssStyle =
         ${activeStyle}
       }
 
-      & > .button-content {
+      & > .buttoncontent {
         ${borderRadius}
         ${noSelect}
         width: 100%;
@@ -138,7 +138,7 @@ export const cssStyle =
           ? 'absolute'
           : 'relative'};
 
-        & > .box-layout {
+        & > .boxlayout {
           flex-grow: 1;
         }
       }
@@ -147,7 +147,7 @@ export const cssStyle =
 
       ${!isCurrentlyToggled && toggleMode === 'single'
         ? css`
-            & > .button-content img {
+            & > .buttoncontent img {
               display: none;
             }
           `
@@ -218,7 +218,7 @@ export function AbstractButton(props: Props) {
       onBlur={onBlurHandler}
       onKeyDown={onKeyDownHandler}
     >
-      <div className="button-content">{children}</div>
+      <div className="buttoncontent">{children}</div>
     </div>
   );
 }
