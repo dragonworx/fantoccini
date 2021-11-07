@@ -84,7 +84,7 @@ export const onHandleValue = (label: string) => (value: any) =>
   console.log(`${label}: ${value}`);
 
 export const style = css`
-  padding-bottom: 20px;
+  padding-bottom: 200px;
 
   .row {
     padding: 5px 10px;

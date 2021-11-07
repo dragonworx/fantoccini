@@ -38,6 +38,7 @@ export const style = ({ isOpen }: Required<Props>) => {
     & .menucontent {
       position: absolute;
       display: ${isOpen ? 'block' : 'none'};
+      visibility: hidden;
       background: linear-gradient(180deg, #24282f 0, #2f343c 100%);
       margin: 0;
       padding: 0;
@@ -59,16 +60,40 @@ export const style = ({ isOpen }: Required<Props>) => {
 
 const setPosition = (
   menuContentElement: HTMLElement,
-  targetRect: DOMRect,
+  targeElement: HTMLElement,
   position: PopupPosition
 ) => {
-  let { left, top, width, height } = targetRect;
+  const viewPortWidth = document.documentElement.clientWidth;
+  const viewPortHeight = document.documentElement.clientHeight;
+  const { width: menuContentWidth, height: menuContentHeight } =
+    menuContentElement.getBoundingClientRect();
+  const targetElementRect = targeElement.getBoundingClientRect();
+
+  console.log({
+    menuContentWidth,
+    menuContentHeight,
+    targetElementRect,
+    viewPortWidth,
+    viewPortHeight,
+  });
+
+  let left = 0;
+  let top = 0;
+
+  if (position === 'bottom') {
+    top = targetElementRect.height;
+    if (targetElementRect.bottom + menuContentHeight > viewPortHeight) {
+      top = menuContentHeight * -1;
+    }
+  }
 
   menuContentElement.style.cssText = `
-    left: ${0}px;
-    top: ${0}px;
-    min-width: ${width}px;
+    left: ${left}px;
+    top: ${top}px;
+    min-width: ${targetElementRect.width}px;
   `;
+
+  setTimeout(() => (menuContentElement.style.visibility = 'visible'), 100);
 };
 
 export function Menu(props: Props) {
@@ -78,19 +103,22 @@ export function Menu(props: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const current = ref.current;
 
+  if (current) {
+    const menuContentElement = current.querySelector(
+      ':scope > .menucontent'
+    )! as HTMLElement;
+    menuContentElement.style.visibility = 'hidden';
+  }
+
   useEffect(() => {
     if (current) {
       const targetElement = current.querySelector(':scope > *')! as HTMLElement;
       const menuContentElement = current.querySelector(
         ':scope > .menucontent'
       )! as HTMLElement;
-      setPosition(
-        menuContentElement,
-        targetElement.getBoundingClientRect(),
-        position
-      );
+      setPosition(menuContentElement, targetElement, position);
     }
-  }, [current /**?*/]);
+  });
 
   const onOptionClickHandler = (index: number) => () => {
     onSelect && onSelect(index);

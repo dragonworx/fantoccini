@@ -55,14 +55,6 @@ export function Select(props: Props) {
   const [currentIndex, setCurrentIndex] = useState(selectedIndex);
   useEffect(() => setCurrentIndex(selectedIndex), [selectedIndex]);
 
-  const onClickHandler = () => {
-    setIsToggled(true);
-  };
-
-  const onBlurHandler = () => {
-    setTimeout(() => setIsToggled(false), 500);
-  };
-
   const labelText =
     currentIndex === -1
       ? ''
@@ -70,6 +62,11 @@ export function Select(props: Props) {
 
   const onSelectHandler = (selectedIndex: number) => {
     setCurrentIndex(selectedIndex);
+    setIsToggled(false);
+  };
+
+  const onToggledHandler = (isCurrentlyToggled: boolean) => {
+    setIsToggled(isCurrentlyToggled);
   };
 
   return (
@@ -83,8 +80,7 @@ export function Select(props: Props) {
               canToggle={true}
               toggleMode="binary"
               isToggled={isToggled}
-              onClick={onClickHandler}
-              onBlur={onBlurHandler}
+              onToggled={onToggledHandler}
             >
               <HBoxLayout height={height}>
                 <Label enabled={enabled} text={labelText} justify="start" />
