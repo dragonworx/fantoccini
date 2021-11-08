@@ -102,16 +102,18 @@ export function Select(props: Props) {
   };
 
   const onKeyDownHandler = (e: KeyboardEvent) => {
-    console.log(e.key);
-    if (e.key === 'ArrowUp') {
+    const { key } = e;
+    if (key === 'ArrowUp') {
       incrementCurrentIndex(-1, e);
-    } else if (e.key === 'ArrowDown') {
+    } else if (key === 'ArrowDown') {
       if (isToggled) {
         incrementCurrentIndex(1, e);
       } else {
         setIsToggled(true);
       }
-    } else if (e.key === 'Escape') {
+    } else if (key === 'Escape') {
+      setIsToggled(false);
+    } else if (key === 'Tab') {
       setIsToggled(false);
     }
   };
