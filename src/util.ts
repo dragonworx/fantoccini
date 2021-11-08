@@ -16,3 +16,4 @@ export const disableEmotionWarnings = () => {
 };
 
 export const isMac = window.navigator.userAgent.indexOf('Mac') > -1;
+// test
