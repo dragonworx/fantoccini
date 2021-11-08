@@ -41,6 +41,15 @@ export const style = ({ width }: Required<Props>) => {
         flex-grow: 1;
       }
     }
+
+    & .bar {
+      position: absolute;
+      height: 90%;
+      width: 1px;
+      border-left: 1px solid #444;
+      border-right: 1px solid #222;
+      right: 25px;
+    }
   `;
 };
 
@@ -93,10 +102,17 @@ export function Select(props: Props) {
   };
 
   const onKeyDownHandler = (e: KeyboardEvent) => {
+    console.log(e.key);
     if (e.key === 'ArrowUp') {
       incrementCurrentIndex(-1, e);
     } else if (e.key === 'ArrowDown') {
-      incrementCurrentIndex(1, e);
+      if (isToggled) {
+        incrementCurrentIndex(1, e);
+      } else {
+        setIsToggled(true);
+      }
+    } else if (e.key === 'Escape') {
+      setIsToggled(false);
     }
   };
 
@@ -128,6 +144,7 @@ export function Select(props: Props) {
                 <Label enabled={enabled} text={labelText} justify="start" />
                 <Icon enabled={enabled} src="#select" width={iconHeight} />
               </HBoxLayout>
+              <div className="bar"></div>
             </AbstractButton>
           </Menu>
         </div>

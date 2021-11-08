@@ -270,17 +270,17 @@ export function App() {
         <Select label="Label" options={selectOptions1} />
         <Select label="Label" options={selectOptions1} selectedIndex={2} />
         <Select
-          label="Label"
-          options={selectOptions2}
-          selectedIndex={0}
-          width={150}
-        />
-        <Select
           label="Disabled"
           enabled={false}
           options={selectOptions1}
           selectedIndex={0}
           width={80}
+        />
+        <Select
+          label="Label"
+          options={selectOptions2}
+          selectedIndex={0}
+          width={150}
         />
       </div>
     </div>
