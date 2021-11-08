@@ -6,12 +6,16 @@ import { Icon } from './icon';
 import { AbstractButton } from './abstractButton';
 import { HBoxLayout } from '../layout/box';
 import { init } from './util';
+import { highlightColor, menuBorder } from './theme';
 
 export interface MenuOption {
+  enabled?: boolean;
   icon?: string;
   label?: string;
   value: any;
 }
+
+export const isOptionEnabled = (option: MenuOption) => option.enabled !== false;
 
 export type PopupPosition = 'left' | 'right' | 'top' | 'bottom';
 
@@ -19,9 +23,11 @@ export interface Props {
   children?: ReactNode;
   enabled?: boolean;
   options: MenuOption[];
+  selectedIndex?: number;
   position?: PopupPosition;
   isOpen: boolean;
   onSelect?: (selectedIndex: number) => void;
+  onBlur?: () => void;
 }
 
 export const defaultProps: Props = {
@@ -29,6 +35,7 @@ export const defaultProps: Props = {
   position: 'bottom',
   isOpen: false,
   options: [],
+  selectedIndex: -1,
 };
 
 export const style = ({ isOpen }: Required<Props>) => {
@@ -36,13 +43,16 @@ export const style = ({ isOpen }: Required<Props>) => {
     position: relative;
 
     & .menucontent {
+      ${menuBorder}
       position: absolute;
       display: ${isOpen ? 'block' : 'none'};
-      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.4s;
       background: linear-gradient(180deg, #24282f 0, #2f343c 100%);
       margin: 0;
       padding: 0;
       list-style: none;
+      box-shadow: 1px 5px 9px 0px rgb(0 0 0 / 25%);
 
       & li {
         margin: 0;
@@ -50,65 +60,63 @@ export const style = ({ isOpen }: Required<Props>) => {
         justify-content: start;
         padding: 5px 5px;
 
-        &:hover {
-          background: linear-gradient(180deg, #000 0, #111 100%);
+        &:not(.selected):hover {
+          background-color: black;
+        }
+
+        &.disabled:hover {
+          background-color: #222;
+          & label {
+            text-shadow: none;
+          }
+        }
+
+        &.selected {
+          background-color: ${highlightColor};
+
+          & label {
+            color: black;
+            text-shadow: none;
+          }
+        }
+
+        &.selected:hover {
+          background-color: ${highlightColor};
         }
       }
     }
   `;
 };
 
-const setPosition = (
-  menuContentElement: HTMLElement,
-  targeElement: HTMLElement,
-  position: PopupPosition
-) => {
-  const viewPortWidth = document.documentElement.clientWidth;
-  const viewPortHeight = document.documentElement.clientHeight;
-  const { width: menuContentWidth, height: menuContentHeight } =
-    menuContentElement.getBoundingClientRect();
-  const targetElementRect = targeElement.getBoundingClientRect();
-
-  console.log({
-    menuContentWidth,
-    menuContentHeight,
-    targetElementRect,
-    viewPortWidth,
-    viewPortHeight,
-  });
-
-  let left = 0;
-  let top = 0;
-
-  if (position === 'bottom') {
-    top = targetElementRect.height;
-    if (targetElementRect.bottom + menuContentHeight > viewPortHeight) {
-      top = menuContentHeight * -1;
-    }
-  }
-
-  menuContentElement.style.cssText = `
-    left: ${left}px;
-    top: ${top}px;
-    min-width: ${targetElementRect.width}px;
-  `;
-
-  setTimeout(() => (menuContentElement.style.visibility = 'visible'), 100);
-};
-
 export function Menu(props: Props) {
-  const [{ children, enabled, isOpen, options, position, onSelect }, css] =
-    init(props, defaultProps, style);
+  const [
+    {
+      children,
+      enabled,
+      isOpen,
+      options,
+      selectedIndex,
+      position,
+      onSelect,
+      onBlur,
+    },
+    css,
+  ] = init(props, defaultProps, style);
 
   const ref = useRef<HTMLDivElement>(null);
+  const [hasOpened, setHasOpened] = useState(false);
   const current = ref.current;
 
-  if (current) {
-    const menuContentElement = current.querySelector(
-      ':scope > .menucontent'
-    )! as HTMLElement;
-    menuContentElement.style.visibility = 'hidden';
-  }
+  const onWheelHandler = (e: WheelEvent) => e.preventDefault();
+
+  const onMouseDownHandler = (e: MouseEvent) => {
+    const isMenuEvent =
+      e.target === current?.parentNode ||
+      current?.contains(e.target as Element);
+    if (!isMenuEvent) {
+      onBlur && onBlur();
+    }
+  };
 
   useEffect(() => {
     if (current) {
@@ -116,12 +124,57 @@ export function Menu(props: Props) {
       const menuContentElement = current.querySelector(
         ':scope > .menucontent'
       )! as HTMLElement;
-      setPosition(menuContentElement, targetElement, position);
+      if (isOpen && !hasOpened) {
+        // open
+        const viewPortWidth = document.documentElement.clientWidth;
+        const viewPortHeight = document.documentElement.clientHeight;
+        const { width: menuContentWidth, height: menuContentHeight } =
+          menuContentElement.getBoundingClientRect();
+        const targetElementRect = targetElement.getBoundingClientRect();
+
+        // console.log({
+        //   menuContentWidth,
+        //   menuContentHeight,
+        //   targetElementRect,
+        //   viewPortWidth,
+        //   viewPortHeight,
+        // });
+
+        let left = 0;
+        let top = 0;
+
+        if (position === 'bottom') {
+          top = targetElementRect.height;
+          if (targetElementRect.bottom + menuContentHeight > viewPortHeight) {
+            top = menuContentHeight * -1;
+          }
+        }
+
+        menuContentElement.style.cssText = `
+          left: ${left}px;
+          top: ${top}px;
+          min-width: ${targetElementRect.width}px;
+          opacity: 1;
+        `;
+
+        current.addEventListener('wheel', onWheelHandler, { passive: false });
+        window.addEventListener('mousedown', onMouseDownHandler);
+
+        setHasOpened(true);
+      }
+
+      if (hasOpened && !isOpen) {
+        // close
+        menuContentElement.style.opacity = '0';
+        current.removeEventListener('wheel', onWheelHandler);
+        window.removeEventListener('mousedown', onMouseDownHandler);
+        setHasOpened(false);
+      }
     }
   });
 
   const onOptionClickHandler = (index: number) => () => {
-    onSelect && onSelect(index);
+    options[index].enabled !== false && onSelect && onSelect(index);
   };
 
   return (
@@ -129,8 +182,20 @@ export function Menu(props: Props) {
       {children}
       <ul className="menucontent">
         {options.map((option, index) => (
-          <li onClick={onOptionClickHandler(index)}>
-            <Label text={option.label || String(option.value)} />
+          <li
+            onClick={onOptionClickHandler(index)}
+            className={
+              isOptionEnabled(option)
+                ? index === selectedIndex
+                  ? 'selected'
+                  : ''
+                : 'disabled'
+            }
+          >
+            <Label
+              enabled={isOptionEnabled(option)}
+              text={option.label || String(option.value)}
+            />
           </li>
         ))}
       </ul>

@@ -11,7 +11,15 @@ import {
 } from 'react';
 import Color from 'color';
 import { getProps, getCss } from './util';
-import { reset, noSelect, borderRadiusSize, outline } from './theme';
+import {
+  reset,
+  noSelect,
+  borderRadiusSize,
+  outline,
+  boxBorder,
+  buttonShadow,
+  buttonShadowInset,
+} from './theme';
 
 export type ToggleMode = 'binary' | 'single';
 
@@ -27,6 +35,8 @@ export interface Props {
   radius?: number;
   fixedSize?: boolean;
   onClick?: (e: MouseEvent) => void;
+  onKeyDown?: (e: KeyboardEvent) => void;
+  onKeyUp?: (e: KeyboardEvent) => void;
   onFocus?: (e: FocusEvent) => void;
   onBlur?: (e: FocusEvent) => void;
   onToggled?: (isToggled: boolean) => void;
@@ -94,6 +104,7 @@ export const cssStyle =
       ${reset}
       ${borderRadius}
       ${noSelect}
+      ${isCurrentlyToggled ? buttonShadowInset : buttonShadow}
       background: linear-gradient(0deg, ${darkColor} 0, #2f343c 100%);
       border: 1px solid #030c17;
       min-width: ${width}px;
@@ -124,12 +135,9 @@ export const cssStyle =
       & > .buttoncontent {
         ${borderRadius}
         ${noSelect}
+        ${boxBorder}
         width: 100%;
         height: 100%;
-        border: 1px solid #999;
-        border-left-color: #555;
-        border-right-color: #555;
-        border-bottom-color: #444;
         overflow: hidden;
         display: flex;
         align-items: center;
@@ -164,6 +172,8 @@ export function AbstractButton(props: Props) {
     toggleMode,
     isToggled,
     onClick,
+    onKeyDown,
+    onKeyUp,
     onFocus,
     onBlur,
     onToggled,
@@ -192,11 +202,13 @@ export function AbstractButton(props: Props) {
   const onKeyDownHandler = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === ' ' || e.key === 'Enter') {
       ref.current?.classList.add('active');
+      e.preventDefault();
       setTimeout(() => {
         onClickHandler(e as any as MouseEvent);
         setTimeout(() => ref.current?.classList.remove('active'), 150);
       }, 0);
     }
+    onKeyDown && onKeyDown(e);
   };
 
   const onFocusHandler = (e: FocusEvent<HTMLDivElement>) => {
@@ -217,6 +229,7 @@ export function AbstractButton(props: Props) {
       onFocus={onFocusHandler}
       onBlur={onBlurHandler}
       onKeyDown={onKeyDownHandler}
+      onKeyUp={onKeyUp}
     >
       <div className="buttoncontent">{children}</div>
     </div>

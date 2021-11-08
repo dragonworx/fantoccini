@@ -1,10 +1,10 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, KeyboardEvent } from 'react';
 import { Label, LabelPosition } from './label';
 import { Icon } from './icon';
 import { AbstractButton } from './abstractButton';
-import { Menu, MenuOption } from './menu';
+import { isOptionEnabled, Menu, MenuOption } from './menu';
 import { HBoxLayout } from '../layout/box';
 import { init } from './util';
 
@@ -69,11 +69,52 @@ export function Select(props: Props) {
     setIsToggled(isCurrentlyToggled);
   };
 
+  const incrementCurrentIndex = (
+    incrementAmount: number,
+    e?: KeyboardEvent
+  ) => {
+    const lastIndex = options.length - 1;
+    e && e.preventDefault();
+    if (incrementAmount === -1) {
+      for (let i = currentIndex - 1; i >= 0; i--) {
+        if (isOptionEnabled(options[i])) {
+          setCurrentIndex(i);
+          return;
+        }
+      }
+    } else {
+      for (let i = currentIndex + 1; i <= lastIndex; i++) {
+        if (isOptionEnabled(options[i])) {
+          setCurrentIndex(i);
+          return;
+        }
+      }
+    }
+  };
+
+  const onKeyDownHandler = (e: KeyboardEvent) => {
+    if (e.key === 'ArrowUp') {
+      incrementCurrentIndex(-1, e);
+    } else if (e.key === 'ArrowDown') {
+      incrementCurrentIndex(1, e);
+    }
+  };
+
+  const onBlurHandler = () => {
+    setIsToggled(false);
+  };
+
   return (
     <div className="select">
       <Label text={label} position={labelPosition}>
         <div css={css}>
-          <Menu isOpen={isToggled} options={options} onSelect={onSelectHandler}>
+          <Menu
+            isOpen={isToggled}
+            options={options}
+            selectedIndex={currentIndex}
+            onSelect={onSelectHandler}
+            onBlur={onBlurHandler}
+          >
             <AbstractButton
               enabled={enabled}
               height={height}
@@ -81,6 +122,7 @@ export function Select(props: Props) {
               toggleMode="binary"
               isToggled={isToggled}
               onToggled={onToggledHandler}
+              onKeyDown={onKeyDownHandler}
             >
               <HBoxLayout height={height}>
                 <Label enabled={enabled} text={labelText} justify="start" />

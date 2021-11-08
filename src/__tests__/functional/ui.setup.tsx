@@ -48,6 +48,7 @@ export const selectOptions1: MenuOption[] = [
     value: 1,
   },
   {
+    enabled: false,
     label: 'Option2',
     value: 2,
   },
@@ -56,6 +57,7 @@ export const selectOptions1: MenuOption[] = [
     value: 3,
   },
   {
+    enabled: false,
     label: 'Option4',
     value: 4,
   },

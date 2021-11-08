@@ -68,7 +68,7 @@ export function Label(props: Props) {
   };
 
   return (
-    <div className={'label'}>
+    <div className={`label ${enabled ? '' : 'disabled'}`}>
       <BoxLayout
         margin={0}
         direction={

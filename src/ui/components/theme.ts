@@ -18,8 +18,10 @@ export const borderRadius = css`
   border-radius: ${borderRadiusSize}px;
 `;
 
+export const highlightColor = '#2fb7eb';
+
 export const outline = css`
-  outline: 1px solid #2fb7eb;
+  outline: 1px solid ${highlightColor};
 `;
 
 export const borderDown = css`
@@ -37,3 +39,23 @@ export const textFieldBg = (enabled: boolean) =>
       ${enabled ? '#2f343c' : '#444'} 100%
     );
   `;
+
+export const boxBorder = css`
+  border: 1px solid #999;
+  border-left-color: #555;
+  border-right-color: #555;
+  border-bottom-color: #444;
+`;
+
+export const menuBorder = css`
+  border: 1px solid #666;
+  border-bottom-color: #222;
+`;
+
+export const buttonShadow = css`
+  box-shadow: 2px 2px 4px 0px rgb(0 0 0 / 25%);
+`;
+
+export const buttonShadowInset = css`
+  box-shadow: inset 2px 2px 4px 0px rgb(0 0 0 / 25%);
+`;
