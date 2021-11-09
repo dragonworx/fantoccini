@@ -13,6 +13,7 @@ body {
   top: 0;
   right: 0;
   bottom: 0;
+  background: linear-gradient(0deg, #3d4552 0, #555e68 100%);
 }
 
 @font-face {
