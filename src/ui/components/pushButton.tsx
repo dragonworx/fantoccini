@@ -41,6 +41,12 @@ export function PushButton(props: Props) {
     height,
     radius,
     onClick,
+    onMouseDown,
+    onMouseUp,
+    onFocus,
+    onBlur,
+    onKeyDown,
+    onKeyUp,
     onToggled,
   } = getProps(props, defaultProps);
 
@@ -54,6 +60,12 @@ export function PushButton(props: Props) {
     height,
     radius,
     onClick,
+    onMouseDown,
+    onMouseUp,
+    onFocus,
+    onBlur,
+    onKeyDown,
+    onKeyUp,
     onToggled,
   };
 

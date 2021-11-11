@@ -35,6 +35,8 @@ export interface Props {
   radius?: number;
   fixedSize?: boolean;
   onClick?: (e: MouseEvent) => void;
+  onMouseDown?: (e: MouseEvent) => void;
+  onMouseUp?: (e: MouseEvent) => void;
   onKeyDown?: (e: KeyboardEvent) => void;
   onKeyUp?: (e: KeyboardEvent) => void;
   onFocus?: (e: FocusEvent) => void;
@@ -172,6 +174,8 @@ export function AbstractButton(props: Props) {
     toggleMode,
     isToggled,
     onClick,
+    onMouseDown,
+    onMouseUp,
     onKeyDown,
     onKeyUp,
     onFocus,
@@ -219,6 +223,14 @@ export function AbstractButton(props: Props) {
     enabled && onBlur && onBlur(e);
   };
 
+  const onMouseDownHandler = (e: MouseEvent<HTMLDivElement>) => {
+    onMouseDown && onMouseDown(e);
+  };
+
+  const onMouseUpHandler = (e: MouseEvent<HTMLDivElement>) => {
+    onMouseUp && onMouseUp(e);
+  };
+
   return (
     <div
       ref={ref}
@@ -226,6 +238,8 @@ export function AbstractButton(props: Props) {
       css={getCss(cssStyle(isCurrentlyToggled), props, defaultProps)}
       tabIndex={enabled ? 0 : undefined}
       onClick={onClickHandler}
+      onMouseDown={onMouseDownHandler}
+      onMouseUp={onMouseUpHandler}
       onFocus={onFocusHandler}
       onBlur={onBlurHandler}
       onKeyDown={onKeyDownHandler}

@@ -128,25 +128,22 @@ export function Menu(props: Props) {
         // open
         const viewPortWidth = document.documentElement.clientWidth;
         const viewPortHeight = document.documentElement.clientHeight;
-        const { width: menuContentWidth, height: menuContentHeight } =
-          menuContentElement.getBoundingClientRect();
+        const menuContentRect = menuContentElement.getBoundingClientRect();
         const targetElementRect = targetElement.getBoundingClientRect();
 
-        // console.log({
-        //   menuContentWidth,
-        //   menuContentHeight,
-        //   targetElementRect,
-        //   viewPortWidth,
-        //   viewPortHeight,
-        // });
-
-        let left = 0;
+        let left = Math.min(
+          0,
+          (targetElementRect.width - menuContentRect.width) / 2
+        );
         let top = 0;
 
         if (position === 'bottom') {
           top = targetElementRect.height;
-          if (targetElementRect.bottom + menuContentHeight > viewPortHeight) {
-            top = menuContentHeight * -1;
+          if (
+            targetElementRect.bottom + menuContentRect.height >
+            viewPortHeight
+          ) {
+            top = menuContentRect.height * -1;
           }
         }
 

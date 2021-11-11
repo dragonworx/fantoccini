@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import { init } from './util';
-import { useState, useEffect, MouseEvent } from 'react';
+import { useState, useEffect, MouseEvent as ReactMouseEvent } from 'react';
 import { PushButton } from './pushButton';
 import { TextField, InputKeyEvent } from './textfield';
 import { LabelPosition } from './label';
@@ -95,6 +95,10 @@ export const style = ({}: Required<Props>) => {
   `;
 };
 
+export const defaultIncrement = 0;
+export const defaultInterval = 250;
+export const defaultDelay = 3000;
+
 export function NumericInput(props: Props) {
   const [
     {
@@ -112,6 +116,10 @@ export function NumericInput(props: Props) {
   ] = init(props, defaultProps, style);
 
   const [currentValue, setCurrentValue] = useState(`${value}`);
+  const [isMouseDown, setIsMouseDown] = useState(false);
+  const [increment, setIncrement] = useState(defaultIncrement);
+  const [interval, setInterval] = useState(defaultInterval);
+  const [id, setId] = useState();
   useEffect(() => setCurrentValue(`${value}`), [value]);
 
   const onKeyDownHandler = (e: InputKeyEvent) => {
@@ -140,12 +148,23 @@ export function NumericInput(props: Props) {
     setCurrentValue(`${newValue}`);
   };
 
-  const onIncrementUpClick = (e: MouseEvent) => {
-    incrementBy(e.altKey ? incrementMajor : incrementMinor);
-  };
+  const onMouseDownHandler =
+    (incrementDirection: number) => (e: ReactMouseEvent) => {
+      window.addEventListener('mouseup', onMouseUpHandler);
+      setIsMouseDown(true);
+      setInterval(defaultInterval);
+      const inc =
+        (e.shiftKey ? incrementMajor : incrementMinor) * incrementDirection;
+      setIncrement(inc);
+      incrementBy(inc);
+    };
 
-  const onIncrementDownClick = (e: MouseEvent) => {
-    incrementBy((e.altKey ? incrementMajor : incrementMinor) * -1);
+  useEffect(() => {}, [currentValue]);
+
+  const onMouseUpHandler = (e: MouseEvent) => {
+    window.removeEventListener('mouseup', onMouseUpHandler);
+    setIncrement(0);
+    setIsMouseDown(false);
   };
 
   return (
@@ -176,7 +195,7 @@ export function NumericInput(props: Props) {
             height={buttonHeight}
             fixedSize={true}
             radius={0}
-            onClick={onIncrementUpClick}
+            onMouseDown={onMouseDownHandler(1)}
           />
           <PushButton
             enabled={enabled}
@@ -186,7 +205,7 @@ export function NumericInput(props: Props) {
             height={buttonHeight}
             fixedSize={true}
             radius={0}
-            onClick={onIncrementDownClick}
+            onMouseDown={onMouseDownHandler(-1)}
           />
         </BoxLayout>
       </TextField>
