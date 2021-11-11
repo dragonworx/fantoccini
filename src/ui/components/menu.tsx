@@ -5,7 +5,7 @@ import { Label, LabelPosition } from './label';
 import { Icon } from './icon';
 import { AbstractButton } from './abstractButton';
 import { HBoxLayout } from '../layout/box';
-import { init } from './util';
+import { init, multiFire } from './util';
 import { highlightColor, menuBorder } from './theme';
 
 export interface MenuOption {
@@ -59,13 +59,14 @@ export const style = ({ isOpen }: Required<Props>) => {
         align-items: center;
         justify-content: start;
         padding: 5px 5px;
+        transition: background-color 0.1s;
 
         &:not(.selected):hover {
           background-color: black;
         }
 
         &.disabled:hover {
-          background-color: #222;
+          background-color: transparent;
           & label {
             text-shadow: none;
           }
@@ -87,6 +88,9 @@ export const style = ({ isOpen }: Required<Props>) => {
     }
   `;
 };
+
+export const optionSelectBlinkInterval = 100;
+export const optionSelectBlinkRepeat = 2;
 
 export function Menu(props: Props) {
   const [
@@ -171,7 +175,26 @@ export function Menu(props: Props) {
   });
 
   const onOptionClickHandler = (index: number) => () => {
-    options[index].enabled !== false && onSelect && onSelect(index);
+    if (options[index].enabled !== false && onSelect) {
+      multiFire(
+        (done) => {
+          if (ref.current) {
+            const li = ref.current.querySelector(
+              `li[data-index="${index}"`
+            ) as HTMLLIElement;
+            li.classList.add('selected');
+            setTimeout(() => {
+              li.classList.remove('selected');
+              done();
+            }, optionSelectBlinkInterval);
+          }
+        },
+        optionSelectBlinkRepeat,
+        optionSelectBlinkInterval
+      ).then(() => {
+        onSelect(index);
+      });
+    }
   };
 
   return (
@@ -180,6 +203,7 @@ export function Menu(props: Props) {
       <ul className="menucontent">
         {options.map((option, index) => (
           <li
+            data-index={index}
             onClick={onOptionClickHandler(index)}
             className={
               isOptionEnabled(option)

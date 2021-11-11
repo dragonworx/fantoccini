@@ -1,7 +1,12 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import { init } from './util';
-import { useState, useEffect, MouseEvent as ReactMouseEvent } from 'react';
+import {
+  useState,
+  useEffect,
+  MouseEvent as ReactMouseEvent,
+  useRef,
+} from 'react';
 import { PushButton } from './pushButton';
 import { TextField, InputKeyEvent } from './textfield';
 import { LabelPosition } from './label';
@@ -95,9 +100,10 @@ export const style = ({}: Required<Props>) => {
   `;
 };
 
-export const defaultIncrement = 0;
-export const defaultInterval = 250;
-export const defaultDelay = 3000;
+export const longPressInitialDelay = 250;
+export const longPressInitialInterval = 150;
+export const longPressIntervalFactor = 0.9;
+export const longPressIncrementFactor = 1.1;
 
 export function NumericInput(props: Props) {
   const [
@@ -115,11 +121,9 @@ export function NumericInput(props: Props) {
     css,
   ] = init(props, defaultProps, style);
 
+  const ref = useRef<HTMLDivElement>(null);
   const [currentValue, setCurrentValue] = useState(`${value}`);
-  const [isMouseDown, setIsMouseDown] = useState(false);
-  const [increment, setIncrement] = useState(defaultIncrement);
-  const [interval, setInterval] = useState(defaultInterval);
-  const [id, setId] = useState();
+
   useEffect(() => setCurrentValue(`${value}`), [value]);
 
   const onKeyDownHandler = (e: InputKeyEvent) => {
@@ -150,25 +154,36 @@ export function NumericInput(props: Props) {
 
   const onMouseDownHandler =
     (incrementDirection: number) => (e: ReactMouseEvent) => {
+      const onMouseUpHandler = () => {
+        window.removeEventListener('mouseup', onMouseUpHandler);
+        clearTimeout(timeout);
+        clearInterval(interval);
+      };
       window.addEventListener('mouseup', onMouseUpHandler);
-      setIsMouseDown(true);
-      setInterval(defaultInterval);
-      const inc =
+      let inc =
         (e.shiftKey ? incrementMajor : incrementMinor) * incrementDirection;
-      setIncrement(inc);
       incrementBy(inc);
+      let interval: number;
+      let delay = longPressInitialInterval;
+      const timeout = setTimeout(() => {
+        if (ref.current) {
+          const input = ref.current.querySelector(
+            'input[type="text"]'
+          ) as HTMLInputElement;
+          interval = setInterval(() => {
+            delay = Math.max(0, delay * longPressIntervalFactor);
+            inc = inc * longPressIncrementFactor;
+            const text = input.value;
+            const newValue = parseFloat(text) + Math.round(inc);
+            onChange && onChange(newValue);
+            setCurrentValue(`${newValue}`);
+          }, Math.round(delay));
+        }
+      }, longPressInitialDelay);
     };
 
-  useEffect(() => {}, [currentValue]);
-
-  const onMouseUpHandler = (e: MouseEvent) => {
-    window.removeEventListener('mouseup', onMouseUpHandler);
-    setIncrement(0);
-    setIsMouseDown(false);
-  };
-
   return (
-    <div css={css} className="numericInput">
+    <div css={css} className="numericInput" ref={ref}>
       <TextField
         enabled={enabled}
         text={`${currentValue}`}
