@@ -65,7 +65,7 @@ export const style = ({ isOpen }: Required<Props>) => {
         }
 
         &.disabled:hover {
-          background-color: #222;
+          background-color: transparent;
           & label {
             text-shadow: none;
           }
