@@ -3,8 +3,8 @@ import { css, jsx } from '@emotion/react';
 import { Icon } from '../../ui/components/icon';
 import { Option as RadioButtonGroupOption } from '../../ui/components/radioButtonGroup';
 import { MenuItem } from '../../ui/components/menu';
-import { SelectOption } from '../../ui/components/select';
 import { Option as ToolButtonGroupOption } from '../../ui/components/toolButtonGroup';
+import { MenuBarItem } from '../../ui/components/menuBar';
 
 export const radioButtonGroupOptions: RadioButtonGroupOption[] = [
   {
@@ -132,6 +132,17 @@ export const menuOptionsMixed: MenuItem[] = [
   {
     label: 'Option6',
     value: 6,
+  },
+];
+
+export const menuBarItems: MenuBarItem[] = [
+  {
+    label: 'File',
+    menu: menuOptionsMixed,
+  },
+  {
+    label: 'Edit',
+    menu: menuOptionsMixed,
   },
 ];
 

@@ -67,9 +67,16 @@ export function BoxLayout(props: Props) {
     ...props,
   };
 
-  const { children } = props;
+  const { children, direction, reversed, align, justify } = props;
   return (
-    <div css={cssStyle(props)} className="boxlayout">
+    <div
+      css={cssStyle(props)}
+      className="boxlayout"
+      data-direction={direction}
+      data-reversed={reversed}
+      data-align={align}
+      data-justify={justify}
+    >
       {children}
     </div>
   );

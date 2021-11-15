@@ -177,11 +177,10 @@ export function Menu(props: Props) {
         const menuContentRect = menuContentElement.getBoundingClientRect();
         const targetElementRect = targetElement.getBoundingClientRect();
 
-        // let left = Math.min(
-        //   0,
-        //   (targetElementRect.width - menuContentRect.width) / 2
-        // );
-        let left = 0;
+        let left = Math.min(
+          0,
+          viewPortWidth - (targetElementRect.left + menuContentRect.width)
+        );
         let top = 0;
 
         if (position === 'bottom') {

@@ -62,6 +62,7 @@ export const style = ({ enabled, width, height }: Required<Props>) => {
     ${textFieldBg(enabled)}
     width: ${width ? `${width}px` : '100%'};
     height: ${height ? `${height}px` : 'auto'};
+    min-height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;

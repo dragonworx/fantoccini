@@ -22,6 +22,7 @@ import {
 } from './theme';
 
 export type ToggleMode = 'binary' | 'single';
+export type Appearance = 'full' | 'bare';
 
 export interface Props {
   children?: ReactNode;
@@ -35,6 +36,7 @@ export interface Props {
   isRound?: boolean;
   radius?: number;
   fixedSize?: boolean;
+  appearance?: Appearance;
   onClick?: (e: MouseEvent) => void;
   onMouseDown?: (e: MouseEvent) => void;
   onMouseUp?: (e: MouseEvent) => void;
@@ -55,6 +57,7 @@ export const defaultProps: Props = {
   height: 20,
   isRound: false,
   fixedSize: false,
+  appearance: 'full',
 };
 
 const isInteractive = (
@@ -73,7 +76,12 @@ export const cssStyle =
     isRound,
     fixedSize,
     radius,
+    appearance,
   }: Required<Props>) => {
+    if (appearance === 'bare') {
+      return css``;
+    }
+
     const darkColor = enabled ? '#24282f' : '#363c47';
 
     const activeStyle = css`

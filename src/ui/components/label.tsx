@@ -5,8 +5,9 @@ import Color from 'color';
 import { BoxLayout, Alignment, Justification } from '../layout/box';
 import { init } from './util';
 import { reset, noSelect } from './theme';
+import { Appearance } from './abstractButton';
 
-export type LabelPosition = 'left' | 'right' | 'top' | 'bottom';
+export type LabelPosition = 'left' | 'right' | 'top' | 'bottom' | 'hidden';
 
 export interface Props {
   children?: ReactNode;
@@ -16,6 +17,7 @@ export interface Props {
   position?: LabelPosition;
   align?: Alignment;
   justify?: Justification;
+  appearance?: Appearance;
   onClick?: () => void;
 }
 
@@ -25,9 +27,15 @@ export const defaultProps: Props = {
   link: false,
   position: 'right',
   align: 'center',
+  appearance: 'full',
 };
 
-export const style = ({ enabled, link, onClick }: Required<Props>) => {
+export const style = ({
+  enabled,
+  link,
+  appearance,
+  onClick,
+}: Required<Props>) => {
   const shadowColor = enabled ? '#080808' : '#383838';
   const textColor = Color(link && enabled ? '#57b1ff' : '#bdbec0');
   const isInteractive = !!(link || onClick) && enabled;
@@ -35,6 +43,7 @@ export const style = ({ enabled, link, onClick }: Required<Props>) => {
   return css`
     ${reset}
     ${noSelect}
+    margin: ${appearance === 'bare' ? '0 10px !important' : 'auto'};
     text-shadow: 1px 1px 1px ${shadowColor};
     color: ${enabled ? textColor.hex() : textColor.darken(0.25).hex()};
     text-decoration: ${link ? 'underline' : 'normal'};
@@ -49,11 +58,10 @@ export const style = ({ enabled, link, onClick }: Required<Props>) => {
 };
 
 export function Label(props: Props) {
-  const [{ children, enabled, position, align, justify, onClick }, css] = init(
-    props,
-    defaultProps,
-    style
-  );
+  const [
+    { children, enabled, position, align, justify, appearance, onClick },
+    css,
+  ] = init(props, defaultProps, style);
   const ref = useRef<HTMLLabelElement>(null);
   const isInteractive = !!(enabled && onClick);
 
@@ -66,6 +74,23 @@ export function Label(props: Props) {
       }, 0);
     }
   };
+
+  if (appearance === 'bare') {
+    return (
+      <div className={`label ${enabled ? '' : 'disabled'}`}>
+        {children}
+        <label
+          ref={ref}
+          css={css}
+          tabIndex={isInteractive ? 0 : undefined}
+          onClick={isInteractive ? onClick : undefined}
+          onKeyDown={onKeyDownHandler}
+        >
+          {position !== 'hidden' ? props.text : null}
+        </label>
+      </div>
+    );
+  }
 
   return (
     <div className={`label ${enabled ? '' : 'disabled'}`}>

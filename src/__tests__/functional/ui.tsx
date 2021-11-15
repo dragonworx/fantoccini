@@ -8,6 +8,8 @@ import {
   selectOptionsLong,
   style,
   toolButtonGroupOptions,
+  menuOptionsMixed,
+  menuBarItems,
 } from './ui.setup';
 import { AbstractButton } from '../../ui/components/abstractButton';
 import { HBoxLayout, VBoxLayout } from '../../ui/layout/box';
@@ -24,6 +26,7 @@ import {
   numericKeyFilter,
 } from '../../ui/components/numericInput';
 import { Select } from '../../ui/components/select';
+import { MenuBar } from '../../ui/components/menuBar';
 
 let selectOpenCount = 0;
 
@@ -270,7 +273,7 @@ export function App() {
       </div>
       <div className="row">
         <Select
-          label="Mixed"
+          label="Standard"
           options={selectOptionsStandard}
           onBeforeOpen={(options) => {
             selectOpenCount++;
@@ -296,6 +299,9 @@ export function App() {
           width={150}
           onChange={onHandleValue('Select.onChange')}
         />
+      </div>
+      <div className="row">
+        <MenuBar items={menuBarItems} />
       </div>
     </div>
   );
