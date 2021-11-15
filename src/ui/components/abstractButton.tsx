@@ -39,7 +39,7 @@ export interface Props {
   onMouseDown?: (e: MouseEvent) => void;
   onMouseUp?: (e: MouseEvent) => void;
   onKeyDown?: (e: KeyboardEvent) => void | false;
-  onKeyUp?: (e: KeyboardEvent) => void;
+  onKeyUp?: (e: KeyboardEvent) => void | false;
   onFocus?: (e: FocusEvent) => void;
   onBlur?: (e: FocusEvent) => void;
   onToggled?: (isToggled: boolean) => void;
@@ -214,21 +214,31 @@ export function AbstractButton(props: Props) {
 
   const onKeyDownHandler = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === ' ' || e.key === 'Enter') {
-      if (toggleOnDown) {
-        onToggleHandler();
-      }
-      const result = onKeyDown && onKeyDown(e);
-      if (result === false) {
-        return;
-      }
       ref.current?.classList.add('active');
       e.preventDefault();
       setTimeout(() => {
         onClickHandler(e as any as MouseEvent);
-        setTimeout(() => ref.current?.classList.remove('active'), 150);
+        setTimeout(() => {
+          ref.current?.classList.remove('active');
+          if (toggleOnDown && !isToggled) {
+            onToggleHandler();
+          }
+        }, 150);
       }, 0);
+    } else {
+      onKeyDown && onKeyDown(e);
     }
-    onKeyDown && onKeyDown(e);
+  };
+
+  const onKeyUpHandler = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === ' ' || e.key === 'Enter') {
+      const result = onKeyUp && onKeyUp(e);
+      if (result === false) {
+        return;
+      }
+    } else {
+      onKeyUp && onKeyUp(e);
+    }
   };
 
   const onFocusHandler = (e: FocusEvent<HTMLDivElement>) => {
@@ -262,7 +272,7 @@ export function AbstractButton(props: Props) {
       onFocus={onFocusHandler}
       onBlur={onBlurHandler}
       onKeyDown={onKeyDownHandler}
-      onKeyUp={onKeyUp}
+      onKeyUp={onKeyUpHandler}
     >
       <div className="buttoncontent">{children}</div>
     </div>

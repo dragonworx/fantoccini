@@ -96,10 +96,6 @@ export const style = ({ isOpen }: Required<Props>) => {
           background-color: ${highlightColor};
         }
 
-        & > * {
-          flex-grow: 1;
-        }
-
         & > .label {
           flex-grow: 2;
         }
@@ -116,12 +112,13 @@ export const style = ({ isOpen }: Required<Props>) => {
         }
 
         .shortcut {
+          ${noSelect}
           min-width: 16px;
           height: 16px;
           color: white;
           text-align: right;
           cursor: default;
-          ${noSelect}
+          margin: 0 3px;
         }
       }
     }
@@ -184,10 +181,11 @@ export function Menu(props: Props) {
         const menuContentRect = menuContentElement.getBoundingClientRect();
         const targetElementRect = targetElement.getBoundingClientRect();
 
-        let left = Math.min(
-          0,
-          (targetElementRect.width - menuContentRect.width) / 2
-        );
+        // let left = Math.min(
+        //   0,
+        //   (targetElementRect.width - menuContentRect.width) / 2
+        // );
+        let left = 0;
         let top = 0;
 
         if (position === 'bottom') {

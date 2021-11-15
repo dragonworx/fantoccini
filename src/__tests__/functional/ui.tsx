@@ -280,20 +280,28 @@ export function App() {
                 (option.label = `Option${i + 1} (#${selectOpenCount})`)
             );
           }}
+          onChange={onHandleValue('Select.onChange')}
         />
-        <Select label="Label" options={selectOptionsMixed} selectedIndex={2} />
+        <Select
+          label="Label"
+          options={selectOptionsMixed}
+          selectedIndex={2}
+          onChange={onHandleValue('Select.onChange')}
+        />
         <Select
           label="Disabled"
           enabled={false}
           options={selectOptionsStandard}
           selectedIndex={0}
           width={80}
+          onChange={onHandleValue('Select.onChange')}
         />
         <Select
           label="Long"
           options={selectOptionsLong}
           selectedIndex={0}
           width={150}
+          onChange={onHandleValue('Select.onChange')}
         />
       </div>
     </div>

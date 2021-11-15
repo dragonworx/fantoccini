@@ -23,6 +23,7 @@ export interface Props {
   options: MenuOption[];
   selectedIndex?: number;
   onBeforeOpen?: OptionUpdateHandler;
+  onChange?: (selectedIndex: number) => void;
 }
 
 export const defaultProps: Props = {
@@ -63,7 +64,15 @@ export const style = ({ width }: Required<Props>) => {
 
 export function Select(props: Props) {
   const [
-    { enabled, label, labelPosition, options, selectedIndex, onBeforeOpen },
+    {
+      enabled,
+      label,
+      labelPosition,
+      options,
+      selectedIndex,
+      onBeforeOpen,
+      onChange,
+    },
     css,
   ] = init(props, defaultProps, style);
 
@@ -81,6 +90,7 @@ export function Select(props: Props) {
   const onSelectHandler = (selectedIndex: number) => {
     setCurrentIndex(selectedIndex);
     setIsToggled(false);
+    onChange && onChange(selectedIndex);
   };
 
   const onToggledHandler = (isCurrentlyToggled: boolean) => {
@@ -94,14 +104,22 @@ export function Select(props: Props) {
     const lastIndex = options.length - 1;
     e && e.preventDefault();
     if (incrementAmount === -1) {
-      for (let i = currentIndex - 1; i >= 0; i--) {
+      for (
+        let i = currentIndex === -1 ? lastIndex : currentIndex - 1;
+        i >= 0;
+        i--
+      ) {
         if (isOptionEnabled(options[i])) {
           setCurrentIndex(i);
           return;
         }
       }
     } else {
-      for (let i = currentIndex + 1; i <= lastIndex; i++) {
+      for (
+        let i = currentIndex === -1 ? 0 : currentIndex + 1;
+        i <= lastIndex;
+        i++
+      ) {
         if (isOptionEnabled(options[i])) {
           setCurrentIndex(i);
           return;
@@ -124,10 +142,18 @@ export function Select(props: Props) {
       setIsToggled(false);
     } else if (key === 'Tab') {
       setIsToggled(false);
-    } else if (key === ' ' || key === 'Enter') {
+    }
+  };
+
+  const onKeyUpHandler = (e: KeyboardEvent) => {
+    const { key } = e;
+    if ((key === ' ' || key === 'Enter') && isToggled) {
       const current = ref.current;
       if (current) {
-        const li = current.querySelector('li.selected')!;
+        const li = current.querySelector('li.selected');
+        if (li === null) {
+          return;
+        }
         const index = parseFloat(li.getAttribute('data-index')!);
         const option = options[index];
         if (option.enabled !== false) {
@@ -145,6 +171,7 @@ export function Select(props: Props) {
             if (option.type === 'checked') {
               option.value = !option.value;
             }
+            li.classList.add('selected');
             onSelectHandler(index);
           });
         }
@@ -178,6 +205,7 @@ export function Select(props: Props) {
               toggleOnDown={true}
               onToggled={onToggledHandler}
               onKeyDown={onKeyDownHandler}
+              onKeyUp={onKeyUpHandler}
             >
               <HBoxLayout height={height}>
                 <Label enabled={enabled} text={labelText} justify="start" />
