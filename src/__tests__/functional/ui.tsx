@@ -5,7 +5,6 @@ import {
   onHandleValue,
   radioButtonGroupOptions,
   selectOptionsStandard,
-  selectOptionsMixed,
   selectOptionsLong,
   style,
   toolButtonGroupOptions,
@@ -280,12 +279,6 @@ export function App() {
                 (option.label = `Option${i + 1} (#${selectOpenCount})`)
             );
           }}
-          onChange={onHandleValue('Select.onChange')}
-        />
-        <Select
-          label="Label"
-          options={selectOptionsMixed}
-          selectedIndex={2}
           onChange={onHandleValue('Select.onChange')}
         />
         <Select

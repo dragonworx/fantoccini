@@ -2,7 +2,8 @@
 import { css, jsx } from '@emotion/react';
 import { Icon } from '../../ui/components/icon';
 import { Option as RadioButtonGroupOption } from '../../ui/components/radioButtonGroup';
-import { MenuOption } from '../../ui/components/menu';
+import { MenuItem } from '../../ui/components/menu';
+import { SelectOption } from '../../ui/components/select';
 import { Option as ToolButtonGroupOption } from '../../ui/components/toolButtonGroup';
 
 export const radioButtonGroupOptions: RadioButtonGroupOption[] = [
@@ -42,7 +43,7 @@ export const toolButtonGroupOptions: ToolButtonGroupOption[] = [
   },
 ];
 
-export const selectOptionsStandard: MenuOption[] = [
+export const selectOptionsStandard: MenuItem[] = [
   {
     label: 'Option1',
     value: 1,
@@ -61,7 +62,43 @@ export const selectOptionsStandard: MenuOption[] = [
   },
 ];
 
-export const selectOptionsMixed: MenuOption[] = [
+export const selectOptionsLong: MenuItem[] = [
+  {
+    label: 'Option1 Long Very Very Text',
+    value: 1,
+  },
+  {
+    label: 'Option2 Long Text',
+    value: 2,
+  },
+  {
+    label: 'Option3 Long Text',
+    value: 3,
+  },
+  {
+    label: 'Option4 Long Text',
+    value: 4,
+  },
+  {
+    label: 'Option5 Long Text',
+    value: 5,
+  },
+  {
+    label: 'Option6 Long Text',
+    value: 6,
+  },
+  {
+    enabled: false,
+    label: 'Option7 Long Text',
+    value: 7,
+  },
+  {
+    label: 'Option8 Long Text',
+    value: 8,
+  },
+];
+
+export const menuOptionsMixed: MenuItem[] = [
   {
     label: 'Option1',
     value: 1,
@@ -95,42 +132,6 @@ export const selectOptionsMixed: MenuOption[] = [
   {
     label: 'Option6',
     value: 6,
-  },
-];
-
-export const selectOptionsLong: MenuOption[] = [
-  {
-    label: 'Option1 Long Very Very Text',
-    value: 1,
-  },
-  {
-    label: 'Option2 Long Text',
-    value: 2,
-  },
-  {
-    label: 'Option3 Long Text',
-    value: 3,
-  },
-  {
-    label: 'Option4 Long Text',
-    value: 4,
-  },
-  {
-    label: 'Option5 Long Text',
-    value: 5,
-  },
-  {
-    label: 'Option6 Long Text',
-    value: 6,
-  },
-  {
-    enabled: false,
-    label: 'Option7 Long Text',
-    value: 7,
-  },
-  {
-    label: 'Option8 Long Text',
-    value: 8,
   },
 ];
 

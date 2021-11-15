@@ -1,48 +1,44 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import { useRef, useState, useEffect, ReactNode } from 'react';
-import { Label, LabelPosition } from './label';
+import { Label } from './label';
 import { Icon } from './icon';
-import { AbstractButton } from './abstractButton';
-import { HBoxLayout } from '../layout/box';
 import { init, multiFire } from './util';
 import { highlightColor, menuBorder, noSelect } from './theme';
 
-export type MenuOptionType = 'checked' | 'separator';
+export type MenuItemType = 'checked' | 'separator';
 
-export interface MenuOption {
+export interface MenuItem {
   enabled?: boolean;
   icon?: string;
   label?: string;
   value?: any;
-  type?: MenuOptionType;
+  type?: MenuItemType;
   shortCut?: string;
 }
 
-export const isOptionEnabled = ({ enabled, type }: MenuOption) =>
+export const isItemEnabled = ({ enabled, type }: MenuItem) =>
   enabled !== false && type !== 'separator';
 export type PopupPosition = 'left' | 'right' | 'top' | 'bottom';
-export type OptionUpdateHandler = (
-  options: MenuOption[]
-) => MenuOption[] | void;
+export type ItemUpdateHandler = (items: MenuItem[]) => MenuItem[] | void;
 
 export interface Props {
   children?: ReactNode;
   enabled?: boolean;
-  options: MenuOption[];
+  items: MenuItem[];
   selectedIndex?: number;
   position?: PopupPosition;
   isOpen: boolean;
   onSelect?: (selectedIndex: number) => void;
   onBlur?: () => void;
-  onBeforeOpen?: OptionUpdateHandler;
+  onBeforeOpen?: ItemUpdateHandler;
 }
 
 export const defaultProps: Props = {
   enabled: true,
   position: 'bottom',
   isOpen: false,
-  options: [],
+  items: [],
   selectedIndex: -1,
 };
 
@@ -125,15 +121,15 @@ export const style = ({ isOpen }: Required<Props>) => {
   `;
 };
 
-export const optionSelectBlinkInterval = 100;
-export const optionSelectBlinkRepeat = 2;
+export const itemSelectBlinkInterval = 100;
+export const itemSelectBlinkRepeat = 2;
 
 export function Menu(props: Props) {
   const [
     {
       children,
       isOpen,
-      options: defaultOptions,
+      items: defaultItems,
       selectedIndex,
       position,
       onSelect,
@@ -147,7 +143,7 @@ export function Menu(props: Props) {
   const current = ref.current;
 
   const [hasOpened, setHasOpened] = useState(false);
-  const [options, setOptions] = useState(defaultOptions);
+  const [items, setItems] = useState(defaultItems);
 
   const onWheelHandler = (e: WheelEvent) => e.preventDefault();
 
@@ -160,7 +156,7 @@ export function Menu(props: Props) {
     }
   };
 
-  useEffect(() => setOptions(defaultOptions), [defaultOptions]);
+  useEffect(() => setItems(defaultItems), [defaultItems]);
 
   useEffect(() => {
     if (current) {
@@ -171,9 +167,9 @@ export function Menu(props: Props) {
       if (isOpen && !hasOpened) {
         // open
         if (onBeforeOpen) {
-          const updatedOption = onBeforeOpen(options);
-          if (Array.isArray(updatedOption)) {
-            setOptions(updatedOption);
+          const updatedItem = onBeforeOpen(items);
+          if (Array.isArray(updatedItem)) {
+            setItems(updatedItem);
           }
         }
         const viewPortWidth = document.documentElement.clientWidth;
@@ -221,10 +217,10 @@ export function Menu(props: Props) {
     }
   });
 
-  const onOptionClickHandler = (index: number) => () => {
+  const onItemClickHandler = (index: number) => () => {
     const current = ref.current;
-    const option = options[index];
-    if (option.enabled !== false && onSelect && current) {
+    const item = items[index];
+    if (item.enabled !== false && onSelect && current) {
       const selectedLI = current.querySelector(
         `li[data-index="${selectedIndex}"`
       ) as HTMLLIElement;
@@ -238,29 +234,29 @@ export function Menu(props: Props) {
           setTimeout(() => {
             li.classList.remove('selected');
             done();
-          }, optionSelectBlinkInterval);
+          }, itemSelectBlinkInterval);
         },
-        optionSelectBlinkRepeat,
-        optionSelectBlinkInterval
+        itemSelectBlinkRepeat,
+        itemSelectBlinkInterval
       ).then(() => {
-        if (option.type === 'checked') {
-          option.value = !option.value;
-          setOptions(options);
+        if (item.type === 'checked') {
+          item.value = !item.value;
+          setItems(items);
         }
         onSelect(index);
       });
     }
   };
 
-  const hasIcon = !!options.find(
-    (option) => !!(option.icon || option.type === 'checked')
+  const hasIcon = !!items.find(
+    (item) => !!(item.icon || item.type === 'checked')
   );
-  const hasShortcut = !!options.find((option) => !!option.shortCut);
+  const hasShortcut = !!items.find((item) => !!item.shortCut);
 
-  const getOption = (option: MenuOption) => {
-    const { label, value, type, shortCut } = option;
+  const getItem = (item: MenuItem) => {
+    const { label, value, type, shortCut } = item;
     const labelEl = (
-      <Label enabled={isOptionEnabled(option)} text={label || String(value)} />
+      <Label enabled={isItemEnabled(item)} text={label || String(value)} />
     );
     const shortCutEl = hasShortcut ? (
       <div className="shortcut">{shortCut}</div>
@@ -277,8 +273,8 @@ export function Menu(props: Props) {
     ];
   };
 
-  const getLIClassName = (option: MenuOption, index: number) =>
-    isOptionEnabled(option)
+  const getLIClassName = (item: MenuItem, index: number) =>
+    isItemEnabled(item)
       ? index === selectedIndex
         ? 'selected'
         : ''
@@ -288,13 +284,13 @@ export function Menu(props: Props) {
     <div ref={ref} css={css} className="menu">
       {children}
       <ul className="menucontent">
-        {options.map((option, index) => (
+        {items.map((item, index) => (
           <li
             data-index={index}
-            onMouseUp={onOptionClickHandler(index)}
-            className={getLIClassName(option, index)}
+            onMouseUp={onItemClickHandler(index)}
+            className={getLIClassName(item, index)}
           >
-            {getOption(option)}
+            {getItem(item)}
           </li>
         ))}
       </ul>

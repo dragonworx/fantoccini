@@ -5,25 +5,30 @@ import { Label, LabelPosition } from './label';
 import { Icon } from './icon';
 import { AbstractButton } from './abstractButton';
 import {
-  isOptionEnabled,
+  isItemEnabled,
   Menu,
-  MenuOption,
-  OptionUpdateHandler,
-  optionSelectBlinkInterval,
-  optionSelectBlinkRepeat,
+  ItemUpdateHandler,
+  itemSelectBlinkInterval,
+  itemSelectBlinkRepeat,
 } from './menu';
 import { HBoxLayout } from '../layout/box';
 import { init, multiFire } from './util';
+
+export interface SelectOption {
+  enabled?: boolean;
+  label?: string;
+  value?: any;
+}
 
 export interface Props {
   enabled?: boolean;
   width?: number;
   label?: string;
   labelPosition?: LabelPosition;
-  options: MenuOption[];
+  options: SelectOption[];
   selectedIndex?: number;
-  onBeforeOpen?: OptionUpdateHandler;
-  onChange?: (selectedIndex: number) => void;
+  onBeforeOpen?: ItemUpdateHandler;
+  onChange?: (selectedValueOrIndex: any) => void;
 }
 
 export const defaultProps: Props = {
@@ -90,7 +95,7 @@ export function Select(props: Props) {
   const onSelectHandler = (selectedIndex: number) => {
     setCurrentIndex(selectedIndex);
     setIsToggled(false);
-    onChange && onChange(selectedIndex);
+    onChange && onChange(options[selectedIndex].value || selectedIndex);
   };
 
   const onToggledHandler = (isCurrentlyToggled: boolean) => {
@@ -109,7 +114,7 @@ export function Select(props: Props) {
         i >= 0;
         i--
       ) {
-        if (isOptionEnabled(options[i])) {
+        if (isItemEnabled(options[i])) {
           setCurrentIndex(i);
           return;
         }
@@ -120,7 +125,7 @@ export function Select(props: Props) {
         i <= lastIndex;
         i++
       ) {
-        if (isOptionEnabled(options[i])) {
+        if (isItemEnabled(options[i])) {
           setCurrentIndex(i);
           return;
         }
@@ -163,14 +168,11 @@ export function Select(props: Props) {
               setTimeout(() => {
                 li.classList.remove('selected');
                 done();
-              }, optionSelectBlinkInterval);
+              }, itemSelectBlinkInterval);
             },
-            optionSelectBlinkRepeat,
-            optionSelectBlinkInterval
+            itemSelectBlinkRepeat,
+            itemSelectBlinkInterval
           ).then(() => {
-            if (option.type === 'checked') {
-              option.value = !option.value;
-            }
             li.classList.add('selected');
             onSelectHandler(index);
           });
@@ -190,7 +192,7 @@ export function Select(props: Props) {
         <div css={css}>
           <Menu
             isOpen={isToggled}
-            options={options}
+            items={options}
             selectedIndex={currentIndex}
             onSelect={onSelectHandler}
             onBlur={onBlurHandler}
