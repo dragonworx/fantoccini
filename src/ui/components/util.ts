@@ -1,5 +1,12 @@
 import { SerializedStyles } from '@emotion/react';
-import { useEffect, useState } from 'react';
+import {
+  useEffect,
+  useState,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+  MouseEvent,
+} from 'react';
 
 export function getProps<Props>(
   props: Props,
@@ -31,25 +38,24 @@ export function init<Props>(
   return [requiredProps, style ? style(requiredProps) : undefined];
 }
 
-export function blink(element: HTMLElement) {}
-
-function useDebounce(value: any, delay: number) {
-  // State and setters for debounced value
-  const [debouncedValue, setDebouncedValue] = useState(value);
-  useEffect(
-    () => {
-      // Update debounced value after delay
-      const handler = setTimeout(() => {
-        setDebouncedValue(value);
-      }, delay);
-      // Cancel the timeout if value changes (also on delay change or unmount)
-      // This is how we prevent debounced value from updating if value is changed ...
-      // .. within the delay period. Timeout gets cleared and restarted.
-      return () => {
-        clearTimeout(handler);
+export function multiFire(
+  fn: (done: () => void) => void,
+  repeat: number,
+  delay: number
+) {
+  return new Promise((resolve) => {
+    let times = 0;
+    const fire = () => {
+      const done = () => {
+        times++;
+        if (times < repeat) {
+          setTimeout(fire, delay);
+        } else {
+          resolve(undefined);
+        }
       };
-    },
-    [value, delay] // Only re-call effect if value or delay changes
-  );
-  return debouncedValue;
+      fn(done);
+    };
+    fire();
+  });
 }

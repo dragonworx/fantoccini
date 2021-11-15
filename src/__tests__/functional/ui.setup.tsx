@@ -115,6 +115,23 @@ export const selectOptionsLong: MenuOption[] = [
     label: 'Option4 Long Text',
     value: 4,
   },
+  {
+    label: 'Option5 Long Text',
+    value: 5,
+  },
+  {
+    label: 'Option6 Long Text',
+    value: 6,
+  },
+  {
+    enabled: false,
+    label: 'Option7 Long Text',
+    value: 7,
+  },
+  {
+    label: 'Option8 Long Text',
+    value: 8,
+  },
 ];
 
 export const onHandleValue = (label: string) => (value: any) =>

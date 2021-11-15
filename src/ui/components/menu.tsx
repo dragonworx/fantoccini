@@ -5,7 +5,7 @@ import { Label, LabelPosition } from './label';
 import { Icon } from './icon';
 import { AbstractButton } from './abstractButton';
 import { HBoxLayout } from '../layout/box';
-import { init } from './util';
+import { init, multiFire } from './util';
 import { highlightColor, menuBorder } from './theme';
 
 export type MenuOptionType = 'checked' | 'separator';
@@ -69,6 +69,7 @@ export const style = ({ isOpen }: Required<Props>) => {
         display: flex;
         justify-content: start;
         align-items: end;
+        transition: background-color 0.1s;
 
         &:not(.selected):hover {
           background-color: black;
@@ -124,6 +125,9 @@ export const style = ({ isOpen }: Required<Props>) => {
     }
   `;
 };
+
+export const optionSelectBlinkInterval = 100;
+export const optionSelectBlinkRepeat = 2;
 
 export function Menu(props: Props) {
   const [
@@ -219,11 +223,28 @@ export function Menu(props: Props) {
 
   const onOptionClickHandler = (index: number) => () => {
     const option = options[index];
-    if (option.enabled !== false) {
-      onSelect && onSelect(index);
+    if (option.enabled !== false && onSelect) {
       if (option.type === 'checked') {
         option.value = !option.value;
-        setOptions(options);
+        multiFire(
+          (done) => {
+            if (ref.current) {
+              const li = ref.current.querySelector(
+                `li[data-index="${index}"`
+              ) as HTMLLIElement;
+              li.classList.add('selected');
+              setTimeout(() => {
+                li.classList.remove('selected');
+                done();
+              }, optionSelectBlinkInterval);
+            }
+          },
+          optionSelectBlinkRepeat,
+          optionSelectBlinkInterval
+        ).then(() => {
+          onSelect(index);
+          setOptions(options);
+        });
       }
     }
   };
@@ -266,6 +287,7 @@ export function Menu(props: Props) {
       <ul className="menucontent">
         {options.map((option, index) => (
           <li
+            data-index={index}
             onClick={onOptionClickHandler(index)}
             className={getLIClassName(option, index)}
           >
