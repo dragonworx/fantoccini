@@ -4,8 +4,9 @@ import {
   createIcons,
   onHandleValue,
   radioButtonGroupOptions,
-  selectOptions1,
-  selectOptions2,
+  selectOptionsStandard,
+  selectOptionsMixed,
+  selectOptionsLong,
   style,
   toolButtonGroupOptions,
 } from './ui.setup';
@@ -24,6 +25,8 @@ import {
   numericKeyFilter,
 } from '../../ui/components/numericInput';
 import { Select } from '../../ui/components/select';
+
+let selectOpenCount = 0;
 
 export function App() {
   return (
@@ -267,18 +270,28 @@ export function App() {
         />
       </div>
       <div className="row">
-        <Select label="Label" options={selectOptions1} />
-        <Select label="Label" options={selectOptions1} selectedIndex={2} />
+        <Select
+          label="Mixed"
+          options={selectOptionsStandard}
+          onBeforeOpen={(options) => {
+            selectOpenCount++;
+            return options.forEach(
+              (option, i) =>
+                (option.label = `Option${i + 1} (#${selectOpenCount})`)
+            );
+          }}
+        />
+        <Select label="Label" options={selectOptionsMixed} selectedIndex={2} />
         <Select
           label="Disabled"
           enabled={false}
-          options={selectOptions1}
+          options={selectOptionsStandard}
           selectedIndex={0}
           width={80}
         />
         <Select
-          label="Label"
-          options={selectOptions2}
+          label="Long"
+          options={selectOptionsLong}
           selectedIndex={0}
           width={150}
         />

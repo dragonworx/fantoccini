@@ -8,16 +8,23 @@ import { HBoxLayout } from '../layout/box';
 import { init } from './util';
 import { highlightColor, menuBorder } from './theme';
 
+export type MenuOptionType = 'checked' | 'separator';
+
 export interface MenuOption {
   enabled?: boolean;
   icon?: string;
   label?: string;
-  value: any;
+  value?: any;
+  type?: MenuOptionType;
+  shortCut?: string;
 }
 
-export const isOptionEnabled = (option: MenuOption) => option.enabled !== false;
-
+export const isOptionEnabled = ({ enabled, type }: MenuOption) =>
+  enabled !== false && type !== 'separator';
 export type PopupPosition = 'left' | 'right' | 'top' | 'bottom';
+export type OptionUpdateHandler = (
+  options: MenuOption[]
+) => MenuOption[] | void;
 
 export interface Props {
   children?: ReactNode;
@@ -28,6 +35,7 @@ export interface Props {
   isOpen: boolean;
   onSelect?: (selectedIndex: number) => void;
   onBlur?: () => void;
+  onBeforeOpen?: OptionUpdateHandler;
 }
 
 export const defaultProps: Props = {
@@ -57,8 +65,10 @@ export const style = ({ isOpen }: Required<Props>) => {
       & li {
         margin: 0;
         align-items: center;
-        justify-content: start;
         padding: 5px 5px;
+        display: flex;
+        justify-content: start;
+        align-items: end;
 
         &:not(.selected):hover {
           background-color: black;
@@ -66,6 +76,7 @@ export const style = ({ isOpen }: Required<Props>) => {
 
         &.disabled:hover {
           background-color: transparent;
+
           & label {
             text-shadow: none;
           }
@@ -83,6 +94,32 @@ export const style = ({ isOpen }: Required<Props>) => {
         &.selected:hover {
           background-color: ${highlightColor};
         }
+
+        & > * {
+          flex-grow: 1;
+        }
+
+        & > .label {
+          flex-grow: 2;
+        }
+
+        .separator {
+          width: 100%;
+          border-top: 2px solid #242424;
+          border-bottom: 1px solid #505050;
+        }
+
+        .iconGutter {
+          width: 16px;
+          height: 16px;
+        }
+
+        .shortcut {
+          min-width: 16px;
+          height: 16px;
+          color: white;
+          text-align: right;
+        }
       }
     }
   `;
@@ -92,20 +129,22 @@ export function Menu(props: Props) {
   const [
     {
       children,
-      enabled,
       isOpen,
-      options,
+      options: defaultOptions,
       selectedIndex,
       position,
       onSelect,
       onBlur,
+      onBeforeOpen,
     },
     css,
   ] = init(props, defaultProps, style);
 
   const ref = useRef<HTMLDivElement>(null);
-  const [hasOpened, setHasOpened] = useState(false);
   const current = ref.current;
+
+  const [hasOpened, setHasOpened] = useState(false);
+  const [options, setOptions] = useState(defaultOptions);
 
   const onWheelHandler = (e: WheelEvent) => e.preventDefault();
 
@@ -118,6 +157,8 @@ export function Menu(props: Props) {
     }
   };
 
+  useEffect(() => setOptions(defaultOptions), [defaultOptions]);
+
   useEffect(() => {
     if (current) {
       const targetElement = current.querySelector(':scope > *')! as HTMLElement;
@@ -126,6 +167,12 @@ export function Menu(props: Props) {
       )! as HTMLElement;
       if (isOpen && !hasOpened) {
         // open
+        if (onBeforeOpen) {
+          const updatedOption = onBeforeOpen(options);
+          if (Array.isArray(updatedOption)) {
+            setOptions(updatedOption);
+          }
+        }
         const viewPortWidth = document.documentElement.clientWidth;
         const viewPortHeight = document.documentElement.clientHeight;
         const menuContentRect = menuContentElement.getBoundingClientRect();
@@ -171,8 +218,47 @@ export function Menu(props: Props) {
   });
 
   const onOptionClickHandler = (index: number) => () => {
-    options[index].enabled !== false && onSelect && onSelect(index);
+    const option = options[index];
+    if (option.enabled !== false) {
+      onSelect && onSelect(index);
+      if (option.type === 'checked') {
+        option.value = !option.value;
+        setOptions(options);
+      }
+    }
   };
+
+  const hasIcon = !!options.find(
+    (option) => !!(option.icon || option.type === 'checked')
+  );
+  const hasShortcut = !!options.find((option) => !!option.shortCut);
+
+  const getOption = (option: MenuOption) => {
+    const { label, value, type, shortCut } = option;
+    const labelEl = (
+      <Label enabled={isOptionEnabled(option)} text={label || String(value)} />
+    );
+    const shortCutEl = hasShortcut ? (
+      <div className="shortcut">{shortCut}</div>
+    ) : null;
+    if (type === 'separator') {
+      return <div className="separator" />;
+    } else if (type === 'checked' && value === true) {
+      return [<Icon src="#tick" width={16} />, labelEl, shortCutEl];
+    }
+    return [
+      hasIcon ? <div className="iconGutter" /> : null,
+      labelEl,
+      shortCutEl,
+    ];
+  };
+
+  const getLIClassName = (option: MenuOption, index: number) =>
+    isOptionEnabled(option)
+      ? index === selectedIndex
+        ? 'selected'
+        : ''
+      : 'disabled';
 
   return (
     <div ref={ref} css={css} className="menu">
@@ -181,18 +267,9 @@ export function Menu(props: Props) {
         {options.map((option, index) => (
           <li
             onClick={onOptionClickHandler(index)}
-            className={
-              isOptionEnabled(option)
-                ? index === selectedIndex
-                  ? 'selected'
-                  : ''
-                : 'disabled'
-            }
+            className={getLIClassName(option, index)}
           >
-            <Label
-              enabled={isOptionEnabled(option)}
-              text={option.label || String(option.value)}
-            />
+            {getOption(option)}
           </li>
         ))}
       </ul>

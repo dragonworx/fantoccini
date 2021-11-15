@@ -42,14 +42,13 @@ export const toolButtonGroupOptions: ToolButtonGroupOption[] = [
   },
 ];
 
-export const selectOptions1: MenuOption[] = [
+export const selectOptionsStandard: MenuOption[] = [
   {
     label: 'Option1',
     value: 1,
   },
   {
-    enabled: false,
-    label: 'Disabled2',
+    label: 'Option2',
     value: 2,
   },
   {
@@ -57,13 +56,49 @@ export const selectOptions1: MenuOption[] = [
     value: 3,
   },
   {
-    enabled: false,
-    label: 'Disabled4',
+    label: 'Option4',
     value: 4,
   },
 ];
 
-export const selectOptions2: MenuOption[] = [
+export const selectOptionsMixed: MenuOption[] = [
+  {
+    label: 'Option1',
+    value: 1,
+    shortCut: 'Ctrl+E',
+  },
+  {
+    enabled: false,
+    label: 'Disabled2',
+    value: 2,
+  },
+  {
+    label: 'CheckedOption3',
+    type: 'checked',
+    value: false,
+    shortCut: 'Ctrl+J',
+  },
+  {
+    label: 'CheckedOption4',
+    type: 'checked',
+    value: true,
+    shortCut: 'Ctrl+A',
+  },
+  {
+    enabled: false,
+    label: 'Disabled5',
+    value: 5,
+  },
+  {
+    type: 'separator',
+  },
+  {
+    label: 'Option6',
+    value: 6,
+  },
+];
+
+export const selectOptionsLong: MenuOption[] = [
   {
     label: 'Option1 Long Very Very Text',
     value: 1,

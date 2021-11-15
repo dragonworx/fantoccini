@@ -4,7 +4,7 @@ import { useState, useEffect, KeyboardEvent } from 'react';
 import { Label, LabelPosition } from './label';
 import { Icon } from './icon';
 import { AbstractButton } from './abstractButton';
-import { isOptionEnabled, Menu, MenuOption } from './menu';
+import { isOptionEnabled, Menu, MenuOption, OptionUpdateHandler } from './menu';
 import { HBoxLayout } from '../layout/box';
 import { init } from './util';
 
@@ -15,6 +15,7 @@ export interface Props {
   labelPosition?: LabelPosition;
   options: MenuOption[];
   selectedIndex?: number;
+  onBeforeOpen?: OptionUpdateHandler;
 }
 
 export const defaultProps: Props = {
@@ -54,14 +55,14 @@ export const style = ({ width }: Required<Props>) => {
 };
 
 export function Select(props: Props) {
-  const [{ enabled, label, labelPosition, options, selectedIndex }, css] = init(
-    props,
-    defaultProps,
-    style
-  );
+  const [
+    { enabled, label, labelPosition, options, selectedIndex, onBeforeOpen },
+    css,
+  ] = init(props, defaultProps, style);
 
   const [isToggled, setIsToggled] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(selectedIndex);
+
   useEffect(() => setCurrentIndex(selectedIndex), [selectedIndex]);
 
   const labelText =
@@ -132,6 +133,7 @@ export function Select(props: Props) {
             selectedIndex={currentIndex}
             onSelect={onSelectHandler}
             onBlur={onBlurHandler}
+            onBeforeOpen={onBeforeOpen}
           >
             <AbstractButton
               enabled={enabled}
