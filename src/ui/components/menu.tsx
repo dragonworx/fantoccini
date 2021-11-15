@@ -6,7 +6,7 @@ import { Icon } from './icon';
 import { AbstractButton } from './abstractButton';
 import { HBoxLayout } from '../layout/box';
 import { init, multiFire } from './util';
-import { highlightColor, menuBorder } from './theme';
+import { highlightColor, menuBorder, noSelect } from './theme';
 
 export type MenuOptionType = 'checked' | 'separator';
 
@@ -120,6 +120,8 @@ export const style = ({ isOpen }: Required<Props>) => {
           height: 16px;
           color: white;
           text-align: right;
+          cursor: default;
+          ${noSelect}
         }
       }
     }
@@ -222,20 +224,23 @@ export function Menu(props: Props) {
   });
 
   const onOptionClickHandler = (index: number) => () => {
+    const current = ref.current;
     const option = options[index];
-    if (option.enabled !== false && onSelect) {
+    if (option.enabled !== false && onSelect && current) {
+      const selectedLI = current.querySelector(
+        `li[data-index="${selectedIndex}"`
+      ) as HTMLLIElement;
+      selectedLI && selectedLI.classList.remove('selected');
+      const li = current.querySelector(
+        `li[data-index="${index}"`
+      ) as HTMLLIElement;
       multiFire(
         (done) => {
-          if (ref.current) {
-            const li = ref.current.querySelector(
-              `li[data-index="${index}"`
-            ) as HTMLLIElement;
-            li.classList.add('selected');
-            setTimeout(() => {
-              li.classList.remove('selected');
-              done();
-            }, optionSelectBlinkInterval);
-          }
+          li.classList.add('selected');
+          setTimeout(() => {
+            li.classList.remove('selected');
+            done();
+          }, optionSelectBlinkInterval);
         },
         optionSelectBlinkRepeat,
         optionSelectBlinkInterval
@@ -288,7 +293,7 @@ export function Menu(props: Props) {
         {options.map((option, index) => (
           <li
             data-index={index}
-            onClick={onOptionClickHandler(index)}
+            onMouseUp={onOptionClickHandler(index)}
             className={getLIClassName(option, index)}
           >
             {getOption(option)}

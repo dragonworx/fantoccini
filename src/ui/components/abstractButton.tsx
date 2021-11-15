@@ -28,6 +28,7 @@ export interface Props {
   enabled?: boolean;
   canToggle?: boolean;
   toggleMode?: ToggleMode;
+  toggleOnDown?: boolean;
   isToggled?: boolean;
   width?: number;
   height?: number;
@@ -37,7 +38,7 @@ export interface Props {
   onClick?: (e: MouseEvent) => void;
   onMouseDown?: (e: MouseEvent) => void;
   onMouseUp?: (e: MouseEvent) => void;
-  onKeyDown?: (e: KeyboardEvent) => void;
+  onKeyDown?: (e: KeyboardEvent) => void | false;
   onKeyUp?: (e: KeyboardEvent) => void;
   onFocus?: (e: FocusEvent) => void;
   onBlur?: (e: FocusEvent) => void;
@@ -48,6 +49,7 @@ export const defaultProps: Props = {
   enabled: true,
   canToggle: false,
   toggleMode: 'binary',
+  toggleOnDown: false,
   isToggled: false,
   width: 20,
   height: 20,
@@ -172,6 +174,7 @@ export function AbstractButton(props: Props) {
     canToggle,
     isRound,
     toggleMode,
+    toggleOnDown,
     isToggled,
     onClick,
     onMouseDown,
@@ -191,20 +194,33 @@ export function AbstractButton(props: Props) {
 
   const onClickHandler = (e: MouseEvent) => {
     if (isInteractive(enabled, canToggle, onClick)) {
-      if (canToggle) {
-        if (isRound && toggleMode === 'single' && isCurrentlyToggled) {
-          return;
-        }
-        const newValue = !isCurrentlyToggled;
-        setIsCurrentlyToggled(newValue);
-        onToggled && onToggled(newValue);
+      if (!toggleOnDown) {
+        onToggleHandler();
       }
       onClick && onClick(e);
     }
   };
 
+  const onToggleHandler = () => {
+    if (canToggle) {
+      if (isRound && toggleMode === 'single' && isCurrentlyToggled) {
+        return;
+      }
+      const newValue = !isCurrentlyToggled;
+      setIsCurrentlyToggled(newValue);
+      onToggled && onToggled(newValue);
+    }
+  };
+
   const onKeyDownHandler = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === ' ' || e.key === 'Enter') {
+      if (toggleOnDown) {
+        onToggleHandler();
+      }
+      const result = onKeyDown && onKeyDown(e);
+      if (result === false) {
+        return;
+      }
       ref.current?.classList.add('active');
       e.preventDefault();
       setTimeout(() => {
@@ -224,6 +240,9 @@ export function AbstractButton(props: Props) {
   };
 
   const onMouseDownHandler = (e: MouseEvent<HTMLDivElement>) => {
+    if (toggleOnDown) {
+      onToggleHandler();
+    }
     onMouseDown && onMouseDown(e);
   };
 

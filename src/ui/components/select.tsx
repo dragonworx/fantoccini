@@ -1,12 +1,19 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { useState, useEffect, KeyboardEvent } from 'react';
+import { useState, useEffect, useRef, KeyboardEvent } from 'react';
 import { Label, LabelPosition } from './label';
 import { Icon } from './icon';
 import { AbstractButton } from './abstractButton';
-import { isOptionEnabled, Menu, MenuOption, OptionUpdateHandler } from './menu';
+import {
+  isOptionEnabled,
+  Menu,
+  MenuOption,
+  OptionUpdateHandler,
+  optionSelectBlinkInterval,
+  optionSelectBlinkRepeat,
+} from './menu';
 import { HBoxLayout } from '../layout/box';
-import { init } from './util';
+import { init, multiFire } from './util';
 
 export interface Props {
   enabled?: boolean;
@@ -62,6 +69,7 @@ export function Select(props: Props) {
 
   const [isToggled, setIsToggled] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(selectedIndex);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => setCurrentIndex(selectedIndex), [selectedIndex]);
 
@@ -116,6 +124,32 @@ export function Select(props: Props) {
       setIsToggled(false);
     } else if (key === 'Tab') {
       setIsToggled(false);
+    } else if (key === ' ' || key === 'Enter') {
+      const current = ref.current;
+      if (current) {
+        const li = current.querySelector('li.selected')!;
+        const index = parseFloat(li.getAttribute('data-index')!);
+        const option = options[index];
+        if (option.enabled !== false) {
+          multiFire(
+            (done) => {
+              li.classList.add('selected');
+              setTimeout(() => {
+                li.classList.remove('selected');
+                done();
+              }, optionSelectBlinkInterval);
+            },
+            optionSelectBlinkRepeat,
+            optionSelectBlinkInterval
+          ).then(() => {
+            if (option.type === 'checked') {
+              option.value = !option.value;
+            }
+            onSelectHandler(index);
+          });
+        }
+      }
+      return false;
     }
   };
 
@@ -124,7 +158,7 @@ export function Select(props: Props) {
   };
 
   return (
-    <div className="select">
+    <div className="select" ref={ref}>
       <Label text={label} position={labelPosition}>
         <div css={css}>
           <Menu
@@ -141,6 +175,7 @@ export function Select(props: Props) {
               canToggle={true}
               toggleMode="binary"
               isToggled={isToggled}
+              toggleOnDown={true}
               onToggled={onToggledHandler}
               onKeyDown={onKeyDownHandler}
             >
