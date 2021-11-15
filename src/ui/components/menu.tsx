@@ -224,28 +224,28 @@ export function Menu(props: Props) {
   const onOptionClickHandler = (index: number) => () => {
     const option = options[index];
     if (option.enabled !== false && onSelect) {
-      if (option.type === 'checked') {
-        option.value = !option.value;
-        multiFire(
-          (done) => {
-            if (ref.current) {
-              const li = ref.current.querySelector(
-                `li[data-index="${index}"`
-              ) as HTMLLIElement;
-              li.classList.add('selected');
-              setTimeout(() => {
-                li.classList.remove('selected');
-                done();
-              }, optionSelectBlinkInterval);
-            }
-          },
-          optionSelectBlinkRepeat,
-          optionSelectBlinkInterval
-        ).then(() => {
-          onSelect(index);
+      multiFire(
+        (done) => {
+          if (ref.current) {
+            const li = ref.current.querySelector(
+              `li[data-index="${index}"`
+            ) as HTMLLIElement;
+            li.classList.add('selected');
+            setTimeout(() => {
+              li.classList.remove('selected');
+              done();
+            }, optionSelectBlinkInterval);
+          }
+        },
+        optionSelectBlinkRepeat,
+        optionSelectBlinkInterval
+      ).then(() => {
+        if (option.type === 'checked') {
+          option.value = !option.value;
           setOptions(options);
-        });
-      }
+        }
+        onSelect(index);
+      });
     }
   };
 
