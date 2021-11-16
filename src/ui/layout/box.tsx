@@ -4,7 +4,12 @@ import { ReactNode } from 'react';
 
 export type Direction = 'horizontal' | 'vertical';
 export type Alignment = 'start' | 'center' | 'end';
-export type Justification = 'start' | 'center' | 'end' | 'space-evenly';
+export type Justification =
+  | 'start'
+  | 'center'
+  | 'end'
+  | 'space-evenly'
+  | 'space-around';
 
 export type Props = {
   children?: ReactNode;

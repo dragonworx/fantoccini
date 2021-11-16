@@ -1,10 +1,10 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { useRef, useState, useEffect, ReactNode } from 'react';
+import { useRef, useState, useEffect, ReactNode, MouseEvent } from 'react';
 import { Label } from './label';
 import { Icon } from './icon';
 import { init, multiFire } from './util';
-import { highlightColor, menuBorder, noSelect } from './theme';
+import { buttonBg, buttonContentBorder } from './theme';
 import { MenuItem } from './menu';
 import { Select } from './select';
 
@@ -23,26 +23,41 @@ export const defaultProps: Props = {
   items: [],
 };
 
-export const style = ({}: Required<Props>) => {
+export const style = ({ enabled }: Required<Props>) => {
   return css`
     display: flex;
     height: 24px;
+    width: 100%;
+
+    ${buttonBg(enabled)}
+    ${buttonContentBorder}
   `;
 };
 
 export function MenuBar(props: Props) {
   const [{ items }, css] = init(props, defaultProps, style);
 
-  const ref = useRef<HTMLDivElement>(null);
-  const current = ref.current;
+  const [selected, setSelected] = useState(-1);
+  const [isToggled, setIsToggled] = useState(false);
+
+  const onMouseOverHandler = (i: number) => (e: MouseEvent) => {
+    setSelected(i);
+  };
+
+  const onToggledHandler = (isCurrentlyToggled: boolean) => {
+    setIsToggled(isCurrentlyToggled);
+  };
 
   return (
-    <div ref={ref} css={css} className="menubar">
-      {items.map((menuItem) => (
+    <div css={css} className="menubar">
+      {items.map((menuItem, i) => (
         <Select
           label={menuItem.label}
           options={menuItem.menu}
           appearance="bare"
+          isOpen={selected === i && isToggled}
+          onMouseOver={onMouseOverHandler(i)}
+          onToggled={onToggledHandler}
         />
       ))}
     </div>

@@ -43,6 +43,7 @@ export const style = ({
   return css`
     ${reset}
     ${noSelect}
+    flex-grow: 1;
     margin: ${appearance === 'bare' ? '0 10px !important' : 'auto'};
     text-shadow: 1px 1px 1px ${shadowColor};
     color: ${enabled ? textColor.hex() : textColor.darken(0.25).hex()};

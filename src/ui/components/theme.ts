@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import Color from 'color';
 
 export const reset = css`
   box-sizing: border-box;
@@ -58,4 +59,45 @@ export const buttonShadow = css`
 
 export const buttonShadowInset = css`
   box-shadow: inset 2px 2px 4px 0px rgb(0 0 0 / 25%);
+`;
+
+export const buttonDarkColor = (enabled: boolean) =>
+  enabled ? '#24282f' : '#363c47';
+
+export const buttonBg = (enabled: boolean = true, toggled: boolean = false) => {
+  const darkColor = buttonDarkColor(enabled);
+  if (toggled) {
+    return css`
+      background: linear-gradient(
+        180deg,
+        ${Color(darkColor)
+            .darken(enabled ? 0.3 : 0.1)
+            .hex()}
+          0,
+        #2f343c 100%
+      );
+    `;
+  } else {
+    return css`
+      background: linear-gradient(0deg, ${darkColor} 0, #2f343c 100%);
+    `;
+  }
+};
+
+export const buttonBgHover = (enabled: boolean, active: boolean) =>
+  active
+    ? buttonBg(enabled, true)
+    : css`
+        background: linear-gradient(
+          180deg,
+          ${buttonDarkColor(enabled)} 0,
+          #3b424c 100%
+        );
+      `;
+
+export const buttonContentBorder = css`
+  border: 1px solid #444;
+  border-left-color: #555;
+  border-right-color: #555;
+  border-bottom-color: #999;
 `;

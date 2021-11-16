@@ -19,6 +19,9 @@ import {
   boxBorder,
   buttonShadow,
   buttonShadowInset,
+  buttonBg,
+  buttonBgHover,
+  buttonContentBorder,
 } from './theme';
 
 export type ToggleMode = 'binary' | 'single';
@@ -40,6 +43,8 @@ export interface Props {
   onClick?: (e: MouseEvent) => void;
   onMouseDown?: (e: MouseEvent) => void;
   onMouseUp?: (e: MouseEvent) => void;
+  onMouseOver?: (e: MouseEvent) => void;
+  onMouseOut?: (e: MouseEvent) => void;
   onKeyDown?: (e: KeyboardEvent) => void | false;
   onKeyUp?: (e: KeyboardEvent) => void | false;
   onFocus?: (e: FocusEvent) => void;
@@ -82,23 +87,11 @@ export const cssStyle =
       return css``;
     }
 
-    const darkColor = enabled ? '#24282f' : '#363c47';
-
     const activeStyle = css`
-      background: linear-gradient(
-        180deg,
-        ${Color(darkColor)
-            .darken(enabled ? 0.3 : 0.1)
-            .hex()}
-          0,
-        #2f343c 100%
-      );
+      ${buttonBg(enabled, true)}
 
       & > .buttoncontent {
-        border: 1px solid #444;
-        border-left-color: #555;
-        border-right-color: #555;
-        border-bottom-color: #999;
+        ${buttonContentBorder}
         top: 1px;
         left: 1px;
       }
@@ -117,7 +110,7 @@ export const cssStyle =
       ${borderRadius}
       ${noSelect}
       ${isCurrentlyToggled ? buttonShadowInset : buttonShadow}
-      background: linear-gradient(0deg, ${darkColor} 0, #2f343c 100%);
+      ${buttonBg(enabled)}
       border: 1px solid #030c17;
       min-width: ${width}px;
       min-height: ${height}px;
@@ -136,7 +129,7 @@ export const cssStyle =
       }
 
       &:hover {
-        background: linear-gradient(180deg, ${darkColor} 0, #3b424c 100%);
+        ${buttonBgHover(enabled, isCurrentlyToggled)}
       }
 
       &:active,
@@ -187,6 +180,8 @@ export function AbstractButton(props: Props) {
     onClick,
     onMouseDown,
     onMouseUp,
+    onMouseOver,
+    onMouseOut,
     onKeyDown,
     onKeyUp,
     onFocus,
@@ -258,14 +253,22 @@ export function AbstractButton(props: Props) {
   };
 
   const onMouseDownHandler = (e: MouseEvent<HTMLDivElement>) => {
-    if (toggleOnDown) {
+    if (enabled && toggleOnDown) {
       onToggleHandler();
     }
-    onMouseDown && onMouseDown(e);
+    enabled && onMouseDown && onMouseDown(e);
   };
 
   const onMouseUpHandler = (e: MouseEvent<HTMLDivElement>) => {
-    onMouseUp && onMouseUp(e);
+    enabled && onMouseUp && onMouseUp(e);
+  };
+
+  const onMouseOverHandler = (e: MouseEvent<HTMLDivElement>) => {
+    enabled && onMouseOver && onMouseOver(e);
+  };
+
+  const onMouseOutHandler = (e: MouseEvent<HTMLDivElement>) => {
+    enabled && onMouseOut && onMouseOut(e);
   };
 
   return (
@@ -277,6 +280,8 @@ export function AbstractButton(props: Props) {
       onClick={onClickHandler}
       onMouseDown={onMouseDownHandler}
       onMouseUp={onMouseUpHandler}
+      onMouseOver={onMouseOverHandler}
+      onMouseOut={onMouseOutHandler}
       onFocus={onFocusHandler}
       onBlur={onBlurHandler}
       onKeyDown={onKeyDownHandler}

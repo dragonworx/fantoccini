@@ -60,11 +60,8 @@ export const style = ({ isOpen }: Required<Props>) => {
 
       & li {
         margin: 0;
-        align-items: center;
         padding: 5px 5px;
         display: flex;
-        justify-content: start;
-        align-items: end;
         transition: background-color 0.1s;
 
         &:not(.selected):hover {
@@ -247,9 +244,6 @@ export function Menu(props: Props) {
     }
   };
 
-  const hasIcon = !!items.find(
-    (item) => !!(item.icon || item.type === 'checked')
-  );
   const hasShortcut = !!items.find((item) => !!item.shortCut);
 
   const getItem = (item: MenuItem) => {
@@ -265,11 +259,7 @@ export function Menu(props: Props) {
     } else if (type === 'checked' && value === true) {
       return [<Icon src="#tick" width={16} />, labelEl, shortCutEl];
     }
-    return [
-      hasIcon ? <div className="iconGutter" /> : null,
-      labelEl,
-      shortCutEl,
-    ];
+    return [<div className="iconGutter" />, labelEl, shortCutEl];
   };
 
   const getLIClassName = (item: MenuItem, index: number) =>

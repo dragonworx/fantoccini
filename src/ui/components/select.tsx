@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { useState, useEffect, useRef, KeyboardEvent } from 'react';
+import { useState, useEffect, useRef, KeyboardEvent, MouseEvent } from 'react';
 import { Label, LabelPosition } from './label';
 import { Icon } from './icon';
 import { AbstractButton, Appearance } from './abstractButton';
@@ -13,7 +13,7 @@ import {
   MenuItem,
 } from './menu';
 import { HBoxLayout } from '../layout/box';
-import { init, multiFire } from './util';
+import { getCss, getProps, init, multiFire } from './util';
 
 export interface Props {
   enabled?: boolean;
@@ -23,8 +23,12 @@ export interface Props {
   options: MenuItem[];
   selectedIndex?: number;
   appearance?: Appearance;
+  isOpen?: boolean;
   onBeforeOpen?: ItemUpdateHandler;
   onChange?: (selectedValueOrIndex: any) => void;
+  onToggled?: (isToggled: boolean) => void;
+  onMouseOver?: (e: MouseEvent) => void;
+  onMouseOut?: (e: MouseEvent) => void;
 }
 
 export const defaultProps: Props = {
@@ -34,6 +38,7 @@ export const defaultProps: Props = {
   options: [],
   selectedIndex: -1,
   appearance: 'full',
+  isOpen: false,
 };
 
 const height = 25;
@@ -54,11 +59,14 @@ export const style =
       height: ${height}px;
 
       & .buttoncontent {
-        & label,
-        & .label {
+        & label {
           text-overflow: ellipsis;
           overflow: hidden;
+        }
+
+        & .label {
           flex-grow: 1;
+          max-width: calc(95% - 30px);
         }
       }
 
@@ -74,21 +82,25 @@ export const style =
   };
 
 export function Select(props: Props) {
-  const [isToggled, setIsToggled] = useState(false);
+  const {
+    enabled,
+    label,
+    labelPosition,
+    options,
+    selectedIndex,
+    appearance,
+    isOpen,
+    onBeforeOpen,
+    onChange,
+    onMouseOver,
+    onMouseOut,
+    onToggled,
+  } = getProps(props, defaultProps);
 
-  const [
-    {
-      enabled,
-      label,
-      labelPosition,
-      options,
-      selectedIndex,
-      appearance,
-      onBeforeOpen,
-      onChange,
-    },
-    cssStyle,
-  ] = init(props, defaultProps, style(isToggled));
+  const [isToggled, setIsToggled] = useState(isOpen);
+  useEffect(() => setIsToggled(isOpen), [isOpen]);
+
+  const cssStyle = getCss(style(isToggled), props, defaultProps);
 
   const [currentIndex, setCurrentIndex] = useState(selectedIndex);
   const ref = useRef<HTMLDivElement>(null);
@@ -110,6 +122,7 @@ export function Select(props: Props) {
 
   const onToggledHandler = (isCurrentlyToggled: boolean) => {
     setIsToggled(isCurrentlyToggled);
+    onToggled && onToggled(isCurrentlyToggled);
   };
 
   const incrementCurrentIndex = (
@@ -199,6 +212,14 @@ export function Select(props: Props) {
     setIsToggled(false);
   };
 
+  const onMouseOverHandler = (e: MouseEvent) => {
+    onMouseOver && onMouseOver(e);
+  };
+
+  const onMouseOutHandler = (e: MouseEvent) => {
+    onMouseOut && onMouseOut(e);
+  };
+
   return (
     <div className="select" ref={ref}>
       <Label
@@ -226,8 +247,15 @@ export function Select(props: Props) {
               onToggled={onToggledHandler}
               onKeyDown={onKeyDownHandler}
               onKeyUp={onKeyUpHandler}
+              onMouseOver={onMouseOverHandler}
+              onMouseOut={onMouseOutHandler}
             >
-              <HBoxLayout height={height} margin={0} spacing={0}>
+              <HBoxLayout
+                height={height}
+                margin={0}
+                spacing={0}
+                justify="space-around"
+              >
                 <Label
                   enabled={enabled}
                   text={labelText}
