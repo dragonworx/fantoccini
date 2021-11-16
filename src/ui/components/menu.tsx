@@ -67,6 +67,7 @@ export const style = ({ isOpen }: Required<Props>) => {
       padding: 0;
       list-style: none;
       box-shadow: 1px 5px 9px 0px rgb(0 0 0 / 25%);
+      z-index: 1;
 
       & li {
         margin: 0;
@@ -241,6 +242,12 @@ export function Menu(props: Props) {
           viewPortHeight
         ) {
           top = menuContentRect.height * -1;
+        }
+        if (targetElementRect.right + menuContentRect.width > viewPortWidth) {
+          left =
+            left -
+            (targetElementRect.right + menuContentRect.width - viewPortWidth) -
+            10;
         }
 
         menuContentElement.style.cssText = `
