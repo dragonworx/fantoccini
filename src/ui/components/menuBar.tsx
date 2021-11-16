@@ -1,10 +1,8 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { useRef, useState, useEffect, ReactNode, MouseEvent } from 'react';
-import { Label } from './label';
-import { Icon } from './icon';
-import { init, multiFire } from './util';
-import { buttonBg, buttonContentBorder } from './theme';
+import { useState, MouseEvent } from 'react';
+import { init } from './util';
+import { buttonBg, buttonContentBorder, panelBorder, reset } from './theme';
 import { MenuItem } from './menu';
 import { Select } from './select';
 
@@ -25,12 +23,13 @@ export const defaultProps: Props = {
 
 export const style = ({ enabled }: Required<Props>) => {
   return css`
+    ${reset}
     display: flex;
-    height: 24px;
+    height: 26px;
     width: 100%;
 
     ${buttonBg(enabled)}
-    ${buttonContentBorder}
+    ${panelBorder}
   `;
 };
 

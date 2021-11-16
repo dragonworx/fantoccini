@@ -101,3 +101,10 @@ export const buttonContentBorder = css`
   border-right-color: #555;
   border-bottom-color: #999;
 `;
+
+export const panelBorder = css`
+  border-top: 1px solid #646464;
+  border-left: 1px solid #282828;
+  border-right: 1px solid #282828;
+  border-bottom: 1px solid #1111;
+`;

@@ -26,6 +26,7 @@ import {
 } from '../../ui/components/numericInput';
 import { Select } from '../../ui/components/select';
 import { MenuBar } from '../../ui/components/menuBar';
+import { Panel } from '../../ui/components/panel';
 
 let selectOpenCount = 0;
 
@@ -301,6 +302,18 @@ export function App() {
       </div>
       <div className="row">
         <MenuBar items={menuBarItems} />
+      </div>
+      <div className="row">
+        <Panel>
+          <Label text="Simple" />
+        </Panel>
+        <Panel title="The Title">
+          <Label text="With Title" />
+        </Panel>
+        <Panel title="With MenuBar" menu={menuBarItems}>
+          {' '}
+          <Label text="Content" />
+        </Panel>
       </div>
     </div>
   );

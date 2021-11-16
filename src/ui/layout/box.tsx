@@ -57,7 +57,7 @@ export const cssStyle = (props: Props) => {
     align-items: ${align};
     justify-content: ${justify};
     width: ${width ? `${width}px` : '100%'};
-    height: ${height ? `${height}px` : 'auto'};
+    height: ${height ? `${height}px` : '100%'};
     position: relative;
 
     & > * {

@@ -230,7 +230,7 @@ export function Menu(props: Props) {
         let top = 0;
 
         if (position === 'dropdown') {
-          top = targetElementRect.height - 1;
+          top = targetElementRect.height;
         } else if (position === 'submenu') {
           top = -6;
           left = 26;
