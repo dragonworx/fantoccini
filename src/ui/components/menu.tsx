@@ -332,6 +332,7 @@ export function Menu(props: Props) {
             isSubMenu={true}
             position="submenu"
             onSelect={() => close()}
+            onClosed={() => close()}
           >
             {menuIcon}
           </Menu>
