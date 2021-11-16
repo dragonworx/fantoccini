@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { Label } from './label';
 import { Icon } from './icon';
-import { init, multiFire } from './util';
+import { findFirstParent, init, multiFire } from './util';
 import { highlightColor, menuBorder, noSelect } from './theme';
 
 export type MenuItemType = 'checked' | 'separator' | 'menu';
@@ -21,11 +21,12 @@ export interface MenuItem {
   value?: any;
   type?: MenuItemType;
   shortCut?: string;
+  onSelect?: (value: any) => void;
 }
 
 export const isItemEnabled = ({ enabled, type }: MenuItem) =>
   enabled !== false && type !== 'separator';
-export type PopupPosition = 'left' | 'right' | 'top' | 'bottom';
+export type PopupPosition = 'dropdown' | 'submenu';
 export type ItemUpdateHandler = (items: MenuItem[]) => MenuItem[] | void;
 
 export interface Props {
@@ -35,6 +36,7 @@ export interface Props {
   selectedIndex?: number;
   position?: PopupPosition;
   isOpen: boolean;
+  isSubMenu?: boolean;
   onSelect?: (item: MenuItem) => void;
   onBlur?: () => void;
   onBeforeOpen?: ItemUpdateHandler;
@@ -43,10 +45,11 @@ export interface Props {
 
 export const defaultProps: Props = {
   enabled: true,
-  position: 'bottom',
+  position: 'dropdown',
   isOpen: false,
   items: [],
   selectedIndex: -1,
+  isSubMenu: false,
 };
 
 export const style = ({ isOpen }: Required<Props>) => {
@@ -62,7 +65,6 @@ export const style = ({ isOpen }: Required<Props>) => {
       background: linear-gradient(180deg, #24282f 0, #2f343c 100%);
       margin: 0;
       padding: 0;
-      padding-top: 5px;
       list-style: none;
       box-shadow: 1px 5px 9px 0px rgb(0 0 0 / 25%);
 
@@ -103,6 +105,8 @@ export const style = ({ isOpen }: Required<Props>) => {
 
         & > .label {
           flex-grow: 2;
+          position: relative;
+          top: 2px;
         }
 
         .separator {
@@ -126,11 +130,18 @@ export const style = ({ isOpen }: Required<Props>) => {
           cursor: default;
           margin: 0 5px;
           margin-right: 0px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+
+          .icon {
+            position: relative;
+            left: 6px;
+          }
         }
 
         .iconGutter .icon {
           position: relative;
-          top: -2px;
         }
       }
     }
@@ -148,6 +159,7 @@ export function Menu(props: Props) {
       items: defaultItems,
       selectedIndex,
       position,
+      isSubMenu,
       onSelect,
       onBlur,
       onBeforeOpen,
@@ -161,6 +173,7 @@ export function Menu(props: Props) {
 
   const [hasOpened, setHasOpened] = useState(false);
   const [items, setItems] = useState(defaultItems);
+  const [subMenu, setSubMenu] = useState(-1);
 
   const onWheelHandler = (e: WheelEvent) => e.preventDefault();
 
@@ -170,6 +183,21 @@ export function Menu(props: Props) {
       current?.contains(e.target as Element);
     if (!isMenuEvent) {
       onBlur && onBlur();
+    }
+  };
+
+  const close = () => {
+    if (current) {
+      const menuContentElement = current.querySelector(
+        ':scope > .menucontent'
+      )! as HTMLElement;
+      menuContentElement.style.opacity = '0';
+      current.removeEventListener('wheel', onWheelHandler);
+      window.removeEventListener('mousedown', onMouseDownHandler);
+      setHasOpened(false);
+      setSubMenu(-1);
+      onClosed && onClosed();
+      clearIds();
     }
   };
 
@@ -200,19 +228,24 @@ export function Menu(props: Props) {
         );
         let top = 0;
 
-        if (position === 'bottom') {
+        if (position === 'dropdown') {
           top = targetElementRect.height - 1;
-          if (
-            targetElementRect.bottom + menuContentRect.height >
-            viewPortHeight
-          ) {
-            top = menuContentRect.height * -1;
-          }
+        } else if (position === 'submenu') {
+          top = -6;
+          left = 26;
+        }
+
+        // viewport bounds check
+        if (
+          targetElementRect.bottom + menuContentRect.height >
+          viewPortHeight
+        ) {
+          top = menuContentRect.height * -1;
         }
 
         menuContentElement.style.cssText = `
-          left: ${left}px;
           top: ${top}px;
+          left: ${left}px;
           min-width: ${targetElementRect.width}px;
           opacity: 1;
         `;
@@ -225,47 +258,57 @@ export function Menu(props: Props) {
 
       if (hasOpened && !isOpen) {
         // close
-        menuContentElement.style.opacity = '0';
-        current.removeEventListener('wheel', onWheelHandler);
-        window.removeEventListener('mousedown', onMouseDownHandler);
-        setHasOpened(false);
-        onClosed && onClosed();
+        close();
       }
     }
-  });
+    if (isSubMenu && isOpen && !hasOpened) {
+      setItems([...items]);
+    }
+  }, [isOpen, hasOpened, isSubMenu, items]);
 
-  const onItemClickHandler = (index: number) => () => {
+  const onItemClickHandler = (index: number) => (e: ReactMouseEvent) => {
+    e.stopPropagation();
     const current = ref.current;
-    const item = items[index];
-    if (item.enabled !== false && onSelect && current) {
+    if (current) {
       const selectedLI = current.querySelector(
         `li[data-index="${selectedIndex}"`
       ) as HTMLLIElement;
       selectedLI && selectedLI.classList.remove('selected');
-      const li = current.querySelector(
+      const rootLi = current.querySelector(
         `li[data-index="${index}"`
       ) as HTMLLIElement;
-      multiFire(
-        (done) => {
-          li.classList.add('selected');
-          setTimeout(() => {
-            li.classList.remove('selected');
-            done();
-          }, itemSelectBlinkInterval);
-        },
-        itemSelectBlinkRepeat,
-        itemSelectBlinkInterval
-      ).then(() => {
-        if (item.type === 'checked') {
-          item.value = !item.value;
-          setItems(items);
-        }
-        onSelect(item);
-      });
+      const li = findFirstParent(
+        e.target as HTMLElement,
+        'LI'
+      ) as HTMLLIElement;
+      const item = getItemById(li.getAttribute('data-id')!);
+      if (item.type === 'menu' && rootLi === li) {
+        return;
+      }
+      if (item.enabled !== false) {
+        multiFire(
+          (done) => {
+            li.classList.add('selected');
+            setTimeout(() => {
+              li.classList.remove('selected');
+              done();
+            }, itemSelectBlinkInterval);
+          },
+          itemSelectBlinkRepeat,
+          itemSelectBlinkInterval
+        ).then(() => {
+          if (item.type === 'checked') {
+            item.value = !item.value;
+            setItems(items);
+          }
+          onSelect && onSelect(item);
+          item.onSelect && item.onSelect(item.value);
+        });
+      }
     }
   };
 
-  const getItem = (item: MenuItem) => {
+  const getLIChildElements = (item: MenuItem, index: number) => {
     const { label, value, type, shortCut } = item;
     const labelEl = (
       <Label enabled={isItemEnabled(item)} text={label || String(value)} />
@@ -274,10 +317,27 @@ export function Menu(props: Props) {
     if (type === 'separator') {
       return <div className="separator" />;
     } else if (type === 'menu') {
+      const menuIcon = (
+        <div className="shortcut">
+          <Icon src="#play" width={12} />
+        </div>
+      );
       return [
         <div className="iconGutter" />,
         labelEl,
-        <Icon src="#play" width={12} />,
+        index === subMenu ? (
+          <Menu
+            isOpen={subMenu > -1}
+            items={value}
+            isSubMenu={true}
+            position="submenu"
+            onSelect={() => close()}
+          >
+            {menuIcon}
+          </Menu>
+        ) : (
+          menuIcon
+        ),
       ];
     } else if (type === 'checked' && value === true) {
       return [
@@ -298,7 +358,9 @@ export function Menu(props: Props) {
         : ''
       : 'disabled';
 
-  const onLIMouseOverHandler = (e: ReactMouseEvent) => {};
+  const onLIMouseOverHandler = (index: number) => (e: ReactMouseEvent) => {
+    setSubMenu(index);
+  };
 
   return (
     <div ref={ref} css={css} className="menu">
@@ -307,14 +369,40 @@ export function Menu(props: Props) {
         {items.map((item, index) => (
           <li
             data-index={index}
-            onMouseOver={onLIMouseOverHandler}
+            data-id={itemId(item)}
+            onMouseOver={onLIMouseOverHandler(index)}
             onMouseUp={onItemClickHandler(index)}
             className={getLIClassName(item, index)}
           >
-            {getItem(item)}
+            {getLIChildElements(item, index)}
           </li>
         ))}
       </ul>
     </div>
   );
 }
+
+let id = 0;
+const itemById: Map<string, MenuItem> = new Map();
+const idByItem: Map<MenuItem, string> = new Map();
+
+const itemId = (item: MenuItem) => {
+  if (idByItem.has(item)) {
+    return idByItem.get(item);
+  }
+  id++;
+  const idStr = String(id);
+  itemById.set(idStr, item);
+  idByItem.set(item, idStr);
+  return idStr;
+};
+
+const clearIds = () => {
+  itemById.clear();
+  idByItem.clear();
+  id = 0;
+};
+
+const getItemById = (id: string) => {
+  return itemById.get(id) as MenuItem;
+};

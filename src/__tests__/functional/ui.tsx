@@ -8,7 +8,6 @@ import {
   selectOptionsLong,
   style,
   toolButtonGroupOptions,
-  menuOptionsMixed,
   menuBarItems,
 } from './ui.setup';
 import { AbstractButton } from '../../ui/components/abstractButton';

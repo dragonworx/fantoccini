@@ -103,6 +103,9 @@ export const menuOptionsMixed: MenuItem[] = [
     label: 'Option1',
     value: 1,
     shortCut: 'Ctrl+E',
+    onSelect(value: any) {
+      console.log('Option1.select!', value);
+    },
   },
   {
     enabled: false,
@@ -141,6 +144,87 @@ menuOptionsMixed.splice(4, 0, {
   value: menuOptionsMixed,
 });
 
+export const menuOptions1: MenuItem[] = [
+  {
+    label: 'Option1',
+    value: 1,
+    shortCut: 'Ctrl+E',
+    onSelect(value: any) {
+      console.log('Option1.select!', value);
+    },
+  },
+  {
+    label: 'Option2',
+    value: 2,
+    shortCut: 'Ctrl+E',
+    onSelect(value: any) {
+      console.log('Option2.select!', value);
+    },
+  },
+  {
+    label: 'Option2a',
+    type: 'checked',
+    value: true,
+    shortCut: 'Ctrl+A',
+    onSelect(value: any) {
+      console.log('Option2a.checked!', value);
+    },
+  },
+  {
+    type: 'menu',
+    label: 'Option3',
+    value: [
+      {
+        label: 'sub1.Option1',
+        value: 1,
+        shortCut: 'Ctrl+E',
+        onSelect(value: any) {
+          console.log('sub1.Option1.select!', value);
+        },
+      },
+      {
+        label: 'sub1.Option2',
+        value: 2,
+        shortCut: 'Ctrl+E',
+        onSelect(value: any) {
+          console.log('sub1.Option2.select!', value);
+        },
+      },
+      {
+        label: 'sub1.Option2a',
+        type: 'checked',
+        value: true,
+        shortCut: 'Ctrl+A',
+        onSelect(value: any) {
+          console.log('sub1.Option2a.checked!', value);
+        },
+      },
+      {
+        type: 'menu',
+        label: 'sub1.Option3',
+        value: [
+          {
+            label: 'sub2.Option1',
+            value: 1,
+            shortCut: 'Ctrl+E',
+            onSelect(value: any) {
+              console.log('sub2.Option1.select!', value);
+            },
+          },
+          {
+            label: 'sub2.Option2',
+            value: 2,
+            shortCut: 'Ctrl+E',
+            onSelect(value: any) {
+              console.log('sub2.Option2.select!', value);
+            },
+          },
+        ],
+      },
+    ],
+  },
+];
+
 export const menuBarItems: MenuBarItem[] = [
   {
     label: 'File',
@@ -150,13 +234,17 @@ export const menuBarItems: MenuBarItem[] = [
     label: 'Edit',
     menu: menuOptionsMixed,
   },
+  {
+    label: 'Window',
+    menu: menuOptions1,
+  },
 ];
 
 export const onHandleValue = (label: string) => (value: any) =>
   console.log(`${label}: ${value}`);
 
 export const style = css`
-  padding-bottom: 200px;
+  padding-bottom: 500px;
 
   .row {
     padding: 5px 10px;

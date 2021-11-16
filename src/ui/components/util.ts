@@ -59,3 +59,13 @@ export function multiFire(
     fire();
   });
 }
+
+export function findFirstParent(element: HTMLElement, nodeName: string) {
+  let node: HTMLElement | null = element;
+  while (node) {
+    if (node.nodeName === nodeName) {
+      return node;
+    }
+    node = node.parentElement;
+  }
+}
