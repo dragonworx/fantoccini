@@ -1,12 +1,18 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { useRef, useState, useEffect, ReactNode } from 'react';
+import {
+  useRef,
+  useState,
+  useEffect,
+  ReactNode,
+  MouseEvent as ReactMouseEvent,
+} from 'react';
 import { Label } from './label';
 import { Icon } from './icon';
 import { init, multiFire } from './util';
 import { highlightColor, menuBorder, noSelect } from './theme';
 
-export type MenuItemType = 'checked' | 'separator';
+export type MenuItemType = 'checked' | 'separator' | 'menu';
 
 export interface MenuItem {
   enabled?: boolean;
@@ -29,7 +35,7 @@ export interface Props {
   selectedIndex?: number;
   position?: PopupPosition;
   isOpen: boolean;
-  onSelect?: (selectedIndex: number) => void;
+  onSelect?: (item: MenuItem) => void;
   onBlur?: () => void;
   onBeforeOpen?: ItemUpdateHandler;
   onClosed?: () => void;
@@ -122,9 +128,9 @@ export const style = ({ isOpen }: Required<Props>) => {
           margin-right: 0px;
         }
 
-        .icon {
+        .iconGutter .icon {
           position: relative;
-          top: -3px;
+          top: -2px;
         }
       }
     }
@@ -254,7 +260,7 @@ export function Menu(props: Props) {
           item.value = !item.value;
           setItems(items);
         }
-        onSelect(index);
+        onSelect(item);
       });
     }
   };
@@ -267,6 +273,12 @@ export function Menu(props: Props) {
     const shortCutEl = <div className="shortcut">{shortCut}</div>;
     if (type === 'separator') {
       return <div className="separator" />;
+    } else if (type === 'menu') {
+      return [
+        <div className="iconGutter" />,
+        labelEl,
+        <Icon src="#play" width={12} />,
+      ];
     } else if (type === 'checked' && value === true) {
       return [
         <div className="iconGutter">
@@ -286,6 +298,8 @@ export function Menu(props: Props) {
         : ''
       : 'disabled';
 
+  const onLIMouseOverHandler = (e: ReactMouseEvent) => {};
+
   return (
     <div ref={ref} css={css} className="menu">
       {children}
@@ -293,6 +307,7 @@ export function Menu(props: Props) {
         {items.map((item, index) => (
           <li
             data-index={index}
+            onMouseOver={onLIMouseOverHandler}
             onMouseUp={onItemClickHandler(index)}
             className={getLIClassName(item, index)}
           >

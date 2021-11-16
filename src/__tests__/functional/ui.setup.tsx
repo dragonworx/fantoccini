@@ -64,7 +64,7 @@ export const selectOptionsStandard: MenuItem[] = [
 
 export const selectOptionsLong: MenuItem[] = [
   {
-    label: 'Option1 Long Very Very Text',
+    label: 'Option1 Long Very Very Very Very Text',
     value: 1,
   },
   {
@@ -134,6 +134,12 @@ export const menuOptionsMixed: MenuItem[] = [
     value: 6,
   },
 ];
+
+menuOptionsMixed.splice(4, 0, {
+  type: 'menu',
+  label: 'SubMenu',
+  value: menuOptionsMixed,
+});
 
 export const menuBarItems: MenuBarItem[] = [
   {

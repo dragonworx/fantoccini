@@ -116,10 +116,15 @@ export function Select(props: Props) {
       ? ''
       : options[currentIndex].label || `${options[currentIndex].label}`;
 
-  const onSelectHandler = (selectedIndex: number) => {
-    setCurrentIndex(selectedIndex);
+  const onSelectHandler = (item: MenuItem) => {
+    const index = options.indexOf(item);
     setIsToggled(false);
-    onChange && onChange(options[selectedIndex].value || selectedIndex);
+    if (appearance !== 'bare') {
+      setCurrentIndex(index);
+    }
+    if (item.type !== 'menu') {
+      onChange && onChange(item.value || index);
+    }
   };
 
   const onToggledHandler = (isCurrentlyToggled: boolean) => {
@@ -202,7 +207,7 @@ export function Select(props: Props) {
               option.value = !option.value;
             }
             li.classList.add('selected');
-            onSelectHandler(index);
+            onSelectHandler(option);
           });
         }
       }
