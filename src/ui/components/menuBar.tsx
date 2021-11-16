@@ -48,6 +48,12 @@ export function MenuBar(props: Props) {
     setIsToggled(isCurrentlyToggled);
   };
 
+  const onClosedHandler = (i: number) => () => {
+    if (i === selected) {
+      setIsToggled(false);
+    }
+  };
+
   return (
     <div css={css} className="menubar">
       {items.map((menuItem, i) => (
@@ -58,6 +64,7 @@ export function MenuBar(props: Props) {
           isOpen={selected === i && isToggled}
           onMouseOver={onMouseOverHandler(i)}
           onToggled={onToggledHandler}
+          onClosed={onClosedHandler(i)}
         />
       ))}
     </div>

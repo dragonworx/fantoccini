@@ -29,6 +29,7 @@ export interface Props {
   onToggled?: (isToggled: boolean) => void;
   onMouseOver?: (e: MouseEvent) => void;
   onMouseOut?: (e: MouseEvent) => void;
+  onClosed?: () => void;
 }
 
 export const defaultProps: Props = {
@@ -95,6 +96,7 @@ export function Select(props: Props) {
     onMouseOver,
     onMouseOut,
     onToggled,
+    onClosed,
   } = getProps(props, defaultProps);
 
   const [isToggled, setIsToggled] = useState(isOpen);
@@ -220,6 +222,10 @@ export function Select(props: Props) {
     onMouseOut && onMouseOut(e);
   };
 
+  const onClosedHandler = () => {
+    onClosed && onClosed();
+  };
+
   return (
     <div className="select" ref={ref}>
       <Label
@@ -235,6 +241,7 @@ export function Select(props: Props) {
             onSelect={onSelectHandler}
             onBlur={onBlurHandler}
             onBeforeOpen={onBeforeOpen}
+            onClosed={onClosedHandler}
           >
             <AbstractButton
               enabled={enabled}

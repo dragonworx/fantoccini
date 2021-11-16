@@ -32,6 +32,7 @@ export interface Props {
   onSelect?: (selectedIndex: number) => void;
   onBlur?: () => void;
   onBeforeOpen?: ItemUpdateHandler;
+  onClosed?: () => void;
 }
 
 export const defaultProps: Props = {
@@ -55,6 +56,7 @@ export const style = ({ isOpen }: Required<Props>) => {
       background: linear-gradient(180deg, #24282f 0, #2f343c 100%);
       margin: 0;
       padding: 0;
+      padding-top: 5px;
       list-style: none;
       box-shadow: 1px 5px 9px 0px rgb(0 0 0 / 25%);
 
@@ -100,7 +102,7 @@ export const style = ({ isOpen }: Required<Props>) => {
         }
 
         .iconGutter {
-          width: 16px;
+          width: 20px;
           height: 16px;
         }
 
@@ -111,7 +113,13 @@ export const style = ({ isOpen }: Required<Props>) => {
           color: white;
           text-align: right;
           cursor: default;
-          margin: 0 3px;
+          margin: 0 5px;
+          margin-right: 0px;
+        }
+
+        .icon {
+          position: relative;
+          top: -3px;
         }
       }
     }
@@ -132,6 +140,7 @@ export function Menu(props: Props) {
       onSelect,
       onBlur,
       onBeforeOpen,
+      onClosed,
     },
     css,
   ] = init(props, defaultProps, style);
@@ -209,6 +218,7 @@ export function Menu(props: Props) {
         current.removeEventListener('wheel', onWheelHandler);
         window.removeEventListener('mousedown', onMouseDownHandler);
         setHasOpened(false);
+        onClosed && onClosed();
       }
     }
   });
@@ -244,16 +254,12 @@ export function Menu(props: Props) {
     }
   };
 
-  const hasShortcut = !!items.find((item) => !!item.shortCut);
-
   const getItem = (item: MenuItem) => {
     const { label, value, type, shortCut } = item;
     const labelEl = (
       <Label enabled={isItemEnabled(item)} text={label || String(value)} />
     );
-    const shortCutEl = hasShortcut ? (
-      <div className="shortcut">{shortCut}</div>
-    ) : null;
+    const shortCutEl = <div className="shortcut">{shortCut}</div>;
     if (type === 'separator') {
       return <div className="separator" />;
     } else if (type === 'checked' && value === true) {
