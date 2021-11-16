@@ -70,6 +70,10 @@ export const style = ({ isOpen }: Required<Props>) => {
           background-color: black;
         }
 
+        &.disabled label {
+          text-shadow: none;
+        }
+
         &.disabled:hover {
           background-color: transparent;
 
@@ -102,8 +106,9 @@ export const style = ({ isOpen }: Required<Props>) => {
         }
 
         .iconGutter {
-          width: 20px;
+          width: 16px;
           height: 16px;
+          margin-right: 3px;
         }
 
         .shortcut {
@@ -263,7 +268,13 @@ export function Menu(props: Props) {
     if (type === 'separator') {
       return <div className="separator" />;
     } else if (type === 'checked' && value === true) {
-      return [<Icon src="#tick" width={16} />, labelEl, shortCutEl];
+      return [
+        <div className="iconGutter">
+          <Icon src="#tick" width={16} />
+        </div>,
+        labelEl,
+        shortCutEl,
+      ];
     }
     return [<div className="iconGutter" />, labelEl, shortCutEl];
   };
