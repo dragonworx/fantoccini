@@ -228,9 +228,8 @@ export function AbstractButton(props: Props) {
           }
         }, 150);
       }, 0);
-    } else {
-      onKeyDown && onKeyDown(e);
     }
+    onKeyDown && onKeyDown(e);
   };
 
   const onKeyUpHandler = (e: KeyboardEvent<HTMLDivElement>) => {

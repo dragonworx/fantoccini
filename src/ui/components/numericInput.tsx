@@ -6,6 +6,7 @@ import {
   useEffect,
   MouseEvent as ReactMouseEvent,
   useRef,
+  KeyboardEvent,
 } from 'react';
 import { PushButton } from './pushButton';
 import { TextField, InputKeyEvent } from './textfield';
@@ -182,6 +183,14 @@ export function NumericInput(props: Props) {
       }, longPressInitialDelay);
     };
 
+  const onButtonKeyDownHandler =
+    (incrementDirection: number) => (e: KeyboardEvent) => {
+      let inc =
+        (e.shiftKey ? incrementMajor : incrementMinor) * incrementDirection;
+      console.log(inc);
+      incrementBy(inc);
+    };
+
   return (
     <div css={css} className="numericInput" ref={ref}>
       <TextField
@@ -211,6 +220,7 @@ export function NumericInput(props: Props) {
             fixedSize={true}
             radius={0}
             onMouseDown={onMouseDownHandler(1)}
+            onKeyDown={onButtonKeyDownHandler(1)}
           />
           <PushButton
             enabled={enabled}
@@ -221,6 +231,7 @@ export function NumericInput(props: Props) {
             fixedSize={true}
             radius={0}
             onMouseDown={onMouseDownHandler(-1)}
+            onKeyDown={onButtonKeyDownHandler(-1)}
           />
         </BoxLayout>
       </TextField>

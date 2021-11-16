@@ -195,7 +195,7 @@ export function Menu(props: Props) {
         let top = 0;
 
         if (position === 'bottom') {
-          top = targetElementRect.height;
+          top = targetElementRect.height - 1;
           if (
             targetElementRect.bottom + menuContentRect.height >
             viewPortHeight
