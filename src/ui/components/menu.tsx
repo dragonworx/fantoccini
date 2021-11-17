@@ -243,11 +243,11 @@ export function Menu(props: Props) {
         ) {
           top = menuContentRect.height * -1;
         }
-        if (targetElementRect.right + menuContentRect.width > viewPortWidth) {
-          left =
-            left -
-            (targetElementRect.right + menuContentRect.width - viewPortWidth) -
-            10;
+
+        if (menuContentRect.left + menuContentRect.width > viewPortWidth) {
+          const overflow =
+            menuContentRect.left + menuContentRect.width - viewPortWidth;
+          left = -overflow;
         }
 
         menuContentElement.style.cssText = `

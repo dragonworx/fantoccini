@@ -2,7 +2,7 @@
 import { css, jsx } from '@emotion/react';
 import { useState, MouseEvent } from 'react';
 import { init } from './util';
-import { buttonBg, buttonContentBorder, panelBorder, reset } from './theme';
+import { buttonBg, panelBorder, reset } from './theme';
 import { MenuItem } from './menu';
 import { Select } from './select';
 

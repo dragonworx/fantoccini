@@ -6,9 +6,9 @@ import {
   radioButtonGroupOptions,
   selectOptionsStandard,
   selectOptionsLong,
-  style,
   toolButtonGroupOptions,
   menuBarItems,
+  style,
 } from './ui.setup';
 import { AbstractButton } from '../../ui/components/abstractButton';
 import { HBoxLayout, VBoxLayout } from '../../ui/layout/box';
