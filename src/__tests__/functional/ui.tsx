@@ -9,7 +9,6 @@ import {
   selectOptionsLong,
   toolButtonGroupOptions,
   menuBarItems,
-  Row,
   HSplit,
   Outline,
   Column,
@@ -32,6 +31,7 @@ import { Select } from '../../ui/components/select';
 import { MenuBar } from '../../ui/components/menuBar';
 import { Panel } from '../../ui/components/panel';
 import { ToolTip } from '../../ui/components/tooltip';
+import { Section } from '../../ui/layout/section';
 import { Spacer } from '../../ui/layout/spacer';
 
 let selectOpenCount = 0;
@@ -40,7 +40,7 @@ export function App() {
   return (
     <div css={style}>
       <HSplit>
-        <Row title="Label">
+        <Section title="Label">
           <Label text="Label Enabled" />
           <Label
             text="Label Disabled"
@@ -58,30 +58,30 @@ export function App() {
             enabled={false}
             onClick={() => console.log('Should not be clicked!')}
           />
-        </Row>
-        <Row title="Icon">
+        </Section>
+        <Section title="Icon">
           <Icon src="#tick" width={32} />
           <Icon src="img/test.jpg" width={32} border={true} />
-        </Row>
-        <Row title="HBoxLayout">
+        </Section>
+        <Section title="HBoxLayout">
           <Outline>
             <HBoxLayout>{createIcons()}</HBoxLayout>
           </Outline>
-        </Row>
-        <Row title="VBoxLayout">
+        </Section>
+        <Section title="VBoxLayout">
           <Outline>
             <VBoxLayout>{createIcons()}</VBoxLayout>
           </Outline>
-        </Row>
+        </Section>
       </HSplit>
       <HSplit>
-        <Row title="AbstractButton">
+        <Section title="AbstractButton">
           <AbstractButton isRound={true}></AbstractButton>
           <AbstractButton enabled={false}></AbstractButton>
           <AbstractButton canToggle={true}></AbstractButton>
           <AbstractButton canToggle={true} isToggled={true}></AbstractButton>
-        </Row>
-        <Row title="PushButton">
+        </Section>
+        <Section title="PushButton">
           <PushButton onClick={() => console.log('Clicked!')} label="Enabled" />
           <PushButton
             onClick={() => console.log('Should not be clicked!')}
@@ -103,10 +103,10 @@ export function App() {
             canToggle={true}
             onClick={() => console.log('Should not be clicked!')}
           />
-        </Row>
+        </Section>
       </HSplit>
       <HSplit>
-        <Row title="PushButton">
+        <Section title="PushButton">
           <PushButton
             icon="#record"
             isRound={true}
@@ -129,8 +129,8 @@ export function App() {
             canToggle={true}
           />
           <PushButton icon="#next-frame" isRound={true} iconWidth={16} />
-        </Row>
-        <Row title="CheckBox">
+        </Section>
+        <Section title="CheckBox">
           <CheckBox />
           <CheckBox enabled={false} />
           <CheckBox style={'tick'} />
@@ -150,9 +150,9 @@ export function App() {
           <CheckBox label="Right" labelPosition="right" />
           <CheckBox label="Bottom" labelPosition="bottom" />
           <CheckBox label="Top" labelPosition="top" />
-        </Row>
+        </Section>
       </HSplit>
-      <Row title="RadioButton">
+      <Section title="RadioButton">
         <RadioButton />
         <RadioButton label="Disabled" enabled={false} />
         <RadioButton label="Click!" onToggled={() => console.log('Toggled!')} />
@@ -160,8 +160,8 @@ export function App() {
         <RadioButton label="Right" labelPosition="right" />
         <RadioButton label="Bottom" labelPosition="bottom" />
         <RadioButton label="Top" labelPosition="top" />
-      </Row>
-      <Row title="RadioButtonGroup">
+      </Section>
+      <Section title="RadioButtonGroup">
         <RadioButtonGroup
           selectedValue={2}
           options={radioButtonGroupOptions}
@@ -198,14 +198,14 @@ export function App() {
             onChange={onHandleValue('RadioGroup.onChange')}
           />
         </Column>
-      </Row>
-      <Row title="ToolButtonGroup">
+      </Section>
+      <Section title="ToolButtonGroup">
         <ToolButtonGroup
           options={toolButtonGroupOptions}
           onClick={(name: string) => console.log('Tool', name)}
         />
-      </Row>
-      <Row title="TextField">
+      </Section>
+      <Section title="TextField">
         <TextField
           placeholder="Type some text..."
           onChange={onHandleValue('TextField.onChange')}
@@ -238,8 +238,8 @@ export function App() {
           onAccept={onHandleValue('TextField.onAccept')}
         />
         <TextField text="Disabled..." enabled={false} />
-      </Row>
-      <Row title="TextField">
+      </Section>
+      <Section title="TextField">
         <TextField label="Left" placeholder="With Label..." />
         <TextField
           label="Right"
@@ -256,8 +256,8 @@ export function App() {
           labelPosition="bottom"
           placeholder="With Label..."
         />
-      </Row>
-      <Row title="NumericInput">
+      </Section>
+      <Section title="NumericInput">
         <NumericInput
           label="Integer"
           onChange={onHandleValue('NumericInput.onChange')}
@@ -276,8 +276,8 @@ export function App() {
           onChange={onHandleValue('NumericInput.onChange')}
           onAccept={onHandleValue('NumericInput.onAccept')}
         />
-      </Row>
-      <Row title="Select">
+      </Section>
+      <Section title="Select">
         <Select
           label="Standard"
           options={selectOptionsStandard}
@@ -305,11 +305,11 @@ export function App() {
           width={150}
           onChange={onHandleValue('Select.onChange')}
         />
-      </Row>
-      <Row title="MenuBar">
+      </Section>
+      <Section title="MenuBar">
         <MenuBar items={menuBarItems} />
-      </Row>
-      <Row title="Panel">
+      </Section>
+      <Section title="Panel">
         <Panel>
           <Label text="Simple" />
         </Panel>
@@ -320,8 +320,8 @@ export function App() {
           {' '}
           <Label text="Content" />
         </Panel>
-      </Row>
-      <Row title="ToolTip">
+      </Section>
+      <Section title="ToolTip">
         <ToolTip text="Here's a tip!">
           <Label text="Below" />
         </ToolTip>
@@ -337,7 +337,7 @@ export function App() {
         <ToolTip text="Here's a tip!" position="left">
           <Label text="Left" />
         </ToolTip>
-      </Row>
+      </Section>
     </div>
   );
 }

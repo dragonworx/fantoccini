@@ -3,6 +3,7 @@ import { css, jsx } from '@emotion/react';
 import { ReactNode, useRef, useState, useEffect, MouseEvent } from 'react';
 import { borderRadius, noSelect, reset } from './theme';
 import { init } from '../util';
+import Color from 'color';
 
 export interface Props {
   children?: ReactNode;
@@ -15,11 +16,21 @@ export const defaultProps: Props = {
   position: 'below',
 };
 
-const color = '#273b74';
-const arrowSize = 5;
+const color = '#5b6f76';
+const arrowSize = 7;
 const spacing = 5;
+const arrowOffset = 1;
 
-export const style = ({}: Props) => {
+export const style = ({ position }: Props) => {
+  let rotation = 0;
+  if (position === 'below') {
+    rotation = 180;
+  } else if (position === 'right') {
+    rotation = 90;
+  } else if (position === 'left') {
+    rotation = 270;
+  }
+
   return css`
     ${reset}
 
@@ -31,7 +42,11 @@ export const style = ({}: Props) => {
       position: absolute;
       display: flex;
       flex-direction: column;
-      background: ${color};
+      background: linear-gradient(
+        ${rotation}deg,
+        ${Color(color).hex()} 0,
+        ${Color(color).lighten(0.5).hex()} 100%
+      );
       color: white;
       padding: 5px;
       white-space: nowrap;
@@ -58,7 +73,7 @@ export const style = ({}: Props) => {
 
       &.below::before {
         left: 50%;
-        top: 0;
+        top: ${arrowOffset}px;
         border: ${arrowSize}px solid transparent;
         border-top: 0;
         border-bottom: ${arrowSize}px solid ${color};
@@ -67,7 +82,7 @@ export const style = ({}: Props) => {
 
       &.above::before {
         left: 50%;
-        bottom: 0;
+        bottom: ${arrowOffset}px;
         border: ${arrowSize}px solid transparent;
         border-bottom: 0;
         border-top: ${arrowSize}px solid ${color};
@@ -75,7 +90,7 @@ export const style = ({}: Props) => {
       }
 
       &.left::before {
-        right: 0;
+        right: ${arrowOffset}px;
         top: 50%;
         border: ${arrowSize}px solid transparent;
         border-right: 0;
@@ -84,7 +99,7 @@ export const style = ({}: Props) => {
       }
 
       &.right::before {
-        left: 0;
+        left: ${arrowOffset}px;
         top: 50%;
         border: ${arrowSize}px solid transparent;
         border-left: 0;

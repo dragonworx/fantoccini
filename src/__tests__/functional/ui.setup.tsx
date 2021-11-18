@@ -7,21 +7,6 @@ import { Option as ToolButtonGroupOption } from '../../ui/components/toolButtonG
 import { MenuBarItem } from '../../ui/components/menuBar';
 import { ReactNode } from 'react';
 
-export function Row({
-  children,
-  title,
-}: {
-  children: ReactNode;
-  title: string;
-}) {
-  return (
-    <fieldset className="row">
-      <legend>{title}</legend>
-      {children}
-    </fieldset>
-  );
-}
-
 export function HSplit({ children }: { children: ReactNode }) {
   return <div className="hsplit">{children}</div>;
 }
@@ -36,36 +21,6 @@ export function Column({ children }: { children: ReactNode }) {
 
 export const style = css`
   padding-bottom: 500px;
-
-  fieldset {
-    border-radius: 5px;
-    border: 1px inset #7f7f7f8a;
-    background-color: rgba(0, 0, 0, 0.05);
-    margin-bottom: 5px;
-    padding-bottom: 10px !important;
-
-    legend {
-      color: #bcbcbc;
-      padding: 2px 5px;
-      border-radius: 5px;
-      border-bottom: 1px solid #090e0e;
-      border-top: 1px solid #9c9c9c;
-      background-color: #2e4358;
-    }
-  }
-
-  .row {
-    padding: 5px 10px;
-    display: flex;
-
-    > * {
-      margin-right: 5px;
-    }
-
-    > *:last-child {
-      margin-right: 0;
-    }
-  }
 
   .column {
     padding: 10px 5px;
