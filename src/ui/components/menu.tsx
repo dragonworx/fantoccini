@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { Label } from './label';
 import { Icon } from './icon';
-import { findFirstParent, init, multiFire } from './util';
+import { findFirstParent, init, multiFire } from '../util';
 import { highlightColor, menuBorder, noSelect } from './theme';
 
 export type MenuItemType = 'checked' | 'separator' | 'menu';

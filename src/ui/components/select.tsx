@@ -13,7 +13,7 @@ import {
   MenuItem,
 } from './menu';
 import { HBoxLayout } from '../layout/box';
-import { getCss, getProps, init, multiFire } from './util';
+import { getCss, getProps, init, multiFire } from '../util';
 
 export interface Props {
   enabled?: boolean;

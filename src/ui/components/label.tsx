@@ -3,7 +3,7 @@ import { css, jsx } from '@emotion/react';
 import { KeyboardEvent, useRef, ReactNode } from 'react';
 import Color from 'color';
 import { BoxLayout, Alignment, Justification } from '../layout/box';
-import { init } from './util';
+import { init } from '../util';
 import { reset, noSelect } from './theme';
 import { Appearance } from './abstractButton';
 

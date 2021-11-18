@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import { useState, MouseEvent } from 'react';
-import { init } from './util';
+import { init } from '../util';
 import { buttonBg, panelBorder, reset } from './theme';
 import { MenuItem } from './menu';
 import { Select } from './select';

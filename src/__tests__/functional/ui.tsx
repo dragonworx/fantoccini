@@ -31,6 +31,8 @@ import {
 import { Select } from '../../ui/components/select';
 import { MenuBar } from '../../ui/components/menuBar';
 import { Panel } from '../../ui/components/panel';
+import { ToolTip } from '../../ui/components/tooltip';
+import { Spacer } from '../../ui/layout/spacer';
 
 let selectOpenCount = 0;
 
@@ -318,6 +320,23 @@ export function App() {
           {' '}
           <Label text="Content" />
         </Panel>
+      </Row>
+      <Row title="ToolTip">
+        <ToolTip text="Here's a tip!">
+          <Label text="Below" />
+        </ToolTip>
+        <Spacer />
+        <ToolTip text="Here's a tip!" position="above">
+          <Label text="Above" />
+        </ToolTip>
+        <Spacer />
+        <ToolTip text="Here's a tip!" position="right">
+          <Label text="Right" />
+        </ToolTip>
+        <Spacer />
+        <ToolTip text="Here's a tip!" position="left">
+          <Label text="Left" />
+        </ToolTip>
       </Row>
     </div>
   );

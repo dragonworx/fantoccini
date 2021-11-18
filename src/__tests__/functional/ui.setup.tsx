@@ -34,6 +34,63 @@ export function Column({ children }: { children: ReactNode }) {
   return <div className="column">{children}</div>;
 }
 
+export const style = css`
+  padding-bottom: 500px;
+
+  fieldset {
+    border-radius: 5px;
+    border: 1px inset #7f7f7f8a;
+    background-color: rgba(0, 0, 0, 0.05);
+    margin-bottom: 5px;
+    padding-bottom: 10px !important;
+
+    legend {
+      color: #bcbcbc;
+      padding: 2px 5px;
+      border-radius: 5px;
+      border-bottom: 1px solid #090e0e;
+      border-top: 1px solid #9c9c9c;
+      background-color: #2e4358;
+    }
+  }
+
+  .row {
+    padding: 5px 10px;
+    display: flex;
+
+    > * {
+      margin-right: 5px;
+    }
+
+    > *:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .column {
+    padding: 10px 5px;
+    display: flex;
+    flex-direction: column;
+
+    > * {
+      margin-bottom: 5px;
+    }
+
+    > *:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .outline {
+    outline: 1px solid lime;
+  }
+
+  .hsplit {
+    display: flex;
+    align-items: center;
+  }
+`;
+
 export const radioButtonGroupOptions: RadioButtonGroupOption[] = [
   {
     name: 'option1',
@@ -270,61 +327,6 @@ export const menuBarItems: MenuBarItem[] = [
 
 export const onHandleValue = (label: string) => (value: any) =>
   console.log(`${label}: ${value}`);
-
-export const style = css`
-  padding-bottom: 500px;
-
-  fieldset {
-    border-radius: 5px;
-    border: 1px inset #7f7f7f8a;
-    background-color: rgba(0, 0, 0, 0.05);
-    margin-bottom: 5px;
-
-    legend {
-      color: #bcbcbc;
-      padding: 2px 5px;
-      border-radius: 5px;
-      border-bottom: 1px solid #090e0e;
-      border-top: 1px solid #9c9c9c;
-    }
-  }
-
-  .row {
-    padding: 5px 10px;
-    display: flex;
-
-    > * {
-      margin-right: 5px;
-    }
-
-    > *:last-child {
-      margin-right: 0;
-    }
-  }
-
-  .column {
-    padding: 10px 5px;
-    display: flex;
-    flex-direction: column;
-
-    > * {
-      margin-bottom: 5px;
-    }
-
-    > *:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  .outline {
-    outline: 1px solid lime;
-  }
-
-  .hsplit {
-    display: flex;
-    align-items: center;
-  }
-`;
 
 export const createIcons = (width: number = 16, amount: number = 3) => {
   const icons = [];

@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import { BoxLayout } from '../layout/box';
-import { getProps } from './util';
+import { getProps } from '../util';
 import { PushButton } from './pushButton';
 
 export interface Option {

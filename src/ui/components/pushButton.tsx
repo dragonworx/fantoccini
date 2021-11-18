@@ -7,7 +7,7 @@ import {
   HBoxLayout,
   defaultProps as boxLayoutDefaultProps,
 } from '../layout/box';
-import { getProps } from './util';
+import { getProps } from '../util';
 
 export type Props = {
   label?: string;

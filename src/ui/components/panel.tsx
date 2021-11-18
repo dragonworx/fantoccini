@@ -3,8 +3,8 @@ import { css, jsx } from '@emotion/react';
 import { ReactNode } from 'react';
 import { Label } from './label';
 import { MenuBar, MenuBarItem } from './menuBar';
-import { borderRadius, boxBorder, buttonBg, panelBorder, reset } from './theme';
-import { init } from './util';
+import { borderRadius, boxBorder, panelBorder, reset } from './theme';
+import { init } from '../util';
 
 export interface Props {
   children?: ReactNode;

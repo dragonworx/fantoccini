@@ -9,7 +9,7 @@ import {
   FocusEvent,
 } from 'react';
 import Color from 'color';
-import { init } from './util';
+import { init } from '../util';
 import { PushButton } from './pushButton';
 import { Label, LabelPosition } from './label';
 import { Alignment } from '../layout/box';

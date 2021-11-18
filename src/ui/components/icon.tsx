@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { init } from './util';
+import { init } from '../util';
 
 export interface Props {
   onClick?: () => void;

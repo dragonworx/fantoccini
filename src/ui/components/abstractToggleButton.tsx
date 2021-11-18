@@ -3,7 +3,7 @@ import { css, jsx } from '@emotion/react';
 import { Label, LabelPosition } from './label';
 import { Icon } from './icon';
 import { AbstractButton } from './abstractButton';
-import { getProps, getCss } from './util';
+import { getProps, getCss } from '../util';
 
 export type CheckBoxStyle = 'tick' | 'cross';
 export type ToggleButtonStyle = CheckBoxStyle | 'circle';

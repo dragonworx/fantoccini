@@ -10,7 +10,7 @@ import {
   FocusEvent,
 } from 'react';
 import Color from 'color';
-import { getProps, getCss } from './util';
+import { getProps, getCss } from '../util';
 import {
   reset,
   noSelect,
