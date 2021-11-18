@@ -5,6 +5,34 @@ import { Option as RadioButtonGroupOption } from '../../ui/components/radioButto
 import { MenuItem } from '../../ui/components/menu';
 import { Option as ToolButtonGroupOption } from '../../ui/components/toolButtonGroup';
 import { MenuBarItem } from '../../ui/components/menuBar';
+import { ReactNode } from 'react';
+
+export function Row({
+  children,
+  title,
+}: {
+  children: ReactNode;
+  title: string;
+}) {
+  return (
+    <fieldset className="row">
+      <legend>{title}</legend>
+      {children}
+    </fieldset>
+  );
+}
+
+export function HSplit({ children }: { children: ReactNode }) {
+  return <div className="hsplit">{children}</div>;
+}
+
+export function Outline({ children }: { children: ReactNode }) {
+  return <div className="outline">{children}</div>;
+}
+
+export function Column({ children }: { children: ReactNode }) {
+  return <div className="column">{children}</div>;
+}
 
 export const radioButtonGroupOptions: RadioButtonGroupOption[] = [
   {
@@ -246,9 +274,25 @@ export const onHandleValue = (label: string) => (value: any) =>
 export const style = css`
   padding-bottom: 500px;
 
+  fieldset {
+    border-radius: 5px;
+    border: 1px inset #7f7f7f8a;
+    background-color: rgba(0, 0, 0, 0.05);
+    margin-bottom: 5px;
+
+    legend {
+      color: #bcbcbc;
+      padding: 2px 5px;
+      border-radius: 5px;
+      border-bottom: 1px solid #090e0e;
+      border-top: 1px solid #9c9c9c;
+    }
+  }
+
   .row {
     padding: 5px 10px;
     display: flex;
+
     > * {
       margin-right: 5px;
     }
@@ -258,10 +302,11 @@ export const style = css`
     }
   }
 
-  .col {
+  .column {
     padding: 10px 5px;
     display: flex;
     flex-direction: column;
+
     > * {
       margin-bottom: 5px;
     }
@@ -271,7 +316,7 @@ export const style = css`
     }
   }
 
-  .border {
+  .outline {
     outline: 1px solid lime;
   }
 

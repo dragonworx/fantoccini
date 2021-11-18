@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import { ReactNode } from 'react';
+import { reset } from '../components/theme';
 
 export type Direction = 'horizontal' | 'vertical';
 export type Alignment = 'start' | 'center' | 'end';
@@ -44,6 +45,7 @@ export const cssStyle = (props: Props) => {
     height,
   } = props;
   return css`
+    ${reset}
     display: flex;
     flex-direction: ${direction === 'horizontal'
       ? reversed

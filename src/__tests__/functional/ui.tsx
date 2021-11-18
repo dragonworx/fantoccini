@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import {
+  style,
   createIcons,
   onHandleValue,
   radioButtonGroupOptions,
@@ -8,7 +9,10 @@ import {
   selectOptionsLong,
   toolButtonGroupOptions,
   menuBarItems,
-  style,
+  Row,
+  HSplit,
+  Outline,
+  Column,
 } from './ui.setup';
 import { AbstractButton } from '../../ui/components/abstractButton';
 import { HBoxLayout, VBoxLayout } from '../../ui/layout/box';
@@ -33,8 +37,8 @@ let selectOpenCount = 0;
 export function App() {
   return (
     <div css={style}>
-      <div className="hsplit">
-        <div className="row">
+      <HSplit>
+        <Row title="Label">
           <Label text="Label Enabled" />
           <Label
             text="Label Disabled"
@@ -52,30 +56,30 @@ export function App() {
             enabled={false}
             onClick={() => console.log('Should not be clicked!')}
           />
-        </div>
-        <div className="row">
+        </Row>
+        <Row title="Icon">
           <Icon src="#tick" width={32} />
           <Icon src="img/test.jpg" width={32} border={true} />
-        </div>
-        <div className="row">
-          <div className="border">
+        </Row>
+        <Row title="HBoxLayout">
+          <Outline>
             <HBoxLayout>{createIcons()}</HBoxLayout>
-          </div>
-        </div>
-        <div className="row">
-          <div className="border">
+          </Outline>
+        </Row>
+        <Row title="VBoxLayout">
+          <Outline>
             <VBoxLayout>{createIcons()}</VBoxLayout>
-          </div>
-        </div>
-      </div>
-      <div className="hsplit">
-        <div className="row">
+          </Outline>
+        </Row>
+      </HSplit>
+      <HSplit>
+        <Row title="AbstractButton">
           <AbstractButton isRound={true}></AbstractButton>
           <AbstractButton enabled={false}></AbstractButton>
           <AbstractButton canToggle={true}></AbstractButton>
           <AbstractButton canToggle={true} isToggled={true}></AbstractButton>
-        </div>
-        <div className="row">
+        </Row>
+        <Row title="PushButton">
           <PushButton onClick={() => console.log('Clicked!')} label="Enabled" />
           <PushButton
             onClick={() => console.log('Should not be clicked!')}
@@ -97,10 +101,10 @@ export function App() {
             canToggle={true}
             onClick={() => console.log('Should not be clicked!')}
           />
-        </div>
-      </div>
-      <div className="hsplit">
-        <div className="row">
+        </Row>
+      </HSplit>
+      <HSplit>
+        <Row title="PushButton">
           <PushButton
             icon="#record"
             isRound={true}
@@ -123,8 +127,8 @@ export function App() {
             canToggle={true}
           />
           <PushButton icon="#next-frame" isRound={true} iconWidth={16} />
-        </div>
-        <div className="row">
+        </Row>
+        <Row title="CheckBox">
           <CheckBox />
           <CheckBox enabled={false} />
           <CheckBox style={'tick'} />
@@ -144,9 +148,9 @@ export function App() {
           <CheckBox label="Right" labelPosition="right" />
           <CheckBox label="Bottom" labelPosition="bottom" />
           <CheckBox label="Top" labelPosition="top" />
-        </div>
-      </div>
-      <div className="row">
+        </Row>
+      </HSplit>
+      <Row title="RadioButton">
         <RadioButton />
         <RadioButton label="Disabled" enabled={false} />
         <RadioButton label="Click!" onToggled={() => console.log('Toggled!')} />
@@ -154,8 +158,8 @@ export function App() {
         <RadioButton label="Right" labelPosition="right" />
         <RadioButton label="Bottom" labelPosition="bottom" />
         <RadioButton label="Top" labelPosition="top" />
-      </div>
-      <div className="row">
+      </Row>
+      <Row title="RadioButtonGroup">
         <RadioButtonGroup
           selectedValue={2}
           options={radioButtonGroupOptions}
@@ -178,7 +182,7 @@ export function App() {
           labelPosition="bottom"
           onChange={onHandleValue('RadioGroup.onChange')}
         />
-        <div className="col">
+        <Column>
           <RadioButtonGroup
             options={radioButtonGroupOptions}
             direction="horizontal"
@@ -191,15 +195,15 @@ export function App() {
             labelPosition="right"
             onChange={onHandleValue('RadioGroup.onChange')}
           />
-        </div>
-      </div>
-      <div className="row">
+        </Column>
+      </Row>
+      <Row title="ToolButtonGroup">
         <ToolButtonGroup
           options={toolButtonGroupOptions}
           onClick={(name: string) => console.log('Tool', name)}
         />
-      </div>
-      <div className="row">
+      </Row>
+      <Row title="TextField">
         <TextField
           placeholder="Type some text..."
           onChange={onHandleValue('TextField.onChange')}
@@ -232,8 +236,8 @@ export function App() {
           onAccept={onHandleValue('TextField.onAccept')}
         />
         <TextField text="Disabled..." enabled={false} />
-      </div>
-      <div className="row">
+      </Row>
+      <Row title="TextField">
         <TextField label="Left" placeholder="With Label..." />
         <TextField
           label="Right"
@@ -250,8 +254,8 @@ export function App() {
           labelPosition="bottom"
           placeholder="With Label..."
         />
-      </div>
-      <div className="row">
+      </Row>
+      <Row title="NumericInput">
         <NumericInput
           label="Integer"
           onChange={onHandleValue('NumericInput.onChange')}
@@ -270,8 +274,8 @@ export function App() {
           onChange={onHandleValue('NumericInput.onChange')}
           onAccept={onHandleValue('NumericInput.onAccept')}
         />
-      </div>
-      <div className="row">
+      </Row>
+      <Row title="Select">
         <Select
           label="Standard"
           options={selectOptionsStandard}
@@ -299,11 +303,11 @@ export function App() {
           width={150}
           onChange={onHandleValue('Select.onChange')}
         />
-      </div>
-      <div className="row">
+      </Row>
+      <Row title="MenuBar">
         <MenuBar items={menuBarItems} />
-      </div>
-      <div className="row">
+      </Row>
+      <Row title="Panel">
         <Panel>
           <Label text="Simple" />
         </Panel>
@@ -314,7 +318,7 @@ export function App() {
           {' '}
           <Label text="Content" />
         </Panel>
-      </div>
+      </Row>
     </div>
   );
 }
