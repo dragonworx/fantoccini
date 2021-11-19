@@ -1,12 +1,4 @@
 import { SerializedStyles } from '@emotion/react';
-import {
-  useEffect,
-  useState,
-  useLayoutEffect,
-  useRef,
-  useCallback,
-  MouseEvent,
-} from 'react';
 
 export function getProps<Props>(
   props: Props,

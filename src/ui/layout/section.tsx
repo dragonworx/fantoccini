@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import { ReactNode } from 'react';
-import { reset } from '../components/theme';
+import { noSelect, reset } from '../components/theme';
 import { init } from '../util';
 import { BoxLayout, Props as BoxLayoutProps } from './box';
 
@@ -20,6 +20,7 @@ export const defaultProps: Props = {
 export const style = ({}: Props) => {
   return css`
     ${reset}
+    ${noSelect}
 
     padding: 5px 10px;
     border-radius: 5px;

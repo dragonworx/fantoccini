@@ -340,6 +340,7 @@ export function App() {
       </Section>
       <Section title="ScrollBar">
         <ScrollBar
+          direction="vertical"
           outerSize={100}
           innerSize={10}
           value={0.9}

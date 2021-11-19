@@ -64,12 +64,16 @@ export const buttonShadowInset = css`
 export const buttonDarkColor = (enabled: boolean) =>
   enabled ? '#24282f' : '#363c47';
 
-export const buttonBg = (enabled: boolean = true, toggled: boolean = false) => {
+export const buttonBg = (
+  enabled: boolean = true,
+  toggled: boolean = false,
+  angle: number = 180
+) => {
   const darkColor = buttonDarkColor(enabled);
   if (toggled) {
     return css`
       background: linear-gradient(
-        180deg,
+        ${angle}deg,
         ${Color(darkColor)
             .darken(enabled ? 0.3 : 0.1)
             .hex()}
@@ -79,7 +83,11 @@ export const buttonBg = (enabled: boolean = true, toggled: boolean = false) => {
     `;
   } else {
     return css`
-      background: linear-gradient(0deg, ${darkColor} 0, #2f343c 100%);
+      background: linear-gradient(
+        ${angle + 180}deg,
+        ${darkColor} 0,
+        #2f343c 100%
+      );
     `;
   }
 };

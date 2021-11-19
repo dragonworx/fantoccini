@@ -1,16 +1,18 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import {
-  ReactNode,
   useRef,
   useState,
   useEffect,
   MouseEvent as ReactMouseEvent,
 } from 'react';
-import { reset } from './theme';
+import { reset, buttonBg, borderRadius } from './theme';
 import { init } from '../util';
+import { useDrag } from '../hooks';
 
 export type Direction = 'horizontal' | 'vertical';
+
+export const minSize = 200;
 
 export interface Props {
   direction?: Direction;
@@ -18,15 +20,17 @@ export interface Props {
   outerSize: number;
   innerSize: number;
   value: number;
+  pageSize?: number;
   onChange?: (value: number) => void;
 }
 
 export const defaultProps: Props = {
   direction: 'horizontal',
-  thickness: 20,
+  thickness: 15,
   outerSize: 1,
   innerSize: 1,
   value: 0,
+  pageSize: 0.1,
 };
 
 export const style = ({
@@ -39,20 +43,21 @@ export const style = ({
   const thumbSize = (innerSize / outerSize) * 100;
   return css`
     ${reset}
-    background-color: #333;
+    ${buttonBg(true, true, direction === 'horizontal' ? 180 : 90)}
     position: relative;
     width: ${direction === 'horizontal' ? '100%' : `${size}px`};
     height: ${direction === 'horizontal' ? `${size}px` : '100%'};
+    min-width: ${direction === 'horizontal' ? `${minSize}px` : `${size}px`};
+    min-height: ${direction === 'horizontal' ? `${size}px` : `${minSize}px`};
 
     .track {
-      position: relative;
+      position: absolute;
       width: 100%;
       height: 100%;
 
       .thumb {
         position: absolute;
         background-color: #666;
-        border: 1px solid red;
         top: 0;
         width: ${direction === 'horizontal' ? `${thumbSize}%` : '100%'};
         height: ${direction === 'horizontal' ? '100%' : `${thumbSize}px`};
@@ -65,6 +70,7 @@ export const style = ({
 export function ScrollBar(props: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const thumbRef = useRef<HTMLDivElement>(null);
 
   const [{ direction, value, onChange }, css] = init(
     props,
@@ -74,58 +80,85 @@ export function ScrollBar(props: Props) {
 
   const [currentValue, setCurrentValue] = useState(value);
   useEffect(() => setCurrentValue(value), [value]);
-  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(
-    null
-  );
+
+  const onDrag = (
+    deltaX: number,
+    deltaY: number,
+    startX: number,
+    startY: number
+  ) => {
+    const track = trackRef.current;
+    const thumb = thumbRef.current;
+    if (track && thumb) {
+      let value: number = 0;
+      const { innerLength } = getSizeInfo();
+      let position: number = 0;
+      if (direction === 'horizontal') {
+        position = Math.min(Math.max(startX + deltaX, 0), innerLength);
+        thumb.style.left = `${position}px`;
+      } else {
+        position = Math.min(Math.max(startY + deltaY, 0), innerLength);
+        thumb.style.top = `${position}px`;
+      }
+      value = position / innerLength;
+      onChange(value);
+    }
+  };
+
+  const onThumbMouseDownHandler = useDrag(onDrag, thumbRef);
+
+  const getSizeInfo = () => {
+    const track = trackRef.current;
+    const thumb = thumbRef.current;
+    let trackLength: number = 0;
+    let thumbLength: number = 0;
+    let thumbPosition: number = 0;
+    if (track && thumb) {
+      const trackRect = track.getBoundingClientRect();
+      const thumbRect = thumb.getBoundingClientRect();
+      trackLength =
+        direction === 'horizontal' ? trackRect.width : trackRect.height;
+      thumbLength =
+        direction === 'horizontal' ? thumbRect.width : thumbRect.height;
+      thumbPosition =
+        direction === 'horizontal'
+          ? parseFloat(thumb.style.left)
+          : parseFloat(thumb.style.top);
+    }
+    const innerLength = trackLength - thumbLength;
+
+    return { trackLength, thumbLength, innerLength, thumbPosition };
+  };
 
   useEffect(() => {
-    if (dragStart) {
-      window.addEventListener('mousemove', onMouseMove);
+    const thumb = thumbRef.current;
+    if (thumb) {
+      const { trackLength, thumbLength } = getSizeInfo();
+      const thumbPosition = Math.min(
+        Math.max(Math.round(trackLength * currentValue - thumbLength * 0.5), 0),
+        trackLength - thumbLength
+      );
+      if (direction === 'horizontal') {
+        thumb.style.left = `${thumbPosition}px`;
+      } else {
+        console.log({ trackLength, currentValue, thumbLength });
+        thumb.style.top = `${thumbPosition}px`;
+      }
+      thumb.style.visibility = 'visible';
     }
-    const track = trackRef.current;
-    if (!track) {
-      return;
-    }
-    const thumb = track.querySelector('.thumb') as HTMLElement;
-    const trackRect = track.getBoundingClientRect();
-    const thumbRect = thumb.getBoundingClientRect();
-    const trackLength =
-      direction === 'horizontal' ? trackRect.width : trackRect.height;
-    const thumbLength =
-      direction === 'horizontal' ? thumbRect.width : thumbRect.height;
-    const thumbOffset = Math.min(
-      Math.max(Math.round(trackLength * currentValue - thumbLength * 0.5), 0),
-      trackLength - thumbLength
-    );
-    track.style.left = `${thumbOffset}px`;
-    thumb.style.visibility = 'visible';
   });
 
-  const onThumbMouseDownHandler = (e: ReactMouseEvent) => {
-    window.addEventListener('mouseup', onMouseUp);
-    setDragStart({
-      x: e.clientX,
-      y: e.clientY,
-    });
-  };
-
-  const onMouseUp = (e: MouseEvent) => {
-    window.removeEventListener('mousemove', onMouseMove);
-    window.removeEventListener('mouseup', onMouseUp);
-  };
-
-  const onMouseMove = (e: MouseEvent) => {
-    if (dragStart) {
-      const x = e.clientX - dragStart.x;
-      const y = e.clientY - dragStart.y;
-      console.log(x, y);
-    }
-  };
+  // TODO: replace thumb with pushbutton, add two pushbuttons before and after thumb for paging buttons
+  // move long press functionality from NumericInput into own hook
 
   return (
-    <div css={css} className="scrollbar" ref={containerRef}>
-      <div className="track" ref={trackRef}>
-        <div className="thumb" onMouseDown={onThumbMouseDownHandler}></div>
+    <div ref={containerRef} css={css} className="scrollbar">
+      <div ref={trackRef} className="track">
+        <div
+          ref={thumbRef}
+          className="thumb"
+          onMouseDown={onThumbMouseDownHandler}
+        ></div>
       </div>
     </div>
   );
