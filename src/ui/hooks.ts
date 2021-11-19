@@ -27,6 +27,8 @@ export function useDrag(onDrag: onDragHandler, ref: RefObject<HTMLElement>) {
 
     window.addEventListener('mouseup', onMouseUp);
     window.addEventListener('mousemove', onMouseMove);
+
+    e.stopPropagation();
   };
 
   return onMouseDown;

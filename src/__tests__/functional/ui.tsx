@@ -339,13 +339,24 @@ export function App() {
         </ToolTip>
       </Section>
       <Section title="ScrollBar">
-        <ScrollBar
-          direction="vertical"
-          outerSize={100}
-          innerSize={10}
-          value={0.9}
-          onChange={onHandleValue('ScrollBar.onChange')}
-        />
+        <HSplit>
+          <ScrollBar
+            direction="horizontal"
+            outerSize={2}
+            innerSize={1}
+            value={0.9}
+            onChange={onHandleValue('ScrollBar.onChange')}
+          />
+        </HSplit>
+        <HSplit>
+          <ScrollBar
+            direction="vertical"
+            outerSize={10}
+            innerSize={1}
+            value={0.9}
+            onChange={onHandleValue('ScrollBar.onChange')}
+          />
+        </HSplit>
       </Section>
     </div>
   );
