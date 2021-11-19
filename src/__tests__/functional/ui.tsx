@@ -33,6 +33,7 @@ import { Panel } from '../../ui/components/panel';
 import { ToolTip } from '../../ui/components/tooltip';
 import { Section } from '../../ui/layout/section';
 import { Spacer } from '../../ui/layout/spacer';
+import { ScrollBar } from '../../ui/components/scrollBar';
 
 let selectOpenCount = 0;
 
@@ -317,7 +318,6 @@ export function App() {
           <Label text="With Title" />
         </Panel>
         <Panel title="With MenuBar" menu={menuBarItems}>
-          {' '}
           <Label text="Content" />
         </Panel>
       </Section>
@@ -337,6 +337,9 @@ export function App() {
         <ToolTip text="Here's a tip!" position="left">
           <Label text="Left" />
         </ToolTip>
+      </Section>
+      <Section title="ScrollBar">
+        <ScrollBar outerSize={3} innerSize={1} offset={0.5} />
       </Section>
     </div>
   );
