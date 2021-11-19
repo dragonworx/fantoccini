@@ -69,7 +69,7 @@ export function App() {
             <HBoxLayout>{createIcons()}</HBoxLayout>
           </Outline>
         </Section>
-        <Section title="VBoxLayout">
+        <Section title="VBoxLayout" justify="center">
           <Outline>
             <VBoxLayout>{createIcons()}</VBoxLayout>
           </Outline>
@@ -339,7 +339,12 @@ export function App() {
         </ToolTip>
       </Section>
       <Section title="ScrollBar">
-        <ScrollBar outerSize={3} innerSize={1} offset={0.5} />
+        <ScrollBar
+          outerSize={100}
+          innerSize={10}
+          value={0.9}
+          onChange={onHandleValue('ScrollBar.onChange')}
+        />
       </Section>
     </div>
   );

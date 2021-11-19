@@ -3,15 +3,18 @@ import { css, jsx } from '@emotion/react';
 import { ReactNode } from 'react';
 import { reset } from '../components/theme';
 import { init } from '../util';
+import { BoxLayout, Props as BoxLayoutProps } from './box';
 
-export interface Props {
+export type Props = {
   children: ReactNode;
   title: string;
-}
+} & BoxLayoutProps;
 
 export const defaultProps: Props = {
   children: null,
   title: 'Untitled',
+  direction: 'horizontal',
+  spacing: 3,
 };
 
 export const style = ({}: Props) => {
@@ -19,7 +22,6 @@ export const style = ({}: Props) => {
     ${reset}
 
     padding: 5px 10px;
-    display: flex;
     border-radius: 5px;
     border: 1px inset #7f7f7f8a;
     background-color: rgba(0, 0, 0, 0.05);
@@ -48,11 +50,35 @@ export const style = ({}: Props) => {
 };
 
 export function Section(props: Props) {
-  const [{ children, title }, css] = init(props, defaultProps, style);
+  const [
+    {
+      children,
+      title,
+      align,
+      direction,
+      height,
+      justify,
+      margin,
+      reversed,
+      spacing,
+      width,
+    },
+    css,
+  ] = init(props, defaultProps, style);
+  const boxLayoutProps = {
+    align,
+    direction,
+    height,
+    justify,
+    margin,
+    reversed,
+    spacing,
+    width,
+  };
   return (
     <fieldset css={css} className="section">
       <legend>{title}</legend>
-      {children}
+      <BoxLayout {...boxLayoutProps}>{children}</BoxLayout>
     </fieldset>
   );
 }

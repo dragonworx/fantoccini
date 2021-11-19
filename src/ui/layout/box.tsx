@@ -29,7 +29,7 @@ export const defaultProps: Props = {
   margin: 3,
   direction: 'horizontal',
   reversed: false,
-  align: 'center',
+  align: 'start',
   justify: 'center',
 };
 

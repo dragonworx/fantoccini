@@ -34,6 +34,8 @@ export const style = ({
   enabled,
   link,
   appearance,
+  align,
+  position,
   onClick,
 }: Required<Props>) => {
   const shadowColor = enabled ? '#080808' : '#383838';
@@ -50,7 +52,6 @@ export const style = ({
     text-decoration: ${link ? 'underline' : 'normal'};
     cursor: ${isInteractive ? 'pointer' : 'inherit'};
     white-space: nowrap;
-
     &:active,
     &.active {
       ${isInteractive ? 'color:' + textColor.lighten(0.2).hex() : ''}

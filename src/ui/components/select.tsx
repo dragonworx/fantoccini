@@ -266,6 +266,7 @@ export function Select(props: Props) {
                 height={height}
                 margin={0}
                 spacing={0}
+                align="center"
                 justify="space-around"
               >
                 <Label
