@@ -60,7 +60,7 @@ export const style = ({ enabled, direction, thickness: size }: Props) => {
         top: 0;
         width: 0;
         height: 0;
-        border: 1px outset #6e6e6e;
+        border: ${enabled ? `1px outset #6e6e6e` : `1px outset #555555`};
 
         &:hover {
           ${enabled ? buttonBg(enabled, false, 0, '#616161') : ''}
