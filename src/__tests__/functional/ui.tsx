@@ -357,6 +357,16 @@ export function App() {
             onChange={onHandleValue('ScrollBar.onChange')}
           />
         </HSplit>
+        <HSplit>
+          <ScrollBar
+            enabled={false}
+            direction="horizontal"
+            totalRange={3}
+            visibleRange={1}
+            value={0.9}
+            onChange={onHandleValue('ScrollBar.onChange')}
+          />
+        </HSplit>
       </Section>
     </div>
   );

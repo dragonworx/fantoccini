@@ -6,15 +6,17 @@ import {
   useEffect,
   MouseEvent as ReactMouseEvent,
 } from 'react';
-import { reset, buttonBg, borderRadius } from './theme';
+import { reset, buttonBg } from './theme';
 import { init } from '../util';
 import { useDrag } from '../hooks';
+import Color from 'color';
 
 export type Direction = 'horizontal' | 'vertical';
 
 export const minSize = 200;
 
 export interface Props {
+  enabled?: boolean;
   direction?: Direction;
   thickness?: number;
   totalRange: number;
@@ -25,6 +27,7 @@ export interface Props {
 }
 
 export const defaultProps: Props = {
+  enabled: true,
   direction: 'horizontal',
   thickness: 15,
   totalRange: 1,
@@ -33,12 +36,12 @@ export const defaultProps: Props = {
   pageSize: 0.1,
 };
 
-export const style = ({ direction, thickness: size }: Props) => {
+export const style = ({ enabled, direction, thickness: size }: Props) => {
   const angle = direction === 'horizontal' ? 180 : 90;
 
   return css`
     ${reset}
-    ${buttonBg(true, true, angle)}
+    ${buttonBg(enabled, true, angle)}
     position: relative;
     width: ${direction === 'horizontal' ? '100%' : `${size}px`};
     height: ${direction === 'horizontal' ? `${size}px` : '100%'};
@@ -53,18 +56,18 @@ export const style = ({ direction, thickness: size }: Props) => {
       .thumb {
         border-radius: 2px;
         position: absolute;
-        ${buttonBg(true, false, angle + 180, '#555')}
+        ${buttonBg(enabled, false, 0, enabled ? '#555' : '#444')}
         top: 0;
         width: 0;
         height: 0;
         border: 1px outset #6e6e6e;
 
         &:hover {
-          ${buttonBg(true, false, angle + 180, '#616161')}
+          ${enabled ? buttonBg(enabled, false, 0, '#616161') : ''}
         }
 
         &:active {
-          ${buttonBg(true, true, angle, '#666')}
+          ${enabled ? buttonBg(enabled, true, 180, '#666') : ''}
         }
       }
     }
@@ -78,6 +81,7 @@ export function ScrollBar(props: Props) {
 
   const [
     {
+      enabled,
       direction,
       value,
       pageSize,
@@ -101,7 +105,10 @@ export function ScrollBar(props: Props) {
     const trackLength =
       direction === 'horizontal' ? trackRect.width : trackRect.height;
     const thumbRatio = visibleRange / totalRange;
-    const thumbLength = Math.max(trackLength * thumbRatio, thickness);
+    const thumbLength = Math.min(
+      Math.max(trackLength * thumbRatio, thickness),
+      trackLength
+    );
     const innerLength = trackLength - thumbLength;
     const thumbPosition = innerLength * currentValue;
 
@@ -134,6 +141,9 @@ export function ScrollBar(props: Props) {
 
   const onThumbMouseDownHandler = useDrag(
     (deltaX: number, deltaY: number, startX: number, startY: number) => {
+      if (!enabled) {
+        return;
+      }
       const track = trackRef.current;
       const thumb = thumbRef.current;
       if (track && thumb) {
@@ -162,6 +172,9 @@ export function ScrollBar(props: Props) {
   );
 
   const onTrackMouseDown = (e: ReactMouseEvent) => {
+    if (!enabled) {
+      return;
+    }
     const { thumbRect } = getSizeInfo();
     const x = e.clientX;
     const y = e.clientY;
