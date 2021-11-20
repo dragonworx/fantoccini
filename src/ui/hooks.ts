@@ -39,10 +39,10 @@ export const longPressInitialInterval = 150;
 export const longPressIntervalFactor = 0.9;
 export const longPressIncrementFactor = 1.1;
 
-export function useLongPress(
+export function useLongPressWithScaling(
+  onIncrement: (e: ReactMouseEvent, value: number) => void,
   initialIncrementMinor: number,
-  initialIncrementMajor: number,
-  onIncrement: (value: number) => void
+  initialIncrementMajor: number = initialIncrementMinor
 ) {
   const onMouseDown = (e: ReactMouseEvent) => {
     const onMouseUpHandler = () => {
@@ -55,7 +55,7 @@ export function useLongPress(
 
     let value = e.shiftKey ? initialIncrementMajor : initialIncrementMinor;
 
-    onIncrement(value);
+    onIncrement(e, value);
 
     let interval: number;
     let delay = longPressInitialInterval;
@@ -64,7 +64,43 @@ export function useLongPress(
       interval = setInterval(() => {
         delay = Math.max(0, delay * longPressIntervalFactor);
         value = value * longPressIncrementFactor;
-        onIncrement(value);
+        onIncrement(e, value);
+      }, Math.round(delay));
+    }, longPressInitialDelay);
+  };
+
+  return onMouseDown;
+}
+
+export function useLongPressWithDelta(
+  onIncrement: (
+    e: ReactMouseEvent,
+    currentValue: number,
+    delta: number
+  ) => [number, number],
+  currentValue: number
+) {
+  const onMouseDown = (e: ReactMouseEvent) => {
+    const onMouseUpHandler = () => {
+      window.removeEventListener('mouseup', onMouseUpHandler);
+      clearTimeout(timeout);
+      clearInterval(interval);
+    };
+
+    window.addEventListener('mouseup', onMouseUpHandler);
+
+    let value = currentValue;
+    let delta = 0;
+
+    onIncrement(e, value, delta);
+
+    let interval: number;
+    let delay = longPressInitialInterval;
+
+    const timeout = setTimeout(() => {
+      interval = setInterval(() => {
+        delay = Math.max(0, delay * longPressIntervalFactor);
+        [value, delta] = onIncrement(e, value, delta);
       }, Math.round(delay));
     }, longPressInitialDelay);
   };

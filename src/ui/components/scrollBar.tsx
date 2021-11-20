@@ -8,7 +8,11 @@ import {
 } from 'react';
 import { reset, buttonBg } from './theme';
 import { init } from '../util';
-import { useDrag } from '../hooks';
+import {
+  useDrag,
+  useLongPressWithScaling,
+  useLongPressWithDelta,
+} from '../hooks';
 
 export type Direction = 'horizontal' | 'vertical';
 
@@ -170,34 +174,57 @@ export function ScrollBar(props: Props) {
     thumbRef
   );
 
-  const onTrackMouseDown = (e: ReactMouseEvent) => {
+  const onTrackMouseDown = (
+    e: ReactMouseEvent,
+    currentValue: number,
+    previousDelta: number
+  ): [number, number] => {
     if (!enabled) {
-      return;
+      return [0, 0];
     }
     const { thumbRect } = getSizeInfo();
     const x = e.clientX;
     const y = e.clientY;
-    let value: number = 0;
+    let value: number = currentValue;
     if (direction === 'horizontal') {
       if (x < thumbRect.left) {
-        value = Math.min(currentValue - pageSize, 1);
-      } else {
-        value = Math.max(currentValue + pageSize, 0);
+        value = Math.max(currentValue - pageSize, 0);
+      } else if (x > thumbRect.right) {
+        value = Math.min(currentValue + pageSize, 1);
       }
     } else if (direction === 'vertical') {
       if (y < thumbRect.top) {
         value = Math.max(currentValue - pageSize, 0);
-      } else {
+      } else if (y > thumbRect.bottom) {
         value = Math.min(currentValue + pageSize, 1);
       }
     }
+    let delta = currentValue - value;
+    if (
+      delta === 0 ||
+      (delta < 0 && previousDelta > 0) ||
+      (delta > 0 && previousDelta < 0)
+    ) {
+      value = currentValue;
+      delta = previousDelta;
+    }
     setCurrentValue(value);
     onChange(value);
+    return [value, delta];
   };
+
+  const onTrackMouseDownHandler = useLongPressWithDelta(
+    onTrackMouseDown,
+    currentValue
+  );
 
   return (
     <div ref={containerRef} css={css} className="scrollbar">
-      <div ref={trackRef} className="track" onMouseDown={onTrackMouseDown}>
+      <div
+        ref={trackRef}
+        className="track"
+        onMouseDown={onTrackMouseDownHandler}
+      >
         {enabled ? (
           <div
             ref={thumbRef}

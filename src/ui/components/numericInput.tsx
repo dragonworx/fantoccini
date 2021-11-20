@@ -12,7 +12,7 @@ import { PushButton } from './pushButton';
 import { TextField, InputKeyEvent } from './textfield';
 import { LabelPosition } from './label';
 import { BoxLayout } from '../layout/box';
-import { useLongPress } from '../hooks';
+import { useLongPressWithScaling } from '../hooks';
 
 export interface Props {
   enabled?: boolean;
@@ -104,11 +104,6 @@ export const style = ({}: Required<Props>) => {
   `;
 };
 
-export const longPressInitialDelay = 250;
-export const longPressInitialInterval = 150;
-export const longPressIntervalFactor = 0.9;
-export const longPressIncrementFactor = 1.1;
-
 export function NumericInput(props: Props) {
   const [
     {
@@ -163,28 +158,29 @@ export function NumericInput(props: Props) {
     setCurrentValue(`${newValue}`);
   };
 
-  const onIncrementHandler = (value: number) => {
-    if (ref.current) {
-      const input = ref.current.querySelector(
-        'input[type="text"]'
-      ) as HTMLInputElement;
-      const text = input.value;
-      const newValue = parseFloat(text) + Math.round(value);
-      onChange && onChange(newValue);
-      setCurrentValue(`${newValue}`);
-    }
-  };
+  const onIncrementHandler =
+    (scalar: number) => (e: ReactMouseEvent, value: number) => {
+      if (ref.current) {
+        const input = ref.current.querySelector(
+          'input[type="text"]'
+        ) as HTMLInputElement;
+        const text = input.value;
+        const newValue = parseFloat(text) + Math.round(value * scalar);
+        onChange && onChange(newValue);
+        setCurrentValue(`${newValue}`);
+      }
+    };
 
-  const onIncUpMouseDownHandler = useLongPress(
+  const onIncUpMouseDownHandler = useLongPressWithScaling(
+    onIncrementHandler(1),
     incrementMinor,
-    incrementMajor,
-    onIncrementHandler
+    incrementMajor
   );
 
-  const onIncDownMouseDownHandler = useLongPress(
-    incrementMinor * -1,
-    incrementMajor * -1,
-    onIncrementHandler
+  const onIncDownMouseDownHandler = useLongPressWithScaling(
+    onIncrementHandler(-1),
+    incrementMinor,
+    incrementMajor
   );
 
   const onButtonKeyDownHandler =
