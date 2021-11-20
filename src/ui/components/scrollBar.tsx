@@ -56,7 +56,7 @@ export const style = ({ enabled, direction, thickness: size }: Props) => {
       .thumb {
         border-radius: 2px;
         position: absolute;
-        ${buttonBg(enabled, false, 0, enabled ? '#555' : '#444')}
+        ${buttonBg(enabled, false, 0, enabled ? '#555' : '#424652')}
         top: 0;
         width: 0;
         height: 0;
