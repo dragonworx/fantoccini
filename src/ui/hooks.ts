@@ -33,3 +33,47 @@ export function useDrag(onDrag: onDragHandler, ref: RefObject<HTMLElement>) {
 
   return onMouseDown;
 }
+
+export const longPressInitialDelay = 250;
+export const longPressInitialInterval = 150;
+export const longPressIntervalFactor = 0.9;
+export const longPressIncrementFactor = 1.1;
+
+// export function useLongPress() {
+//   const onMouseDown = (e: ReactMouseEvent) => {
+//     const onMouseUpHandler = () => {
+//       window.removeEventListener('mouseup', onMouseUpHandler);
+//       clearTimeout(timeout);
+//       clearInterval(interval);
+//     };
+
+//     window.addEventListener('mouseup', onMouseUpHandler);
+
+//     let inc =
+//       (e.shiftKey ? incrementMajor : incrementMinor) * incrementDirection;
+
+//     incrementBy(inc);
+
+//     let interval: number;
+//     let delay = longPressInitialInterval;
+
+//     const timeout = setTimeout(() => {
+//       if (ref.current) {
+//         const input = ref.current.querySelector(
+//           'input[type="text"]'
+//         ) as HTMLInputElement;
+
+//         interval = setInterval(() => {
+//           delay = Math.max(0, delay * longPressIntervalFactor);
+//           inc = inc * longPressIncrementFactor;
+//           const text = input.value;
+//           const newValue = parseFloat(text) + Math.round(inc);
+//           onChange && onChange(newValue);
+//           setCurrentValue(`${newValue}`);
+//         }, Math.round(delay));
+//       }
+//     }, longPressInitialDelay);
+//   };
+
+//   return onMouseDown;
+// }

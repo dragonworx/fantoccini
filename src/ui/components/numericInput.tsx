@@ -141,7 +141,6 @@ export function NumericInput(props: Props) {
 
   const onChangeHandler = (text: string) => {
     let value = text;
-    console.log('!!!', value, value.length, currentValue);
     if (isNaN(parseFloat(value))) {
       value = '0';
     }
@@ -195,13 +194,8 @@ export function NumericInput(props: Props) {
     (incrementDirection: number) => (e: KeyboardEvent) => {
       let inc =
         (e.shiftKey ? incrementMajor : incrementMinor) * incrementDirection;
-      console.log(inc);
       incrementBy(inc);
     };
-
-  const onBlurHandler = () => {
-    // console.log('blur');
-  };
 
   return (
     <div css={css} className="numericInput" ref={ref}>
@@ -216,7 +210,6 @@ export function NumericInput(props: Props) {
         onKeyDown={onKeyDownHandler}
         onChange={onChangeHandler}
         onAccept={onAcceptHandler}
-        onBlur={onBlurHandler}
       >
         <BoxLayout
           direction="vertical"

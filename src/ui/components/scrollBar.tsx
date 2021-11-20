@@ -9,7 +9,6 @@ import {
 import { reset, buttonBg } from './theme';
 import { init } from '../util';
 import { useDrag } from '../hooks';
-import Color from 'color';
 
 export type Direction = 'horizontal' | 'vertical';
 
@@ -199,11 +198,13 @@ export function ScrollBar(props: Props) {
   return (
     <div ref={containerRef} css={css} className="scrollbar">
       <div ref={trackRef} className="track" onMouseDown={onTrackMouseDown}>
-        <div
-          ref={thumbRef}
-          className="thumb"
-          onMouseDown={onThumbMouseDownHandler}
-        ></div>
+        {enabled ? (
+          <div
+            ref={thumbRef}
+            className="thumb"
+            onMouseDown={onThumbMouseDownHandler}
+          ></div>
+        ) : null}
       </div>
     </div>
   );
