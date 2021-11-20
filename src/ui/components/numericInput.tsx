@@ -12,6 +12,7 @@ import { PushButton } from './pushButton';
 import { TextField, InputKeyEvent } from './textfield';
 import { LabelPosition } from './label';
 import { BoxLayout } from '../layout/box';
+import { useLongPress } from '../hooks';
 
 export interface Props {
   enabled?: boolean;
@@ -96,6 +97,8 @@ export const style = ({}: Required<Props>) => {
     & .buttoncontent {
       & img {
         margin: 0;
+        position: relative;
+        top: -2px;
       }
     }
   `;
@@ -160,41 +163,37 @@ export function NumericInput(props: Props) {
     setCurrentValue(`${newValue}`);
   };
 
-  const onMouseDownHandler =
-    (incrementDirection: number) => (e: ReactMouseEvent) => {
-      const onMouseUpHandler = () => {
-        window.removeEventListener('mouseup', onMouseUpHandler);
-        clearTimeout(timeout);
-        clearInterval(interval);
-      };
-      window.addEventListener('mouseup', onMouseUpHandler);
-      let inc =
-        (e.shiftKey ? incrementMajor : incrementMinor) * incrementDirection;
-      incrementBy(inc);
-      let interval: number;
-      let delay = longPressInitialInterval;
-      const timeout = setTimeout(() => {
-        if (ref.current) {
-          const input = ref.current.querySelector(
-            'input[type="text"]'
-          ) as HTMLInputElement;
-          interval = setInterval(() => {
-            delay = Math.max(0, delay * longPressIntervalFactor);
-            inc = inc * longPressIncrementFactor;
-            const text = input.value;
-            const newValue = parseFloat(text) + Math.round(inc);
-            onChange && onChange(newValue);
-            setCurrentValue(`${newValue}`);
-          }, Math.round(delay));
-        }
-      }, longPressInitialDelay);
-    };
+  const onIncrementHandler = (value: number) => {
+    if (ref.current) {
+      const input = ref.current.querySelector(
+        'input[type="text"]'
+      ) as HTMLInputElement;
+      const text = input.value;
+      const newValue = parseFloat(text) + Math.round(value);
+      onChange && onChange(newValue);
+      setCurrentValue(`${newValue}`);
+    }
+  };
+
+  const onIncUpMouseDownHandler = useLongPress(
+    incrementMinor,
+    incrementMajor,
+    onIncrementHandler
+  );
+
+  const onIncDownMouseDownHandler = useLongPress(
+    incrementMinor * -1,
+    incrementMajor * -1,
+    onIncrementHandler
+  );
 
   const onButtonKeyDownHandler =
     (incrementDirection: number) => (e: KeyboardEvent) => {
-      let inc =
-        (e.shiftKey ? incrementMajor : incrementMinor) * incrementDirection;
-      incrementBy(inc);
+      if (e.key === ' ' || e.key === 'Enter') {
+        let inc =
+          (e.shiftKey ? incrementMajor : incrementMinor) * incrementDirection;
+        incrementBy(inc);
+      }
     };
 
   return (
@@ -225,7 +224,9 @@ export function NumericInput(props: Props) {
             height={buttonHeight}
             fixedSize={true}
             radius={0}
-            onMouseDown={onMouseDownHandler(1)}
+            spacing={0}
+            margin={0}
+            onMouseDown={onIncUpMouseDownHandler}
             onKeyDown={onButtonKeyDownHandler(1)}
           />
           <PushButton
@@ -236,7 +237,9 @@ export function NumericInput(props: Props) {
             height={buttonHeight}
             fixedSize={true}
             radius={0}
-            onMouseDown={onMouseDownHandler(-1)}
+            spacing={0}
+            margin={0}
+            onMouseDown={onIncDownMouseDownHandler}
             onKeyDown={onButtonKeyDownHandler(-1)}
           />
         </BoxLayout>

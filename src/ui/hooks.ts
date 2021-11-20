@@ -39,41 +39,35 @@ export const longPressInitialInterval = 150;
 export const longPressIntervalFactor = 0.9;
 export const longPressIncrementFactor = 1.1;
 
-// export function useLongPress() {
-//   const onMouseDown = (e: ReactMouseEvent) => {
-//     const onMouseUpHandler = () => {
-//       window.removeEventListener('mouseup', onMouseUpHandler);
-//       clearTimeout(timeout);
-//       clearInterval(interval);
-//     };
+export function useLongPress(
+  initialIncrementMinor: number,
+  initialIncrementMajor: number,
+  onIncrement: (value: number) => void
+) {
+  const onMouseDown = (e: ReactMouseEvent) => {
+    const onMouseUpHandler = () => {
+      window.removeEventListener('mouseup', onMouseUpHandler);
+      clearTimeout(timeout);
+      clearInterval(interval);
+    };
 
-//     window.addEventListener('mouseup', onMouseUpHandler);
+    window.addEventListener('mouseup', onMouseUpHandler);
 
-//     let inc =
-//       (e.shiftKey ? incrementMajor : incrementMinor) * incrementDirection;
+    let value = e.shiftKey ? initialIncrementMajor : initialIncrementMinor;
 
-//     incrementBy(inc);
+    onIncrement(value);
 
-//     let interval: number;
-//     let delay = longPressInitialInterval;
+    let interval: number;
+    let delay = longPressInitialInterval;
 
-//     const timeout = setTimeout(() => {
-//       if (ref.current) {
-//         const input = ref.current.querySelector(
-//           'input[type="text"]'
-//         ) as HTMLInputElement;
+    const timeout = setTimeout(() => {
+      interval = setInterval(() => {
+        delay = Math.max(0, delay * longPressIntervalFactor);
+        value = value * longPressIncrementFactor;
+        onIncrement(value);
+      }, Math.round(delay));
+    }, longPressInitialDelay);
+  };
 
-//         interval = setInterval(() => {
-//           delay = Math.max(0, delay * longPressIntervalFactor);
-//           inc = inc * longPressIncrementFactor;
-//           const text = input.value;
-//           const newValue = parseFloat(text) + Math.round(inc);
-//           onChange && onChange(newValue);
-//           setCurrentValue(`${newValue}`);
-//         }, Math.round(delay));
-//       }
-//     }, longPressInitialDelay);
-//   };
-
-//   return onMouseDown;
-// }
+  return onMouseDown;
+}
