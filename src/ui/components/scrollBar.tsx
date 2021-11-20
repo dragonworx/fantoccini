@@ -13,13 +13,12 @@ import { useDrag } from '../hooks';
 export type Direction = 'horizontal' | 'vertical';
 
 export const minSize = 200;
-export const minThumbLength = 5;
 
 export interface Props {
   direction?: Direction;
   thickness?: number;
-  outerSize: number;
-  innerSize: number;
+  totalRange: number;
+  visibleRange: number;
   value: number;
   pageSize?: number;
   onChange?: (value: number) => void;
@@ -28,16 +27,18 @@ export interface Props {
 export const defaultProps: Props = {
   direction: 'horizontal',
   thickness: 15,
-  outerSize: 1,
-  innerSize: 1,
+  totalRange: 1,
+  visibleRange: 1,
   value: 0,
   pageSize: 0.1,
 };
 
 export const style = ({ direction, thickness: size }: Props) => {
+  const angle = direction === 'horizontal' ? 180 : 90;
+
   return css`
     ${reset}
-    ${buttonBg(true, true, direction === 'horizontal' ? 180 : 90)}
+    ${buttonBg(true, true, angle)}
     position: relative;
     width: ${direction === 'horizontal' ? '100%' : `${size}px`};
     height: ${direction === 'horizontal' ? `${size}px` : '100%'};
@@ -50,12 +51,21 @@ export const style = ({ direction, thickness: size }: Props) => {
       height: 100%;
 
       .thumb {
-        ${borderRadius}
+        border-radius: 2px;
         position: absolute;
-        background-color: rgba(255, 255, 255, 0.3);
+        ${buttonBg(true, false, angle + 180, '#555')}
         top: 0;
         width: 0;
         height: 0;
+        border: 1px outset #6e6e6e;
+
+        &:hover {
+          ${buttonBg(true, false, angle + 180, '#616161')}
+        }
+
+        &:active {
+          ${buttonBg(true, true, angle, '#666')}
+        }
       }
     }
   `;
@@ -66,12 +76,45 @@ export function ScrollBar(props: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
   const thumbRef = useRef<HTMLDivElement>(null);
 
-  const [{ direction, value, pageSize, innerSize, outerSize, onChange }, css] =
-    init(props, defaultProps, style);
+  const [
+    {
+      direction,
+      value,
+      pageSize,
+      visibleRange,
+      totalRange,
+      thickness,
+      onChange,
+    },
+    css,
+  ] = init(props, defaultProps, style);
 
   const [currentValue, setCurrentValue] = useState(value);
 
   useEffect(() => setCurrentValue(value), [value]);
+
+  const getSizeInfo = () => {
+    const track = trackRef.current!;
+    const thumb = thumbRef.current!;
+    const trackRect = track.getBoundingClientRect();
+    const thumbRect = thumb.getBoundingClientRect();
+    const trackLength =
+      direction === 'horizontal' ? trackRect.width : trackRect.height;
+    const thumbRatio = visibleRange / totalRange;
+    const thumbLength = Math.max(trackLength * thumbRatio, thickness);
+    const innerLength = trackLength - thumbLength;
+    const thumbPosition = innerLength * currentValue;
+
+    return {
+      trackRect,
+      thumbRect,
+      trackLength,
+      thumbRatio,
+      innerLength,
+      thumbLength,
+      thumbPosition,
+    };
+  };
 
   useEffect(() => {
     const thumb = thumbRef.current;
@@ -85,7 +128,7 @@ export function ScrollBar(props: Props) {
       thumb.style.width =
         direction === 'horizontal' ? `${thumbLength}px` : '100%';
       thumb.style.height =
-        direction === 'horizontal' ? '100%' : `${thumbLength}px`;
+        direction === 'vertical' ? `${thumbLength}px` : '100%';
     }
   }, [thumbRef.current, currentValue]);
 
@@ -111,54 +154,33 @@ export function ScrollBar(props: Props) {
           thumb.style.top = `${position}px`;
         }
         value = position / innerLength;
+        setCurrentValue(value);
         onChange(value);
       }
     },
     thumbRef
   );
 
-  const getSizeInfo = () => {
-    const track = trackRef.current!;
-    const thumb = thumbRef.current!;
-    const trackRect = track.getBoundingClientRect();
-    const thumbRect = thumb.getBoundingClientRect();
-    const trackLength =
-      direction === 'horizontal' ? trackRect.width : trackRect.height;
-    const thumbRatio = innerSize / outerSize;
-    const innerLength = trackLength * thumbRatio;
-    const thumbPosition = innerLength * currentValue;
-    const thumbLength = trackLength * thumbRatio;
-
-    return {
-      trackRect,
-      thumbRect,
-      trackLength,
-      thumbRatio,
-      innerLength,
-      thumbLength,
-      thumbPosition,
-    };
-  };
-
   const onTrackMouseDown = (e: ReactMouseEvent) => {
-    const { trackRect, thumbRect } = getSizeInfo();
-    const x = e.clientX - trackRect.left;
-    const y = e.clientY - trackRect.top;
+    const { thumbRect } = getSizeInfo();
+    const x = e.clientX;
+    const y = e.clientY;
+    let value: number = 0;
     if (direction === 'horizontal') {
-      if (x < thumbRect.left - trackRect.left) {
-        const val = Math.min(currentValue - pageSize, 1);
-        setCurrentValue(val);
+      if (x < thumbRect.left) {
+        value = Math.min(currentValue - pageSize, 1);
       } else {
-        const val = Math.max(currentValue + pageSize, 0);
-        setCurrentValue(val);
+        value = Math.max(currentValue + pageSize, 0);
       }
     } else if (direction === 'vertical') {
-      if (y < thumbRect.top - trackRect.top) {
-        setCurrentValue(Math.max(currentValue - pageSize, 0));
+      if (y < thumbRect.top) {
+        value = Math.max(currentValue - pageSize, 0);
       } else {
-        setCurrentValue(Math.min(currentValue + pageSize, 1));
+        value = Math.min(currentValue + pageSize, 1);
       }
     }
+    setCurrentValue(value);
+    onChange(value);
   };
 
   return (

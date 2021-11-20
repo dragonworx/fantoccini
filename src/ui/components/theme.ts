@@ -67,9 +67,10 @@ export const buttonDarkColor = (enabled: boolean) =>
 export const buttonBg = (
   enabled: boolean = true,
   toggled: boolean = false,
-  angle: number = 180
+  angle: number = 180,
+  baseColor?: string
 ) => {
-  const darkColor = buttonDarkColor(enabled);
+  const darkColor = baseColor || buttonDarkColor(enabled);
   if (toggled) {
     return css`
       background: linear-gradient(

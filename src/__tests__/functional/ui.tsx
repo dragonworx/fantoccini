@@ -342,8 +342,8 @@ export function App() {
         <HSplit>
           <ScrollBar
             direction="horizontal"
-            outerSize={2}
-            innerSize={1}
+            totalRange={3}
+            visibleRange={1}
             value={0.9}
             onChange={onHandleValue('ScrollBar.onChange')}
           />
@@ -351,8 +351,8 @@ export function App() {
         <HSplit>
           <ScrollBar
             direction="vertical"
-            outerSize={10}
-            innerSize={1}
+            totalRange={100}
+            visibleRange={1}
             value={0.9}
             onChange={onHandleValue('ScrollBar.onChange')}
           />

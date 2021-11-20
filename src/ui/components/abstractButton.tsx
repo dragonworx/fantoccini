@@ -9,7 +9,6 @@ import {
   useEffect,
   FocusEvent,
 } from 'react';
-import Color from 'color';
 import { getProps, getCss } from '../util';
 import {
   reset,
