@@ -136,7 +136,7 @@ export function ScrollBar(props: Props) {
       thumb.style.height =
         direction === 'vertical' ? `${thumbLength}px` : '100%';
     }
-  }, [thumbRef.current, currentValue]);
+  }, [thumbRef.current, currentValue, totalRange, visibleRange]);
 
   const onThumbMouseDownHandler = useDrag(
     (deltaX: number, deltaY: number, startX: number, startY: number) => {
@@ -164,7 +164,7 @@ export function ScrollBar(props: Props) {
         }
         value = position / innerLength;
         setCurrentValue(value);
-        onChange(value);
+        onChange && onChange(value);
       }
     },
     thumbRef
@@ -205,7 +205,7 @@ export function ScrollBar(props: Props) {
       delta = previousDelta;
     } else {
       setCurrentValue(value);
-      onChange(value);
+      onChange && onChange(value);
     }
     return [value, delta];
   };

@@ -1,6 +1,13 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import { ReactNode, useRef, useState, useEffect, MouseEvent } from 'react';
+import {
+  ReactNode,
+  useRef,
+  useState,
+  useEffect,
+  useLayoutEffect,
+  MouseEvent,
+} from 'react';
 import { reset } from './theme';
 import { ScrollBar } from './scrollBar';
 import { getProps } from '../util';
@@ -9,90 +16,98 @@ export const scrollSize = 25;
 
 export interface Props {
   children?: ReactNode;
-  viewWidth?: number;
-  viewHeight?: number;
+  viewWidth: number;
+  viewHeight: number;
 }
 
 export const defaultProps: Props = {
-  viewWidth: 100,
-  viewHeight: 100,
+  viewWidth: 0,
+  viewHeight: 0,
 };
 
 export const style =
-  (viewWidth: number, viewHeight: number) =>
-  ({}: Props) => {
-    console.log('style!', viewWidth, viewHeight);
+  (contentWidth: number, contentHeight: number) =>
+  ({ viewWidth, viewHeight }: Props) => {
     return css`
       ${reset}
-      width: ${`${viewWidth + scrollSize}px`};
-      height: ${`${viewHeight + scrollSize}px`};
       position: relative;
-      outline: 1px solid red;
+      /* outline: 1px solid red; */
       overflow: hidden;
+      width: ${viewWidth + scrollSize}px;
+      height: ${viewHeight + scrollSize}px;
 
-      .scroll-content {
+      .scroll-view {
         position: relative;
         width: ${`${viewWidth}px`};
         height: ${`${viewHeight}px`};
         outline: 1px solid cyan;
+        overflow: hidden;
+
+        .scroll-content {
+          width: ${`${contentWidth}px`};
+          height: ${`${contentHeight}px`};
+          outline: 1px solid blue;
+          position: relative;
+        }
+      }
+
+      .scrollbar.vertical {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: calc(100% - ${scrollSize}px);
       }
 
       .scrollbar.horizontal {
         position: absolute;
-        bottom: ${-scrollSize}px;
+        bottom: 0;
         left: 0;
-        right: ${scrollSize}px;
+        width: calc(100% - ${scrollSize}px);
       }
     `;
   };
 
 export function ScrollView(props: Props) {
   const allProps = getProps(props, defaultProps);
-  const {
-    children,
-    viewWidth: defaultViewWidth,
-    viewHeight: defaultViewHeight,
-  } = allProps;
+  const [contentSize, setContentSize] = useState({ width: 0, height: 0 });
+  const { children, viewWidth, viewHeight } = allProps;
 
-  const [viewWidth, setViewWidth] = useState(defaultViewWidth);
-  const [viewHeight, setViewHeight] = useState(defaultViewHeight);
-  const [contentWidth, setContentWidth] = useState(0);
-  const [contentHeight, setContentHeight] = useState(0);
-
-  useEffect(() => {
-    setViewWidth(defaultViewWidth);
-    setViewHeight(defaultViewHeight);
-  }, [defaultViewWidth, defaultViewHeight]);
-
-  const css = style(viewWidth, viewHeight)(allProps);
+  const css = style(contentSize.width, contentSize.height)(allProps);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const container = ref.current;
-    if (container) {
-      const content = container.querySelector('.scroll-content *')!;
-      debugger;
-      const contentRect = content.getBoundingClientRect();
-      if (contentWidth === 0 || contentHeight === 0) {
-        console.log('calc!', contentRect.width, contentRect.height);
-        setContentWidth(contentRect.width);
-        setContentHeight(contentRect.height);
+    if (ref.current && contentSize.width === 0) {
+      const element = ref.current.querySelector(
+        '.scroll-content *'
+      ) as HTMLElement;
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        const size = { width: element.offsetWidth, height: rect.height };
+        setContentSize(size);
+        console.log('size!', size);
       }
     }
-  }, [ref.current, children]);
+  });
 
   return (
     <div ref={ref} css={css} className="scrollview">
-      <div className="scroll-content">
-        {children}
-        <ScrollBar
-          direction="horizontal"
-          totalRange={contentWidth}
-          visibleRange={viewWidth}
-          value={0}
-          thickness={scrollSize}
-        />
+      <div className="scroll-view">
+        <div className="scroll-content">{children}</div>
       </div>
+      <ScrollBar
+        direction="vertical"
+        totalRange={contentSize.height}
+        visibleRange={viewHeight}
+        value={0}
+        thickness={scrollSize}
+      />
+      <ScrollBar
+        direction="horizontal"
+        totalRange={contentSize.width}
+        visibleRange={viewWidth}
+        value={0}
+        thickness={scrollSize}
+      />
     </div>
   );
 }
