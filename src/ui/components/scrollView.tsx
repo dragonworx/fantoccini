@@ -9,52 +9,90 @@ export const scrollSize = 25;
 
 export interface Props {
   children?: ReactNode;
-  width?: number;
-  height?: number;
+  viewWidth?: number;
+  viewHeight?: number;
 }
 
-export const defaultProps: Props = {};
+export const defaultProps: Props = {
+  viewWidth: 100,
+  viewHeight: 100,
+};
 
 export const style =
-  (availableWidth: number, availableHeight: number) =>
+  (viewWidth: number, viewHeight: number) =>
   ({}: Props) => {
+    console.log('style!', viewWidth, viewHeight);
     return css`
       ${reset}
-      width: 100%;
-      height: 100%;
+      width: ${`${viewWidth + scrollSize}px`};
+      height: ${`${viewHeight + scrollSize}px`};
       position: relative;
       outline: 1px solid red;
-      /* padding-right: ${scrollSize}px;
-      padding-bottom: ${scrollSize}px; */
+      overflow: hidden;
 
       .scroll-content {
-        width: ${width}px;
-        height: ${height ? `${height}px` : 'auto'};
-        outline: 1px solid green;
-        overflow: hidden;
+        position: relative;
+        width: ${`${viewWidth}px`};
+        height: ${`${viewHeight}px`};
+        outline: 1px solid cyan;
+      }
+
+      .scrollbar.horizontal {
+        position: absolute;
+        bottom: ${-scrollSize}px;
+        left: 0;
+        right: ${scrollSize}px;
       }
     `;
   };
 
 export function ScrollView(props: Props) {
   const allProps = getProps(props, defaultProps);
-  const { children, width, height } = allProps;
-  const [availableWidth, setAvailableWidth] = useState(0);
-  const [availableHeight, setAvailableHeight] = useState(0);
-  const css = style(availableWidth, availableHeight)(allProps);
+  const {
+    children,
+    viewWidth: defaultViewWidth,
+    viewHeight: defaultViewHeight,
+  } = allProps;
+
+  const [viewWidth, setViewWidth] = useState(defaultViewWidth);
+  const [viewHeight, setViewHeight] = useState(defaultViewHeight);
+  const [contentWidth, setContentWidth] = useState(0);
+  const [contentHeight, setContentHeight] = useState(0);
+
+  useEffect(() => {
+    setViewWidth(defaultViewWidth);
+    setViewHeight(defaultViewHeight);
+  }, [defaultViewWidth, defaultViewHeight]);
+
+  const css = style(viewWidth, viewHeight)(allProps);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = ref.current;
     if (container) {
-      const rect = container.getBoundingClientRect();
-      setAvailableWidth(Math.round(rect.width));
+      const content = container.querySelector('.scroll-content *')!;
+      debugger;
+      const contentRect = content.getBoundingClientRect();
+      if (contentWidth === 0 || contentHeight === 0) {
+        console.log('calc!', contentRect.width, contentRect.height);
+        setContentWidth(contentRect.width);
+        setContentHeight(contentRect.height);
+      }
     }
-  }, [ref.current, availableWidth]);
+  }, [ref.current, children]);
 
   return (
     <div ref={ref} css={css} className="scrollview">
-      <div className="scroll-content">{ref.current ? children : null}</div>
+      <div className="scroll-content">
+        {children}
+        <ScrollBar
+          direction="horizontal"
+          totalRange={contentWidth}
+          visibleRange={viewWidth}
+          value={0}
+          thickness={scrollSize}
+        />
+      </div>
     </div>
   );
 }

@@ -43,6 +43,18 @@ export const style = css`
   .hsplit {
     display: flex;
     align-items: center;
+    padding-right: 15px;
+    padding-left: 5px;
+    border-right: 2px solid #666;
+  }
+
+  .hsplit:first-of-type {
+    padding-left: 0;
+  }
+
+  .hsplit:last-of-type {
+    padding-right: 0;
+    border-right: none;
   }
 `;
 

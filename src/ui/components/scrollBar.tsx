@@ -8,15 +8,11 @@ import {
 } from 'react';
 import { reset, buttonBg } from './theme';
 import { init } from '../util';
-import {
-  useDrag,
-  useLongPressWithScaling,
-  useLongPressWithDelta,
-} from '../hooks';
+import { useDrag, useLongPressWithDelta } from '../hooks';
 
 export type Direction = 'horizontal' | 'vertical';
 
-export const minSize = 200;
+export const minSize = 100;
 
 export interface Props {
   enabled?: boolean;
@@ -220,7 +216,7 @@ export function ScrollBar(props: Props) {
   );
 
   return (
-    <div ref={containerRef} css={css} className="scrollbar">
+    <div ref={containerRef} css={css} className={`scrollbar ${direction}`}>
       <div
         ref={trackRef}
         className="track"
