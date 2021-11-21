@@ -34,6 +34,7 @@ import { ToolTip } from '../../ui/components/tooltip';
 import { Section } from '../../ui/layout/section';
 import { Spacer } from '../../ui/layout/spacer';
 import { ScrollBar } from '../../ui/components/scrollBar';
+import { ScrollView } from '../../ui/components/scrollView';
 
 let selectOpenCount = 0;
 
@@ -529,6 +530,11 @@ export function App() {
             />
           </HBoxLayout>
         </HSplit>
+      </Section>
+      <Section title="ScrollView">
+        <ScrollView>
+          <img src="img/test.jpg" />
+        </ScrollView>
       </Section>
     </div>
   );

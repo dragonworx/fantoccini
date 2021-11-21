@@ -207,9 +207,10 @@ export function ScrollBar(props: Props) {
     ) {
       value = currentValue;
       delta = previousDelta;
+    } else {
+      setCurrentValue(value);
+      onChange(value);
     }
-    setCurrentValue(value);
-    onChange(value);
     return [value, delta];
   };
 
