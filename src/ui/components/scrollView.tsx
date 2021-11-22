@@ -30,10 +30,14 @@ export const style =
   (
     contentWidth: number,
     contentHeight: number,
-    originX: number,
-    originY: number
+    xValue: number,
+    yValue: number
   ) =>
   ({ viewWidth, viewHeight }: Props) => {
+    const innerHLength = contentWidth - viewWidth;
+    const innerVLength = contentHeight - viewHeight;
+    const xPos = innerHLength * xValue * -1;
+    const xyos = innerVLength * yValue * -1;
     return css`
       ${reset}
       position: relative;
@@ -54,8 +58,8 @@ export const style =
           height: ${`${contentHeight}px`};
           /* outline: 1px solid blue; */
           position: relative;
-          left: ${originX}px;
-          top: ${originY}px;
+          left: ${xPos}px;
+          top: ${xyos}px;
         }
       }
 
@@ -90,17 +94,20 @@ export function ScrollView(props: Props) {
   const allProps = getProps(props, defaultProps);
   const { children, viewWidth, viewHeight } = allProps;
 
-  const [contentSize, setContentSize] = useState({ width: 0, height: 0 });
-  const [originX, setOriginX] = useProp(0);
-  const [originY, setOriginY] = useProp(0);
+  const contentSizeRef = useRef({ width: 0, height: 0 });
+  const valueRef = useRef({ x: 0, y: 0 });
+  const contentSize = contentSizeRef.current;
+  const value = valueRef.current;
 
   const css = style(
     contentSize.width,
     contentSize.height,
-    originX,
-    originY
+    value.x,
+    value.y
   )(allProps);
   const ref = useRef<HTMLDivElement>(null);
+  const [_, refresher] = useState(0);
+  const refresh = () => refresher(Date.now() + Math.random());
 
   useEffect(() => {
     if (ref.current && contentSize.width === 0) {
@@ -108,33 +115,48 @@ export function ScrollView(props: Props) {
       if (element) {
         const rect = element.getBoundingClientRect();
         const size = { width: element.offsetWidth, height: rect.height };
-        setContentSize(size);
+        contentSize.width = element.offsetWidth;
+        contentSize.height = rect.height;
+        refresh();
       }
     }
   });
 
-  const onVScrollBarChange = (value: number) => {
-    setOriginY((contentSize.height - viewHeight) * value * -1);
-  };
-
-  const onHScrollBarChange = (value: number) => {
-    setOriginX((contentSize.width - viewWidth) * value * -1);
-  };
-
   const onWheelHandler = (e: WheelEvent) => {
-    console.log('!wheel');
+    const { deltaX, deltaY, deltaZ } = e;
     e.preventDefault();
+    if (deltaY !== 0) {
+      const innerLength = contentSize.height - viewHeight;
+      value.y =
+        Math.max(Math.min(innerLength * value.y + deltaY, innerLength), 0) /
+        innerLength;
+      refresh();
+    } else if (deltaX !== 0) {
+      const innerLength = contentSize.width - viewWidth;
+      value.x =
+        Math.max(Math.min(innerLength * value.x + deltaX, innerLength), 0) /
+        innerLength;
+      refresh();
+    }
   };
 
   useEffect(() => {
-    console.log('bind');
     ref.current &&
       ref.current.addEventListener('wheel', onWheelHandler, { passive: false });
     return () => {
-      console.log('unbind');
       ref.current && ref.current.removeEventListener('wheel', onWheelHandler);
     };
   }, [ref.current]);
+
+  const onHChange = (newValue: number) => {
+    value.x = newValue;
+    refresh();
+  };
+
+  const onVChange = (newValue: number) => {
+    value.y = newValue;
+    refresh();
+  };
 
   return (
     <div ref={ref} css={css} className="scrollview">
@@ -142,20 +164,20 @@ export function ScrollView(props: Props) {
         <div className="content">{children}</div>
       </div>
       <ScrollBar
-        direction="vertical"
-        totalRange={contentSize.height}
-        visibleRange={viewHeight}
-        value={0}
-        thickness={scrollSize}
-        onChange={onVScrollBarChange}
-      />
-      <ScrollBar
         direction="horizontal"
         totalRange={contentSize.width}
         visibleRange={viewWidth}
-        value={0}
+        value={value.x}
         thickness={scrollSize}
-        onChange={onHScrollBarChange}
+        onChange={onHChange}
+      />
+      <ScrollBar
+        direction="vertical"
+        totalRange={contentSize.height}
+        visibleRange={viewHeight}
+        value={value.y}
+        thickness={scrollSize}
+        onChange={onVChange}
       />
       <div className="corner"></div>
     </div>
