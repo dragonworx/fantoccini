@@ -42,10 +42,11 @@ export const style = css`
 
   .hsplit {
     display: flex;
-    align-items: center;
+    align-items: start;
     padding-right: 15px;
     padding-left: 5px;
     border-right: 2px solid #666;
+    width: 100%;
   }
 
   .hsplit:first-of-type {

@@ -4,18 +4,27 @@ import { ReactNode, useRef, useState, useEffect } from 'react';
 import { buttonBg, reset } from './theme';
 import { ScrollBar } from './scrollBar';
 import { getProps } from '../util';
-import { forceUpdate, useProp } from '../hooks';
+import { forceUpdate } from '../hooks';
 
 export const scrollSize = 20;
 
 export interface Props {
   children?: ReactNode;
+  width?: number;
+  height: number;
+  scrollBars?: 'both' | 'horizontal' | 'vertical';
 }
 
-export const defaultProps: Props = {};
+export const defaultProps: Props = {
+  width: 0,
+  height: 0,
+  scrollBars: 'both',
+};
 
 export const style =
   (
+    width: number,
+    height: number,
     viewWidth: number,
     viewHeight: number,
     contentWidth: number,
@@ -23,22 +32,31 @@ export const style =
     xValue: number,
     yValue: number
   ) =>
-  ({}: Props) => {
-    const pViewWidth = viewWidth - scrollSize;
-    const pViewHeight = viewHeight - scrollSize;
+  ({ scrollBars }: Props) => {
+    const pViewWidth = width > 0 ? width : viewWidth - scrollSize;
+    const pViewHeight = height > 0 ? height : viewHeight - scrollSize;
     const innerHLength = contentWidth - pViewWidth;
     const innerVLength = contentHeight - pViewHeight;
     const xPos = innerHLength * xValue * -1;
     const xyos = innerVLength * yValue * -1;
     const hScrollEnabled = pViewWidth < contentWidth;
     const vScrollEnabled = pViewHeight < contentHeight;
+    const containerWidth =
+      width > 0
+        ? `${width + (scrollBars !== 'horizontal' ? scrollSize : 0)}px`
+        : '100%';
+    const containerHeight =
+      height > 0
+        ? `${height + (scrollBars !== 'vertical' ? scrollSize : 0)}px`
+        : '100%';
 
     return css`
       ${reset}
       ${buttonBg(true, true, 0)}
       position: relative;
-      width: 100%;
-      height: 100%;
+      width: ${containerWidth};
+      height: ${containerHeight};
+      min-width: 50px;
 
       .view {
         position: relative;
@@ -52,7 +70,6 @@ export const style =
         .content {
           width: ${`${contentWidth}px`};
           height: ${`${contentHeight}px`};
-          /* outline: 1px solid blue; */
           position: relative;
           left: ${xPos}px;
           top: ${xyos}px;
@@ -63,14 +80,14 @@ export const style =
         position: absolute;
         bottom: 0;
         left: 0;
-        width: calc(100% - ${scrollSize}px);
+        width: calc(100% - ${scrollBars !== 'horizontal' ? scrollSize : 0}px);
       }
 
       .scrollbar.vertical {
         position: absolute;
         top: 0;
         right: 0;
-        height: calc(100% - ${scrollSize}px);
+        height: calc(100% - ${scrollBars !== 'vertical' ? scrollSize : 0}px);
       }
 
       .corner {
@@ -88,11 +105,11 @@ export const style =
 
 export function ScrollView(props: Props) {
   const allProps = getProps(props, defaultProps);
-  const { children } = allProps;
+  const { children, width, height, scrollBars } = allProps;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const contentSizeRef = useRef({ width: 0, height: 0 });
-  const viewSizeRef = useRef({ width: 0, height: 0 });
+  const viewSizeRef = useRef({ width, height });
   const valueRef = useRef({ x: 0, y: 0 });
 
   const contentSize = contentSizeRef.current;
@@ -106,6 +123,8 @@ export function ScrollView(props: Props) {
     viewSize.height - scrollSize < contentSize.height;
 
   const css = style(
+    width,
+    height,
     viewSize.width,
     viewSize.height,
     contentSize.width,
@@ -132,17 +151,20 @@ export function ScrollView(props: Props) {
   });
 
   const onResize = () => {
+    if (width > 0) {
+      return;
+    }
     const container = containerRef.current;
     if (container) {
-      if (
-        viewSize.width !== container.offsetWidth ||
-        viewSize.height !== container.offsetHeight
-      ) {
+      if (viewSize.width !== container.offsetWidth) {
         viewSize.width = container.offsetWidth;
-        viewSize.height = container.offsetHeight;
         if (!isHScrollEnabled()) {
           value.x = 0;
         }
+        refresh();
+      }
+      if (viewSize.height !== container.offsetHeight) {
+        viewSize.height = container.offsetHeight;
         if (!isVScrollEnabled()) {
           value.y = 0;
         }
@@ -152,26 +174,6 @@ export function ScrollView(props: Props) {
   };
 
   const [observer] = useState<ResizeObserver>(new ResizeObserver(onResize));
-
-  const onWheelHandler = (e: WheelEvent) => {
-    const { deltaX, deltaY } = e;
-    e.preventDefault();
-    if (deltaX !== 0) {
-      const pViewWidth = viewSize.width - scrollSize;
-      const innerHLength = contentSize.width - pViewWidth;
-      value.x =
-        Math.max(Math.min(innerHLength * value.x + deltaX, innerHLength), 0) /
-        innerHLength;
-      refresh();
-    } else if (deltaY !== 0) {
-      const pViewHeight = viewSize.height - scrollSize;
-      const innerVLength = contentSize.height - pViewHeight;
-      value.y =
-        Math.max(Math.min(innerVLength * value.y + deltaY, innerVLength), 0) /
-        innerVLength;
-      refresh();
-    }
-  };
 
   /** observe resizes on container */
   useEffect(() => {
@@ -187,6 +189,26 @@ export function ScrollView(props: Props) {
       }
     };
   }, [containerRef.current]);
+
+  const onWheelHandler = (e: WheelEvent) => {
+    const { deltaX, deltaY } = e;
+    e.preventDefault();
+    if (deltaX !== 0 && scrollBars !== 'vertical') {
+      const pViewWidth = viewSize.width - scrollSize;
+      const innerHLength = contentSize.width - pViewWidth;
+      value.x =
+        Math.max(Math.min(innerHLength * value.x + deltaX, innerHLength), 0) /
+        innerHLength;
+      refresh();
+    } else if (deltaY !== 0 && scrollBars !== 'horizontal') {
+      const pViewHeight = viewSize.height - scrollSize;
+      const innerVLength = contentSize.height - pViewHeight;
+      value.y =
+        Math.max(Math.min(innerVLength * value.y + deltaY, innerVLength), 0) /
+        innerVLength;
+      refresh();
+    }
+  };
 
   /** handle onWheel with passive listener */
   useEffect(() => {
@@ -215,25 +237,29 @@ export function ScrollView(props: Props) {
       <div className="view">
         <div className="content">{viewSize.width > 0 ? children : null}</div>
       </div>
-      <ScrollBar
-        direction="horizontal"
-        enabled={isHScrollEnabled()}
-        totalRange={contentSize.width}
-        visibleRange={viewSize.width - scrollSize}
-        value={value.x}
-        thickness={scrollSize}
-        onChange={onHChange}
-      />
-      <ScrollBar
-        direction="vertical"
-        enabled={isVScrollEnabled()}
-        totalRange={contentSize.height}
-        visibleRange={viewSize.height - scrollSize}
-        value={value.y}
-        thickness={scrollSize}
-        onChange={onVChange}
-      />
-      <div className="corner"></div>
+      {scrollBars !== 'vertical' ? (
+        <ScrollBar
+          direction="horizontal"
+          enabled={isHScrollEnabled()}
+          totalRange={contentSize.width}
+          visibleRange={viewSize.width - scrollSize}
+          value={value.x}
+          thickness={scrollSize}
+          onChange={onHChange}
+        />
+      ) : null}
+      {scrollBars !== 'horizontal' ? (
+        <ScrollBar
+          direction="vertical"
+          enabled={isVScrollEnabled()}
+          totalRange={contentSize.height}
+          visibleRange={viewSize.height - scrollSize}
+          value={value.y}
+          thickness={scrollSize}
+          onChange={onVChange}
+        />
+      ) : null}
+      {scrollBars === 'both' ? <div className="corner"></div> : null}
     </div>
   );
 }

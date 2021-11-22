@@ -38,6 +38,9 @@ import { ScrollView } from '../../ui/components/scrollView';
 
 let selectOpenCount = 0;
 
+const scrollBarLength = 100;
+const scrollViewSize = 150;
+
 export function App() {
   return (
     <div css={style}>
@@ -349,6 +352,7 @@ export function App() {
                   totalRange={3}
                   visibleRange={1}
                   value={0}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -356,6 +360,7 @@ export function App() {
                   totalRange={3}
                   visibleRange={1}
                   value={0.5}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -363,6 +368,7 @@ export function App() {
                   totalRange={3}
                   visibleRange={1}
                   value={0.9}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -370,6 +376,7 @@ export function App() {
                   totalRange={3}
                   visibleRange={1}
                   value={1}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -377,6 +384,7 @@ export function App() {
                   totalRange={3}
                   visibleRange={4}
                   value={0.9}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -385,6 +393,7 @@ export function App() {
                   totalRange={3}
                   visibleRange={1}
                   value={1}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
               </VBoxLayout>
@@ -403,6 +412,7 @@ export function App() {
                   totalRange={100}
                   visibleRange={1}
                   value={0.5}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -410,6 +420,7 @@ export function App() {
                   totalRange={100}
                   visibleRange={1}
                   value={0.9}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -417,6 +428,7 @@ export function App() {
                   totalRange={100}
                   visibleRange={1}
                   value={1}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -424,6 +436,7 @@ export function App() {
                   totalRange={100}
                   visibleRange={110}
                   value={0.9}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -432,6 +445,7 @@ export function App() {
                   totalRange={100}
                   visibleRange={1}
                   value={1}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
               </VBoxLayout>
@@ -447,6 +461,7 @@ export function App() {
                   totalRange={3}
                   visibleRange={1}
                   value={0}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -454,6 +469,7 @@ export function App() {
                   totalRange={3}
                   visibleRange={1}
                   value={0.5}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -461,6 +477,7 @@ export function App() {
                   totalRange={3}
                   visibleRange={1}
                   value={0.9}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -468,6 +485,7 @@ export function App() {
                   totalRange={3}
                   visibleRange={1}
                   value={1}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -475,6 +493,7 @@ export function App() {
                   totalRange={3}
                   visibleRange={4}
                   value={0.9}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -483,6 +502,7 @@ export function App() {
                   totalRange={100}
                   visibleRange={1}
                   value={0.9}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
               </HBoxLayout>
@@ -494,6 +514,7 @@ export function App() {
                   totalRange={100}
                   visibleRange={1}
                   value={0}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -501,6 +522,7 @@ export function App() {
                   totalRange={100}
                   visibleRange={1}
                   value={0.5}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -508,6 +530,7 @@ export function App() {
                   totalRange={100}
                   visibleRange={1}
                   value={0.9}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -515,6 +538,7 @@ export function App() {
                   totalRange={100}
                   visibleRange={1}
                   value={1}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -522,6 +546,7 @@ export function App() {
                   totalRange={100}
                   visibleRange={110}
                   value={0.9}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
                 <ScrollBar
@@ -530,6 +555,7 @@ export function App() {
                   totalRange={100}
                   visibleRange={1}
                   value={0.9}
+                  length={scrollBarLength}
                   onChange={onHandleValue('ScrollBar.onChange')}
                 />
               </HBoxLayout>
@@ -537,8 +563,29 @@ export function App() {
           </Section>
         </HSplit>
       </Section>
-      <Section title="ScrollView" height={300}>
-        <ScrollView>
+      <Section title="ScrollView - Fixed">
+        <HBoxLayout spacing={10}>
+          <ScrollView width={scrollViewSize} height={scrollViewSize}>
+            <img src="img/test-debug.jpg" />
+          </ScrollView>
+          <ScrollView
+            scrollBars="vertical"
+            width={scrollViewSize}
+            height={scrollViewSize}
+          >
+            <img src="img/test-debug.jpg" />
+          </ScrollView>
+          <ScrollView
+            scrollBars="horizontal"
+            width={scrollViewSize}
+            height={scrollViewSize}
+          >
+            <img src="img/test-debug.jpg" />
+          </ScrollView>
+        </HBoxLayout>
+      </Section>
+      <Section title="ScrollView - Dynamic Width">
+        <ScrollView height={200}>
           <img src="img/test-debug.jpg" />
         </ScrollView>
       </Section>

@@ -12,8 +12,6 @@ import { useDrag, useLongPressWithDelta } from '../hooks';
 
 export type Direction = 'horizontal' | 'vertical';
 
-export const minSize = 100;
-
 export interface Props {
   enabled?: boolean;
   direction?: Direction;
@@ -22,6 +20,7 @@ export interface Props {
   visibleRange: number;
   value: number;
   pageSize?: number;
+  length?: number;
   onChange?: (value: number) => void;
 }
 
@@ -29,23 +28,26 @@ export const defaultProps: Props = {
   enabled: true,
   direction: 'horizontal',
   thickness: 15,
+  length: 15,
   totalRange: 1,
   visibleRange: 1,
   value: 0,
   pageSize: 0.1,
 };
 
-export const style = ({ enabled, direction, thickness: size }: Props) => {
+export const style = ({ enabled, direction, thickness, length }: Props) => {
   const angle = direction === 'horizontal' ? 180 : 90;
 
   return css`
     ${reset}
     ${buttonBg(enabled, true, angle)}
     position: relative;
-    width: ${direction === 'horizontal' ? '100%' : `${size}px`};
-    height: ${direction === 'horizontal' ? `${size}px` : '100%'};
-    min-width: ${direction === 'horizontal' ? `${minSize}px` : `${size}px`};
-    min-height: ${direction === 'horizontal' ? `${size}px` : `${minSize}px`};
+    width: ${direction === 'horizontal' ? '100%' : `${thickness}px`};
+    height: ${direction === 'horizontal' ? `${thickness}px` : '100%'};
+    min-width: ${direction === 'horizontal' ? `${length}px` : `${thickness}px`};
+    min-height: ${direction === 'horizontal'
+      ? `${thickness}px`
+      : `${length}px`};
 
     .track {
       position: absolute;
