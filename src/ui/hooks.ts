@@ -1,4 +1,11 @@
-import { MouseEvent as ReactMouseEvent, RefObject } from 'react';
+import {
+  Dispatch,
+  MouseEvent as ReactMouseEvent,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 
 export type onDragHandler = (
   xDelta: number,
@@ -106,4 +113,10 @@ export function useLongPressWithDelta(
   };
 
   return onMouseDown;
+}
+
+export function useProp<T>(prop: T): [T, Dispatch<SetStateAction<T>>] {
+  const [getter, setter] = useState(prop);
+  useEffect(() => setter(prop), [prop]);
+  return [getter, setter];
 }

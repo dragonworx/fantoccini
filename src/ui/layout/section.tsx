@@ -38,12 +38,12 @@ export const style = ({}: Props) => {
     }
 
     legend {
-      color: #bcbcbc;
+      color: #a8e9f3;
       padding: 2px 5px;
       border-radius: 5px;
-      border-bottom: 1px solid #090e0e;
+      border-bottom: 1px solid #666666;
       border-top: 1px solid #9c9c9c;
-      background-color: #41484e;
+      background-color: #545454;
       font-size: 11px;
       text-shadow: 1px 1px 1px #080808;
     }
