@@ -1,29 +1,22 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
-import {
-  ReactNode,
-  useRef,
-  useState,
-  useEffect,
-  useLayoutEffect,
-  MouseEvent,
-} from 'react';
+import { ReactNode, useRef, useState, useEffect } from 'react';
 import { reset } from './theme';
 import { ScrollBar } from './scrollBar';
 import { getProps } from '../util';
-import { useProp } from '../hooks';
+import { forceUpdate, useProp } from '../hooks';
 
 export const scrollSize = 20;
 
 export interface Props {
   children?: ReactNode;
-  viewWidth: number;
-  viewHeight: number;
+  width: number;
+  height: number;
 }
 
 export const defaultProps: Props = {
-  viewWidth: 0,
-  viewHeight: 0,
+  width: 0,
+  height: 0,
 };
 
 export const style =
@@ -33,9 +26,9 @@ export const style =
     xValue: number,
     yValue: number
   ) =>
-  ({ viewWidth, viewHeight }: Props) => {
-    const innerHLength = contentWidth - viewWidth;
-    const innerVLength = contentHeight - viewHeight;
+  ({ width, height }: Props) => {
+    const innerHLength = contentWidth - width;
+    const innerVLength = contentHeight - height;
     const xPos = innerHLength * xValue * -1;
     const xyos = innerVLength * yValue * -1;
     return css`
@@ -43,13 +36,13 @@ export const style =
       position: relative;
       /* outline: 1px solid red; */
       overflow: hidden;
-      width: ${viewWidth + scrollSize}px;
-      height: ${viewHeight + scrollSize}px;
+      width: ${width + scrollSize}px;
+      height: ${height + scrollSize}px;
 
       .view {
         position: relative;
-        width: ${`${viewWidth}px`};
-        height: ${`${viewHeight}px`};
+        width: ${`${width}px`};
+        height: ${`${height}px`};
         /* outline: 1px solid cyan; */
         overflow: hidden;
 
@@ -92,7 +85,7 @@ export const style =
 
 export function ScrollView(props: Props) {
   const allProps = getProps(props, defaultProps);
-  const { children, viewWidth, viewHeight } = allProps;
+  const { children, width, height } = allProps;
 
   const contentSizeRef = useRef({ width: 0, height: 0 });
   const valueRef = useRef({ x: 0, y: 0 });
@@ -106,8 +99,7 @@ export function ScrollView(props: Props) {
     value.y
   )(allProps);
   const ref = useRef<HTMLDivElement>(null);
-  const [_, refresher] = useState(0);
-  const refresh = () => refresher(Date.now() + Math.random());
+  const refresh = forceUpdate();
 
   useEffect(() => {
     if (ref.current && contentSize.width === 0) {
@@ -126,13 +118,13 @@ export function ScrollView(props: Props) {
     const { deltaX, deltaY, deltaZ } = e;
     e.preventDefault();
     if (deltaY !== 0) {
-      const innerLength = contentSize.height - viewHeight;
+      const innerLength = contentSize.height - height;
       value.y =
         Math.max(Math.min(innerLength * value.y + deltaY, innerLength), 0) /
         innerLength;
       refresh();
     } else if (deltaX !== 0) {
-      const innerLength = contentSize.width - viewWidth;
+      const innerLength = contentSize.width - width;
       value.x =
         Math.max(Math.min(innerLength * value.x + deltaX, innerLength), 0) /
         innerLength;
@@ -166,7 +158,7 @@ export function ScrollView(props: Props) {
       <ScrollBar
         direction="horizontal"
         totalRange={contentSize.width}
-        visibleRange={viewWidth}
+        visibleRange={width}
         value={value.x}
         thickness={scrollSize}
         onChange={onHChange}
@@ -174,7 +166,7 @@ export function ScrollView(props: Props) {
       <ScrollBar
         direction="vertical"
         totalRange={contentSize.height}
-        visibleRange={viewHeight}
+        visibleRange={height}
         value={value.y}
         thickness={scrollSize}
         onChange={onVChange}

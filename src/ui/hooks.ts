@@ -120,3 +120,8 @@ export function useProp<T>(prop: T): [T, Dispatch<SetStateAction<T>>] {
   useEffect(() => setter(prop), [prop]);
   return [getter, setter];
 }
+
+export function forceUpdate() {
+  const [_, refresher] = useState(0);
+  return () => refresher(Date.now() + Math.random());
+}

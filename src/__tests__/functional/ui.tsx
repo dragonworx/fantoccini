@@ -35,6 +35,7 @@ import { Section } from '../../ui/layout/section';
 import { Spacer } from '../../ui/layout/spacer';
 import { ScrollBar } from '../../ui/components/scrollBar';
 import { ScrollView } from '../../ui/components/scrollView';
+import { Resizer } from '../../ui/layout/resizer';
 
 let selectOpenCount = 0;
 
@@ -538,9 +539,11 @@ export function App() {
         </HSplit>
       </Section>
       <Section title="ScrollView">
-        <ScrollView viewWidth={300} viewHeight={300}>
-          <img src="img/test.jpg" />
-        </ScrollView>
+        <Resizer>
+          <ScrollView width={300} height={300}>
+            <img src="img/test.jpg" />
+          </ScrollView>
+        </Resizer>
       </Section>
     </div>
   );
