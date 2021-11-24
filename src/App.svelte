@@ -1,34 +1,27 @@
+<style lang="scss">
+main {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+}
+
+@media (min-width: 640px) {
+  main {
+    max-width: none;
+  }
+}
+</style>
+
 <script lang="ts">
-	export let name: string;
+import Label from "./gui/Label.svelte";
+import Section from "./gui/Section.svelte";
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+  <Section title="Label">
+    <Label text="text" />
+    <Label enabled="{false}" text="text" />
+    <Label text="text" url="www.google.com" />
+  </Section>
 </main>
-
-<style lang="scss">
-	@import "theme";
-
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: $color;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-		border: 1px solid $color;
-		border-radius: $radius;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
-</style>

@@ -1,0 +1,17 @@
+// Mixins
+@mixin box {
+  box-sizing: border-box;
+}
+@mixin noSelect {
+  user-select: none;
+}
+
+// General
+$spacing_small: 5px;
+
+// Label
+$color_label_enabled: #bdbec0;
+$color_label_disabled: #77787b;
+$color_label_link: #57b1ff;
+$color_label_shadow_enabled: #080808;
+$color_label_shadow_disabled: #383838;
