@@ -2,7 +2,7 @@
 @import "theme";
 
 label {
-  @include box;
+  box-sizing: border-box;
   user-select: none;
   color: $color_label_enabled;
   text-shadow: 1px 1px 1px $color_label_shadow_enabled;

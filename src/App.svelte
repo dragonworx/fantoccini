@@ -8,6 +8,7 @@ main {
 
 @media (min-width: 640px) {
   main {
+    box-sizing: border-box;
     max-width: none;
   }
 }
@@ -16,6 +17,7 @@ main {
 <script lang="ts">
 import Label from "./gui/Label.svelte";
 import Section from "./gui/Section.svelte";
+import PushButton from "./gui/PushButton.svelte";
 </script>
 
 <main>
@@ -23,5 +25,8 @@ import Section from "./gui/Section.svelte";
     <Label text="text" />
     <Label enabled="{false}" text="text" />
     <Label text="text" url="www.google.com" />
+  </Section>
+  <Section title="Button">
+    <PushButton label="Push It!" />
   </Section>
 </main>

@@ -2,19 +2,19 @@
 @import "theme";
 
 fieldset {
-  @include box;
-  @include noSelect;
-
-  padding: $spacing_small ($spacing_small * 2);
+  box-sizing: border-box;
+  user-select: none;
+  padding: 0 ($spacing_small * 2);
   border-radius: $spacing_small;
   border: 1px inset #7f7f7f8a;
   background-color: rgba(0, 0, 0, 0.05);
-  margin-bottom: $spacing_small;
-  padding-bottom: 10px;
+  margin-bottom: ($spacing_small * 2);
+  padding-bottom: 8px;
 
   legend {
     position: relative;
     left: $spacing_small * -1;
+    top: -2px;
     color: #a8e9f3;
     padding: 2px $spacing_small;
     border-radius: $spacing_small;
@@ -22,7 +22,8 @@ fieldset {
     border-top: 1px solid #9c9c9c;
     background-color: #545454;
     font-size: 11px;
-    text-shadow: 1px 1px 1px #080808;
+    text-shadow: -1px -1px 1px #080808;
+    padding-bottom: 3px;
   }
 
   div {
