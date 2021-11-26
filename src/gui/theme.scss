@@ -21,6 +21,7 @@ $color_label_shadow_disabled: #383838;
   border-radius: $border_radius_small;
   min-width: 24px;
   min-height: 24px;
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
 @mixin buttonEnabled {
@@ -33,6 +34,7 @@ $color_label_shadow_disabled: #383838;
   @include buttonDefault;
   @include linearGradient(#2f343c, #24282f);
   @include buttonBorder(true);
+  box-shadow: inset 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
 @mixin buttonBorder($isDown: false) {
@@ -55,7 +57,7 @@ $color_label_shadow_disabled: #383838;
       border: 1px solid #444;
       border-left-color: #444;
       border-right-color: #444;
-      border-bottom-color: #666;
+      border-bottom-color: #999;
       top: 1px;
       left: 1px;
     } @else {

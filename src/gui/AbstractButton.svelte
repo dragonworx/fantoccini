@@ -1,15 +1,10 @@
 <style lang="scss">
 @import "theme";
-
 .isEnabled {
   @include buttonEnabled;
 }
 .isDown {
   @include buttonDown;
-
-  & * {
-    top: 1px;
-  }
 }
 </style>
 
