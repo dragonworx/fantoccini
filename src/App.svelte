@@ -17,7 +17,7 @@ main {
 <script lang="ts">
 import Label from "./gui/Label.svelte";
 import Section from "./gui/Section.svelte";
-import PushButton from "./gui/PushButton.svelte";
+import AbstractButton from "./gui/AbstractButton.svelte";
 </script>
 
 <main>
@@ -27,6 +27,7 @@ import PushButton from "./gui/PushButton.svelte";
     <Label text="text" url="www.google.com" />
   </Section>
   <Section title="Button">
-    <PushButton label="Push It!" />
+    <AbstractButton on:mousedown="{() => console.log('!')}"
+      ><Label text="Push It!" /></AbstractButton>
   </Section>
 </main>

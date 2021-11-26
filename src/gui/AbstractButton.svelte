@@ -14,10 +14,8 @@
 </style>
 
 <script lang="ts">
-import Label from "./Label.svelte";
 export let isEnabled: boolean = true;
 export let isDown: boolean = false;
-export let label: string = "";
 
 const onMouseUp = () => {
   isDown = false;
@@ -30,5 +28,5 @@ const onMouseDown = () => {
 };
 </script>
 
-<button class:isEnabled class:isDown on:mousedown="{onMouseDown}"
-  ><Label text="{label}" /></button>
+<button class:isEnabled class:isDown on:mousedown="{onMouseDown}" on:mousedown
+  ><slot /></button>
