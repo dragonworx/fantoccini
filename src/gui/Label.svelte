@@ -98,17 +98,22 @@ export let isLink: boolean = false;
 export let position: "left" | "right" | "top" | "bottom" = "left";
 export let align: "start" | "center" | "end" = "start";
 export let indent: number = 0;
+export let color: string | undefined = undefined;
 
 $: hasContent = "default" in $$slots;
 
-let indentStyle = "";
+let indentStyle = undefined;
 $: {
   if (hasContent && indent !== 0) {
     if (position === "left" || position === "right") {
       indentStyle = `top:${indent}px;`;
+    } else if (position === "top" || position === "bottom") {
+      indentStyle = `left:${indent}px;`;
     }
   }
 }
+
+$: colorStyle = color ? `color:${color};` : undefined;
 </script>
 
 {#if !hasContent}
@@ -117,6 +122,7 @@ $: {
     class="label"
     class:disabled="{!isEnabled}"
     class:link="{isLink}"
+    style="{colorStyle}"
     tabindex="{isEnabled && isLink ? 0 : undefined}">
     {text}
   </label>
@@ -125,6 +131,7 @@ $: {
   <label
     class:disabled="{!isEnabled}"
     class:link="{isLink}"
+    style="{colorStyle}"
     data-position="{position}"
     data-align="{align}"
     tabindex="{isEnabled && isLink ? 0 : undefined}">

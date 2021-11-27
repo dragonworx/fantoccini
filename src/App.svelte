@@ -14,7 +14,7 @@ main {
 
 <script lang="ts">
 import Section from "./gui/Section.svelte";
-import Outline from "./gui/Outline.svelte";
+import Demo from "./gui/Demo.svelte";
 import Label from "./gui/Label.svelte";
 import Icon from "./gui/Icon.svelte";
 import Button from "./gui/Button.svelte";
@@ -29,87 +29,78 @@ import PushButton from "./gui/PushButton.svelte";
   </Section>
   <Section title="Label - Wrapping Left">
     <!-- Left -->
-    <Label text="align: start (default)"
-      ><Outline
-        ><Label text="Text"
-          ><Icon src="img/test-small.png" width="{50}" /></Label
-        ></Outline
-      ></Label>
-    <Label text="align: center">
-      <Outline
-        ><Label text="Text" align="center"
-          ><Icon src="img/test-small.png" width="{50}" /></Label
-        ></Outline>
-    </Label>
-    <Label text="align: end">
-      <Outline
-        ><Label text="Text" align="end"
-          ><Icon src="img/test-small.png" width="{50}" /></Label
-        ></Outline>
-    </Label>
-    <Label text="indent: 5">
-      <Outline
-        ><Label text="Text" indent="{5}"
-          ><Icon src="img/test-small.png" width="{50}" /></Label
-        ></Outline>
-    </Label>
+    <Demo key="align" value="left">
+      <Label text="Text"><Icon src="img/test-small.png" width="{50}" /></Label
+      ></Demo>
+    <Demo key="align" value="center"
+      ><Label text="Text" align="center"
+        ><Icon src="img/test-small.png" width="{50}" /></Label
+      ></Demo>
+    <Demo key="align" value="end"
+      ><Label text="Text" align="end"
+        ><Icon src="img/test-small.png" width="{50}" /></Label
+      ></Demo>
+    <Demo key="indent" value="5"
+      ><Label text="Text" indent="{5}"
+        ><Icon src="img/test-small.png" width="{50}" /></Label
+      ></Demo>
   </Section>
   <Section title="Label - Wrapping Right">
     <!-- Right -->
-    <Label text="align: start">
-      <Outline>
-        <Label text="Text" position="right"
-          ><Icon src="img/test-small.png" width="{50}" /></Label>
-      </Outline>
-    </Label>
-    <Label text="align: center">
-      <Outline>
-        <Label text="Text" position="right" align="center"
-          ><Icon src="img/test-small.png" width="{50}" /></Label>
-      </Outline>
-    </Label>
-    <Label text="align: end">
-      <Outline>
-        <Label text="Text" position="right" align="end"
-          ><Icon src="img/test-small.png" width="{50}" /></Label>
-      </Outline>
-    </Label>
-    <Label text="indent: 5">
-      <Outline>
-        <Label text="Text" position="right" indent="{5}"
-          ><Icon src="img/test-small.png" width="{50}" /></Label>
-      </Outline>
-    </Label>
+    <Demo key="align" value="start">
+      <Label text="Text" position="right"
+        ><Icon src="img/test-small.png" width="{50}" /></Label>
+    </Demo>
+    <Demo key="align" value="center">
+      <Label text="Text" position="right" align="center"
+        ><Icon src="img/test-small.png" width="{50}" /></Label>
+    </Demo>
+    <Demo key="align" value="end">
+      <Label text="Text" position="right" align="end"
+        ><Icon src="img/test-small.png" width="{50}" /></Label>
+    </Demo>
+    <Demo key="indent" value="5">
+      <Label text="Text" position="right" indent="{5}"
+        ><Icon src="img/test-small.png" width="{50}" /></Label>
+    </Demo>
   </Section>
   <Section title="Label - Wrapping Top">
     <!-- Top -->
-    <Outline>
+    <Demo key="align" value="start">
       <Label text="Text" position="top"
         ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Outline>
-    <Outline>
+    </Demo>
+    <Demo key="align" value="center">
       <Label text="Text" position="top" align="center"
         ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Outline>
-    <Outline>
+    </Demo>
+    <Demo key="align" value="end">
       <Label text="Text" position="top" align="end"
         ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Outline>
+    </Demo>
+    <Demo key="indent" value="5">
+      <Label text="Text" position="top" indent="{5}"
+        ><Icon src="img/test-small.png" width="{50}" /></Label>
+    </Demo>
   </Section>
   <Section title="Label - Wrapping Bottom">
     <!-- Bottom -->
-    <Outline>
+    <Demo key="align" value="start">
       <Label text="Text" position="bottom"
         ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Outline>
-    <Outline>
+    </Demo>
+    <Demo key="align" value="center">
       <Label text="Text" position="bottom" align="center"
         ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Outline>
-    <Outline>
+    </Demo>
+    <Demo key="align" value="end">
       <Label text="Text" position="bottom" align="end"
         ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Outline>
+    </Demo>
+    <Demo key="indent" value="5">
+      <Label text="Text" position="bottom" indent="{5}"
+        ><Icon src="img/test-small.png" width="{50}" /></Label>
+    </Demo>
   </Section>
   <Section title="Button">
     <Button appearance="round"><Icon name="tick" width="{10}" /></Button>
