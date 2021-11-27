@@ -58,8 +58,9 @@ fieldset {
 </style>
 
 <script lang="ts">
+import type { Direction } from "../gui/types";
 export let title: string = "";
-export let direction: "horizontal" | "vertical" = "horizontal";
+export let direction: Direction = "horizontal";
 </script>
 
 <fieldset>

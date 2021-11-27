@@ -6,14 +6,20 @@
 </style>
 
 <script lang="ts">
+import Label from "./Label.svelte";
 import Button from "./Button.svelte";
-import Icon from "./Icon.svelte";
+import type { RadioGroupOption, Position, Align } from "./types";
+
+export let options: RadioGroupOption[] = [];
+export let position: Position = "left";
+export let align: Align = "start";
 
 function onChange(event) {
   console.log("?", event.detail.isDown);
 }
 </script>
 
+{#each options as { label, value }}{/each}
 <Button
   isEnabled="{$$props.isEnabled}"
   isDown="{$$props.isDown}"

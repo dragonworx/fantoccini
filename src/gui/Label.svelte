@@ -96,11 +96,12 @@ label {
 </style>
 
 <script lang="ts">
+import type { Position, Align } from "./types";
 export let isEnabled: boolean = true;
 export let text: string = "";
 export let isLink: boolean = false;
-export let position: "left" | "right" | "top" | "bottom" = "left";
-export let align: "start" | "center" | "end" = "start";
+export let position: Position = "left";
+export let align: Align = "start";
 export let indent: number = 0;
 export let color: string | undefined = undefined;
 
