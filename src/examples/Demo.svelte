@@ -15,8 +15,7 @@ demo {
   }
 }
 :global(div.caption .outline) {
-  outline: 1px dashed #ccc;
-  border-radius: 3px;
+  outline: 1px inset #74747440;
 }
 </style>
 
@@ -30,9 +29,9 @@ export let value: string = "";
 <demo>
   <Caption>
     <span class="label" slot="label"
-      ><Label text="{key}:" color="white" /><Label
+      ><Label text="{key}:" color="#848689" /><Label
         text="{value}"
-        color="cyan" /></span>
+        color="#9ea9a9" /></span>
     <slot />
   </Caption>
 </demo>
