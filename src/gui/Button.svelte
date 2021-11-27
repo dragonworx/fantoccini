@@ -16,11 +16,19 @@ button {
     white-space: nowrap;
     padding: 5px;
   }
+
+  &:focus {
+    @include focus;
+  }
 }
 
 .enabled {
   @include linear_gradient(#24282f, #2f343c);
   @include button_border();
+
+  &:hover {
+    @include linear_gradient(#2f343c, #333);
+  }
 }
 
 .disabled {
@@ -56,6 +64,7 @@ button {
 
 <script lang="ts">
 export let isEnabled: boolean = true;
+export let canToggle: boolean = false;
 export let isDown: boolean = false;
 export let appearance: "box" | "round" = "box";
 export let width: number | undefined = undefined;
@@ -64,25 +73,36 @@ export let padding: number = 0;
 export let type: string = "button";
 
 let style = undefined;
-
-const onMouseUp = () => {
-  isDown = false;
-  window.removeEventListener("mouseup", onMouseUp);
-};
-
-const onMouseDown = () => {
-  if (isEnabled) {
-    isDown = true;
-    window.addEventListener("mouseup", onMouseUp);
-  }
-};
-
 $: {
   let css = "";
   if (width) css += `width: ${width}px`;
   if (height) css += `height: ${height}px`;
   if (padding) css += `padding: ${padding}px`;
   style = css || undefined;
+}
+
+function onMouseUp() {
+  isDown = canToggle ? isDown : false;
+  window.removeEventListener("mouseup", onMouseUp);
+}
+
+function onMouseDown() {
+  if (isEnabled) {
+    isDown = canToggle ? !isDown : true;
+    window.addEventListener("mouseup", onMouseUp);
+  }
+}
+
+function onKeyDown(e: KeyboardEvent) {
+  const { key } = e;
+  if ((isEnabled && key === " ") || key === "Enter") {
+    if (canToggle) {
+      isDown = !isDown;
+    } else {
+      isDown = true;
+      setTimeout(() => (isDown = false), 100);
+    }
+  }
 }
 </script>
 
@@ -94,5 +114,8 @@ $: {
   class:round="{appearance === 'round'}"
   data-type="{type}"
   tabindex="{isEnabled ? 0 : undefined}"
+  on:mousedown
   on:mousedown="{onMouseDown}"
-  on:mousedown><div class="content"><slot /></div></button>
+  on:mouseup
+  on:keydown
+  on:keydown="{onKeyDown}"><div class="content"><slot /></div></button>

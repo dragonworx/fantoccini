@@ -1,15 +1,10 @@
 <style lang="scss">
 @import "theme";
 
-div {
+div.caption {
   display: flex;
   align-items: start;
   justify-content: start;
-
-  .outline {
-    outline: 1px dashed #ccc;
-    border-radius: 3px;
-  }
 
   &[data-position="left"] > * {
     margin-right: $spacing_small;
@@ -82,7 +77,7 @@ export let position: "left" | "right" | "top" | "bottom" = "left";
 export let align: "start" | "center" | "end" = "start";
 </script>
 
-<div data-position="{position}" data-align="{align}">
+<div class="caption" data-position="{position}" data-align="{align}">
   <slot name="label" />
   <div class="outline"><slot /></div>
 </div>

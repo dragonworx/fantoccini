@@ -102,8 +102,9 @@ import PushButton from "./gui/PushButton.svelte";
         ><Icon src="img/test-small.png" width="{50}" /></Label>
     </Demo>
   </Section>
-  <Section title="Button">
+  <Section title="Button - Foundation">
     <Button appearance="round"><Icon name="tick" width="{10}" /></Button>
+    <Button canToggle={true}><Icon name="tick" width="{10}" /></Button>
   </Section>
   <Section title="PushButton">
     <PushButton label="Push it!" on:mousedown="{() => console.log('!')}" />
