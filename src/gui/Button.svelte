@@ -163,7 +163,7 @@ function onKeyDown(e: KeyboardEvent) {
   class:isDown
   class:round="{appearance === 'round'}"
   data-type="{type}"
-  tabindex="{isEnabled ? 0 : undefined}"
+  tabindex="{isEnabled ? 0 : -1}"
   on:change
   on:mousedown
   on:mousedown="{onMouseDown}"

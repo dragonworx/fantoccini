@@ -5,6 +5,10 @@ label {
   @include label;
   position: relative;
 
+  &:focus {
+    @include focus;
+  }
+
   &.disabled {
     @include label_disabled;
   }
@@ -134,7 +138,7 @@ $: colorStyle = color ? `color:${color};` : undefined;
     style="{colorStyle}"
     data-position="{position}"
     data-align="{align}"
-    tabindex="{isEnabled && isLink ? 0 : undefined}">
+    tabindex="{isEnabled && isLink ? 0 : -1}">
     <span class="label" style="{indentStyle}">{text}</span>
     <slot />
   </label>
