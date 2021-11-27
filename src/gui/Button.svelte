@@ -42,15 +42,15 @@ button {
       &:hover {
         @include linear_gradient(#353a44, #24282f);
       }
-    }
 
-    &:active {
-      @include linear_gradient(#2c2c38, #1f232c);
+      &:active:not([data-cantoggle="false"]) {
+        @include linear_gradient(#40404e, #1f232c);
+      }
     }
   }
 
   &.disabled {
-    @include linear_gradient(#3a424e, #566070);
+    @include linear_gradient(#3a424e, #5a5c5e);
     @include button_border();
     border: 1px solid #323232;
     box-shadow: none;
@@ -64,6 +64,10 @@ button {
       @include button_border(true);
       box-shadow: inset 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
     }
+  }
+
+  :global(&.disabled img) {
+    opacity: 0.3;
   }
 
   &.round {
@@ -163,6 +167,7 @@ function onKeyDown(e: KeyboardEvent) {
   class:isDown
   class:round="{appearance === 'round'}"
   data-type="{type}"
+  data-cantoggle="{canToggle}"
   tabindex="{isEnabled ? 0 : -1}"
   on:change
   on:mousedown
