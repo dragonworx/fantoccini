@@ -1,6 +1,6 @@
 <style lang="scss">
 @import "theme";
-.button {
+button {
   box-sizing: border-box;
   padding: 0;
   position: relative;
@@ -19,13 +19,13 @@
 }
 
 .enabled {
-  @include linearGradient(#24282f, #2f343c);
-  @include buttonBorder();
+  @include linear_gradient(#24282f, #2f343c);
+  @include button_border();
 }
 
 .disabled {
-  @include linearGradient(#3a424e, #566070);
-  @include buttonBorder();
+  @include linear_gradient(#3a424e, #566070);
+  @include button_border();
   border: 1px solid #323232;
 
   :global(&.disabled .content label) {
@@ -34,8 +34,8 @@
 }
 
 .isDown {
-  @include linearGradient(#2f343c, #24282f);
-  @include buttonBorder(true);
+  @include linear_gradient(#2f343c, #24282f);
+  @include button_border(true);
   box-shadow: inset 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
 
   .content {
@@ -61,6 +61,7 @@ export let appearance: "box" | "round" = "box";
 export let width: number | undefined = undefined;
 export let height: number | undefined = undefined;
 export let padding: number = 0;
+export let type: string = "button";
 
 let style = undefined;
 
@@ -87,11 +88,11 @@ $: {
 
 <button
   style="{style}"
-  class="button {$$props.class}"
   class:enabled="{isEnabled}"
   class:disabled="{!isEnabled}"
   class:isDown
   class:round="{appearance === 'round'}"
+  data-type="{type}"
   tabindex="{isEnabled ? 0 : undefined}"
   on:mousedown="{onMouseDown}"
   on:mousedown><div class="content"><slot /></div></button>

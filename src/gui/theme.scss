@@ -10,11 +10,11 @@ $color_label_shadow_enabled: #080808;
 $color_label_shadow_disabled: #383838;
 
 // Mixins
-@mixin linearGradient($fromColor: black, $toColor: white, $angle: 0deg) {
+@mixin linear_gradient($fromColor: black, $toColor: white, $angle: 0deg) {
   background: linear-gradient($angle, $fromColor 0, $toColor 100%);
 }
 
-@mixin buttonBorder($isDown: false) {
+@mixin button_border($isDown: false) {
   &:before {
     content: "";
     position: absolute;
@@ -37,4 +37,18 @@ $color_label_shadow_disabled: #383838;
       border-bottom-color: #444;
     }
   }
+}
+
+@mixin label {
+  box-sizing: border-box;
+  user-select: none;
+  color: $color_label_enabled;
+  text-shadow: 1px 1px 1px $color_label_shadow_enabled;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+@mixin label_disabled {
+  color: $color_label_disabled;
+  text-shadow: 1px 1px 1px $color_label_shadow_disabled;
 }

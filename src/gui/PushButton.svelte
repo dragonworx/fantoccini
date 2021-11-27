@@ -1,9 +1,9 @@
 <style lang="scss">
 @import "theme";
-:global(.pushbutton .content > *) {
+:global(button[data-type="pushbutton"] .content > *) {
   margin-right: $spacing_small;
 }
-:global(.pushbutton .content > *:last-child) {
+:global(button[data-type="pushbutton"] .content > *:last-child) {
   margin-right: 0;
 }
 </style>
@@ -20,7 +20,7 @@ export let iconWidth: number | undefined = 16;
 export let iconHeight: number | undefined = undefined;
 </script>
 
-<Button on:mousedown class="pushbutton" isEnabled="{$$props.isEnabled}">
+<Button on:mousedown type="pushbutton" isEnabled="{$$props.isEnabled}">
   {#if label}
     <Label text="{label}" />
   {/if}

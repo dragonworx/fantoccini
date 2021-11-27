@@ -62,7 +62,7 @@ export let title: string = "";
 export let direction: "horizontal" | "vertical" = "horizontal";
 </script>
 
-<fieldset class="section">
+<fieldset>
   <legend>{title}</legend>
   <div
     class="content"
