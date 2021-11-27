@@ -1,5 +1,5 @@
 <style lang="scss">
-@import "theme";
+@import "../gui/theme";
 
 fieldset {
   box-sizing: border-box;

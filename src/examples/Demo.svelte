@@ -22,7 +22,7 @@ demo {
 
 <script lang="ts">
 import Caption from "./Caption.svelte";
-import Label from "./Label.svelte";
+import Label from "../gui/Label.svelte";
 export let key: string = "";
 export let value: string = "";
 </script>

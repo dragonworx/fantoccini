@@ -13,12 +13,14 @@ main {
 </style>
 
 <script lang="ts">
-import Section from "./gui/Section.svelte";
-import Demo from "./gui/Demo.svelte";
+import Section from "./examples/Section.svelte";
+import Demo from "./examples/Demo.svelte";
+import Area from "./examples/Area.svelte";
 import Label from "./gui/Label.svelte";
 import Icon from "./gui/Icon.svelte";
 import Button from "./gui/Button.svelte";
 import PushButton from "./gui/PushButton.svelte";
+import Checkbox from "./gui/Checkbox.svelte";
 </script>
 
 <main>
@@ -102,13 +104,32 @@ import PushButton from "./gui/PushButton.svelte";
         ><Icon src="img/test-small.png" width="{50}" /></Label>
     </Demo>
   </Section>
-  <Section title="Button - Foundation">
-    <Button appearance="round"><Icon name="tick" width="{10}" /></Button>
-    <Button canToggle={true}><Icon name="tick" width="{10}" /></Button>
+  <Section title="Button">
+    <Area>
+      <PushButton label="Push it!" />
+      <PushButton label="Push it!" isEnabled="{false}" />
+      <PushButton label="Push it!" iconName="tick" />
+      <PushButton label="Toggle it!" iconName="tick" canToggle="{true}" />
+      <PushButton
+        label="Toggle it!"
+        iconName="tick"
+        canToggle="{true}"
+        isDown="{true}" />
+      <PushButton
+        isEnabled="{false}"
+        label="Toggle it!"
+        iconName="tick"
+        canToggle="{true}"
+        isDown="{true}" />
+    </Area>
+    <Area />
   </Section>
-  <Section title="PushButton">
-    <PushButton label="Push it!" on:mousedown="{() => console.log('!')}" />
-    <PushButton label="Push it!" isEnabled="{false}" />
-    <PushButton label="Push it!" iconName="tick" />
+  <Section title="Checkbox">
+    <Area>
+      <Checkbox />
+      <Checkbox isDown="{true}" />
+      <Checkbox isEnabled="{false}" />
+      <Checkbox isEnabled="{false}" isDown="{true}" />
+    </Area>
   </Section>
 </main>

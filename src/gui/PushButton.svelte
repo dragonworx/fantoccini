@@ -1,5 +1,8 @@
 <style lang="scss">
-@import "theme";
+@import "./theme";
+:global(button[data-type="pushbutton"] .content) {
+  padding: 5px;
+}
 :global(button[data-type="pushbutton"] .content > *) {
   margin-right: $spacing_small;
 }
@@ -16,11 +19,22 @@ import Icon from "./Icon.svelte";
 export let label: string | undefined = undefined;
 export let iconSrc: string | undefined = undefined;
 export let iconName: string | undefined = undefined;
-export let iconWidth: number | undefined = 16;
-export let iconHeight: number | undefined = undefined;
+export let iconWidth: number = 16;
+export let iconHeight: number = 16;
+
+function onChange(event) {
+  console.log("PushButton.onChange!", event.detail.isDown);
+}
 </script>
 
-<Button on:mousedown type="pushbutton" isEnabled="{$$props.isEnabled}">
+<Button
+  type="pushbutton"
+  isEnabled="{$$props.isEnabled}"
+  canToggle="{$$props.canToggle}"
+  isDown="{$$props.isDown}"
+  on:mousedown
+  on:change
+  on:change="{onChange}">
   {#if label}
     <Label text="{label}" />
   {/if}
