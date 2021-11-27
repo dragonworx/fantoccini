@@ -29,6 +29,6 @@ export let url: string = "";
 </script>
 
 <!-- svelte-ignore a11y-label-has-associated-control -->
-<label class:disabled="{!enabled}" class:link="{url.length > 0}">
+<label class="label" class:disabled="{!enabled}" class:link="{url.length > 0}">
   {text}
 </label>

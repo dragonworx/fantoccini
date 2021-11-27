@@ -14,37 +14,7 @@ $color_label_shadow_disabled: #383838;
   background: linear-gradient($angle, $fromColor 0, $toColor 100%);
 }
 
-@mixin buttonDefault {
-  position: relative;
-  user-select: none;
-  border: 1px solid #030c17;
-  border-radius: $border_radius_small;
-  min-width: 24px;
-  min-height: 24px;
-  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
-}
-
-@mixin buttonEnabled {
-  @include buttonDefault;
-  @include linearGradient(#24282f, #2f343c);
-  @include buttonBorder;
-}
-
-@mixin buttonDown {
-  @include buttonDefault;
-  @include linearGradient(#2f343c, #24282f);
-  @include buttonBorder(true);
-  box-shadow: inset 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
-}
-
 @mixin buttonBorder($isDown: false) {
-  @if $isDown {
-    :global(*) {
-      position: relative;
-      top: 1px;
-      left: 1px;
-    }
-  }
   &:before {
     content: "";
     position: absolute;

@@ -15,9 +15,11 @@ main {
 </style>
 
 <script lang="ts">
+import Button from "./gui/Button.svelte";
+import Icon from "./gui/Icon.svelte";
 import Label from "./gui/Label.svelte";
 import Section from "./gui/Section.svelte";
-import AbstractButton from "./gui/AbstractButton.svelte";
+import PushButton from "./gui/PushButton.svelte";
 </script>
 
 <main>
@@ -27,7 +29,10 @@ import AbstractButton from "./gui/AbstractButton.svelte";
     <Label text="text" url="www.google.com" />
   </Section>
   <Section title="Button">
-    <AbstractButton on:mousedown="{() => console.log('!')}"
-      ><Label text="Push It!" /></AbstractButton>
+    <Button appearance="round"><Icon name="tick" width="{10}" /></Button>
+  </Section>
+  <Section title="PushButton">
+    <PushButton label="Push it!" on:mousedown="{() => console.log('!')}" />
+    <PushButton label="Push it!" iconName="tick" />
   </Section>
 </main>

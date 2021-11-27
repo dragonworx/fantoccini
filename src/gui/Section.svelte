@@ -33,11 +33,11 @@ fieldset {
   div.horizontal {
     flex-direction: row;
 
-    :global(*) {
+    :global(&.content > *) {
       margin-right: $spacing_small;
     }
 
-    :global(*:last-child) {
+    :global(&.content > *:last-child) {
       margin-right: 0;
     }
   }
@@ -45,11 +45,11 @@ fieldset {
   div.vertical {
     flex-direction: column;
 
-    :global(*) {
+    :global(&.content > *) {
       margin-bottom: $spacing_small;
     }
 
-    :global(*:last-child) {
+    :global(&.content > *:last-child) {
       margin-bottom: 0;
     }
   }
@@ -61,9 +61,10 @@ export let title: string = "";
 export let direction: "horizontal" | "vertical" = "horizontal";
 </script>
 
-<fieldset>
+<fieldset class="section">
   <legend>{title}</legend>
   <div
+    class="content"
     class:horizontal="{direction === 'horizontal'}"
     class:vertical="{direction === 'vertical'}">
     <slot />
