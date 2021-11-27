@@ -20,7 +20,7 @@ export let iconWidth: number | undefined = 16;
 export let iconHeight: number | undefined = undefined;
 </script>
 
-<Button on:mousedown class="pushbutton">
+<Button on:mousedown class="pushbutton" isEnabled="{$$props.isEnabled}">
   {#if label}
     <Label text="{label}" />
   {/if}

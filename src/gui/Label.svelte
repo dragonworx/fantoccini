@@ -23,12 +23,16 @@ label {
 </style>
 
 <script lang="ts">
-export let enabled: boolean = true;
+export let isEnabled: boolean = true;
 export let text: string = "";
 export let url: string = "";
 </script>
 
 <!-- svelte-ignore a11y-label-has-associated-control -->
-<label class="label" class:disabled="{!enabled}" class:link="{url.length > 0}">
+<label
+  class="label"
+  class:disabled="{!isEnabled}"
+  class:link="{url.length > 0}"
+  tabindex="{isEnabled ? 0 : undefined}">
   {text}
 </label>

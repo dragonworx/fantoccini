@@ -23,7 +23,7 @@ import PushButton from "./gui/PushButton.svelte";
 <main>
   <Section title="Label">
     <Label text="text" />
-    <Label enabled="{false}" text="text" />
+    <Label isEnabled="{false}" text="text" />
     <Label text="text" url="www.google.com" />
   </Section>
   <Section title="Button">
@@ -31,6 +31,7 @@ import PushButton from "./gui/PushButton.svelte";
   </Section>
   <Section title="PushButton">
     <PushButton label="Push it!" on:mousedown="{() => console.log('!')}" />
+    <PushButton label="Push it!" isEnabled="{false}" />
     <PushButton label="Push it!" iconName="tick" />
   </Section>
 </main>

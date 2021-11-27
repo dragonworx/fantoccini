@@ -18,9 +18,19 @@
   }
 }
 
-.isEnabled {
+.enabled {
   @include linearGradient(#24282f, #2f343c);
   @include buttonBorder();
+}
+
+.disabled {
+  @include linearGradient(#3a424e, #566070);
+  @include buttonBorder();
+  border: 1px solid #323232;
+
+  :global(&.disabled .content label) {
+    color: #9c9ca3;
+  }
 }
 
 .isDown {
@@ -60,8 +70,10 @@ const onMouseUp = () => {
 };
 
 const onMouseDown = () => {
-  isDown = true;
-  window.addEventListener("mouseup", onMouseUp);
+  if (isEnabled) {
+    isDown = true;
+    window.addEventListener("mouseup", onMouseUp);
+  }
 };
 
 $: {
@@ -76,8 +88,10 @@ $: {
 <button
   style="{style}"
   class="button {$$props.class}"
-  class:isEnabled
+  class:enabled="{isEnabled}"
+  class:disabled="{!isEnabled}"
   class:isDown
   class:round="{appearance === 'round'}"
+  tabindex="{isEnabled ? 0 : undefined}"
   on:mousedown="{onMouseDown}"
   on:mousedown><div class="content"><slot /></div></button>
