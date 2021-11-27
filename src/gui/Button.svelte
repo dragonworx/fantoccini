@@ -15,59 +15,63 @@ button {
     justify-content: center;
     white-space: nowrap;
   }
-}
 
-.enabled {
-  @include linear_gradient(#24282f, #2f343c);
-  @include button_border();
+  &.enabled {
+    @include linear_gradient(#24282f, #2f343c);
+    @include button_border();
 
-  &:hover {
-    @include linear_gradient(#2f343c, #333);
-  }
+    &:hover {
+      @include linear_gradient(#24282f, #343a42);
+    }
 
-  &:focus {
-    @include focus;
-  }
+    &:focus {
+      @include focus;
+    }
 
-  &:active {
-    @include linear_gradient(#333, #222);
-  }
+    &.isDown {
+      @include linear_gradient(#2f343c, #1d2127);
+      @include button_border(true);
+      box-shadow: inset 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
 
-  &.isDown {
-    @include linear_gradient(#2f343c, #24282f);
-    @include button_border(true);
-    box-shadow: inset 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
+      .content {
+        position: relative;
+        top: 1px;
+        left: 1px;
+      }
 
-    .content {
-      position: relative;
-      top: 1px;
-      left: 1px;
+      &:hover {
+        @include linear_gradient(#353a44, #24282f);
+      }
+    }
+
+    &:active {
+      @include linear_gradient(#2c2c38, #1f232c);
     }
   }
-}
 
-.disabled {
-  @include linear_gradient(#3a424e, #566070);
-  @include button_border();
-  border: 1px solid #323232;
-  box-shadow: none;
+  &.disabled {
+    @include linear_gradient(#3a424e, #566070);
+    @include button_border();
+    border: 1px solid #323232;
+    box-shadow: none;
 
-  :global(&.disabled .content label) {
-    color: #9c9ca3;
+    :global(&.disabled .content label) {
+      color: #9c9ca3;
+    }
+
+    &.isDown {
+      /* @include linear_gradient(#2f343c, #24282f); */
+      @include button_border(true);
+      box-shadow: inset 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
+    }
   }
 
-  &.isDown {
-    /* @include linear_gradient(#2f343c, #24282f); */
-    @include button_border(true);
-    box-shadow: inset 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
-  }
-}
-
-.round {
-  border-radius: 10000px;
-
-  &:before {
+  &.round {
     border-radius: 10000px;
+
+    &:before {
+      border-radius: 10000px;
+    }
   }
 }
 </style>
