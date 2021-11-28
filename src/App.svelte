@@ -136,6 +136,8 @@ function log(component: string, event: string, data?: any) {
       </Outline>
       <PushButton label="Push it" isEnabled="{false}" />
       <PushButton label="Push it" iconName="tick" />
+    </Area>
+    <Area>
       <Outline>
         <PushButton
           label="Toggle it"
@@ -155,7 +157,6 @@ function log(component: string, event: string, data?: any) {
         canToggle="{true}"
         isDown="{true}" />
     </Area>
-    <Area />
   </Section>
   <Section title="Checkbox">
     <Area>
