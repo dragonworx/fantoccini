@@ -42,6 +42,7 @@ function onLabelMouseUp(e) {
 
 {#if label !== undefined}
   <Label
+    isEnabled="{isEnabled}"
     text="{label}"
     position="{position}"
     align="center"

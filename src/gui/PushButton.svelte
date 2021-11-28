@@ -33,7 +33,7 @@ function onChange(event) {
   if (canToggle) {
     dispatch("toggle", { isDown });
   } else {
-    dispatch(isDown ? "down" : "up", { isDown });
+    dispatch(isDown ? "down" : "up", {});
   }
 }
 </script>

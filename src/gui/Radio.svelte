@@ -42,7 +42,7 @@ function onButtonChange(event) {
 }
 
 function onLabelMouseUp() {
-  if (!isDown) {
+  if (isEnabled && !isDown) {
     button.click();
     dispatch("pressed", {
       index,
@@ -52,6 +52,7 @@ function onLabelMouseUp() {
 </script>
 
 <Label
+  isEnabled="{isEnabled}"
   text="{label}"
   position="{position}"
   align="center"

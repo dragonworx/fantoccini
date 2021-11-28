@@ -9,18 +9,23 @@ label {
     @include focus;
   }
 
-  &.disabled {
-    @include label_disabled;
+  &.link {
+    text-decoration: underline;
   }
 
-  &.link {
-    color: $color_label_link;
-    text-decoration: underline;
-    cursor: pointer;
+  &.enabled {
+    &.link {
+      color: $color_label_link;
+      cursor: pointer;
 
-    &:active {
-      color: $color_label_link_active;
+      &:active {
+        color: $color_label_link_active;
+      }
     }
+  }
+
+  &.disabled {
+    @include label_disabled;
   }
 
   .label {
@@ -119,7 +124,7 @@ $: {
 $: colorStyle = color ? `color:${color};` : undefined;
 
 function onMouseUp() {
-  if (isLink) {
+  if (isEnabled && isLink) {
     dispatch("clicked", {});
   }
 }
@@ -129,6 +134,7 @@ function onMouseUp() {
   <!-- svelte-ignore a11y-label-has-associated-control -->
   <label
     class="label"
+    class:enabled="{isEnabled}"
     class:disabled="{!isEnabled}"
     class:link="{isLink}"
     style="{colorStyle}"

@@ -20,6 +20,7 @@ import { createEventDispatcher } from "svelte";
 import Radio from "./Radio.svelte";
 import type { RadioGroupOption, Position } from "./types";
 
+export let isEnabled: boolean = true;
 export let options: RadioGroupOption[] = [];
 export let selectedIndex: number = -1;
 export let position: Position = "right";
@@ -42,6 +43,7 @@ function onPressed(event) {
   {#each options as { label, value }, i}
     <li>
       <Radio
+        isEnabled="{isEnabled}"
         position="{position}"
         isDown="{selectedIndex === i}"
         label="{label}"
