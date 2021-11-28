@@ -99,9 +99,9 @@ const dispatch = createEventDispatcher();
 let style = undefined;
 $: {
   let css = "";
-  if (width) css += `width: ${width}px`;
-  if (height) css += `height: ${height}px`;
-  if (padding) css += `padding: ${padding}px`;
+  if (width) css += `width: ${width}px;`;
+  if (height) css += `height: ${height}px;`;
+  if (padding) css += `padding: ${padding}px;`;
   style = css || undefined;
 }
 

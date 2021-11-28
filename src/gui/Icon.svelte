@@ -3,6 +3,8 @@
 .icon {
   display: inline-block;
   vertical-align: middle;
+  user-select: none;
+  pointer-events: none;
 }
 </style>
 

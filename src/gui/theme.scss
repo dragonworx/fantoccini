@@ -1,6 +1,6 @@
 // General
 $spacing_small: 5px;
-$spacing_label: 10px;
+$spacing_label: 8px;
 $border_radius_small: 5px;
 
 // Label
@@ -37,6 +37,10 @@ $color_label_shadow_disabled: #383838;
       border-right-color: #555;
       border-bottom-color: #444;
     }
+  }
+
+  &.round:before {
+    border-radius: 1000px;
   }
 }
 

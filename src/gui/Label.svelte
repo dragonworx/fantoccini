@@ -25,8 +25,22 @@ label {
 
   &[data-position] {
     display: flex;
-    align-items: start;
-    justify-content: start;
+
+    &[data-position="left"] {
+      flex-direction: row;
+    }
+
+    &[data-position="right"] {
+      flex-direction: row-reverse;
+    }
+
+    &[data-position="bottom"] {
+      flex-direction: column-reverse;
+    }
+
+    &[data-position="top"] {
+      flex-direction: column;
+    }
 
     &[data-position="left"] > * {
       margin-right: $spacing_label;
@@ -43,55 +57,29 @@ label {
     &[data-position="bottom"] > * {
       margin-top: $spacing_label;
     }
-  }
 
-  &[data-position="left"] {
-    flex-direction: row;
-
-    &[data-align="center"] .label {
-      align-self: center;
+    &[data-align="start"] {
+      align-items: start;
     }
-
-    &[data-align="end"] .label {
-      align-self: end;
-    }
-  }
-
-  &[data-position="right"] {
-    flex-direction: row-reverse;
-
-    &[data-align="center"] .label {
-      align-self: center;
-    }
-
-    &[data-align="end"] .label {
-      align-self: end;
-    }
-  }
-
-  &[data-position="top"] {
-    flex-direction: column;
-
-    &[data-align="center"] .label {
-      align-self: center;
-    }
-
-    &[data-align="end"] .label {
-      align-self: end;
-    }
-  }
-
-  &[data-position="bottom"] {
-    flex-direction: column-reverse;
 
     &[data-align="center"] {
-      justify-content: center;
       align-items: center;
     }
 
     &[data-align="end"] {
-      justify-content: end;
       align-items: end;
+    }
+
+    &[data-justify="start"] {
+      justify-content: start;
+    }
+
+    &[data-justify="center"] {
+      justify-content: center;
+    }
+
+    &[data-justify="end"] {
+      justify-content: end;
     }
   }
 }
@@ -132,7 +120,8 @@ $: colorStyle = color ? `color:${color};` : undefined;
     class:link="{isLink}"
     style="{colorStyle}"
     tabindex="{isEnabled && isLink ? 0 : undefined}"
-    on:mousedown>
+    on:mousedown
+    on:mouseup>
     {text}
   </label>
 {:else}
@@ -143,8 +132,10 @@ $: colorStyle = color ? `color:${color};` : undefined;
     style="{colorStyle}"
     data-position="{position}"
     data-align="{align}"
+    data-justify="{justify}"
     tabindex="{isEnabled && isLink ? 0 : -1}"
-    on:mousedown>
+    on:mousedown
+    on:mouseup>
     <span class="label" style="{indentStyle}">{text}</span>
     <slot />
   </label>

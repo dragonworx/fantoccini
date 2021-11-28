@@ -30,6 +30,7 @@ function onMouseDown() {
     text="{label}"
     position="{position}"
     align="center"
+    justify="center"
     on:mousedown="{onMouseDown}">
     <Button
       bind:this="{button}"

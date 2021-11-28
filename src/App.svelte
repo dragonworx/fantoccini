@@ -23,9 +23,9 @@ import Checkbox from "./gui/Checkbox.svelte";
 import RadioGroup from "./gui/RadioGroup.svelte";
 
 const radioOptions = [
-  { label: "Option 1", value: 1 },
-  { label: "Option 2", value: 2 },
-  { label: "Option 3", value: 3 },
+  { label: "Option 1", value: "a" },
+  { label: "Option 2", value: "b" },
+  { label: "Option 3", value: "c" },
 ];
 </script>
 
@@ -146,7 +146,9 @@ const radioOptions = [
   </Section>
   <Section title="Radio">
     <Area>
-      <RadioGroup options="{radioOptions}" />
+      <RadioGroup
+        options="{radioOptions}"
+        on:change="{(e) => console.log(e.detail.selectedIndex)}" />
       <RadioGroup options="{radioOptions}" position="left" />
       <RadioGroup options="{radioOptions}" position="top" />
       <RadioGroup options="{radioOptions}" position="bottom" />
