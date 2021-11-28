@@ -29,19 +29,19 @@ label {
     justify-content: start;
 
     &[data-position="left"] > * {
-      margin-right: $spacing_small;
+      margin-right: $spacing_label;
     }
 
     &[data-position="right"] > * {
-      margin-left: $spacing_small;
+      margin-left: $spacing_label;
     }
 
     &[data-position="top"] > * {
-      margin-bottom: $spacing_small;
+      margin-bottom: $spacing_label;
     }
 
     &[data-position="bottom"] > * {
-      margin-top: $spacing_small;
+      margin-top: $spacing_label;
     }
   }
 
@@ -84,24 +84,27 @@ label {
   &[data-position="bottom"] {
     flex-direction: column-reverse;
 
-    &[data-align="center"] .label {
-      align-self: center;
+    &[data-align="center"] {
+      justify-content: center;
+      align-items: center;
     }
 
-    &[data-align="end"] .label {
-      align-self: end;
+    &[data-align="end"] {
+      justify-content: end;
+      align-items: end;
     }
   }
 }
 </style>
 
 <script lang="ts">
-import type { Position, Align } from "./types";
+import type { Position, Align, Justify } from "./types";
 export let isEnabled: boolean = true;
 export let text: string = "";
 export let isLink: boolean = false;
 export let position: Position = "left";
 export let align: Align = "start";
+export let justify: Justify = "start";
 export let indent: number = 0;
 export let color: string | undefined = undefined;
 
@@ -128,7 +131,8 @@ $: colorStyle = color ? `color:${color};` : undefined;
     class:disabled="{!isEnabled}"
     class:link="{isLink}"
     style="{colorStyle}"
-    tabindex="{isEnabled && isLink ? 0 : undefined}">
+    tabindex="{isEnabled && isLink ? 0 : undefined}"
+    on:mousedown>
     {text}
   </label>
 {:else}
@@ -139,7 +143,8 @@ $: colorStyle = color ? `color:${color};` : undefined;
     style="{colorStyle}"
     data-position="{position}"
     data-align="{align}"
-    tabindex="{isEnabled && isLink ? 0 : -1}">
+    tabindex="{isEnabled && isLink ? 0 : -1}"
+    on:mousedown>
     <span class="label" style="{indentStyle}">{text}</span>
     <slot />
   </label>

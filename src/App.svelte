@@ -18,9 +18,15 @@ import Demo from "./examples/Demo.svelte";
 import Area from "./examples/Area.svelte";
 import Label from "./gui/Label.svelte";
 import Icon from "./gui/Icon.svelte";
-import Button from "./gui/Button.svelte";
 import PushButton from "./gui/PushButton.svelte";
 import Checkbox from "./gui/Checkbox.svelte";
+import RadioGroup from "./gui/RadioGroup.svelte";
+
+const radioOptions = [
+  { label: "Option 1", value: 1 },
+  { label: "Option 2", value: 2 },
+  { label: "Option 3", value: 3 },
+];
 </script>
 
 <main>
@@ -130,6 +136,20 @@ import Checkbox from "./gui/Checkbox.svelte";
       <Checkbox isDown="{true}" />
       <Checkbox isEnabled="{false}" />
       <Checkbox isEnabled="{false}" isDown="{true}" />
+    </Area>
+    <Area>
+      <Checkbox label="Left" />
+      <Checkbox label="Right" position="right" />
+      <Checkbox label="Top" position="top" />
+      <Checkbox label="Bottom" position="bottom" />
+    </Area>
+  </Section>
+  <Section title="Radio">
+    <Area>
+      <RadioGroup options="{radioOptions}" />
+      <RadioGroup options="{radioOptions}" position="left" />
+      <RadioGroup options="{radioOptions}" position="top" />
+      <RadioGroup options="{radioOptions}" position="bottom" />
     </Area>
   </Section>
 </main>

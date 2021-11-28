@@ -16,6 +16,8 @@ demo {
 }
 :global(div.caption .outline) {
   outline: 1px inset #74747440;
+  background-color: #4c4c4c;
+  border-radius: 3px;
 }
 </style>
 

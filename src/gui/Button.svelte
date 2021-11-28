@@ -105,6 +105,10 @@ $: {
   style = css || undefined;
 }
 
+export function click() {
+  isDown = !isDown;
+}
+
 function onChange() {
   dispatch("change", {
     isDown,
