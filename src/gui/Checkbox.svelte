@@ -30,7 +30,7 @@ function onButtonChange(event) {
 
 function onLabelMouseUp(e) {
   const isLabelClick = e.target.classList.contains("label");
-  if (isLabelClick) {
+  if (isEnabled && isLabelClick) {
     button.click();
     isDown = !isDown;
     dispatch("change", {

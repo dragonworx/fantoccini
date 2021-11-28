@@ -50,11 +50,13 @@ function log(component: string, event: string, data?: any) {
         isLink="{true}"
         on:clicked="{() => log('label', 'clicked')}" />
     </Outline>
-    <Label
-      text="Is Link"
-      isLink="{true}"
-      isEnabled="{false}"
-      on:clicked="{() => log('label', 'clicked')}" />
+    <Outline events="{false}">
+      <Label
+        text="Is Link"
+        isLink="{true}"
+        isEnabled="{false}"
+        on:clicked="{() => log('label', 'clicked')}" />
+    </Outline>
   </Section>
   <Section title="Label - Wrapping Left">
     <!-- Left -->
@@ -139,11 +141,13 @@ function log(component: string, event: string, data?: any) {
           on:down="{(e) => log('pushbutton', 'down')}"
           on:up="{(e) => log('pushbutton', 'up')}" />
       </Outline>
-      <PushButton
-        label="Push it"
-        isEnabled="{false}"
-        on:down="{(e) => log('pushbutton', 'down')}"
-        on:up="{(e) => log('pushbutton', 'up')}" />
+      <Outline events="{false}">
+        <PushButton
+          label="Push it"
+          isEnabled="{false}"
+          on:down="{(e) => log('pushbutton', 'down')}"
+          on:up="{(e) => log('pushbutton', 'up')}" />
+      </Outline>
       <PushButton label="Push it" iconName="tick" />
     </Area>
     <Area>
@@ -159,13 +163,15 @@ function log(component: string, event: string, data?: any) {
         iconName="tick"
         canToggle="{true}"
         isDown="{true}" />
-      <PushButton
-        isEnabled="{false}"
-        label="Toggle it"
-        iconName="tick"
-        canToggle="{true}"
-        isDown="{true}"
-        on:toggle="{(e) => log('pushbutton', 'toggle', e.detail.isDown)}" />
+      <Outline events="{false}">
+        <PushButton
+          isEnabled="{false}"
+          label="Toggle it"
+          iconName="tick"
+          canToggle="{true}"
+          isDown="{true}"
+          on:toggle="{(e) => log('pushbutton', 'toggle', e.detail.isDown)}" />
+      </Outline>
     </Area>
   </Section>
   <Section title="Checkbox">
@@ -175,9 +181,11 @@ function log(component: string, event: string, data?: any) {
           on:change="{(e) => log('checkbox', 'onchange', e.detail.checked)}" />
       </Outline>
       <Checkbox isDown="{true}" />
-      <Checkbox
-        isEnabled="{false}"
-        on:change="{(e) => log('checkbox', 'onchange', e.detail.checked)}" />
+      <Outline events="{false}">
+        <Checkbox
+          isEnabled="{false}"
+          on:change="{(e) => log('checkbox', 'onchange', e.detail.checked)}" />
+      </Outline>
       <Checkbox isEnabled="{false}" isDown="{true}" />
     </Area>
     <Area>
@@ -189,19 +197,24 @@ function log(component: string, event: string, data?: any) {
       <Checkbox label="Right" position="right" />
       <Checkbox label="Top" position="top" />
       <Checkbox label="Bottom" position="bottom" />
-      <Checkbox
-        label="Disabled"
-        isEnabled="{false}"
-        on:change="{(e) => log('checkbox', 'onchange', e.detail.checked)}" />
+      <Outline events="{false}">
+        <Checkbox
+          label="Disabled"
+          isEnabled="{false}"
+          on:change="{(e) => log('checkbox', 'onchange', e.detail.checked)}" />
+      </Outline>
       <Checkbox label="Down" isDown="{true}" isEnabled="{false}" />
     </Area>
   </Section>
   <Section title="Radio">
     <Area>
-      <RadioGroup
-        isEnabled="{false}"
-        options="{radioOptions}"
-        on:change="{(e) => log('radio', 'onchange', e.detail.selectedIndex)}" />
+      <Outline events="{false}">
+        <RadioGroup
+          isEnabled="{false}"
+          options="{radioOptions}"
+          on:change="{(e) =>
+            log('radio', 'onchange', e.detail.selectedIndex)}" />
+      </Outline>
       <Outline>
         <RadioGroup
           options="{radioOptions}"
