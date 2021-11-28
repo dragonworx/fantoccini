@@ -17,6 +17,10 @@ label {
     color: $color_label_link;
     text-decoration: underline;
     cursor: pointer;
+
+    &:active {
+      color: $color_label_link_active;
+    }
   }
 
   .label {
@@ -86,6 +90,7 @@ label {
 </style>
 
 <script lang="ts">
+import { createEventDispatcher } from "svelte";
 import type { Position, Align, Justify } from "./types";
 export let isEnabled: boolean = true;
 export let text: string = "";
@@ -95,6 +100,8 @@ export let align: Align = "start";
 export let justify: Justify = "start";
 export let indent: number = 0;
 export let color: string | undefined = undefined;
+
+const dispatch = createEventDispatcher();
 
 $: hasContent = "default" in $$slots;
 
@@ -110,6 +117,12 @@ $: {
 }
 
 $: colorStyle = color ? `color:${color};` : undefined;
+
+function onMouseUp() {
+  if (isLink) {
+    dispatch("clicked", {});
+  }
+}
 </script>
 
 {#if !hasContent}
@@ -121,7 +134,8 @@ $: colorStyle = color ? `color:${color};` : undefined;
     style="{colorStyle}"
     tabindex="{isEnabled && isLink ? 0 : undefined}"
     on:mousedown
-    on:mouseup>
+    on:mouseup
+    on:mouseup="{onMouseUp}">
     {text}
   </label>
 {:else}

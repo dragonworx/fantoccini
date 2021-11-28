@@ -12,26 +12,37 @@
 </style>
 
 <script lang="ts">
+import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
 import Label from "./Label.svelte";
 import Icon from "./Icon.svelte";
 
+export let isEnabled: boolean = true;
+export let canToggle: boolean = false;
+export let isDown: boolean = false;
 export let label: string | undefined = undefined;
 export let iconSrc: string | undefined = undefined;
 export let iconName: string | undefined = undefined;
 export let iconWidth: number = 16;
 export let iconHeight: number = 16;
 
+const dispatch = createEventDispatcher();
+
 function onChange(event) {
-  console.log("PushButton.onChange!", event.detail.isDown);
+  isDown = event.detail.isDown;
+  if (canToggle) {
+    dispatch("toggle", { isDown });
+  } else {
+    dispatch(isDown ? "down" : "up", { isDown });
+  }
 }
 </script>
 
 <Button
   type="pushbutton"
-  isEnabled="{$$props.isEnabled}"
-  canToggle="{$$props.canToggle}"
-  isDown="{$$props.isDown}"
+  isEnabled="{isEnabled}"
+  canToggle="{canToggle}"
+  isDown="{isDown}"
   on:mousedown
   on:change
   on:change="{onChange}">
