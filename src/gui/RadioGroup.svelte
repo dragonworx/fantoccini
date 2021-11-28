@@ -33,7 +33,7 @@ function onPressed(event) {
     selectedIndex = index;
     dispatch("change", {
       selectedIndex,
-      selectedValue: options[selectedIndex],
+      selectedValue: options[selectedIndex].value,
     });
   }
 }

@@ -30,9 +30,16 @@ const radioOptions = [
   { label: "Option 3", value: "c" },
 ];
 
-function log(component: string, event: string, data?: any) {
+function log(component: string, event: string, ...data: any[]) {
   console.log(
-    `%c${component}:%c${event}: %c${data === undefined ? "" : data}`,
+    `%c${component}:%c${event}: %c${
+      data.length === 0
+        ? ""
+        : JSON.stringify(data)
+            .replace(/[\[{()}\]]/g, "")
+            .replace(/,/g, ", ")
+            .replace(/:/g, ": ")
+    }`,
     "color:cyan",
     "color:yellow",
     "color:white"
@@ -212,14 +219,12 @@ function log(component: string, event: string, data?: any) {
         <RadioGroup
           isEnabled="{false}"
           options="{radioOptions}"
-          on:change="{(e) =>
-            log('radio', 'onchange', e.detail.selectedIndex)}" />
+          on:change="{(e) => log('radio', 'onchange', e.detail)}" />
       </Outline>
       <Outline>
         <RadioGroup
           options="{radioOptions}"
-          on:change="{(e) =>
-            log('radio', 'onchange', e.detail.selectedIndex)}" />
+          on:change="{(e) => log('radio', 'onchange', e.detail)}" />
       </Outline>
       <RadioGroup options="{radioOptions}" position="left" />
       <RadioGroup options="{radioOptions}" position="top" />
