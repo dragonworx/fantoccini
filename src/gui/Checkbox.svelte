@@ -6,22 +6,37 @@
 </style>
 
 <script lang="ts">
+import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
 import Icon from "./Icon.svelte";
 import Label from "./Label.svelte";
-import type { Align, Position } from "./types";
+import type { Position } from "./types";
 
+export let isEnabled: boolean = true;
+export let isDown: boolean = false;
 export let label: string | undefined = undefined;
 export let position: Position = "left";
 
+const dispatch = createEventDispatcher();
+
 let button;
 
-function onChange(event) {
-  console.log("?", event.detail.isDown);
+function onButtonChange(event) {
+  dispatch("change", {
+    checked: event.detail.isDown,
+  });
+  isDown = event.detail.isDown;
 }
 
-function onMouseDown() {
-  button.click();
+function onLabelMouseUp(e) {
+  const isLabelClick = e.target.classList.contains("label");
+  if (isLabelClick) {
+    button.click();
+    isDown = !isDown;
+    dispatch("change", {
+      checked: isDown,
+    });
+  }
 }
 </script>
 
@@ -31,20 +46,20 @@ function onMouseDown() {
     position="{position}"
     align="center"
     justify="center"
-    on:mousedown="{onMouseDown}">
+    on:mouseup="{onLabelMouseUp}">
     <Button
       bind:this="{button}"
-      isEnabled="{$$props.isEnabled}"
-      isDown="{$$props.isDown}"
+      isEnabled="{isEnabled}"
+      isDown="{isDown}"
       canToggle="{true}"
       type="checkbox"
-      on:change="{onChange}"><Icon name="cross" width="{12}" /></Button>
+      on:change="{onButtonChange}"><Icon name="cross" width="{12}" /></Button>
   </Label>
 {:else}
   <Button
-    isEnabled="{$$props.isEnabled}"
-    isDown="{$$props.isDown}"
+    isEnabled="{isEnabled}"
+    isDown="{isDown}"
     canToggle="{true}"
     type="checkbox"
-    on:change="{onChange}"><Icon name="cross" width="{12}" /></Button>
+    on:change="{onButtonChange}"><Icon name="cross" width="{12}" /></Button>
 {/if}

@@ -132,13 +132,18 @@ const radioOptions = [
   </Section>
   <Section title="Checkbox">
     <Area>
-      <Checkbox />
+      <Checkbox
+        on:change="{(e) =>
+          console.log('checkbox.onchange', e.detail.checked)}" />
       <Checkbox isDown="{true}" />
       <Checkbox isEnabled="{false}" />
       <Checkbox isEnabled="{false}" isDown="{true}" />
     </Area>
     <Area>
-      <Checkbox label="Left" />
+      <Checkbox
+        label="Left"
+        on:change="{(e) =>
+          console.log('checkbox.onchange', e.detail.checked)}" />
       <Checkbox label="Right" position="right" />
       <Checkbox label="Top" position="top" />
       <Checkbox label="Bottom" position="bottom" />
@@ -148,7 +153,8 @@ const radioOptions = [
     <Area>
       <RadioGroup
         options="{radioOptions}"
-        on:change="{(e) => console.log(e.detail.selectedIndex)}" />
+        on:change="{(e) =>
+          console.log('radio.onchange', e.detail.selectedIndex)}" />
       <RadioGroup options="{radioOptions}" position="left" />
       <RadioGroup options="{radioOptions}" position="top" />
       <RadioGroup options="{radioOptions}" position="bottom" />
