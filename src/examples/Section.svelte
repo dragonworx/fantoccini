@@ -10,7 +10,7 @@ fieldset {
   background-color: rgba(0, 0, 0, 0.05);
   margin-bottom: ($spacing_small * 2);
   padding-bottom: 8px;
-  padding-top: 4px;
+  padding-top: 10px;
 
   legend {
     position: relative;

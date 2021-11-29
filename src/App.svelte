@@ -18,7 +18,7 @@ main {
 import Section from "./examples/Section.svelte";
 import Demo from "./examples/Demo.svelte";
 import Area from "./examples/Area.svelte";
-import Outline from "./examples/Outline.svelte";
+import Events from "./examples/Events.svelte";
 
 /** gui */
 import { isAlphaNumeric } from "./gui";
@@ -58,19 +58,19 @@ function log(component: string, event: string, ...data: any[]) {
   <Section title="Label - Simple">
     <Label text="Default" />
     <Label isEnabled="{false}" text="Disabled" />
-    <Outline>
+    <Events>
       <Label
         text="Is Link"
         isLink="{true}"
         on:clicked="{() => log('label', 'clicked')}" />
-    </Outline>
-    <Outline events="{false}">
+    </Events>
+    <Events enabled="{false}">
       <Label
         text="Is Link"
         isLink="{true}"
         isEnabled="{false}"
         on:clicked="{() => log('label', 'clicked')}" />
-    </Outline>
+    </Events>
   </Section>
   <Section title="Label - Wrapping Left">
     <!-- Left -->
@@ -149,35 +149,35 @@ function log(component: string, event: string, ...data: any[]) {
   </Section>
   <Section title="Button">
     <Area>
-      <Outline>
+      <Events>
         <PushButton
           label="Push it"
           on:down="{(e) => log('pushbutton', 'down')}"
           on:up="{(e) => log('pushbutton', 'up')}" />
-      </Outline>
-      <Outline events="{false}">
+      </Events>
+      <Events enabled="{false}">
         <PushButton
           label="Push it"
           isEnabled="{false}"
           on:down="{(e) => log('pushbutton', 'down')}"
           on:up="{(e) => log('pushbutton', 'up')}" />
-      </Outline>
+      </Events>
       <PushButton label="Push it" iconName="tick" />
     </Area>
     <Area>
-      <Outline>
+      <Events>
         <PushButton
           label="Toggle it"
           iconName="tick"
           canToggle="{true}"
           on:toggle="{(e) => log('pushbutton', 'toggle', e.detail.isDown)}" />
-      </Outline>
+      </Events>
       <PushButton
         label="Toggle it"
         iconName="tick"
         canToggle="{true}"
         isDown="{true}" />
-      <Outline events="{false}">
+      <Events enabled="{false}">
         <PushButton
           isEnabled="{false}"
           label="Toggle it"
@@ -185,63 +185,63 @@ function log(component: string, event: string, ...data: any[]) {
           canToggle="{true}"
           isDown="{true}"
           on:toggle="{(e) => log('pushbutton', 'toggle', e.detail.isDown)}" />
-      </Outline>
+      </Events>
     </Area>
   </Section>
   <Section title="Checkbox">
     <Area>
-      <Outline>
+      <Events>
         <Checkbox
           on:change="{(e) => log('checkbox', 'onchange', e.detail.checked)}" />
-      </Outline>
+      </Events>
       <Checkbox isDown="{true}" />
-      <Outline events="{false}">
+      <Events enabled="{false}">
         <Checkbox
           isEnabled="{false}"
           on:change="{(e) => log('checkbox', 'onchange', e.detail.checked)}" />
-      </Outline>
+      </Events>
       <Checkbox isEnabled="{false}" isDown="{true}" />
     </Area>
     <Area>
-      <Outline>
+      <Events>
         <Checkbox
           label="Left"
           on:change="{(e) => log('checkbox', 'onchange', e.detail.checked)}" />
-      </Outline>
+      </Events>
       <Checkbox label="Right" position="right" />
       <Checkbox label="Top" position="top" />
       <Checkbox label="Bottom" position="bottom" />
-      <Outline events="{false}">
+      <Events enabled="{false}">
         <Checkbox
           label="Disabled"
           isEnabled="{false}"
           on:change="{(e) => log('checkbox', 'onchange', e.detail.checked)}" />
-      </Outline>
+      </Events>
       <Checkbox label="Down" isDown="{true}" isEnabled="{false}" />
     </Area>
   </Section>
   <Section title="Radio">
     <Area>
-      <Outline events="{false}">
+      <Events>
+        <RadioGroup
+          options="{radioOptions}"
+          on:change="{(e) => log('radio', 'onchange', e.detail)}" />
+      </Events>
+      <Events enabled="{false}">
         <RadioGroup
           isEnabled="{false}"
           options="{radioOptions}"
           on:change="{(e) => log('radio', 'onchange', e.detail)}" />
-      </Outline>
-      <Outline>
-        <RadioGroup
-          options="{radioOptions}"
-          on:change="{(e) => log('radio', 'onchange', e.detail)}" />
-      </Outline>
+      </Events>
       <RadioGroup options="{radioOptions}" position="left" />
       <RadioGroup options="{radioOptions}" position="top" />
       <RadioGroup options="{radioOptions}" position="bottom" />
     </Area>
   </Section>
   <Section title="TextField">
-    <Outline>
+    <Events>
       <TextField on:accept="{(e) => log('textfield', 'onaccept', e.detail)}" />
-    </Outline>
+    </Events>
     <TextField isEnabled="{false}" value="{'This is some text'}" />
     <TextField
       filter="{alphaNumericFilter}"
