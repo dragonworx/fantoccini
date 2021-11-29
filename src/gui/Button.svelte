@@ -29,9 +29,7 @@ button {
     }
 
     &.isDown {
-      @include linear_gradient(#2f343c, #1d2127);
-      @include button_border(true);
-      box-shadow: inset 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
+      @include button_enabled_down;
 
       .content {
         position: relative;
@@ -40,29 +38,24 @@ button {
       }
 
       &:hover {
-        @include linear_gradient(#353a44, #24282f);
+        @include button_enabled_hover;
       }
 
       &:active:not([data-cantoggle="false"]) {
-        @include linear_gradient(#40404e, #1f232c);
+        @include button_enabled_active;
       }
     }
   }
 
   &.disabled {
-    @include linear_gradient(#3a424e, #5a5c5e);
-    @include button_border();
-    border: 1px solid #323232;
-    box-shadow: none;
+    @include button_disabled;
 
     :global(&.disabled .content label) {
       color: #9c9ca3;
     }
 
     &.isDown {
-      /* @include linear_gradient(#2f343c, #24282f); */
-      @include button_border(true);
-      box-shadow: inset 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
+      @include button_disabled_down;
     }
   }
 

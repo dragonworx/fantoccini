@@ -8,27 +8,34 @@ main {
   main {
     box-sizing: border-box;
     max-width: none;
+    padding-bottom: 1000px;
   }
 }
 </style>
 
 <script lang="ts">
+/** example */
 import Section from "./examples/Section.svelte";
 import Demo from "./examples/Demo.svelte";
 import Area from "./examples/Area.svelte";
 import Outline from "./examples/Outline.svelte";
 
+/** gui */
+import { isAlphaNumeric } from "./gui";
 import Label from "./gui/Label.svelte";
 import Icon from "./gui/Icon.svelte";
 import PushButton from "./gui/PushButton.svelte";
 import Checkbox from "./gui/Checkbox.svelte";
 import RadioGroup from "./gui/RadioGroup.svelte";
+import TextField from "./gui/TextField.svelte";
 
 const radioOptions = [
   { label: "Option 1", value: "a" },
   { label: "Option 2", value: "b" },
   { label: "Option 3", value: "c" },
 ];
+
+const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 
 function log(component: string, event: string, ...data: any[]) {
   console.log(
@@ -230,5 +237,14 @@ function log(component: string, event: string, ...data: any[]) {
       <RadioGroup options="{radioOptions}" position="top" />
       <RadioGroup options="{radioOptions}" position="bottom" />
     </Area>
+  </Section>
+  <Section title="TextField">
+    <TextField />
+    <TextField isEnabled="{false}" value="{'This is some text'}" />
+    <TextField
+      filter="{alphaNumericFilter}"
+      placeholder="With alpha numeric filter" />
+    <TextField placeholder="With Button">
+      <PushButton label="Button" /></TextField>
   </Section>
 </main>

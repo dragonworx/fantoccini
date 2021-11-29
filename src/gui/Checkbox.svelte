@@ -10,7 +10,7 @@ import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
 import Icon from "./Icon.svelte";
 import Label from "./Label.svelte";
-import type { Position } from "./types";
+import type { Position } from ".";
 
 export let isEnabled: boolean = true;
 export let isDown: boolean = false;
