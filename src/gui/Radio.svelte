@@ -44,9 +44,21 @@ function onButtonChange(event) {
 function onLabelMouseUp() {
   if (isEnabled && !isDown) {
     button.click();
+    button.focus();
     dispatch("pressed", {
       index,
     });
+  }
+}
+
+function onButtonKeyDown(e: KeyboardEvent) {
+  const { key } = e;
+  if (key == "ArrowUp" || key === "ArrowLeft") {
+    e.preventDefault();
+    dispatch("keyUp");
+  } else if (key == "ArrowDown" || key === "ArrowRight") {
+    e.preventDefault();
+    dispatch("keyDown");
   }
 }
 </script>
@@ -63,10 +75,12 @@ function onLabelMouseUp() {
     isEnabled="{isEnabled}"
     isDown="{isDown}"
     canToggle="{true}"
+    hasToggleLock="{true}"
     appearance="round"
     type="checkbox"
     width="{18}"
     height="{18}"
+    on:keydown="{onButtonKeyDown}"
     on:change="{onButtonChange}"
     >{#if isDown}<Icon name="circle" width="{8}" />{/if}</Button
   ></Label>

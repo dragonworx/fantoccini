@@ -28,6 +28,11 @@ div {
     font-size: 12px;
     padding: 5px;
 
+    &::selection {
+      background-color: $color_focus;
+      color: white;
+    }
+
     &:focus {
       @include focus;
     }
@@ -52,6 +57,8 @@ export let filter: (key: string, value: string) => boolean | undefined =
 
 const dispatch = createEventDispatcher();
 
+let input;
+
 let style = "";
 $: {
   if (width > 0) {
@@ -67,7 +74,15 @@ function onKeyDown(e: KeyboardEvent) {
   }
 }
 
-function onKeyUp(e: KeyboardEvent) {}
+function onKeyUp(e: KeyboardEvent) {
+  if (e.key === "Enter") {
+    dispatch("accept", {
+      value,
+    });
+  } else if (e.key === "Escape") {
+    input.blur();
+  }
+}
 
 function onPaste(e: ClipboardEvent) {
   if (filter) {
@@ -85,6 +100,7 @@ function onPaste(e: ClipboardEvent) {
 
 <div class:enabled="{isEnabled}" class:disabled="{!isEnabled}">
   <input
+    bind:this="{input}"
     bind:value
     class:withSlot="{$$slots.default}"
     style="{style}"
@@ -97,5 +113,7 @@ function onPaste(e: ClipboardEvent) {
     on:keyup
     on:keyup="{onKeyUp}"
     on:paste
-    on:paste="{onPaste}" /><slot />
+    on:paste="{onPaste}"
+    on:focus
+    on:blur /><slot />
 </div>

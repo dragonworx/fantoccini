@@ -2,6 +2,7 @@
 $spacing_small: 5px;
 $spacing_label: 8px;
 $border_radius_small: 5px;
+$color_focus: #0077b3;
 
 // Label
 $color_label_enabled: #bdbec0;
@@ -92,7 +93,7 @@ $color_textfield_enabled: #bdbec0;
 }
 
 @mixin focus {
-  outline: 1px solid #767676;
+  outline: 1px solid $color_focus;
 }
 
 @mixin label_enabled {

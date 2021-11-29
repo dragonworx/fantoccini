@@ -78,12 +78,19 @@ import { createEventDispatcher } from "svelte";
 
 export let isEnabled: boolean = true;
 export let canToggle: boolean = false;
+export let hasToggleLock: boolean = false;
 export let isDown: boolean = false;
 export let appearance: "box" | "round" = "box";
 export let width: number | undefined = undefined;
 export let height: number | undefined = undefined;
 export let padding: number = 0;
 export let type: string = "button";
+
+export function focus() {
+  button.focus();
+}
+
+let button;
 
 let isToggleDown: boolean = isDown;
 
@@ -99,7 +106,7 @@ $: {
 }
 
 export function click() {
-  isDown = !isDown;
+  onMouseDown();
 }
 
 function onChange() {
@@ -111,7 +118,7 @@ function onChange() {
 function onMouseUp() {
   if (canToggle) {
     if (isToggleDown) {
-      if (isDown) {
+      if (isDown && !hasToggleLock) {
         isDown = false;
       }
     } else {
@@ -155,6 +162,7 @@ function onKeyUp(e: KeyboardEvent) {
 </script>
 
 <button
+  bind:this="{button}"
   style="{style}"
   class:enabled="{isEnabled}"
   class:disabled="{!isEnabled}"

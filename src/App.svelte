@@ -239,7 +239,9 @@ function log(component: string, event: string, ...data: any[]) {
     </Area>
   </Section>
   <Section title="TextField">
-    <TextField />
+    <Outline>
+      <TextField on:accept="{(e) => log('textfield', 'onaccept', e.detail)}" />
+    </Outline>
     <TextField isEnabled="{false}" value="{'This is some text'}" />
     <TextField
       filter="{alphaNumericFilter}"

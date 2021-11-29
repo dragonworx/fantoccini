@@ -38,12 +38,13 @@ function onPressed(event) {
   }
 }
 
-/**
- * TODO:
- *  - give focus to radio button when label clicked
- *  - stop toggle up on button when key pressed
- *  - add arrow key selection
- */
+function onKeyUp() {
+  selectedIndex = Math.max(0, selectedIndex - 1);
+}
+
+function onKeyDown() {
+  selectedIndex = Math.min(options.length - 1, selectedIndex + 1);
+}
 </script>
 
 <ul>
@@ -55,7 +56,9 @@ function onPressed(event) {
         isDown="{selectedIndex === i}"
         label="{label}"
         index="{i}"
-        on:pressed="{onPressed}" />
+        on:pressed="{onPressed}"
+        on:keyUp="{onKeyUp}"
+        on:keyDown="{onKeyDown}" />
     </li>
   {/each}
 </ul>
