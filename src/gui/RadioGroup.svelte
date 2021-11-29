@@ -37,6 +37,13 @@ function onPressed(event) {
     });
   }
 }
+
+/**
+ * TODO:
+ *  - give focus to radio button when label clicked
+ *  - stop toggle up on button when key pressed
+ *  - add arrow key selection
+ */
 </script>
 
 <ul>

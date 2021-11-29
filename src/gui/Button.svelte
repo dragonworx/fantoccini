@@ -141,18 +141,15 @@ function onMouseDown() {
 
 function onKeyDown(e: KeyboardEvent) {
   const { key } = e;
+  if ((isEnabled && !isDown && key === " ") || key === "Enter") {
+    onMouseDown();
+  }
+}
+
+function onKeyUp(e: KeyboardEvent) {
+  const { key } = e;
   if ((isEnabled && key === " ") || key === "Enter") {
-    if (canToggle) {
-      isDown = !isDown;
-      onChange();
-    } else {
-      isDown = true;
-      onChange();
-      setTimeout(() => {
-        isDown = false;
-        onChange();
-      }, 100);
-    }
+    onMouseUp();
   }
 }
 </script>
@@ -171,4 +168,6 @@ function onKeyDown(e: KeyboardEvent) {
   on:mousedown="{onMouseDown}"
   on:mouseup
   on:keydown
-  on:keydown="{onKeyDown}"><div class="content"><slot /></div></button>
+  on:keydown="{onKeyDown}"
+  on:keyup
+  on:keyup="{onKeyUp}"><div class="content"><slot /></div></button>
