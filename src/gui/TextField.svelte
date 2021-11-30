@@ -79,6 +79,7 @@ function onKeyUp(e: KeyboardEvent) {
     dispatch("accept", {
       value,
     });
+    input.blur();
   } else if (e.key === "Escape") {
     input.blur();
   }

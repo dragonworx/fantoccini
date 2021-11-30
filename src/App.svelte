@@ -210,13 +210,13 @@ function log(component: string, event: string, ...data: any[]) {
     <Area>
       <Events>
         <Checkbox
-          on:change="{(e) => log('checkbox', 'onchange', e.detail.checked)}" />
+          on:change="{(e) => log('checkbox', 'change', e.detail.checked)}" />
       </Events>
       <Checkbox isDown="{true}" />
       <Events enabled="{false}">
         <Checkbox
           isEnabled="{false}"
-          on:change="{(e) => log('checkbox', 'onchange', e.detail.checked)}" />
+          on:change="{(e) => log('checkbox', 'change', e.detail.checked)}" />
       </Events>
       <Checkbox isEnabled="{false}" isDown="{true}" />
     </Area>
@@ -224,7 +224,7 @@ function log(component: string, event: string, ...data: any[]) {
       <Events>
         <Checkbox
           label="Left"
-          on:change="{(e) => log('checkbox', 'onchange', e.detail.checked)}" />
+          on:change="{(e) => log('checkbox', 'change', e.detail.checked)}" />
       </Events>
       <Checkbox label="Right" position="right" />
       <Checkbox label="Top" position="top" />
@@ -233,7 +233,7 @@ function log(component: string, event: string, ...data: any[]) {
         <Checkbox
           label="Disabled"
           isEnabled="{false}"
-          on:change="{(e) => log('checkbox', 'onchange', e.detail.checked)}" />
+          on:change="{(e) => log('checkbox', 'change', e.detail.checked)}" />
       </Events>
       <Checkbox label="Down" isDown="{true}" isEnabled="{false}" />
     </Area>
@@ -244,13 +244,13 @@ function log(component: string, event: string, ...data: any[]) {
       <Events>
         <RadioGroup
           options="{radioOptions}"
-          on:change="{(e) => log('radio', 'onchange', e.detail)}" />
+          on:change="{(e) => log('radio', 'change', e.detail)}" />
       </Events>
       <Events enabled="{false}">
         <RadioGroup
           isEnabled="{false}"
           options="{radioOptions}"
-          on:change="{(e) => log('radio', 'onchange', e.detail)}" />
+          on:change="{(e) => log('radio', 'change', e.detail)}" />
       </Events>
       <RadioGroup options="{radioOptions}" position="left" />
       <RadioGroup options="{radioOptions}" position="top" />
@@ -260,7 +260,10 @@ function log(component: string, event: string, ...data: any[]) {
   <!-- TextField -->
   <Section title="TextField">
     <Events>
-      <TextField on:accept="{(e) => log('textfield', 'onaccept', e.detail)}" />
+      <TextField
+        on:accept="{(e) => log('textfield', 'accept', e.detail)}"
+        on:focus="{(e) => log('textfield', 'focus')}"
+        on:blur="{(e) => log('textfield', 'blur')}" />
     </Events>
     <TextField isEnabled="{false}" value="{'This is some text'}" />
     <TextField
