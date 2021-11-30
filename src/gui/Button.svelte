@@ -1,6 +1,6 @@
 <style lang="scss">
 @import "theme";
-button {
+.button {
   box-sizing: border-box;
   padding: 0;
   position: relative;
@@ -209,6 +209,7 @@ function onKeyUp(e: KeyboardEvent) {
 <button
   bind:this="{button}"
   style="{style}"
+  class="button"
   class:enabled="{isEnabled}"
   class:disabled="{!isEnabled}"
   class:isDown

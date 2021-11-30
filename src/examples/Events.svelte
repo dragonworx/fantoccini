@@ -1,5 +1,5 @@
 <style lang="scss">
-div {
+.events {
   $height: 12px;
 
   position: relative;
@@ -38,4 +38,4 @@ div {
 export let enabled: boolean = true;
 </script>
 
-<div class:enabled><slot /></div>
+<div class="events" class:enabled><slot /></div>

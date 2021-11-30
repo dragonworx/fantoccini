@@ -1,7 +1,7 @@
 <style lang="scss">
 @import "theme";
 
-label {
+.label {
   @include label_enabled;
   position: relative;
 
@@ -96,7 +96,7 @@ label {
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import type { Position, Align, Justify } from ".";
+import type { Position, Align, Justify } from "./types";
 export let isEnabled: boolean = true;
 export let text: string = "";
 export let isLink: boolean = false;
@@ -147,6 +147,7 @@ function onMouseUp() {
 {:else}
   <!-- svelte-ignore a11y-label-has-associated-control -->
   <label
+    class="label"
     class:disabled="{!isEnabled}"
     class:link="{isLink}"
     style="{colorStyle}"

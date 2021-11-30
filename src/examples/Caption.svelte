@@ -1,7 +1,7 @@
 <style lang="scss">
 @import "../gui/theme";
 
-div.caption {
+.caption {
   display: flex;
   align-items: start;
   justify-content: start;

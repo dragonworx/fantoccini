@@ -1,5 +1,5 @@
 <style lang="scss">
-demo {
+.demo {
   & .label {
     display: flex;
     padding: 2px 5px;
@@ -28,7 +28,7 @@ export let key: string = "";
 export let value: string = "";
 </script>
 
-<demo>
+<div class="demo">
   <Caption>
     <span class="label" slot="label"
       ><Label text="{key}:" color="#848689" /><Label
@@ -36,4 +36,4 @@ export let value: string = "";
         color="#9ea9a9" /></span>
     <slot />
   </Caption>
-</demo>
+</div>

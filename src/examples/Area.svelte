@@ -1,5 +1,5 @@
 <style lang="scss">
-div {
+.area {
   flex-grow: 1;
   outline: 1px inset #7b7b7b52;
   padding: 5px;
@@ -12,4 +12,4 @@ div {
 }
 </style>
 
-<div><slot /></div>
+<div class="area"><slot /></div>

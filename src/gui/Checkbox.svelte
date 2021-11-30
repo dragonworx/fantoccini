@@ -1,7 +1,7 @@
 <style lang="scss">
 @import "theme";
-:global(button[data-type="checkbox"] .content) {
-  padding: 2px;
+:global(button[data-type="checkbox"].button .content) {
+  padding: 4px;
 }
 </style>
 
@@ -10,7 +10,7 @@ import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
 import Icon from "./Icon.svelte";
 import Label from "./Label.svelte";
-import type { Position } from ".";
+import type { Position } from "./types";
 
 export let isEnabled: boolean = true;
 export let isDown: boolean = false;

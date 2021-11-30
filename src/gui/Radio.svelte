@@ -1,17 +1,7 @@
 <style lang="scss">
 @import "theme";
-:global(button[data-type="checkbox"] .content) {
+:global(button[data-type="radio"].button .content) {
   padding: 4px;
-}
-
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-
-  li {
-    margin-bottom: $spacing_small;
-  }
 }
 </style>
 
@@ -20,7 +10,7 @@ import { createEventDispatcher } from "svelte";
 import Label from "./Label.svelte";
 import Button from "./Button.svelte";
 import Icon from "./Icon.svelte";
-import type { Position } from ".";
+import type { Position } from "./types";
 
 export let isEnabled: boolean = true;
 export let label: string;
@@ -77,7 +67,7 @@ function onButtonKeyDown(e: KeyboardEvent) {
     canToggle="{true}"
     hasToggleLock="{true}"
     appearance="round"
-    type="checkbox"
+    type="radio"
     width="{18}"
     height="{18}"
     on:keydown="{onButtonKeyDown}"

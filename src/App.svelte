@@ -21,13 +21,14 @@ import Area from "./examples/Area.svelte";
 import Events from "./examples/Events.svelte";
 
 /** gui */
-import { isAlphaNumeric } from "./gui";
+import { isAlphaNumeric } from "./gui/filters";
 import Label from "./gui/Label.svelte";
 import Icon from "./gui/Icon.svelte";
 import PushButton from "./gui/PushButton.svelte";
 import Checkbox from "./gui/Checkbox.svelte";
 import RadioGroup from "./gui/RadioGroup.svelte";
 import TextField from "./gui/TextField.svelte";
+import Spinner from "./gui/Spinner.svelte";
 
 const radioOptions = [
   { label: "Option 1", value: "a" },
@@ -271,5 +272,8 @@ function log(component: string, event: string, ...data: any[]) {
       placeholder="With alpha numeric filter" />
     <TextField placeholder="With Button">
       <PushButton label="Button" /></TextField>
+  </Section>
+  <Section title="Spinner">
+    <Spinner />
   </Section>
 </main>

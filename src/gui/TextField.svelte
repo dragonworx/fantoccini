@@ -1,10 +1,14 @@
 <style lang="scss">
 @import "theme";
-div {
+.textfield {
   box-sizing: border-box;
   flex-grow: 1;
   display: flex;
   border-radius: $border_radius_small;
+  border: 1px inset #818181;
+
+  .content {
+  }
 
   &.enabled {
     @include textfield_enabled;
@@ -23,10 +27,10 @@ div {
     flex-grow: 1;
     background-color: transparent;
     border-radius: 5px;
-    border: 1px inset #818181;
     color: $color_textfield_enabled;
     font-size: 12px;
     padding: 5px;
+    border: none;
 
     &::selection {
       background-color: $color_focus;
@@ -38,9 +42,7 @@ div {
     }
 
     &.withSlot {
-      border-right: none;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
+      margin-right: 1px;
     }
   }
 }
@@ -65,6 +67,8 @@ $: {
     style += `width: ${width}px;`;
   }
 }
+
+$: hasContent = $$slots.default;
 
 function onKeyDown(e: KeyboardEvent) {
   if (filter) {
@@ -99,11 +103,15 @@ function onPaste(e: ClipboardEvent) {
 }
 </script>
 
-<div class:enabled="{isEnabled}" class:disabled="{!isEnabled}">
+<div
+  class="textfield"
+  class:enabled="{isEnabled}"
+  class:disabled="{!isEnabled}"
+  data-component="textfield">
   <input
     bind:this="{input}"
     bind:value
-    class:withSlot="{$$slots.default}"
+    class:withSlot="{hasContent}"
     style="{style}"
     disabled="{!isEnabled}"
     type="text"
@@ -116,5 +124,8 @@ function onPaste(e: ClipboardEvent) {
     on:paste
     on:paste="{onPaste}"
     on:focus
-    on:blur /><slot />
+    on:blur />
+  {#if hasContent}
+    <div class="content"><slot /></div>
+  {/if}
 </div>

@@ -15,8 +15,12 @@ $color_label_shadow_disabled: #383838;
 // TextField
 $color_textfield_enabled: #bdbec0;
 
-@mixin debug {
+@mixin debug() {
   border: 1px solid red;
+}
+
+@mixin debug2() {
+  border: 1px solid green;
 }
 
 // Mixins
@@ -108,4 +112,8 @@ $color_textfield_enabled: #bdbec0;
 @mixin label_disabled {
   color: $color_label_disabled;
   text-shadow: 1px 1px 1px $color_label_shadow_disabled;
+}
+
+@mixin debug {
+  outline: 1px solid red;
 }

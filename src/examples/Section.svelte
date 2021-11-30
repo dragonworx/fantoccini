@@ -1,7 +1,7 @@
 <style lang="scss">
 @import "../gui/theme";
 
-fieldset {
+.section {
   box-sizing: border-box;
   user-select: none;
   padding: 0 ($spacing_small * 2);
@@ -58,12 +58,12 @@ fieldset {
 </style>
 
 <script lang="ts">
-import type { Direction } from "../gui";
+import type { Direction } from "../gui/types";
 export let title: string = "";
 export let direction: Direction = "horizontal";
 </script>
 
-<fieldset>
+<fieldset class="section">
   <legend>{title}</legend>
   <div
     class="content"
