@@ -40,10 +40,18 @@ function onPressed(event) {
 
 function onIncrement() {
   selectedIndex = Math.max(0, selectedIndex - 1);
+  dispatch("change", {
+    selectedIndex,
+    selectedValue: options[selectedIndex].value,
+  });
 }
 
 function onDecrement() {
   selectedIndex = Math.min(options.length - 1, selectedIndex + 1);
+  dispatch("change", {
+    selectedIndex,
+    selectedValue: options[selectedIndex].value,
+  });
 }
 </script>
 
