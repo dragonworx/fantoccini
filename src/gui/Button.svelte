@@ -70,6 +70,43 @@ button {
       border-radius: 10000px;
     }
   }
+
+  &.noStyle {
+    background: none;
+    border: none;
+    box-shadow: none;
+
+    &:before {
+      background: none;
+      border: none;
+    }
+
+    .content {
+      background: none;
+      border: none;
+    }
+
+    &.enabled {
+      &:hover {
+        background: none;
+      }
+
+      &.isDown {
+        background: none;
+        border: none;
+
+        &:hover {
+          background: none;
+          border: none;
+        }
+
+        &:active:not([data-cantoggle="false"]) {
+          background: none;
+          border: none;
+        }
+      }
+    }
+  }
 }
 </style>
 
@@ -85,6 +122,10 @@ export let width: number | undefined = undefined;
 export let height: number | undefined = undefined;
 export let padding: number = 0;
 export let type: string = "button";
+export let longPressDuration: number = 500;
+export let noStyle: boolean = false;
+
+let pressTimeout;
 
 export function focus() {
   button.focus();
@@ -129,6 +170,7 @@ function onMouseUp() {
   }
   window.removeEventListener("mouseup", onMouseUp);
   onChange();
+  clearTimeout(pressTimeout);
 }
 
 function onMouseDown() {
@@ -143,6 +185,9 @@ function onMouseDown() {
     }
     window.addEventListener("mouseup", onMouseUp);
     !canToggle && onChange();
+    pressTimeout = setTimeout(() => {
+      dispatch("longpress");
+    }, longPressDuration);
   }
 }
 
@@ -168,6 +213,7 @@ function onKeyUp(e: KeyboardEvent) {
   class:disabled="{!isEnabled}"
   class:isDown
   class:round="{appearance === 'round'}"
+  class:noStyle
   data-type="{type}"
   data-cantoggle="{canToggle}"
   tabindex="{isEnabled ? 0 : -1}"

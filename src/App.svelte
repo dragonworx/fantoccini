@@ -55,6 +55,7 @@ function log(component: string, event: string, ...data: any[]) {
 </script>
 
 <main>
+  <!-- Label - Simple -->
   <Section title="Label - Simple">
     <Label text="Default" />
     <Label isEnabled="{false}" text="Disabled" />
@@ -72,6 +73,7 @@ function log(component: string, event: string, ...data: any[]) {
         on:clicked="{() => log('label', 'clicked')}" />
     </Events>
   </Section>
+  <!-- Label - Wrapping -->
   <Section title="Label - Wrapping Left">
     <!-- Left -->
     <Demo key="align" value="left">
@@ -147,13 +149,15 @@ function log(component: string, event: string, ...data: any[]) {
         ><Icon src="img/test-small.png" width="{50}" /></Label>
     </Demo>
   </Section>
+  <!-- Button -->
   <Section title="Button">
     <Area>
       <Events>
         <PushButton
           label="Push it"
           on:down="{(e) => log('pushbutton', 'down')}"
-          on:up="{(e) => log('pushbutton', 'up')}" />
+          on:up="{(e) => log('pushbutton', 'up')}"
+          on:longpress="{(e) => log('pushbutton', 'longpress')}" />
       </Events>
       <Events enabled="{false}">
         <PushButton
@@ -163,6 +167,19 @@ function log(component: string, event: string, ...data: any[]) {
           on:up="{(e) => log('pushbutton', 'up')}" />
       </Events>
       <PushButton label="Push it" iconName="tick" />
+      <PushButton label="No Style" noStyle="{true}" />
+      <PushButton
+        isEnabled="{false}"
+        label="No Style Disabled"
+        noStyle="{true}" />
+      <Events>
+        <PushButton
+          label="No Style"
+          noStyle="{true}"
+          on:down="{(e) => log('pushbutton', 'down')}"
+          on:up="{(e) => log('pushbutton', 'up')}"
+          on:longpress="{(e) => log('pushbutton', 'longpress')}" />
+      </Events>
     </Area>
     <Area>
       <Events>
@@ -188,6 +205,7 @@ function log(component: string, event: string, ...data: any[]) {
       </Events>
     </Area>
   </Section>
+  <!-- Checkbox -->
   <Section title="Checkbox">
     <Area>
       <Events>
@@ -220,6 +238,7 @@ function log(component: string, event: string, ...data: any[]) {
       <Checkbox label="Down" isDown="{true}" isEnabled="{false}" />
     </Area>
   </Section>
+  <!-- Radio -->
   <Section title="Radio">
     <Area>
       <Events>
@@ -238,6 +257,7 @@ function log(component: string, event: string, ...data: any[]) {
       <RadioGroup options="{radioOptions}" position="bottom" />
     </Area>
   </Section>
+  <!-- TextField -->
   <Section title="TextField">
     <Events>
       <TextField on:accept="{(e) => log('textfield', 'onaccept', e.detail)}" />

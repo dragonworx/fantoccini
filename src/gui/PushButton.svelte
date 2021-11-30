@@ -25,6 +25,7 @@ export let iconSrc: string | undefined = undefined;
 export let iconName: string | undefined = undefined;
 export let iconWidth: number = 16;
 export let iconHeight: number = 16;
+export let noStyle: boolean = false;
 
 const dispatch = createEventDispatcher();
 
@@ -40,12 +41,17 @@ function onChange(event) {
 
 <Button
   type="pushbutton"
-  isEnabled="{isEnabled}"
-  canToggle="{canToggle}"
-  isDown="{isDown}"
-  on:mousedown
+  {...{
+    isEnabled,
+    canToggle,
+    isDown,
+    noStyle,
+  }}
+  on:keydown
+  on:keyup
   on:change
-  on:change="{onChange}">
+  on:change="{onChange}"
+  on:longpress>
   {#if label}
     <Label text="{label}" />
   {/if}

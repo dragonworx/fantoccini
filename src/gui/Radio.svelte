@@ -55,10 +55,10 @@ function onButtonKeyDown(e: KeyboardEvent) {
   const { key } = e;
   if (key == "ArrowUp" || key === "ArrowLeft") {
     e.preventDefault();
-    dispatch("keyUp");
+    dispatch("decrement");
   } else if (key == "ArrowDown" || key === "ArrowRight") {
     e.preventDefault();
-    dispatch("keyDown");
+    dispatch("increment");
   }
 }
 </script>

@@ -38,11 +38,11 @@ function onPressed(event) {
   }
 }
 
-function onKeyUp() {
+function onIncrement() {
   selectedIndex = Math.max(0, selectedIndex - 1);
 }
 
-function onKeyDown() {
+function onDecrement() {
   selectedIndex = Math.min(options.length - 1, selectedIndex + 1);
 }
 </script>
@@ -57,8 +57,8 @@ function onKeyDown() {
         label="{label}"
         index="{i}"
         on:pressed="{onPressed}"
-        on:keyUp="{onKeyUp}"
-        on:keyDown="{onKeyDown}" />
+        on:decrement="{onIncrement}"
+        on:increment="{onDecrement}" />
     </li>
   {/each}
 </ul>
