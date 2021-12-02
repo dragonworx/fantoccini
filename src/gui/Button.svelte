@@ -169,6 +169,7 @@ function onMouseUp() {
     isDown = false;
   }
   window.removeEventListener("mouseup", onMouseUp);
+  dispatch("mouseup");
   onChange();
   clearTimeout(pressTimeout);
 }
@@ -221,7 +222,6 @@ function onKeyUp(e: KeyboardEvent) {
   on:change
   on:mousedown
   on:mousedown="{onMouseDown}"
-  on:mouseup
   on:keydown
   on:keydown="{onKeyDown}"
   on:keyup

@@ -47,6 +47,8 @@ function onChange(event) {
     isDown,
     noStyle,
   }}
+  on:mousedown
+  on:mouseup
   on:keydown
   on:keyup
   on:change
