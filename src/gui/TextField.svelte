@@ -58,8 +58,11 @@ export let value: string = "";
 export let placeholder: string = "";
 export let width: number = 0;
 export let autofocus: boolean = false;
-export let filter: (key: string, value: string) => boolean | undefined =
-  undefined;
+export let filter: (
+  key: string,
+  value: string,
+  modifiers: { ctrl?: boolean; shift?: boolean; alt?: boolean; cmd?: boolean }
+) => boolean | undefined = undefined;
 
 const dispatch = createEventDispatcher();
 
@@ -76,7 +79,14 @@ $: hasContent = $$slots.default;
 
 function onKeyDown(e: KeyboardEvent) {
   if (filter && !isGeneralInputKey(e.key)) {
-    if (!filter(e.key, value)) {
+    if (
+      !filter(e.key, value, {
+        ctrl: e.ctrlKey,
+        shift: e.shiftKey,
+        alt: e.altKey,
+        cmd: e.metaKey,
+      })
+    ) {
       e.preventDefault();
     }
   }
@@ -98,7 +108,7 @@ function onPaste(e: ClipboardEvent) {
     const data = e.clipboardData.getData("text");
     if (data.length) {
       for (let i = 0; i < data.length; i++) {
-        if (!filter(data[i], value)) {
+        if (!filter(data[i], value, {})) {
           e.preventDefault();
         }
       }

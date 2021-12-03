@@ -55,7 +55,6 @@ const inc = (amount: number) =>
   ));
 
 function filter(key: string) {
-  console.log("!!!", key, value, typeof value);
   if (key === "-") {
     if (value === "0") {
       value = "-";
@@ -68,7 +67,7 @@ function filter(key: string) {
   if (!isNumericInput(key)) {
     return false;
   }
-  if (value === "0") {
+  if (value === "0" && key !== ".") {
     value = key;
     return false;
   }

@@ -1,7 +1,7 @@
 const letterRegex = /[a-zA-Z]/;
 const numericInputRegex = /[\-.]/;
 const generalInputRegex =
-  /Tab|Escape|ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Enter|Backspace|Delete/;
+  /Tab|Escape|ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Enter|Backspace|Delete|Ctrl/;
 
 export function isGeneralInputKey(key: string) {
   return !!key.match(generalInputRegex);
