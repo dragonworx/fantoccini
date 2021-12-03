@@ -68,6 +68,10 @@ function filter(key: string) {
   if (!isNumericInput(key)) {
     return false;
   }
+  if (value === "0") {
+    value = key;
+    return false;
+  }
   return true;
 }
 
@@ -75,6 +79,7 @@ function onBlur() {
   if (isNaN(parseFloat(value))) {
     value = "0";
   }
+  value = value.replace(/\.$/, "");
 }
 
 function onKeyDown(e: KeyboardEvent) {
@@ -114,6 +119,17 @@ function onIncDownLongpress() {
 function onIncMouseup() {
   clearTimeout(incTimeout);
 }
+
+function onIncKeydown(e: KeyboardEvent) {
+  if (e.key === "ArrowUp") {
+    onIncUpMousedown();
+  } else if (e.key === "ArrowDown") {
+    onIncDownMousedown();
+  }
+  if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+    e.preventDefault();
+  }
+}
 </script>
 
 <div class="spinner" data-component="spinner">
@@ -129,15 +145,17 @@ function onIncMouseup() {
         iconWidth="{10}"
         iconHeight="{10}"
         on:longpress="{onIncUpLongpress}"
-        on:mousedown="{onIncUpMousedown}"
-        on:mouseup="{onIncMouseup}" />
+        on:keydown="{onIncKeydown}"
+        on:down="{onIncUpMousedown}"
+        on:up="{onIncMouseup}" />
       <PushButton
         iconName="increment-down"
         iconWidth="{10}"
         iconHeight="{10}"
         on:longpress="{onIncDownLongpress}"
-        on:mousedown="{onIncDownMousedown}"
-        on:mouseup="{onIncMouseup}" />
+        on:keydown="{onIncKeydown}"
+        on:down="{onIncDownMousedown}"
+        on:up="{onIncMouseup}" />
     </div>
   </TextField>
 </div>
