@@ -1,5 +1,5 @@
 <style lang="scss">
-@import "theme";
+@import "../theme";
 </style>
 
 <script lang="ts">

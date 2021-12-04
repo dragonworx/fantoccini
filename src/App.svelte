@@ -15,19 +15,19 @@ main {
 
 <script lang="ts">
 /** example */
-import Section from "./examples/Section.svelte";
-import Area from "./examples/Area.svelte";
-import Events from "./examples/Events.svelte";
+import Section from "./gui/examples/Section.svelte";
+import Area from "./gui/examples/Area.svelte";
+import Events from "./gui/examples/Events.svelte";
 
 /** gui */
 import { isAlphaNumeric } from "./gui/filters";
-import Label from "./gui/Label.svelte";
-import Icon from "./gui/Icon.svelte";
-import PushButton from "./gui/PushButton.svelte";
-import Checkbox from "./gui/Checkbox.svelte";
-import RadioGroup from "./gui/RadioGroup.svelte";
-import TextField from "./gui/TextField.svelte";
-import Spinner from "./gui/Spinner.svelte";
+import Label from "./gui/components/Label.svelte";
+import Icon from "./gui/components/Icon.svelte";
+import PushButton from "./gui/components/PushButton.svelte";
+import Checkbox from "./gui/components/Checkbox.svelte";
+import RadioGroup from "./gui/components/RadioGroup.svelte";
+import TextField from "./gui/components/TextField.svelte";
+import Spinner from "./gui/components/Spinner.svelte";
 
 const radioOptions = [
   { label: "Option 1", value: "a" },
@@ -245,7 +245,10 @@ function log(component: string, event: string, ...data: any[]) {
   <Section title="Spinner" direction="vertical">
     <Area>
       <Events>
-        <Spinner on:change="{(e) => log('Spinner', 'change', e.detail)}" />
+        <Spinner
+          on:change="{(e) => log('Spinner', 'change', e.detail)}"
+          on:focus="{(e) => log('Spinner', 'focus')}"
+          on:blur="{(e) => log('Spinner', 'blur')}" />
       </Events>
       <Events mute="{true}">
         <Spinner isEnabled="{false}" />

@@ -1,5 +1,5 @@
 <style lang="scss">
-@import "theme";
+@import "../theme";
 
 ul {
   list-style: none;
@@ -15,7 +15,7 @@ ul {
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import Radio from "./Radio.svelte";
-import type { RadioGroupOption, Position } from "./types";
+import type { RadioGroupOption, Position } from "../types";
 
 export let isEnabled: boolean = true;
 export let options: RadioGroupOption[] = [];

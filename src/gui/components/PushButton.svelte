@@ -1,5 +1,5 @@
 <style lang="scss">
-@import "./theme";
+@import "../theme";
 :global(button[data-type="pushbutton"] .content) {
   padding: 5px;
 }

@@ -1,5 +1,5 @@
 <style lang="scss">
-@import "theme";
+@import "../theme";
 $digitWidth: 6;
 
 $minWidth: 32px;
@@ -90,7 +90,13 @@ $minWidth: 32px;
 import { createEventDispatcher } from "svelte";
 import TextField from "./TextField.svelte";
 import PushButton from "./PushButton.svelte";
-import { isNumericInput } from "./filters";
+import {
+  isNumericInput,
+  isDeleteKey,
+  isArrowKey,
+  isIncrementKey,
+  isDecrementKey,
+} from "../filters";
 
 export let isEnabled: boolean = true;
 export let autofocus: boolean = false;
@@ -119,10 +125,10 @@ function filter(key: string) {
     }
     return false;
   }
-  if (!isNumericInput(key)) {
+  if (!isNumericInput(key) && !isDeleteKey(key)) {
     return false;
   }
-  if (value === "0" && key !== ".") {
+  if (value === "0" && key !== "." && !isDeleteKey(key)) {
     value = key;
     return false;
   }
@@ -137,12 +143,13 @@ function onBlur() {
 }
 
 function onKeyDown(e: KeyboardEvent) {
-  if (e.key === "ArrowUp") {
-    inc(e.shiftKey ? 10 : e.ctrlKey ? 0.01 : 1);
-  } else if (e.key === "ArrowDown") {
-    inc(e.shiftKey ? -10 : e.ctrlKey ? -0.01 : -1);
+  const { key, shiftKey, ctrlKey } = e;
+  if (isIncrementKey(key)) {
+    inc(shiftKey ? 10 : ctrlKey ? 0.01 : 1);
+  } else if (isDecrementKey(key)) {
+    inc(shiftKey ? -10 : ctrlKey ? -0.01 : -1);
   }
-  if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+  if (isArrowKey(key)) {
     e.preventDefault();
   }
 }
@@ -175,18 +182,20 @@ function onIncMouseup() {
 }
 
 function onIncKeydown(e: KeyboardEvent) {
-  if (e.key === "ArrowUp") {
+  const { key } = e;
+  if (isIncrementKey(key)) {
     onIncUpMousedown();
-  } else if (e.key === "ArrowDown") {
+  } else if (isDecrementKey(key)) {
     onIncDownMousedown();
   }
-  if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+  if (isArrowKey(key)) {
     e.preventDefault();
   }
 }
 
 function onTextChange() {
-  dispatch("change", parseFloat(value));
+  const num = parseFloat(value);
+  !isNaN(num) && dispatch("change", parseFloat(value));
 }
 </script>
 

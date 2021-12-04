@@ -1,5 +1,5 @@
 <style lang="scss">
-@import "../gui/theme";
+@import "../theme";
 
 .section {
   box-sizing: border-box;
@@ -43,7 +43,8 @@
 </style>
 
 <script lang="ts">
-import type { Direction } from "../gui/types";
+import type { Direction } from "../types";
+
 export let title: string = "";
 export let direction: Direction = "horizontal";
 </script>

@@ -1,5 +1,5 @@
 <style lang="scss">
-@import "theme";
+@import "../theme";
 .button {
   box-sizing: border-box;
   padding: 0;

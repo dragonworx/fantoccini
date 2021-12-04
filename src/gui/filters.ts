@@ -1,10 +1,26 @@
 const letterRegex = /[a-zA-Z]/;
 const numericInputRegex = /[\-.]/;
 const generalInputRegex =
-  /Tab|Escape|ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Enter|Backspace|Delete|Ctrl/;
+  /Tab|Escape|ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Enter|Ctrl/;
 
 export function isGeneralInputKey(key: string) {
   return !!key.match(generalInputRegex);
+}
+
+export function isDeleteKey(key: string) {
+  return key === "Delete" || key === "Backspace";
+}
+
+export function isIncrementKey(key: string) {
+  return key === "ArrowUp" || key === "ArrowRight";
+}
+
+export function isDecrementKey(key: string) {
+  return key === "ArrowDown" || key === "ArrowLeft";
+}
+
+export function isArrowKey(key: string) {
+  return isIncrementKey(key) || isDecrementKey(key);
 }
 
 export function isNumeric(key: string) {

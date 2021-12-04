@@ -1,5 +1,5 @@
 <style lang="scss">
-@import "theme";
+@import "../theme";
 
 .label {
   @include label_enabled;
@@ -96,7 +96,7 @@
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import type { Position, Align, Justify } from "./types";
+import type { Position, Align, Justify } from "../types";
 export let isEnabled: boolean = true;
 export let text: string = "";
 export let isLink: boolean = false;

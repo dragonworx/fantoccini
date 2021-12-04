@@ -1,14 +1,11 @@
 <style lang="scss">
-@import "theme";
+@import "../theme";
 .textfield {
   box-sizing: border-box;
   flex-grow: 1;
   display: flex;
   border-radius: $border_radius_small;
   min-height: 28px;
-
-  .content {
-  }
 
   &.enabled {
     @include textfield_enabled;
@@ -51,7 +48,7 @@
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import { isGeneralInputKey } from "./filters";
+import { isGeneralInputKey } from "../filters";
 
 export let isEnabled: boolean = true;
 export let value: string = "";
@@ -93,14 +90,13 @@ function onKeyDown(e: KeyboardEvent) {
 }
 
 function onKeyUp(e: KeyboardEvent) {
-  if (e.key === "Enter") {
-    dispatch("accept", {
-      value,
-    });
+  const { key } = e;
+  if (key === "Enter") {
+    dispatch("accept", value);
     input.blur();
-  } else if (e.key === "Escape") {
+  } else if (key === "Escape") {
     input.blur();
-  } else {
+  } else if (!isGeneralInputKey(key)) {
     dispatch("change", value);
   }
 }

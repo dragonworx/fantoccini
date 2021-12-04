@@ -1,5 +1,5 @@
 <style lang="scss">
-@import "theme";
+@import "../theme";
 .icon {
   display: inline-block;
   vertical-align: middle;

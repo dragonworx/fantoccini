@@ -1,5 +1,5 @@
 <style lang="scss">
-@import "theme";
+@import "../theme";
 :global(button[data-type="checkbox"].button .content) {
   padding: 4px;
 }
@@ -10,7 +10,7 @@ import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
 import Icon from "./Icon.svelte";
 import Label from "./Label.svelte";
-import type { Position } from "./types";
+import type { Position } from "../types";
 
 export let isEnabled: boolean = true;
 export let isDown: boolean = false;
@@ -33,9 +33,6 @@ function onLabelMouseUp(e) {
   if (isEnabled && isLabelClick) {
     button.click();
     isDown = !isDown;
-    dispatch("change", {
-      checked: isDown,
-    });
   }
 }
 </script>
