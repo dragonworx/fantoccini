@@ -27,32 +27,17 @@
     padding-bottom: 3px;
   }
 
-  div {
+  .content {
     display: flex;
   }
 
-  div.horizontal {
+  .content.horizontal {
     flex-direction: row;
-
-    :global(&.content > *) {
-      margin-right: $spacing_small;
-    }
-
-    :global(&.content > *:last-child) {
-      margin-right: 0;
-    }
+    justify-content: space-around;
   }
 
-  div.vertical {
+  .content.vertical {
     flex-direction: column;
-
-    :global(&.content > *) {
-      margin-bottom: $spacing_small;
-    }
-
-    :global(&.content > *:last-child) {
-      margin-bottom: 0;
-    }
   }
 }
 </style>

@@ -1,7 +1,53 @@
 <style lang="scss">
 @import "theme";
+$digitWidth: 6;
+
+$minWidth: 32px;
+
+@mixin width($digitCount) {
+  width: $minWidth + ($digitWidth * ($digitCount - 1));
+}
+
 .spinner {
-  width: 71px;
+  &.digitCount1 {
+    @include width(1);
+  }
+
+  &.digitCount2 {
+    @include width(2);
+  }
+
+  &.digitCount3 {
+    @include width(3);
+  }
+
+  &.digitCount4 {
+    @include width(4);
+  }
+
+  &.digitCount5 {
+    @include width(5);
+  }
+
+  &.digitCount6 {
+    @include width(6);
+  }
+
+  &.digitCount7 {
+    @include width(7);
+  }
+
+  &.digitCount8 {
+    @include width(8);
+  }
+
+  &.digitCount9 {
+    @include width(9);
+  }
+
+  &.digitCount10 {
+    @include width(10);
+  }
 
   .buttons {
     display: flex;
@@ -41,18 +87,27 @@
 </style>
 
 <script lang="ts">
+import { createEventDispatcher } from "svelte";
 import TextField from "./TextField.svelte";
 import PushButton from "./PushButton.svelte";
 import { isNumericInput } from "./filters";
 
+export let isEnabled: boolean = true;
+export let autofocus: boolean = false;
+export let digitCount: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 = 6;
+
+const dispatch = createEventDispatcher();
+
 let value: string = "0";
 let incTimeout;
 
-const inc = (amount: number) =>
-  (value = String((parseFloat(value) + amount).toFixed(2)).replace(
+function inc(amount: number) {
+  value = String((parseFloat(value) + amount).toFixed(2)).replace(
     /\.00$|0+$/,
     ""
-  ));
+  );
+  dispatch("change", parseFloat(value));
+}
 
 function filter(key: string) {
   if (key === "-") {
@@ -129,17 +184,38 @@ function onIncKeydown(e: KeyboardEvent) {
     e.preventDefault();
   }
 }
+
+function onTextChange() {
+  dispatch("change", parseFloat(value));
+}
 </script>
 
-<div class="spinner" data-component="spinner">
+<div
+  class="spinner"
+  data-component="spinner"
+  class:digitCount1="{digitCount === 1}"
+  class:digitCount2="{digitCount === 2}"
+  class:digitCount3="{digitCount === 3}"
+  class:digitCount4="{digitCount === 4}"
+  class:digitCount5="{digitCount === 5}"
+  class:digitCount6="{digitCount === 6}"
+  class:digitCount7="{digitCount === 7}"
+  class:digitCount8="{digitCount === 8}"
+  class:digitCount9="{digitCount === 9}"
+  class:digitCount10="{digitCount === 10}">
   <TextField
     bind:value
+    isEnabled="{isEnabled}"
     filter="{filter}"
-    autofocus="{true}"
+    autofocus="{autofocus}"
+    on:change="{onTextChange}"
+    on:focus
+    on:blur
     on:blur="{onBlur}"
     on:keydown="{onKeyDown}">
     <div class="buttons">
       <PushButton
+        isEnabled="{isEnabled}"
         iconName="increment-up"
         iconWidth="{10}"
         iconHeight="{10}"
@@ -148,6 +224,7 @@ function onIncKeydown(e: KeyboardEvent) {
         on:down="{onIncUpMousedown}"
         on:up="{onIncMouseup}" />
       <PushButton
+        isEnabled="{isEnabled}"
         iconName="increment-down"
         iconWidth="{10}"
         iconHeight="{10}"

@@ -16,7 +16,6 @@ main {
 <script lang="ts">
 /** example */
 import Section from "./examples/Section.svelte";
-import Demo from "./examples/Demo.svelte";
 import Area from "./examples/Area.svelte";
 import Events from "./examples/Events.svelte";
 
@@ -40,10 +39,11 @@ const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 
 function log(component: string, event: string, ...data: any[]) {
   console.log(
-    `%c${component}:%c${event}: %c${
+    `%c${component}🔆%c${event}%c${
       data.length === 0
         ? ""
-        : JSON.stringify(data)
+        : ": " +
+          JSON.stringify(data)
             .replace(/[\[{()}\]]/g, "")
             .replace(/,/g, ", ")
             .replace(/:/g, ": ")
@@ -57,130 +57,97 @@ function log(component: string, event: string, ...data: any[]) {
 
 <main>
   <!-- Label - Simple -->
-  <Section title="Label - Simple">
-    <Label text="Default" />
-    <Label isEnabled="{false}" text="Disabled" />
-    <Events>
-      <Label
-        text="Is Link"
-        isLink="{true}"
-        on:clicked="{() => log('label', 'clicked')}" />
-    </Events>
-    <Events enabled="{false}">
-      <Label
-        text="Is Link"
-        isLink="{true}"
-        isEnabled="{false}"
-        on:clicked="{() => log('label', 'clicked')}" />
-    </Events>
+  <Section title="Label">
+    <Area
+      ><Label text="Default" />
+      <Label isEnabled="{false}" text="Disabled" /></Area>
+    <Area>
+      <Events>
+        <Label
+          text="Is Link"
+          isLink="{true}"
+          on:clicked="{() => log('Label', 'clicked')}" />
+      </Events>
+      <Events mute="{true}">
+        <Label
+          text="Is Link"
+          isLink="{true}"
+          isEnabled="{false}"
+          on:clicked="{() => log('Label', 'clicked')}" />
+      </Events>
+    </Area>
   </Section>
-  <!-- Label - Wrapping -->
-  <Section title="Label - Wrapping Left">
-    <!-- Left -->
-    <Demo key="align" value="left">
-      <Label text="Text"><Icon src="img/test-small.png" width="{50}" /></Label
-      ></Demo>
-    <Demo key="align" value="center"
-      ><Label text="Text" align="center"
-        ><Icon src="img/test-small.png" width="{50}" /></Label
-      ></Demo>
-    <Demo key="align" value="end"
-      ><Label text="Text" align="end"
-        ><Icon src="img/test-small.png" width="{50}" /></Label
-      ></Demo>
-    <Demo key="indent" value="5"
-      ><Label text="Text" indent="{5}"
-        ><Icon src="img/test-small.png" width="{50}" /></Label
-      ></Demo>
+
+  <Section title="Label.position: left (default)">
+    <Label text="align: start"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
+    <Label text="align: center" align="center"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
+    <Label text="align: end" align="end"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
+    <Label text="indent: 5" indent="{5}"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
   </Section>
-  <Section title="Label - Wrapping Right">
-    <!-- Right -->
-    <Demo key="align" value="start">
-      <Label text="Text" position="right"
-        ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Demo>
-    <Demo key="align" value="center">
-      <Label text="Text" position="right" align="center"
-        ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Demo>
-    <Demo key="align" value="end">
-      <Label text="Text" position="right" align="end"
-        ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Demo>
-    <Demo key="indent" value="5">
-      <Label text="Text" position="right" indent="{5}"
-        ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Demo>
+
+  <Section title="Label.position: right">
+    <Label text="align: start" position="right"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
+    <Label text="align: center" position="right" align="center"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
+    <Label text="align: end" position="right" align="end"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
+    <Label text="indent: 5" position="right" indent="{5}"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
   </Section>
-  <Section title="Label - Wrapping Top">
-    <!-- Top -->
-    <Demo key="align" value="start">
-      <Label text="Text" position="top"
-        ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Demo>
-    <Demo key="align" value="center">
-      <Label text="Text" position="top" align="center"
-        ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Demo>
-    <Demo key="align" value="end">
-      <Label text="Text" position="top" align="end"
-        ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Demo>
-    <Demo key="indent" value="5">
-      <Label text="Text" position="top" indent="{5}"
-        ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Demo>
+
+  <Section title="Label.position: top">
+    <Label text="align: left" position="top"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
+    <Label text="align: center" position="top" align="center"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
+    <Label text="align: end" position="top" align="end"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
+    <Label text="index: 5" position="top" indent="{5}"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
   </Section>
-  <Section title="Label - Wrapping Bottom">
-    <!-- Bottom -->
-    <Demo key="align" value="start">
-      <Label text="Text" position="bottom"
-        ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Demo>
-    <Demo key="align" value="center">
-      <Label text="Text" position="bottom" align="center"
-        ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Demo>
-    <Demo key="align" value="end">
-      <Label text="Text" position="bottom" align="end"
-        ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Demo>
-    <Demo key="indent" value="5">
-      <Label text="Text" position="bottom" indent="{5}"
-        ><Icon src="img/test-small.png" width="{50}" /></Label>
-    </Demo>
+
+  <Section title="Label.position: bottom">
+    <Label text="align: left" position="bottom"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
+    <Label text="align: center" position="bottom" align="center"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
+    <Label text="align: end" position="bottom" align="end"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
+    <Label text="indent: 5" position="bottom" indent="{5}"
+      ><Icon src="img/test-small.png" width="{50}" /></Label>
   </Section>
-  <!-- Button -->
-  <Section title="Button">
+
+  <Section title="PushButton">
     <Area>
       <Events>
         <PushButton
           label="Push it"
-          on:down="{(e) => log('pushbutton', 'down')}"
-          on:up="{(e) => log('pushbutton', 'up')}"
-          on:longpress="{(e) => log('pushbutton', 'longpress')}" />
+          on:down="{(e) => log('PushButton', 'down')}"
+          on:up="{(e) => log('PushButton', 'up')}"
+          on:longpress="{(e) => log('PushButton', 'longpress')}" />
       </Events>
-      <Events enabled="{false}">
+      <Events mute="{true}">
         <PushButton
           label="Push it"
           isEnabled="{false}"
-          on:down="{(e) => log('pushbutton', 'down')}"
-          on:up="{(e) => log('pushbutton', 'up')}" />
+          on:down="{(e) => log('PushButton', 'down')}"
+          on:up="{(e) => log('PushButton', 'up')}" />
       </Events>
       <PushButton label="Push it" iconName="tick" />
-      <PushButton label="No Style" noStyle="{true}" />
-      <PushButton
-        isEnabled="{false}"
-        label="No Style Disabled"
-        noStyle="{true}" />
       <Events>
         <PushButton
           label="No Style"
           noStyle="{true}"
-          on:down="{(e) => log('pushbutton', 'down')}"
-          on:up="{(e) => log('pushbutton', 'up')}"
-          on:longpress="{(e) => log('pushbutton', 'longpress')}" />
+          on:down="{(e) => log('PushButton', 'down')}"
+          on:up="{(e) => log('PushButton', 'up')}"
+          on:longpress="{(e) => log('PushButton', 'longpress')}" />
       </Events>
+      <PushButton isEnabled="{false}" label="No Style" noStyle="{true}" />
     </Area>
     <Area>
       <Events>
@@ -188,36 +155,36 @@ function log(component: string, event: string, ...data: any[]) {
           label="Toggle it"
           iconName="tick"
           canToggle="{true}"
-          on:toggle="{(e) => log('pushbutton', 'toggle', e.detail.isDown)}" />
+          on:toggle="{(e) => log('PushButton', 'toggle', e.detail.isDown)}" />
       </Events>
       <PushButton
         label="Toggle it"
         iconName="tick"
         canToggle="{true}"
         isDown="{true}" />
-      <Events enabled="{false}">
+      <Events mute="{true}">
         <PushButton
           isEnabled="{false}"
           label="Toggle it"
           iconName="tick"
           canToggle="{true}"
           isDown="{true}"
-          on:toggle="{(e) => log('pushbutton', 'toggle', e.detail.isDown)}" />
+          on:toggle="{(e) => log('PushButton', 'toggle', e.detail.isDown)}" />
       </Events>
     </Area>
   </Section>
-  <!-- Checkbox -->
+
   <Section title="Checkbox">
     <Area>
       <Events>
         <Checkbox
-          on:change="{(e) => log('checkbox', 'change', e.detail.checked)}" />
+          on:change="{(e) => log('Checkbox', 'change', e.detail.checked)}" />
       </Events>
       <Checkbox isDown="{true}" />
-      <Events enabled="{false}">
+      <Events mute="{true}">
         <Checkbox
           isEnabled="{false}"
-          on:change="{(e) => log('checkbox', 'change', e.detail.checked)}" />
+          on:change="{(e) => log('Checkbox', 'change', e.detail.checked)}" />
       </Events>
       <Checkbox isEnabled="{false}" isDown="{true}" />
     </Area>
@@ -225,46 +192,47 @@ function log(component: string, event: string, ...data: any[]) {
       <Events>
         <Checkbox
           label="Left"
-          on:change="{(e) => log('checkbox', 'change', e.detail.checked)}" />
+          on:change="{(e) => log('Checkbox', 'change', e.detail.checked)}" />
       </Events>
       <Checkbox label="Right" position="right" />
       <Checkbox label="Top" position="top" />
       <Checkbox label="Bottom" position="bottom" />
-      <Events enabled="{false}">
+      <Events mute="{true}">
         <Checkbox
           label="Disabled"
           isEnabled="{false}"
-          on:change="{(e) => log('checkbox', 'change', e.detail.checked)}" />
+          on:change="{(e) => log('Checkbox', 'change', e.detail.checked)}" />
       </Events>
       <Checkbox label="Down" isDown="{true}" isEnabled="{false}" />
     </Area>
   </Section>
-  <!-- Radio -->
+
   <Section title="Radio">
     <Area>
       <Events>
         <RadioGroup
           options="{radioOptions}"
-          on:change="{(e) => log('radio', 'change', e.detail)}" />
+          on:change="{(e) => log('Radio', 'change', e.detail)}" />
       </Events>
-      <Events enabled="{false}">
+      <Events mute="{true}">
         <RadioGroup
           isEnabled="{false}"
           options="{radioOptions}"
-          on:change="{(e) => log('radio', 'change', e.detail)}" />
+          on:change="{(e) => log('Radio', 'change', e.detail)}" />
       </Events>
       <RadioGroup options="{radioOptions}" position="left" />
       <RadioGroup options="{radioOptions}" position="top" />
       <RadioGroup options="{radioOptions}" position="bottom" />
     </Area>
   </Section>
-  <!-- TextField -->
+
   <Section title="TextField">
     <Events>
       <TextField
-        on:accept="{(e) => log('textfield', 'accept', e.detail)}"
-        on:focus="{(e) => log('textfield', 'focus')}"
-        on:blur="{(e) => log('textfield', 'blur')}" />
+        on:change="{(e) => log('TextField', 'change', e.detail)}"
+        on:accept="{(e) => log('TextField', 'accept', e.detail)}"
+        on:focus="{(e) => log('TextField', 'focus')}"
+        on:blur="{(e) => log('TextField', 'blur')}" />
     </Events>
     <TextField isEnabled="{false}" value="{'This is some text'}" />
     <TextField
@@ -273,7 +241,27 @@ function log(component: string, event: string, ...data: any[]) {
     <TextField placeholder="With Button">
       <PushButton label="Button" /></TextField>
   </Section>
-  <Section title="Spinner">
-    <Spinner />
+
+  <Section title="Spinner" direction="vertical">
+    <Area>
+      <Events>
+        <Spinner on:change="{(e) => log('Spinner', 'change', e.detail)}" />
+      </Events>
+      <Events mute="{true}">
+        <Spinner isEnabled="{false}" />
+      </Events>
+    </Area>
+    <Area>
+      <Spinner digitCount="{1}" />
+      <Spinner digitCount="{2}" />
+      <Spinner digitCount="{3}" />
+      <Spinner digitCount="{4}" />
+      <Spinner digitCount="{5}" />
+      <Spinner digitCount="{6}" />
+      <Spinner digitCount="{7}" />
+      <Spinner digitCount="{8}" />
+      <Spinner digitCount="{9}" />
+      <Spinner digitCount="{10}" />
+    </Area>
   </Section>
 </main>

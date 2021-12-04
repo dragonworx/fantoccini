@@ -5,7 +5,7 @@
   flex-grow: 1;
   display: flex;
   border-radius: $border_radius_small;
-  border: 1px inset #818181;
+  min-height: 28px;
 
   .content {
   }
@@ -100,6 +100,8 @@ function onKeyUp(e: KeyboardEvent) {
     input.blur();
   } else if (e.key === "Escape") {
     input.blur();
+  } else {
+    dispatch("change", value);
   }
 }
 
