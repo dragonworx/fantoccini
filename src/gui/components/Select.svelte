@@ -3,7 +3,7 @@
 </style>
 
 <script lang="ts">
-import { MenuOption } from "src/gui/types";
+import { MenuOption } from "../types";
 export let options: MenuOption[];
 </script>
 
