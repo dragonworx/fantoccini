@@ -130,34 +130,27 @@ function onMouseUp() {
 }
 </script>
 
-{#if !hasContent}
-  <!-- svelte-ignore a11y-label-has-associated-control -->
-  <label
-    class="label"
-    class:enabled="{isEnabled}"
-    class:disabled="{!isEnabled}"
-    class:link="{isLink}"
-    style="{colorStyle}"
-    tabindex="{isEnabled && isLink ? 0 : undefined}"
-    on:mousedown
-    on:mouseup
-    on:mouseup="{onMouseUp}">
+<!-- svelte-ignore a11y-label-has-associated-control -->
+<!-- svelte-ignore a11y-mouse-events-have-key-events -->
+<label
+  class="label"
+  class:disabled="{!isEnabled}"
+  class:link="{isLink}"
+  style="{colorStyle}"
+  data-component="label"
+  data-position="{position}"
+  data-align="{align}"
+  data-justify="{justify}"
+  tabindex="{isEnabled && isLink ? 0 : -1}"
+  on:mouseover
+  on:mouseout
+  on:mousedown
+  on:mouseup
+  on:mouseup="{onMouseUp}">
+  {#if !hasContent}
     {text}
-  </label>
-{:else}
-  <!-- svelte-ignore a11y-label-has-associated-control -->
-  <label
-    class="label"
-    class:disabled="{!isEnabled}"
-    class:link="{isLink}"
-    style="{colorStyle}"
-    data-position="{position}"
-    data-align="{align}"
-    data-justify="{justify}"
-    tabindex="{isEnabled && isLink ? 0 : -1}"
-    on:mousedown
-    on:mouseup>
+  {:else}
     <span class="label" style="{indentStyle}">{text}</span>
     <slot />
-  </label>
-{/if}
+  {/if}
+</label>

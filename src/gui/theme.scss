@@ -2,6 +2,7 @@
 $spacing_small: 5px;
 $spacing_label: 8px;
 $border_radius_small: 5px;
+$border_radius_tiny: 3px;
 $color_focus: #0077b3;
 
 // Label
@@ -40,8 +41,20 @@ $color_textfield_enabled: #bdbec0;
   box-shadow: none;
 }
 
-@mixin button_enabled_down {
+@mixin button_enabled_fill {
+  @include linear_gradient(#24282f, #2f343c);
+}
+
+@mixin button_enabled_hover {
+  @include linear_gradient(#24282f, #343a42);
+}
+
+@mixin button_enabled_down_fill {
   @include linear_gradient(#2f343c, #1d2127);
+}
+
+@mixin button_enabled_down {
+  @include button_enabled_down_fill();
   @include button_border(true);
   box-shadow: inset 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
 }
@@ -66,6 +79,20 @@ $color_textfield_enabled: #bdbec0;
   box-shadow: inset 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
+@mixin button_border_down {
+  border: 1px solid #444;
+  border-left-color: #444;
+  border-right-color: #444;
+  border-bottom-color: #999;
+}
+
+@mixin button_border_up {
+  border: 1px solid #999;
+  border-left-color: #555;
+  border-right-color: #555;
+  border-bottom-color: #444;
+}
+
 @mixin button_border($isDown: false) {
   &:before {
     content: "";
@@ -78,17 +105,11 @@ $color_textfield_enabled: #bdbec0;
     bottom: 0;
 
     @if $isDown {
-      border: 1px solid #444;
-      border-left-color: #444;
-      border-right-color: #444;
-      border-bottom-color: #999;
+      @include button_border_down;
       top: 1px;
       left: 1px;
     } @else {
-      border: 1px solid #999;
-      border-left-color: #555;
-      border-right-color: #555;
-      border-bottom-color: #444;
+      @include button_border_up;
     }
   }
 

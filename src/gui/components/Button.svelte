@@ -17,11 +17,11 @@
   }
 
   &.enabled {
-    @include linear_gradient(#24282f, #2f343c);
+    @include button_enabled_fill();
     @include button_border();
 
     &:hover {
-      @include linear_gradient(#24282f, #343a42);
+      @include button_enabled_hover();
     }
 
     &:focus {

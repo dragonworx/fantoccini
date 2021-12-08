@@ -28,6 +28,7 @@ import Checkbox from "./gui/components/Checkbox.svelte";
 import RadioGroup from "./gui/components/RadioGroup.svelte";
 import TextField from "./gui/components/TextField.svelte";
 import Spinner from "./gui/components/Spinner.svelte";
+import Menu from "./gui/components/Menu.svelte";
 
 const radioOptions = [
   { label: "Option 1", value: "a" },
@@ -53,6 +54,8 @@ function log(component: string, event: string, ...data: any[]) {
     "color:white"
   );
 }
+
+let isOpen: boolean = false;
 </script>
 
 <main>
@@ -266,5 +269,17 @@ function log(component: string, event: string, ...data: any[]) {
       <Spinner digitCount="{9}" />
       <Spinner digitCount="{10}" />
     </Area>
+  </Section>
+
+  <Section title="Menu">
+    <Menu isOpen="{isOpen}" options="{['Option1', 'Option2', 'Option3']}">
+      <Label
+        text="DropDown"
+        on:mouseover="{() => {
+          console.log('!');
+          isOpen = true;
+        }}"
+        on:mouseout="{() => (isOpen = false)}" />
+    </Menu>
   </Section>
 </main>

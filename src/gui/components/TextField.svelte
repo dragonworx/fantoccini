@@ -5,7 +5,7 @@
   flex-grow: 1;
   display: flex;
   border-radius: $border_radius_small;
-  min-height: 28px;
+  min-height: 27px;
 
   &.enabled {
     @include textfield_enabled;
