@@ -154,6 +154,11 @@ function onChange() {
   dispatch("change", {
     isDown,
   });
+  if (canToggle) {
+    dispatch("toggle", { isDown });
+  } else {
+    dispatch(isDown ? "down" : "up", {});
+  }
 }
 
 function onMouseUp() {

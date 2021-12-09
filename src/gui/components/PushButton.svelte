@@ -28,15 +28,6 @@ export let iconHeight: number = 16;
 export let noStyle: boolean = false;
 
 const dispatch = createEventDispatcher();
-
-function onChange(event) {
-  isDown = event.detail.isDown;
-  if (canToggle) {
-    dispatch("toggle", { isDown });
-  } else {
-    dispatch(isDown ? "down" : "up", {});
-  }
-}
 </script>
 
 <Button
@@ -52,7 +43,8 @@ function onChange(event) {
   on:keydown
   on:keyup
   on:change
-  on:change="{onChange}"
+  on:down
+  on:up
   on:longpress>
   {#if label}
     <Label text="{label}" />

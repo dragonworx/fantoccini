@@ -20,3 +20,5 @@ export type MenuOption =
       shortcut?: string;
     }
   | string;
+
+export type MenuPosition = "dropdown" | "popout";
