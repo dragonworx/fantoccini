@@ -3,44 +3,53 @@
 </style>
 
 <script lang="ts">
+import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
 import Menu from "./Menu.svelte";
 import { MenuOption, MenuPosition, MenuTrigger } from "../types";
 
 export let options: MenuOption[];
+export let selectedIndex: number = -1;
 export let trigger: MenuTrigger = "mousedown";
 export let position: MenuPosition = "dropdown";
 export let isOpen: boolean = false;
 
+export function getIsOpen() {
+  return isOpen;
+}
+
+export function setIsOpen(value: boolean) {
+  isOpen = value;
+}
+
+let dispatch = createEventDispatcher();
 let menu: Menu;
 
 const onMouseDown = () => {
   if (trigger === "mousedown") {
     isOpen = true;
+    dispatch("open");
   }
 };
 
 const onMouseUp = () => {
   if (trigger === "mouseup") {
-    isOpen = true;
-    const handler = (e: MouseEvent) => {
-      if (!menu.containsEvent(e)) {
-        isOpen = false;
-      }
-      window.removeEventListener("mousedown", handler);
-    };
-    window.addEventListener("mousedown", handler);
+    if (!isOpen) {
+      isOpen = true;
+      dispatch("open");
+      const handler = (e: MouseEvent) => {
+        if (!menu.containsEvent(e)) {
+          isOpen = false;
+          dispatch("close");
+        }
+        window.removeEventListener("mousedown", handler);
+      };
+      window.addEventListener("mousedown", handler);
+    }
   } else if (trigger === "mousedown") {
     isOpen = false;
+    dispatch("close");
   }
-};
-
-const onMenuMouseOver = (e: MouseEvent) => {
-  // console.log("!");
-};
-
-const onMenuMouseOut = (e: MouseEvent) => {
-  console.log("?", menu.containsEvent(e));
 };
 </script>
 
@@ -50,6 +59,5 @@ const onMenuMouseOut = (e: MouseEvent) => {
     isOpen="{isOpen}"
     options="{options}"
     position="{position}"
-    on:mouseover="{onMenuMouseOver}"
-    on:mouseout="{onMenuMouseOut}"><slot /></Menu>
+    selectedIndex="{selectedIndex}"><slot /></Menu>
 </Button>

@@ -29,6 +29,7 @@ import RadioGroup from "./gui/components/RadioGroup.svelte";
 import TextField from "./gui/components/TextField.svelte";
 import Spinner from "./gui/components/Spinner.svelte";
 import MenuButton from "./gui/components/MenuButton.svelte";
+import Select from "./gui/components/Select.svelte";
 
 const radioOptions = [
   { label: "Option 1", value: "a" },
@@ -291,5 +292,9 @@ const simpleMenuOptions = ["Option1", "Option2", "Option3"];
         <PushButton label="Popout" />
       </MenuButton>
     </Area>
+  </Section>
+
+  <Section title="Select">
+    <Select options="{simpleMenuOptions}" />
   </Section>
 </main>

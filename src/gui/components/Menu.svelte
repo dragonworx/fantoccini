@@ -69,11 +69,12 @@ export let options: MenuOption[];
 export let position: MenuPosition = "dropdown";
 export let isOpen: boolean = false;
 export let selectedIndex: number = -1;
-export let hoverIndex: number = -1;
 
 export function containsEvent(e: MouseEvent) {
   return menuViewDiv.contains(e.target as Node);
 }
+
+let hoverIndex: number = -1;
 
 let containerDiv: HTMLDivElement;
 let menuPositionDiv: HTMLDivElement;
