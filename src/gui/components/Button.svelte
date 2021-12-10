@@ -95,6 +95,11 @@
         background: none;
         border: none;
 
+        .content {
+          top: 0;
+          left: 0;
+        }
+
         &:hover {
           background: none;
           border: none;
@@ -227,6 +232,10 @@ function onKeyUp(e: KeyboardEvent) {
   on:change
   on:mousedown
   on:mousedown="{onMouseDown}"
+  on:mouseover
+  on:mouseout
+  on:focus
+  on:blur
   on:keydown
   on:keydown="{onKeyDown}"
   on:keyup

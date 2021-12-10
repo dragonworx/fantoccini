@@ -5,18 +5,39 @@
 <script lang="ts">
 import Button from "./Button.svelte";
 import Menu from "./Menu.svelte";
-import { MenuOption } from "../types";
+import { MenuOption, MenuPosition, MenuTrigger } from "../types";
 
 export let options: MenuOption[];
+export let trigger: MenuTrigger = "mousedown";
+export let position: MenuPosition = "dropdown";
 export let isOpen: boolean = false;
 
-const onDown = () => {
-  isOpen = true;
+const onMouseDown = () => {
+  if (trigger === "mousedown") {
+    isOpen = true;
+  }
 };
 
-const onUp = () => {};
+const onMouseUp = () => {
+  if (trigger === "mouseup") {
+    isOpen = true;
+  } else if (trigger === "mousedown") {
+    isOpen = false;
+  }
+};
+
+const onMouseOver = () => {
+  if (trigger === "mouseover") {
+    isOpen = true;
+  }
+};
 </script>
 
-<Button noStyle="{true}" on:mouseup="{onUp}" on:mousedown="{onDown}">
-  <Menu isOpen="{isOpen}" options="{options}"><slot /></Menu>
+<Button
+  noStyle="{true}"
+  on:mousedown="{onMouseDown}"
+  on:mouseup="{onMouseUp}"
+  on:mouseover="{onMouseOver}">
+  <Menu isOpen="{isOpen}" options="{options}" position="{position}"
+    ><slot /></Menu>
 </Button>

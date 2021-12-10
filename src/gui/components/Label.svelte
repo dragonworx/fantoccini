@@ -5,12 +5,12 @@
   @include label_enabled;
   position: relative;
 
-  &:focus {
-    @include focus;
-  }
-
   &.link {
     text-decoration: underline;
+
+    &:focus {
+      @include focus;
+    }
   }
 
   &.enabled {

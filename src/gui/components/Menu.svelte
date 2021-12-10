@@ -4,20 +4,16 @@
 .menu {
   position: relative;
 
-  & .open {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  & .closed {
-    opacity: 0;
-    visibility: hidden;
+  &[data-position="popout"] .menu-position {
+    z-index: 2;
   }
 
   & .menu-position {
     position: absolute;
     top: 0;
     left: 0;
+    min-width: 100%;
+    z-index: 1;
 
     & .menu-view {
       @include linear_gradient(#24282f, #2f343c);
@@ -66,26 +62,22 @@
 
 <script lang="ts">
 import { onMount } from "svelte";
+import { fade } from "svelte/transition";
 import { MenuOption, MenuPosition } from "../types";
 import Label from "../components/Label.svelte";
 
 export let options: MenuOption[];
 export let position: MenuPosition = "dropdown";
 export let isOpen: boolean = false;
-export let selectedIndex: number = 0;
+export let selectedIndex: number = -1;
 export let hoverIndex: number = -1;
 
-let container: HTMLDivElement;
-let popup: HTMLDivElement;
+let containerDiv: HTMLDivElement;
+let menuPositionDiv: HTMLDivElement;
+let menuViewDiv: HTMLUListElement;
 
 onMount(() => {
-  const rect = container.getBoundingClientRect();
-  console.log(rect);
-  if (position === "dropdown") {
-    popup.style.top = `${rect.height}px`;
-  } else if (position === "popout") {
-    popup.style.left = `${rect.width}px`;
-  }
+  console.log("mount");
 });
 
 function getLabel(option: MenuOption) {
@@ -93,6 +85,42 @@ function getLabel(option: MenuOption) {
     return option;
   } else {
     return option.label;
+  }
+}
+
+$: {
+  if (isOpen && containerDiv && menuViewDiv) {
+    const containerRect = containerDiv.getBoundingClientRect();
+    const innerWidth = document.body.clientWidth;
+    const innerHeight = document.body.clientHeight;
+    let top: number;
+    let left: number;
+    if (position === "dropdown") {
+      left = 0;
+      top = containerRect.height;
+    } else if (position === "popout") {
+      left = containerRect.width;
+      top = 0;
+    }
+
+    menuPositionDiv.style.top = `${top}px`;
+    menuPositionDiv.style.left = `${left}px`;
+
+    const menuViewRect = menuViewDiv.getBoundingClientRect();
+
+    if (menuViewRect.bottom > innerHeight) {
+      menuPositionDiv.style.top = `${
+        containerRect.height -
+        (containerRect.bottom + menuViewRect.height - innerHeight)
+      }px`;
+    }
+
+    if (menuViewRect.right > innerWidth) {
+      menuPositionDiv.style.left = `${
+        containerRect.width -
+        (containerRect.right + menuViewRect.width - innerWidth)
+      }px`;
+    }
   }
 }
 
@@ -106,26 +134,31 @@ const onLIMouseOut = (e: MouseEvent) => {
 </script>
 
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-<div bind:this="{container}" class="menu">
+<div
+  bind:this="{containerDiv}"
+  class="menu"
+  data-component="menu"
+  data-position="{position}">
   <slot />
-  <div
-    bind:this="{popup}"
-    class="menu-position"
-    class:open="{isOpen}"
-    class:closed="{!isOpen}">
-    <ul class="menu-view">
-      {#each options as option, i (i)}
-        <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-        <li
-          class:selected="{selectedIndex === i}"
-          class:hover="{hoverIndex === i}"
-          data-index="{i}"
-          tabindex="0"
-          on:mouseover="{onLIMouseOver(i)}"
-          on:mouseout="{onLIMouseOut}">
-          <Label text="{getLabel(option)}" />
-        </li>
-      {/each}
-    </ul>
-  </div>
+  {#if isOpen}
+    <div bind:this="{menuPositionDiv}" class="menu-position">
+      <ul
+        class="menu-view"
+        bind:this="{menuViewDiv}"
+        transition:fade="{{ duration: 150 }}">
+        {#each options as option, i (i)}
+          <!-- svelte-ignore a11y-mouse-events-have-key-events -->
+          <li
+            class:selected="{selectedIndex === i}"
+            class:hover="{hoverIndex === i}"
+            data-index="{i}"
+            tabindex="0"
+            on:mouseover="{onLIMouseOver(i)}"
+            on:mouseout="{onLIMouseOut}">
+            <Label text="{getLabel(option)}" />
+          </li>
+        {/each}
+      </ul>
+    </div>
+  {/if}
 </div>

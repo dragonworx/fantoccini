@@ -1,14 +1,14 @@
 <style lang="scss">
 main {
   position: relative;
-  padding: 10px;
+  padding: 100px;
 }
 
 @media (min-width: 640px) {
   main {
     box-sizing: border-box;
     max-width: none;
-    padding-bottom: 1000px;
+    padding-bottom: 100px;
   }
 }
 </style>
@@ -272,8 +272,35 @@ const simpleMenuOptions = ["Option1", "Option2", "Option3"];
   </Section>
 
   <Section title="MenuButton">
-    <MenuButton options="{simpleMenuOptions}">
-      <Label text="Dropdown" />
-    </MenuButton>
+    <Area>
+      <MenuButton options="{simpleMenuOptions}">
+        <PushButton label="MouseDown" />
+      </MenuButton>
+      <MenuButton options="{simpleMenuOptions}" position="popout">
+        <PushButton label="Popout" />
+      </MenuButton>
+    </Area>
+    <Area>
+      <MenuButton options="{simpleMenuOptions}" trigger="mouseup">
+        <PushButton label="Mouseup" />
+      </MenuButton>
+      <MenuButton
+        options="{simpleMenuOptions}"
+        position="popout"
+        trigger="mouseup">
+        <PushButton label="Popout" />
+      </MenuButton>
+    </Area>
+    <Area>
+      <MenuButton options="{simpleMenuOptions}" trigger="mouseover">
+        <PushButton label="Mouseover" />
+      </MenuButton>
+      <MenuButton
+        options="{simpleMenuOptions}"
+        position="popout"
+        trigger="mouseover">
+        <PushButton label="Popout" />
+      </MenuButton>
+    </Area>
   </Section>
 </main>

@@ -22,3 +22,5 @@ export type MenuOption =
   | string;
 
 export type MenuPosition = "dropdown" | "popout";
+
+export type MenuTrigger = "mousedown" | "mouseup" | "mouseover";
