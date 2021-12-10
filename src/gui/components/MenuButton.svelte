@@ -23,41 +23,43 @@ export function setIsOpen(value: boolean) {
 }
 
 let dispatch = createEventDispatcher();
-let menu: Menu;
+let button: Button;
 
-const onMouseDown = () => {
-  if (trigger === "mousedown") {
-    isOpen = true;
-    dispatch("open");
+const onDown = () => {
+  isOpen = true;
+  dispatch("open");
+
+  if (trigger === "mouseup") {
+    const handler = (e: MouseEvent) => {
+      if (!button.containsEvent(e)) {
+        button.setIsDown(false);
+        isOpen = false;
+        dispatch("close");
+      }
+      window.removeEventListener("mousedown", handler);
+    };
+    window.addEventListener("mousedown", handler);
   }
 };
 
-const onMouseUp = () => {
-  if (trigger === "mouseup") {
-    if (!isOpen) {
-      isOpen = true;
-      dispatch("open");
-      const handler = (e: MouseEvent) => {
-        if (!menu.containsEvent(e)) {
-          isOpen = false;
-          dispatch("close");
-        }
-        window.removeEventListener("mousedown", handler);
-      };
-      window.addEventListener("mousedown", handler);
-    }
-  } else if (trigger === "mousedown") {
-    isOpen = false;
-    dispatch("close");
-  }
+const onUp = () => {
+  isOpen = false;
+  dispatch("close");
 };
 </script>
 
-<Button noStyle="{true}" on:mousedown="{onMouseDown}" on:mouseup="{onMouseUp}">
-  <Menu
-    bind:this="{menu}"
-    isOpen="{isOpen}"
-    options="{options}"
-    position="{position}"
-    selectedIndex="{selectedIndex}"><slot /></Menu>
-</Button>
+<Menu
+  isOpen="{isOpen}"
+  options="{options}"
+  position="{position}"
+  selectedIndex="{selectedIndex}"
+  data-component="menu-button"
+  on:select
+  ><Button
+    bind:this="{button}"
+    on:down="{onDown}"
+    on:up="{onUp}"
+    isDown="{isOpen}"
+    canToggle="{trigger === 'mouseup'}">
+    <slot />
+  </Button></Menu>

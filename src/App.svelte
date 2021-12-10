@@ -159,7 +159,9 @@ const simpleMenuOptions = ["Option1", "Option2", "Option3"];
           label="Toggle it"
           iconName="tick"
           canToggle="{true}"
-          on:toggle="{(e) => log('PushButton', 'toggle', e.detail.isDown)}" />
+          on:toggle="{(e) => log('PushButton', 'toggle', e.detail.isDown)}"
+          on:down="{(e) => log('PushButton', 'down')}"
+          on:up="{(e) => log('PushButton', 'up')}" />
       </Events>
       <PushButton
         label="Toggle it"
@@ -275,21 +277,21 @@ const simpleMenuOptions = ["Option1", "Option2", "Option3"];
   <Section title="MenuButton">
     <Area>
       <MenuButton options="{simpleMenuOptions}">
-        <PushButton label="MouseDown" />
+        <Label text="MouseDown" />
       </MenuButton>
       <MenuButton options="{simpleMenuOptions}" position="popout">
-        <PushButton label="Popout" />
+        <Label text="Popout" />
       </MenuButton>
     </Area>
     <Area>
       <MenuButton options="{simpleMenuOptions}" trigger="mouseup">
-        <PushButton label="Mouseup" />
+        <Label text="Mouseup" />
       </MenuButton>
       <MenuButton
         options="{simpleMenuOptions}"
         position="popout"
         trigger="mouseup">
-        <PushButton label="Popout" />
+        <Label text="Popout" />
       </MenuButton>
     </Area>
   </Section>

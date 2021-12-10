@@ -1,37 +1,47 @@
 <style lang="scss">
 @import "../theme";
+
+:global([data-component="menu-button"] [data-component="button-content"]) {
+  min-height: 24px - ($spacing_small * 2);
+}
 </style>
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import { MenuOption } from "../types";
-import Button from "./Button.svelte";
+import { MenuOption, MenuItem } from "../types";
+import Label from "./Label.svelte";
 import MenuButton from "./MenuButton.svelte";
 
 export let options: MenuOption[];
 export let selectedIndex: number = -1;
 
-export function api() {}
+$: style = `width:${
+  options.reduce(
+    (width, option) =>
+      width +
+      (typeof option === "string" ? option.length : option.label.length),
+    0
+  ) * 3
+}px`;
 
-let menuButton: MenuButton;
+$: prompt =
+  selectedIndex === -1
+    ? ""
+    : typeof options[selectedIndex] === "string"
+    ? options[selectedIndex]
+    : (options[selectedIndex] as MenuItem).label;
 
-const onOpen = () => {
-  console.log("!open");
+const onSelect = (e: CustomEvent) => {
+  selectedIndex = e.detail;
 };
-
-const onClose = () => {
-  console.log("!close");
-};
-
-const onButtonUp = () => {};
 </script>
 
-<MenuButton
-  bind:this="{menuButton}"
-  options="{options}"
-  trigger="{'mouseup'}"
-  selectedIndex="{selectedIndex}"
-  on:open="{onOpen}"
-  on:close="{onClose}">
-  <Button on:up="{onButtonUp}">Select</Button>
-</MenuButton>
+<div data-component="menu-button" style="{style}">
+  <MenuButton
+    options="{options}"
+    trigger="{'mouseup'}"
+    selectedIndex="{selectedIndex}"
+    on:select="{onSelect}">
+    <Label text="{String(prompt)}" />
+  </MenuButton>
+</div>

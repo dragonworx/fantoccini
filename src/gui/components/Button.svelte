@@ -1,5 +1,18 @@
 <style lang="scss">
 @import "../theme";
+
+:global([data-component="button-content"]) {
+  padding: $spacing_small;
+}
+
+:global([data-component="button-content"] > *) {
+  margin-right: $spacing_small;
+}
+
+:global([data-component="button-content"] > *:last-child) {
+  margin-right: 0;
+}
+
 .button {
   box-sizing: border-box;
   padding: 0;
@@ -8,8 +21,9 @@
   border: 1px solid #030c17;
   border-radius: $border_radius_small;
   box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
+  flex-grow: 1;
 
-  .content {
+  & .content {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -130,19 +144,30 @@ export let type: string = "button";
 export let longPressDuration: number = 500;
 export let noStyle: boolean = false;
 
-let pressTimeout;
-
 export function focus() {
-  button.focus();
+  buttonEl.focus();
 }
 
-let button;
+export function click() {
+  onMouseDown();
+}
 
-let isToggleDown: boolean = isDown;
+export function containsEvent(e: MouseEvent) {
+  return buttonEl.contains(e.target as Node);
+}
+
+export function setIsDown(value: boolean) {
+  isDown = value;
+  isToggleDown = value;
+}
 
 const dispatch = createEventDispatcher();
 
+let buttonEl;
+let pressTimeout;
+let isToggleDown: boolean = isDown;
 let style = undefined;
+
 $: {
   let css = "";
   if (width) css += `width: ${width}px;`;
@@ -151,26 +176,22 @@ $: {
   style = css || undefined;
 }
 
-export function click() {
-  onMouseDown();
-}
-
-function onChange() {
+const onChange = () => {
   dispatch("change", {
     isDown,
   });
+  dispatch(isDown ? "down" : "up");
   if (canToggle) {
     dispatch("toggle", { isDown });
-  } else {
-    dispatch(isDown ? "down" : "up", {});
   }
-}
+};
 
-function onMouseUp() {
+const onMouseUp = () => {
   if (canToggle) {
     if (isToggleDown) {
       if (isDown && !hasToggleLock) {
         isDown = false;
+        isToggleDown = false;
       }
     } else {
       isToggleDown = true;
@@ -182,9 +203,9 @@ function onMouseUp() {
   dispatch("mouseup");
   onChange();
   clearTimeout(pressTimeout);
-}
+};
 
-function onMouseDown() {
+const onMouseDown = () => {
   if (isEnabled) {
     if (canToggle) {
       if (!isDown) {
@@ -200,30 +221,30 @@ function onMouseDown() {
       dispatch("longpress");
     }, longPressDuration);
   }
-}
+};
 
-function onKeyDown(e: KeyboardEvent) {
+const onKeyDown = (e: KeyboardEvent) => {
   const { key } = e;
   if ((isEnabled && !isDown && key === " ") || key === "Enter") {
     onMouseDown();
   }
-}
+};
 
-function onKeyUp(e: KeyboardEvent) {
+const onKeyUp = (e: KeyboardEvent) => {
   const { key } = e;
   if ((isEnabled && key === " ") || key === "Enter") {
     onMouseUp();
   }
-}
+};
 </script>
 
 <button
-  bind:this="{button}"
+  bind:this="{buttonEl}"
   style="{style}"
   class="button"
   class:enabled="{isEnabled}"
   class:disabled="{!isEnabled}"
-  class:isDown
+  class:isDown="{canToggle ? isToggleDown : isDown}"
   class:round="{appearance === 'round'}"
   class:noStyle
   data-type="{type}"
@@ -239,4 +260,5 @@ function onKeyUp(e: KeyboardEvent) {
   on:keydown
   on:keydown="{onKeyDown}"
   on:keyup
-  on:keyup="{onKeyUp}"><div class="content"><slot /></div></button>
+  on:keyup="{onKeyUp}"
+  ><div class="content" data-component="button-content"><slot /></div></button>

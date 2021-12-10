@@ -1,18 +1,8 @@
 <style lang="scss">
 @import "../theme";
-:global(button[data-type="pushbutton"] .content) {
-  padding: 5px;
-}
-:global(button[data-type="pushbutton"] .content > *) {
-  margin-right: $spacing_small;
-}
-:global(button[data-type="pushbutton"] .content > *:last-child) {
-  margin-right: 0;
-}
 </style>
 
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
 import Label from "./Label.svelte";
 import Icon from "./Icon.svelte";
@@ -23,11 +13,9 @@ export let isDown: boolean = false;
 export let label: string | undefined = undefined;
 export let iconSrc: string | undefined = undefined;
 export let iconName: string | undefined = undefined;
-export let iconWidth: number = 16;
-export let iconHeight: number = 16;
+export let iconWidth: number = 14;
+export let iconHeight: number = 14;
 export let noStyle: boolean = false;
-
-const dispatch = createEventDispatcher();
 </script>
 
 <Button
@@ -45,7 +33,9 @@ const dispatch = createEventDispatcher();
   on:change
   on:down
   on:up
-  on:longpress>
+  on:longpress
+  on:toggle
+  on:change>
   {#if label}
     <Label text="{label}" />
   {/if}
