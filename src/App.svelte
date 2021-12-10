@@ -291,16 +291,5 @@ const simpleMenuOptions = ["Option1", "Option2", "Option3"];
         <PushButton label="Popout" />
       </MenuButton>
     </Area>
-    <Area>
-      <MenuButton options="{simpleMenuOptions}" trigger="mouseover">
-        <PushButton label="Mouseover" />
-      </MenuButton>
-      <MenuButton
-        options="{simpleMenuOptions}"
-        position="popout"
-        trigger="mouseover">
-        <PushButton label="Popout" />
-      </MenuButton>
-    </Area>
   </Section>
 </main>

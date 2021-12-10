@@ -61,7 +61,6 @@
 </style>
 
 <script lang="ts">
-import { onMount } from "svelte";
 import { fade } from "svelte/transition";
 import { MenuOption, MenuPosition } from "../types";
 import Label from "../components/Label.svelte";
@@ -72,13 +71,13 @@ export let isOpen: boolean = false;
 export let selectedIndex: number = -1;
 export let hoverIndex: number = -1;
 
+export function containsEvent(e: MouseEvent) {
+  return menuViewDiv.contains(e.target as Node);
+}
+
 let containerDiv: HTMLDivElement;
 let menuPositionDiv: HTMLDivElement;
 let menuViewDiv: HTMLUListElement;
-
-onMount(() => {
-  console.log("mount");
-});
 
 function getLabel(option: MenuOption) {
   if (typeof option === "string") {
@@ -145,7 +144,9 @@ const onLIMouseOut = (e: MouseEvent) => {
       <ul
         class="menu-view"
         bind:this="{menuViewDiv}"
-        transition:fade="{{ duration: 150 }}">
+        transition:fade="{{ duration: 150 }}"
+        on:mouseover
+        on:mouseout>
         {#each options as option, i (i)}
           <!-- svelte-ignore a11y-mouse-events-have-key-events -->
           <li
