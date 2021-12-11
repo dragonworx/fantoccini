@@ -30,6 +30,8 @@ import TextField from "./gui/components/TextField.svelte";
 import Spinner from "./gui/components/Spinner.svelte";
 import MenuButton from "./gui/components/MenuButton.svelte";
 import Select from "./gui/components/Select.svelte";
+import ScrollBar from "./gui/components/ScrollBar.svelte";
+import { dirty_components } from "svelte/internal";
 
 const radioOptions = [
   { label: "Option 1", value: "a" },
@@ -298,5 +300,24 @@ const simpleMenuOptions = ["Option1", "Option2", "Option3"];
 
   <Section title="Select">
     <Select options="{simpleMenuOptions}" />
+  </Section>
+
+  <Section title="ScrollBar">
+    <Area>
+      <Label text="a"
+        ><ScrollBar
+          direction="horizontal"
+          max="{1}"
+          value="{0}"
+          size="{100}" /></Label>
+    </Area>
+    <Area>
+      <Label text="a"
+        ><ScrollBar
+          direction="vertical"
+          max="{1}"
+          value="{0}"
+          size="{100}" /></Label>
+    </Area>
   </Section>
 </main>

@@ -16,6 +16,10 @@ $color_label_shadow_disabled: #383838;
 // TextField
 $color_textfield_enabled: #bdbec0;
 
+// ScrollBar
+$scrollbar_size: 20px;
+$scrollbar_radius: 3px;
+
 @mixin debug() {
   border: 1px solid red;
 }
