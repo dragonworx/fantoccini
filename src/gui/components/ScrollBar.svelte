@@ -12,6 +12,19 @@
     @include focus;
   }
 
+  & .scrollbar-thumb:hover {
+    @include button_enabled_hover;
+  }
+
+  & .scrollbar-thumb:active {
+    @include button_enabled_active;
+    border: 1px solid red;
+  }
+
+  & .scrollbar-thumb:focus {
+    border: 1px solid green;
+  }
+
   &.horizontal {
     @include linear_gradient(#3c434d, #2f343c, 180deg);
     height: $scrollbar_size;
@@ -63,14 +76,6 @@
       left: 0;
     }
 
-    & .scrollbar-thumb:hover {
-      @include button_enabled_hover;
-    }
-
-    & .scrollbar-thumb:active {
-      @include button_enabled_active;
-    }
-
     .scrollbar-track-upper,
     .scrollbar-track-lower {
       position: absolute;
@@ -103,6 +108,8 @@ import { isArrowKey, isScrollDownKey, isScrollUpKey } from "../filters";
 import { Direction } from "../types";
 
 const defaultSize = 20;
+const longPressInitialDelay = 250;
+const longPressRepeatInterval = 100;
 const dispatch = createEventDispatcher();
 
 export let direction: Direction;
@@ -120,6 +127,8 @@ let trackHeight: number;
 let trackSize: number;
 let dragThumbPos: number;
 let dragMousedown: { x: number; y: number } = { x: 0, y: 0 };
+let longPressStartTimeout: number;
+let longPressInterval: number;
 
 $: style = `${isHorizontal ? "width" : "height"}:${
   size === -1 ? "100%" : `${size}px`
@@ -144,12 +153,35 @@ function setValue(newValue: number) {
   dispatch("change", value);
 }
 
+function handleLongPress(increment) {
+  const clearStartTimeout = () => {
+    clearTimeout(longPressStartTimeout);
+    window.removeEventListener("mouseup", clearStartTimeout);
+  };
+  window.addEventListener("mouseup", clearStartTimeout);
+  longPressStartTimeout = setTimeout(() => {
+    const clearPressInterval = () => {
+      clearInterval(longPressInterval);
+      window.removeEventListener("mouseup", clearPressInterval);
+    };
+    window.addEventListener("mouseup", clearPressInterval);
+
+    longPressInterval = setInterval(() => {
+      setValue(value + increment);
+    }, longPressRepeatInterval) as unknown as number;
+  }, longPressInitialDelay) as unknown as number;
+}
+
 const onTrackUpperMouseDown = (e: MouseEvent) => {
-  setValue(value - incrementSmall);
+  const increment = e.shiftKey ? incrementLarge : incrementSmall;
+  setValue(value - increment);
+  handleLongPress(increment * -1);
 };
 
 const onTrackLowerMouseDown = (e: MouseEvent) => {
-  setValue(value + incrementSmall);
+  const increment = e.shiftKey ? incrementLarge : incrementSmall;
+  setValue(value + increment);
+  handleLongPress(increment);
 };
 
 const onThumbMouseDown = (e: MouseEvent) => {
@@ -198,20 +230,20 @@ const onKeyDown = (e: KeyboardEvent) => {
     bind:clientWidth="{trackWidth}"
     bind:clientHeight="{trackHeight}"
     class="scrollbar-track">
-    <button
+    <div
       class="scrollbar-track-upper"
       style="{trackUpperStyle}"
-      tabindex="-1"
-      on:mousedown="{onTrackUpperMouseDown}"></button>
-    <button
+      on:mousedown="{onTrackUpperMouseDown}">
+    </div>
+    <div
       class="scrollbar-thumb"
       style="{thumbStyle}"
-      tabindex="-1"
-      on:mousedown="{onThumbMouseDown}"></button>
-    <button
+      on:mousedown="{onThumbMouseDown}">
+    </div>
+    <div
       class="scrollbar-track-lower"
       style="{trackLowerStyle}"
-      tabindex="-1"
-      on:mousedown="{onTrackLowerMouseDown}"></button>
+      on:mousedown="{onTrackLowerMouseDown}">
+    </div>
   </div>
 </div>

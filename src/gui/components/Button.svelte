@@ -128,11 +128,12 @@
 }
 </style>
 
+<script context="module">
+export const defaultLongPressDuration = 500;
+</script>
+
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-
-export const defaultLongPressDuration = 500;
-
 export let isEnabled: boolean = true;
 export let canToggle: boolean = false;
 export let hasToggleLock: boolean = false;

@@ -1,14 +1,14 @@
 <style lang="scss">
 main {
   position: relative;
-  padding: 100px;
+  padding: 10px;
+  padding-bottom: 100px;
 }
 
 @media (min-width: 640px) {
   main {
     box-sizing: border-box;
     max-width: none;
-    padding-bottom: 100px;
   }
 }
 </style>
