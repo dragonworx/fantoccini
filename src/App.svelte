@@ -31,7 +31,7 @@ import Spinner from "./gui/components/Spinner.svelte";
 import MenuButton from "./gui/components/MenuButton.svelte";
 import Select from "./gui/components/Select.svelte";
 import ScrollBar from "./gui/components/ScrollBar.svelte";
-import { dirty_components } from "svelte/internal";
+import ScrollView from "./gui/components/ScrollView.svelte";
 
 const radioOptions = [
   { label: "Option 1", value: "a" },
@@ -341,11 +341,27 @@ const simpleSelectOptions = simpleMenuOptions.map((option) => option.label);
           on:change="{(e) => log('ScrollBar', 'change', e.detail)}" /></Events>
       <ScrollBar direction="horizontal" max="{1}" value="{0.5}" />
       <ScrollBar direction="horizontal" max="{1}" value="{1}" />
+      <ScrollBar
+        isEnabled="{false}"
+        direction="horizontal"
+        max="{1}"
+        value="{1}" />
     </Area>
     <Area>
       <ScrollBar direction="vertical" max="{1}" value="{0}" size="{100}" />
       <ScrollBar direction="vertical" max="{1}" value="{0.5}" size="{100}" />
       <ScrollBar direction="vertical" max="{1}" value="{1}" size="{100}" />
+      <ScrollBar
+        isEnabled="{false}"
+        direction="vertical"
+        max="{1}"
+        value="{1}" />
     </Area>
+  </Section>
+
+  <Section title="ScrollView">
+    <ScrollView>
+      <img src="img/test-debug.jpg" alt="img" />
+    </ScrollView>
   </Section>
 </main>

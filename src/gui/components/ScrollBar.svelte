@@ -7,22 +7,27 @@
   display: flex;
   border-radius: $scrollbar_radius;
 
-  &:focus,
-  &:focus-visible {
+  &.enabled:focus,
+  &.enabled:focus-visible {
     @include focus;
   }
 
-  & .scrollbar-thumb:hover {
+  &.enabled .scrollbar-thumb:hover {
     @include button_enabled_hover;
   }
 
-  & .scrollbar-thumb:active {
+  &.enabled .scrollbar-thumb:active {
     @include button_enabled_active;
     border: 1px solid red;
   }
 
-  & .scrollbar-thumb:focus {
+  &.enabled .scrollbar-thumb:focus {
     border: 1px solid green;
+  }
+
+  &.enabled .scrollbar-track-upper:active,
+  &.enabled .scrollbar-track-lower:active {
+    background-color: rgba(0, 0, 0, 0.1);
   }
 
   &.horizontal {
@@ -87,18 +92,15 @@
       display: flex;
       background-color: transparent;
     }
-
-    .scrollbar-track-upper {
-    }
-
-    .scrollbar-track-lower {
-    }
-
-    .scrollbar-track-upper:active,
-    .scrollbar-track-lower:active {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
   }
+}
+
+.scrollbar.disabled.horizontal {
+  @include scrollbar_disabled();
+}
+
+.scrollbar.disabled.vertical {
+  @include scrollbar_disabled(-90deg);
 }
 </style>
 
@@ -112,6 +114,7 @@ const longPressInitialDelay = 250;
 const longPressRepeatInterval = 100;
 const dispatch = createEventDispatcher();
 
+export let isEnabled: boolean = true;
 export let direction: Direction;
 export let max: number;
 export let value: number;
@@ -173,18 +176,27 @@ function handleLongPress(increment) {
 }
 
 const onTrackUpperMouseDown = (e: MouseEvent) => {
+  if (!isEnabled) {
+    return;
+  }
   const increment = e.shiftKey ? incrementLarge : incrementSmall;
   setValue(value - increment);
   handleLongPress(increment * -1);
 };
 
 const onTrackLowerMouseDown = (e: MouseEvent) => {
+  if (!isEnabled) {
+    return;
+  }
   const increment = e.shiftKey ? incrementLarge : incrementSmall;
   setValue(value + increment);
   handleLongPress(increment);
 };
 
 const onThumbMouseDown = (e: MouseEvent) => {
+  if (!isEnabled) {
+    return;
+  }
   const onMouseMove = (e: MouseEvent) => {
     const delta = isHorizontal
       ? e.clientX - dragMousedown.x
@@ -206,6 +218,9 @@ const onThumbMouseDown = (e: MouseEvent) => {
 };
 
 const onKeyDown = (e: KeyboardEvent) => {
+  if (!isEnabled) {
+    return;
+  }
   const { key } = e;
   if (isArrowKey(key)) {
     if (isScrollUpKey(key)) {
@@ -222,9 +237,11 @@ const onKeyDown = (e: KeyboardEvent) => {
   class="scrollbar"
   class:vertical="{direction === 'vertical'}"
   class:horizontal="{direction === 'horizontal'}"
+  class:enabled="{isEnabled}"
+  class:disabled="{!isEnabled}"
   style="{style}"
   data-component="scrollbar"
-  tabindex="0"
+  tabindex="{isEnabled ? 0 : -1}"
   on:keydown="{onKeyDown}">
   <div
     bind:clientWidth="{trackWidth}"
@@ -235,11 +252,13 @@ const onKeyDown = (e: KeyboardEvent) => {
       style="{trackUpperStyle}"
       on:mousedown="{onTrackUpperMouseDown}">
     </div>
-    <div
-      class="scrollbar-thumb"
-      style="{thumbStyle}"
-      on:mousedown="{onThumbMouseDown}">
-    </div>
+    {#if isEnabled}
+      <div
+        class="scrollbar-thumb"
+        style="{thumbStyle}"
+        on:mousedown="{onThumbMouseDown}">
+      </div>
+    {/if}
     <div
       class="scrollbar-track-lower"
       style="{trackLowerStyle}"

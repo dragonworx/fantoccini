@@ -1,6 +1,12 @@
 <style lang="scss">
 @import "../theme";
+.component {
+}
 </style>
+
+<script context="module">
+export const staticVar = 500;
+</script>
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
@@ -17,4 +23,4 @@ let local;
 const onHandler = () => {};
 </script>
 
-<div></div>
+<div class="component" data-component="component"></div>

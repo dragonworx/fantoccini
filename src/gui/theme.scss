@@ -122,6 +122,11 @@ $scrollbar_radius: 3px;
   }
 }
 
+@mixin scrollbar_disabled($angle: 0deg) {
+  @include linear_gradient(#404246, #545556, $angle);
+  border: 1px solid #444;
+}
+
 @mixin focus {
   outline: 1px solid $color_focus;
 }
