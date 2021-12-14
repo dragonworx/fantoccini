@@ -9,7 +9,21 @@
   flex-direction: row;
   align-items: start;
   justify-content: space-around;
+
+  &.vertical {
+    flex-direction: column;
+  }
 }
 </style>
 
-<div class="area"><slot /></div>
+<script type="ts">
+import { Direction } from "../types";
+export let direction: Direction = "horizontal";
+</script>
+
+<div
+  class="area"
+  class:horizontal="{direction === 'horizontal'}"
+  class:vertical="{direction === 'vertical'}">
+  <slot />
+</div>

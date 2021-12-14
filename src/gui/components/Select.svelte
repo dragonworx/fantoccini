@@ -7,7 +7,7 @@
   min-height: 24px - ($spacing_small * 2);
 }
 
-:global(.select [data-component="label"]) {
+:global(.select [data-component="label"], .select [data-component="button"]) {
   flex-grow: 1;
 }
 

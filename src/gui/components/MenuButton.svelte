@@ -70,9 +70,9 @@ const onButtonKeydown = (e: KeyboardEvent) => {
   isOpen="{isOpen}"
   options="{options}"
   position="{position}"
+  trigger="{trigger}"
   selectedIndex="{selectedIndex}"
   hoverIndex="{hoverIndex}"
-  data-component="menu-button"
   on:select
   ><Button
     bind:this="{button}"

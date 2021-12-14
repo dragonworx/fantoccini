@@ -284,9 +284,13 @@ const simpleSelectOptions = simpleMenuOptions.map((option) => option.label);
 
   <Section title="MenuButton">
     <Area>
-      <MenuButton options="{simpleMenuOptions}">
-        <Label text="MouseDown" />
-      </MenuButton>
+      <Events>
+        <MenuButton
+          options="{simpleMenuOptions}"
+          on:select="{(e) => log('MenuButton', 'select', e.detail)}">
+          <Label text="MouseDown" />
+        </MenuButton>
+      </Events>
       <MenuButton isEnabled="{false}" options="{simpleMenuOptions}">
         <Label text="MouseDown" />
       </MenuButton>
@@ -295,9 +299,14 @@ const simpleSelectOptions = simpleMenuOptions.map((option) => option.label);
       </MenuButton>
     </Area>
     <Area>
-      <MenuButton options="{simpleMenuOptions}" trigger="mouseup">
-        <Label text="Mouseup" />
-      </MenuButton>
+      <Events>
+        <MenuButton
+          options="{simpleMenuOptions}"
+          trigger="mouseup"
+          on:select="{(e) => log('MenuButton', 'select', e.detail)}">
+          <Label text="Mouseup" />
+        </MenuButton>
+      </Events>
       <MenuButton
         options="{simpleMenuOptions}"
         position="popout"
@@ -322,21 +331,21 @@ const simpleSelectOptions = simpleMenuOptions.map((option) => option.label);
   </Section>
 
   <Section title="ScrollBar">
-    <Area>
-      <Label text="a"
+    <Area direction="vertical">
+      <Events
         ><ScrollBar
           direction="horizontal"
           max="{1}"
           value="{0}"
-          size="{100}" /></Label>
+          size="{100}"
+          on:change="{(e) => log('ScrollBar', 'change', e.detail)}" /></Events>
+      <ScrollBar direction="horizontal" max="{1}" value="{0.5}" />
+      <ScrollBar direction="horizontal" max="{1}" value="{1}" />
     </Area>
     <Area>
-      <Label text="a"
-        ><ScrollBar
-          direction="vertical"
-          max="{1}"
-          value="{0}"
-          size="{100}" /></Label>
+      <ScrollBar direction="vertical" max="{1}" value="{0}" size="{100}" />
+      <ScrollBar direction="vertical" max="{1}" value="{0.5}" size="{100}" />
+      <ScrollBar direction="vertical" max="{1}" value="{1}" size="{100}" />
     </Area>
   </Section>
 </main>

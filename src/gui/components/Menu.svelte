@@ -63,11 +63,12 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import { fade } from "svelte/transition";
-import { MenuItem, MenuPosition } from "../types";
+import { MenuItem, MenuPosition, MenuTrigger } from "../types";
 import Label from "../components/Label.svelte";
 
 export let isEnabled: boolean = true;
 export let options: MenuItem[];
+export let trigger: MenuTrigger = "mousedown";
 export let position: MenuPosition = "dropdown";
 export let isOpen: boolean = false;
 export let selectedIndex: number = -1;
@@ -130,7 +131,15 @@ const onLIMouseOut = (e: MouseEvent) => {
 };
 
 const onLIMouseUp = (index: number) => () => {
-  dispatch("select", index);
+  if (trigger === "mousedown") {
+    dispatch("select", index);
+  }
+};
+
+const onLIMouseDown = (index: number) => () => {
+  if (trigger === "mouseup") {
+    dispatch("select", index);
+  }
 };
 </script>
 
@@ -157,7 +166,8 @@ const onLIMouseUp = (index: number) => () => {
             data-index="{i}"
             on:mouseover="{onLIMouseOver(i)}"
             on:mouseout="{onLIMouseOut}"
-            on:mouseup="{onLIMouseUp(i)}">
+            on:mouseup="{onLIMouseUp(i)}"
+            on:mousedown="{onLIMouseDown(i)}">
             <Label text="{option.label}" />
           </li>
         {/each}

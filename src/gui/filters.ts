@@ -19,6 +19,14 @@ export function isDecrementKey(key: string) {
   return key === "ArrowDown" || key === "ArrowLeft";
 }
 
+export function isScrollUpKey(key: string) {
+  return key === "ArrowUp" || key === "ArrowLeft";
+}
+
+export function isScrollDownKey(key: string) {
+  return key === "ArrowDown" || key === "ArrowRight";
+}
+
 export function isArrowKey(key: string) {
   return isIncrementKey(key) || isDecrementKey(key);
 }

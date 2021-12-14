@@ -21,7 +21,6 @@
   border: 1px solid #030c17;
   border-radius: $border_radius_small;
   box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
-  flex-grow: 1;
 
   & .content {
     display: flex;
@@ -132,6 +131,8 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 
+export const defaultLongPressDuration = 500;
+
 export let isEnabled: boolean = true;
 export let canToggle: boolean = false;
 export let hasToggleLock: boolean = false;
@@ -141,7 +142,7 @@ export let width: number | undefined = undefined;
 export let height: number | undefined = undefined;
 export let padding: number = 0;
 export let type: string = "button";
-export let longPressDuration: number = 500;
+export let longPressDuration: number = defaultLongPressDuration;
 export let noStyle: boolean = false;
 
 export function focus() {
@@ -250,6 +251,7 @@ const onKeyUp = (e: KeyboardEvent) => {
   data-type="{type}"
   data-cantoggle="{canToggle}"
   tabindex="{isEnabled ? 0 : -1}"
+  data-component="button"
   on:change
   on:mousedown
   on:mousedown="{onMouseDown}"
