@@ -28,7 +28,7 @@
       padding: 0;
 
       & li {
-        padding: $spacing_small;
+        padding: $spacing_small ($spacing_small * 2);
       }
 
       :global(& [data-component="label"]) {
@@ -39,8 +39,7 @@
         outline: none;
       }
 
-      & li.hover,
-      & li:focus {
+      & li.hover {
         @include linear_gradient(#6d7683, #5a5c5e, 180deg);
         outline: none;
 
@@ -64,13 +63,15 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import { fade } from "svelte/transition";
-import { MenuOption, MenuPosition } from "../types";
+import { MenuItem, MenuPosition } from "../types";
 import Label from "../components/Label.svelte";
 
-export let options: MenuOption[];
+export let isEnabled: boolean = true;
+export let options: MenuItem[];
 export let position: MenuPosition = "dropdown";
 export let isOpen: boolean = false;
 export let selectedIndex: number = -1;
+export let hoverIndex: number = selectedIndex;
 
 export function containsEvent(e: MouseEvent) {
   return menuViewEl.contains(e.target as Node);
@@ -78,27 +79,19 @@ export function containsEvent(e: MouseEvent) {
 
 let dispatch = createEventDispatcher();
 
-let hoverIndex: number = -1;
-
 let containerEl: HTMLDivElement;
 let menuPositionEl: HTMLDivElement;
 let menuViewEl: HTMLUListElement;
-
-function getLabel(option: MenuOption) {
-  if (typeof option === "string") {
-    return option;
-  } else {
-    return option.label;
-  }
-}
 
 $: {
   if (isOpen && containerEl && menuViewEl) {
     const containerRect = containerEl.getBoundingClientRect();
     const innerWidth = document.body.clientWidth;
     const innerHeight = document.body.clientHeight;
+
     let top: number;
     let left: number;
+
     if (position === "dropdown") {
       left = 0;
       top = containerRect.height;
@@ -162,11 +155,10 @@ const onLIMouseUp = (index: number) => () => {
             class:selected="{selectedIndex === i}"
             class:hover="{hoverIndex === i}"
             data-index="{i}"
-            tabindex="0"
             on:mouseover="{onLIMouseOver(i)}"
             on:mouseout="{onLIMouseOut}"
             on:mouseup="{onLIMouseUp(i)}">
-            <Label text="{getLabel(option)}" />
+            <Label text="{option.label}" />
           </li>
         {/each}
       </ul>

@@ -4,6 +4,7 @@
 .label {
   @include label_enabled;
   position: relative;
+  outline: none;
 
   &.link {
     text-decoration: underline;
@@ -28,7 +29,7 @@
     @include label_disabled;
   }
 
-  .label {
+  .label-wrapper {
     position: relative;
   }
 
@@ -150,7 +151,7 @@ function onMouseUp() {
   {#if !hasContent}
     {text}
   {:else}
-    <span class="label" style="{indentStyle}">{text}</span>
+    <span class="label-wrapper" style="{indentStyle}">{text}</span>
     <slot />
   {/if}
 </label>

@@ -6,10 +6,13 @@
 import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
 import Menu from "./Menu.svelte";
-import { MenuOption, MenuPosition, MenuTrigger } from "../types";
+import { MenuItem, MenuPosition, MenuTrigger } from "../types";
+import { isArrowKey } from "../filters";
 
-export let options: MenuOption[];
+export let isEnabled: boolean = true;
+export let options: MenuItem[];
 export let selectedIndex: number = -1;
+export let hoverIndex: number = selectedIndex;
 export let trigger: MenuTrigger = "mousedown";
 export let position: MenuPosition = "dropdown";
 export let isOpen: boolean = false;
@@ -20,6 +23,7 @@ export function getIsOpen() {
 
 export function setIsOpen(value: boolean) {
   isOpen = value;
+  button.setIsDown(value);
 }
 
 let dispatch = createEventDispatcher();
@@ -46,20 +50,39 @@ const onUp = () => {
   isOpen = false;
   dispatch("close");
 };
+
+const onButtonKeydown = (e: KeyboardEvent) => {
+  const { key } = e;
+  if (key === "ArrowDown" && !isOpen) {
+    onDown();
+  }
+  if (isArrowKey(key)) {
+    e.preventDefault();
+  }
+  if (key === "Enter") {
+    dispatch("accept");
+  }
+};
 </script>
 
 <Menu
+  isEnabled="{isEnabled}"
   isOpen="{isOpen}"
   options="{options}"
   position="{position}"
   selectedIndex="{selectedIndex}"
+  hoverIndex="{hoverIndex}"
   data-component="menu-button"
   on:select
   ><Button
     bind:this="{button}"
+    isDown="{isOpen}"
+    canToggle="{trigger === 'mouseup'}"
+    isEnabled="{isEnabled}"
     on:down="{onDown}"
     on:up="{onUp}"
-    isDown="{isOpen}"
-    canToggle="{trigger === 'mouseup'}">
+    on:keydown
+    on:keydown="{onButtonKeydown}"
+    on:keyup>
     <slot />
   </Button></Menu>

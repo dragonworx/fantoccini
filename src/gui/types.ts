@@ -11,11 +11,9 @@ export type Justify = "start" | "center" | "end";
 
 export type Direction = "horizontal" | "vertical";
 
-export type MenuOption = MenuItem | string;
-
 export type MenuItem = {
-  enabled?: boolean;
   label: string;
+  enabled?: boolean;
   value?: any;
   icon?: string;
   shortcut?: string;

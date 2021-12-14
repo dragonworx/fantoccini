@@ -58,7 +58,13 @@ function log(component: string, event: string, ...data: any[]) {
   );
 }
 
-const simpleMenuOptions = ["Option1", "Option2", "Option3"];
+const simpleMenuOptions = [
+  { label: "Option 1" },
+  { label: "Option 2" },
+  { label: "Option 3" },
+];
+
+const simpleSelectOptions = simpleMenuOptions.map((option) => option.label);
 </script>
 
 <main>
@@ -281,6 +287,9 @@ const simpleMenuOptions = ["Option1", "Option2", "Option3"];
       <MenuButton options="{simpleMenuOptions}">
         <Label text="MouseDown" />
       </MenuButton>
+      <MenuButton isEnabled="{false}" options="{simpleMenuOptions}">
+        <Label text="MouseDown" />
+      </MenuButton>
       <MenuButton options="{simpleMenuOptions}" position="popout">
         <Label text="Popout" />
       </MenuButton>
@@ -299,7 +308,17 @@ const simpleMenuOptions = ["Option1", "Option2", "Option3"];
   </Section>
 
   <Section title="Select">
-    <Select options="{simpleMenuOptions}" />
+    <Events
+      ><Select
+        options="{simpleSelectOptions}"
+        on:change="{(e) => log('Select', 'change', e.detail)}" /></Events>
+    <Events mute="{true}"
+      ><Select
+        isEnabled="{false}"
+        options="{simpleSelectOptions}"
+        selectedIndex="{1}"
+        on:change="{(e) => log('Select', 'change', e.detail)}" /></Events>
+    <Select options="{simpleSelectOptions}" width="{100}" />
   </Section>
 
   <Section title="ScrollBar">
