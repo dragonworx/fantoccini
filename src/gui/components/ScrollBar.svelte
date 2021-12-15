@@ -18,11 +18,6 @@
 
   &.enabled .scrollbar-thumb:active {
     @include button_enabled_active;
-    border: 1px solid red;
-  }
-
-  &.enabled .scrollbar-thumb:focus {
-    border: 1px solid green;
   }
 
   &.enabled .scrollbar-track-upper:active,
