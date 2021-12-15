@@ -15,6 +15,7 @@
     .scrollview-content {
       flex-grow: 1;
       position: relative;
+      @include linear_gradient(#272b32, #222324, 180deg);
 
       .scrollview-view {
         position: absolute;
