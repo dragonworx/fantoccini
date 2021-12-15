@@ -99,10 +99,16 @@ $: vOffset =
     : 0;
 $: viewWrapperStyle = `left:${hOffset}px;top:${vOffset}px;`;
 $: hThumbSize = hasDimensions
-  ? (contentWidth - viewWidth) * (viewWidth / contentWidth)
+  ? Math.max(
+      scrollSize,
+      (contentWidth - viewWidth) * (viewWidth / contentWidth)
+    )
   : scrollSize;
 $: vThumbSize = hasDimensions
-  ? (contentHeight - viewHeight) * (viewHeight / contentHeight)
+  ? Math.max(
+      scrollSize,
+      (contentHeight - viewHeight) * (viewHeight / contentHeight)
+    )
   : scrollSize;
 const onVScrollChange = (e: CustomEvent) => (vScroll = e.detail);
 const onHScrollChange = (e: CustomEvent) => (hScroll = e.detail);

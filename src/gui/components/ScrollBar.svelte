@@ -248,6 +248,24 @@ const onKeyDown = (e: KeyboardEvent) => {
     e.preventDefault();
   }
 };
+
+const onMouseWheel = (e: WheelEvent) => {
+  const { deltaX, deltaY } = e;
+  if (isHorizontal) {
+    if (deltaX > 0) {
+      setValue(value - incrementSmall);
+    } else if (deltaX < 0) {
+      setValue(value + incrementSmall);
+    }
+  } else {
+    if (deltaY < 0) {
+      setValue(value - incrementSmall);
+    } else if (deltaY > 0) {
+      setValue(value + incrementSmall);
+    }
+  }
+  e.preventDefault();
+};
 </script>
 
 <div
@@ -260,7 +278,8 @@ const onKeyDown = (e: KeyboardEvent) => {
   data-component="scrollbar"
   data-direction="{direction}"
   tabindex="{isEnabled ? 0 : -1}"
-  on:keydown="{onKeyDown}">
+  on:keydown="{onKeyDown}"
+  on:wheel="{onMouseWheel}">
   <div
     bind:clientWidth="{trackWidth}"
     bind:clientHeight="{trackHeight}"
