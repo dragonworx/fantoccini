@@ -335,33 +335,29 @@ const simpleSelectOptions = simpleMenuOptions.map((option) => option.label);
       <Events
         ><ScrollBar
           direction="horizontal"
-          max="{1}"
           value="{0}"
           size="{100}"
           on:change="{(e) => log('ScrollBar', 'change', e.detail)}" /></Events>
-      <ScrollBar direction="horizontal" max="{1}" value="{0.5}" />
-      <ScrollBar direction="horizontal" max="{1}" value="{1}" />
-      <ScrollBar
-        isEnabled="{false}"
-        direction="horizontal"
-        max="{1}"
-        value="{1}" />
+      <ScrollBar direction="horizontal" value="{0.5}" />
+      <ScrollBar direction="horizontal" value="{1}" />
+      <ScrollBar isEnabled="{false}" direction="horizontal" value="{1}" />
     </Area>
     <Area>
-      <ScrollBar direction="vertical" max="{1}" value="{0}" size="{100}" />
-      <ScrollBar direction="vertical" max="{1}" value="{0.5}" size="{100}" />
-      <ScrollBar direction="vertical" max="{1}" value="{1}" size="{100}" />
-      <ScrollBar
-        isEnabled="{false}"
-        direction="vertical"
-        max="{1}"
-        value="{1}" />
+      <ScrollBar direction="vertical" value="{0}" size="{100}" />
+      <ScrollBar direction="vertical" value="{0.5}" size="{100}" />
+      <ScrollBar direction="vertical" value="{1}" size="{100}" />
+      <ScrollBar isEnabled="{false}" direction="vertical" value="{1}" />
     </Area>
   </Section>
 
   <Section title="ScrollView">
     <Area height="{200}">
       <ScrollView>
+        <img src="img/test-debug.jpg" alt="img" />
+      </ScrollView>
+    </Area>
+    <Area height="{200}">
+      <ScrollView width="{200}" height="{70}">
         <img src="img/test-debug.jpg" alt="img" />
       </ScrollView>
     </Area>

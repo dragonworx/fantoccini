@@ -6,6 +6,7 @@
   border: 1px inset #6e6e6eb8;
   display: flex;
   border-radius: $scrollbar_radius;
+  box-sizing: border-box;
 
   &.enabled:focus,
   &.enabled:focus-visible {
@@ -31,6 +32,14 @@
     max-height: $scrollbar_size;
     width: 100%;
 
+    .scrollbar-track {
+      min-height: 20px;
+
+      .scrollbar-thumb {
+        height: $scrollbar_size - 2;
+      }
+    }
+
     .scrollbar-track-upper {
       height: $scrollbar_size;
       max-height: $scrollbar_size;
@@ -47,6 +56,14 @@
     width: $scrollbar_size;
     max-width: $scrollbar_size;
     height: 100%;
+
+    .scrollbar-track {
+      min-width: 20px;
+
+      .scrollbar-thumb {
+        width: $scrollbar_size - 2;
+      }
+    }
 
     .scrollbar-track-upper {
       width: $scrollbar_size;
@@ -99,21 +116,23 @@
 }
 </style>
 
+<script context="module">
+export const scrollSize = 20;
+export const longPressInitialDelay = 250;
+export const longPressRepeatInterval = 100;
+</script>
+
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import { isArrowKey, isScrollDownKey, isScrollUpKey } from "../filters";
 import { Direction } from "../types";
 
-const defaultSize = 20;
-const longPressInitialDelay = 250;
-const longPressRepeatInterval = 100;
 const dispatch = createEventDispatcher();
 
 export let isEnabled: boolean = true;
 export let direction: Direction;
-export let max: number;
 export let value: number;
-export let thumbSize: number = defaultSize;
+export let thumbSize: number = scrollSize;
 export let incrementSmall: number = 0.1;
 export let incrementLarge: number = 0.3;
 export let size: number = -1;
@@ -134,7 +153,9 @@ $: style = `${isHorizontal ? "width" : "height"}:${
 
 $: trackSize = isHorizontal ? trackWidth : trackHeight;
 $: thumbPos = (trackSize - thumbSize) * value;
-$: thumbStyle = isHorizontal ? `left:${thumbPos}px` : `top:${thumbPos}px`;
+$: thumbStyle = isHorizontal
+  ? `left:${thumbPos}px;width:${thumbSize}px;`
+  : `top:${thumbPos}px;height:${thumbSize}px;`;
 $: trackUpperStyle = isHorizontal
   ? `width:${thumbPos}px`
   : `height:${thumbPos}px`;
@@ -149,6 +170,7 @@ $: trackLowerStyle = isHorizontal
 function setValue(newValue: number) {
   value = Math.max(0, Math.min(1, newValue));
   dispatch("change", value);
+  return value;
 }
 
 function handleLongPress(increment) {
