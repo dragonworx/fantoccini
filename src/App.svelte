@@ -360,8 +360,10 @@ const simpleSelectOptions = simpleMenuOptions.map((option) => option.label);
   </Section>
 
   <Section title="ScrollView">
-    <ScrollView>
-      <img src="img/test-debug.jpg" alt="img" />
-    </ScrollView>
+    <Area height="{200}">
+      <ScrollView>
+        <img src="img/test-debug.jpg" alt="img" />
+      </ScrollView>
+    </Area>
   </Section>
 </main>

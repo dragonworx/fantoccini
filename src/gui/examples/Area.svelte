@@ -19,11 +19,13 @@
 <script type="ts">
 import { Direction } from "../types";
 export let direction: Direction = "horizontal";
+export let height: number = -1;
 </script>
 
 <div
   class="area"
   class:horizontal="{direction === 'horizontal'}"
-  class:vertical="{direction === 'vertical'}">
+  class:vertical="{direction === 'vertical'}"
+  style="{`height:${height > 0 ? height + 'px' : 'auto'}`}">
   <slot />
 </div>

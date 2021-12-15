@@ -241,6 +241,7 @@ const onKeyDown = (e: KeyboardEvent) => {
   class:disabled="{!isEnabled}"
   style="{style}"
   data-component="scrollbar"
+  data-direction="{direction}"
   tabindex="{isEnabled ? 0 : -1}"
   on:keydown="{onKeyDown}">
   <div
