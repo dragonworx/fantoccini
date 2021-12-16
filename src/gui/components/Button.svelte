@@ -134,6 +134,7 @@ export const defaultLongPressDuration = 500;
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
+import { isAcceptKey } from "../filters";
 export let isEnabled: boolean = true;
 export let canToggle: boolean = false;
 export let isControlled: boolean = false;
@@ -205,8 +206,8 @@ const onMouseUp = () => {
     }
   }
   window.removeEventListener("mouseup", onMouseUp);
-  dispatch("mouseup");
   onChange();
+  dispatch("mouseup");
   clearTimeout(pressTimeout);
 };
 
@@ -230,15 +231,13 @@ const onMouseDown = () => {
 };
 
 const onKeyDown = (e: KeyboardEvent) => {
-  const { key } = e;
-  if ((isEnabled && !isDown && key === " ") || key === "Enter") {
+  if (isEnabled && !isDown && isAcceptKey(e.key)) {
     onMouseDown();
   }
 };
 
 const onKeyUp = (e: KeyboardEvent) => {
-  const { key } = e;
-  if ((isEnabled && key === " ") || key === "Enter") {
+  if (isEnabled && isAcceptKey(e.key)) {
     onMouseUp();
   }
 };

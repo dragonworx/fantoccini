@@ -58,6 +58,7 @@ function decrement() {
 function select(index: number) {
   selectedIndex = index;
   dispatch("change", { index: selectedIndex, value: options[selectedIndex] });
+  menuButton.setIsOpen(false);
 }
 
 const onSelect = (e: CustomEvent) => {

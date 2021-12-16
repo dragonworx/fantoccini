@@ -7,7 +7,7 @@ import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
 import Menu from "./Menu.svelte";
 import { MenuItem, MenuPosition, MenuTrigger } from "../types";
-import { isArrowKey } from "../filters";
+import { isAcceptKey, isArrowKey } from "../filters";
 
 export let isEnabled: boolean = true;
 export let options: MenuItem[];
@@ -31,6 +31,7 @@ let button: Button;
 
 const onDown = () => {
   isOpen = true;
+  button.setIsDown(true);
   dispatch("open");
 
   if (trigger === "mouseup") {
@@ -59,7 +60,15 @@ const onButtonKeydown = (e: KeyboardEvent) => {
   if (isArrowKey(key)) {
     e.preventDefault();
   }
-  if (key === "Enter") {
+  // if (key === "Enter" || key === "space") {
+  //   console.log("menubutton keydown");
+  //   dispatch("accept");
+  // }
+};
+
+const onButtonKeyup = (e: KeyboardEvent) => {
+  if (isAcceptKey(e.key)) {
+    e.stopImmediatePropagation();
     dispatch("accept");
   }
 };
@@ -83,6 +92,7 @@ const onButtonKeydown = (e: KeyboardEvent) => {
     on:up="{onUp}"
     on:keydown
     on:keydown="{onButtonKeydown}"
+    on:keyup="{onButtonKeyup}"
     on:keyup>
     <slot />
   </Button></Menu>

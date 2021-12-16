@@ -31,6 +31,10 @@ export function isArrowKey(key: string) {
   return isIncrementKey(key) || isDecrementKey(key);
 }
 
+export function isAcceptKey(key: string) {
+  return key === "Enter" || key === " ";
+}
+
 export function isNumeric(key: string) {
   return !isNaN(parseFloat(key));
 }

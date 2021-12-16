@@ -320,6 +320,8 @@ function log(component: string, event: string, ...data: any[]) {
       <Events>
         <MenuButton
           options="{simpleMenuOptions}"
+          on:open="{(e) => log('MenuButton', 'open')}"
+          on:close="{(e) => log('MenuButton', 'close')}"
           on:select="{(e) => log('MenuButton', 'select', e.detail)}">
           <Label text="MouseDown" />
         </MenuButton>
