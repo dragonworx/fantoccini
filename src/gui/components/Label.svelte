@@ -135,6 +135,7 @@ function onMouseUp() {
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
 <label
   class="label"
+  class:enabled="{isEnabled}"
   class:disabled="{!isEnabled}"
   class:link="{isLink}"
   style="{colorStyle}"

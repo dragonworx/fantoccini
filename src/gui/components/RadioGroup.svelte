@@ -1,7 +1,7 @@
 <style lang="scss">
 @import "../theme";
 
-ul {
+.radiogroup {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -52,7 +52,7 @@ function onDecrement() {
 }
 </script>
 
-<ul>
+<ul class="radiogroup" data-component="radiogroup">
   {#each options as { label, value }, i}
     <li>
       <Radio

@@ -3,6 +3,12 @@ export interface RadioGroupOption {
   value: any;
 }
 
+export interface ButtonGroupOption {
+  icon: string;
+  name: string;
+  tip?: string;
+}
+
 export type Position = "left" | "right" | "top" | "bottom";
 
 export type Align = "start" | "center" | "end";

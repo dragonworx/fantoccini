@@ -24,6 +24,7 @@ import { isAlphaNumeric } from "./gui/filters";
 import Label from "./gui/components/Label.svelte";
 import Icon from "./gui/components/Icon.svelte";
 import PushButton from "./gui/components/PushButton.svelte";
+import ButtonGroup from "./gui/components/ButtonGroup.svelte";
 import Checkbox from "./gui/components/Checkbox.svelte";
 import RadioGroup from "./gui/components/RadioGroup.svelte";
 import TextField from "./gui/components/TextField.svelte";
@@ -41,6 +42,20 @@ const radioOptions = [
 
 const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 
+const simpleMenuOptions = [
+  { label: "Option 1" },
+  { label: "Option 2" },
+  { label: "Option 3" },
+];
+
+const simpleSelectOptions = simpleMenuOptions.map((option) => option.label);
+
+const buttonGroupOptions = [
+  { icon: "img/icons/play.svg", name: "play" },
+  { icon: "img/icons/pause.svg", name: "pause" },
+  { icon: "img/icons/record.svg", name: "record" },
+];
+
 function log(component: string, event: string, ...data: any[]) {
   console.log(
     `%c${component}🔆%c${event}%c${
@@ -57,14 +72,6 @@ function log(component: string, event: string, ...data: any[]) {
     "color:white"
   );
 }
-
-const simpleMenuOptions = [
-  { label: "Option 1" },
-  { label: "Option 2" },
-  { label: "Option 3" },
-];
-
-const simpleSelectOptions = simpleMenuOptions.map((option) => option.label);
 </script>
 
 <main>
@@ -119,7 +126,7 @@ const simpleSelectOptions = simpleMenuOptions.map((option) => option.label);
       ><Icon src="img/test-small.png" width="{50}" /></Label>
     <Label text="align: end" position="top" align="end"
       ><Icon src="img/test-small.png" width="{50}" /></Label>
-    <Label text="index: 5" position="top" indent="{5}"
+    <Label text="indent: 5" position="top" indent="{5}"
       ><Icon src="img/test-small.png" width="{50}" /></Label>
   </Section>
 
@@ -187,6 +194,14 @@ const simpleSelectOptions = simpleMenuOptions.map((option) => option.label);
       </Events>
     </Area>
   </Section>
+
+  <Section title="ButtonGroup">
+    <Area>
+      <ButtonGroup options="{buttonGroupOptions}" />
+    </Area>
+  </Section>
+
+  <Section title="Tooltip" />
 
   <Section title="Checkbox">
     <Area>
@@ -362,4 +377,16 @@ const simpleSelectOptions = simpleMenuOptions.map((option) => option.label);
       </ScrollView>
     </Area>
   </Section>
+
+  <Section title="Menubar" />
+
+  <Section title="Panel" />
+
+  <Section title="Dialog" />
+
+  <Section title="Tabs" />
+
+  <Section title="Dockable" />
+
+  <Section title="Desktop?" />
 </main>
