@@ -203,6 +203,13 @@ function log(component: string, event: string, ...data: any[]) {
           options="{buttonGroupOptions}"
           on:change="{(e) =>
             log('ButtonGroup', 'change', e.detail)}" /></Events>
+      <Events mute="{true}"
+        ><ButtonGroup
+          isEnabled="{false}"
+          selectedIndex="{1}"
+          options="{buttonGroupOptions}"
+          on:change="{(e) =>
+            log('ButtonGroup', 'change', e.detail)}" /></Events>
       <Events
         ><ButtonGroup
           options="{buttonGroupOptions}"
