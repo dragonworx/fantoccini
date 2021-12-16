@@ -19,7 +19,7 @@ export let position: Position = "left";
 
 const dispatch = createEventDispatcher();
 
-let button;
+let button: Button;
 
 function onButtonChange(event) {
   dispatch("change", {
@@ -29,10 +29,10 @@ function onButtonChange(event) {
 }
 
 function onLabelMouseUp(e) {
-  const isLabelClick = e.target.classList.contains("label");
+  const isLabelClick = e.target.classList.contains("label-wrapper");
   if (isEnabled && isLabelClick) {
-    button.click();
     isDown = !isDown;
+    button.setIsDown(isDown);
   }
 }
 </script>

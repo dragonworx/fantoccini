@@ -83,6 +83,17 @@ const onButtonDown = (index: number) =>
       dispatchChange();
     }
   };
+
+const onButtonKeyDown = (index: number) =>
+  function onButtonKeyDown(e: KeyboardEvent) {
+    if (selectedIndex == index) {
+      if (canReset) {
+        selectedIndex = -1;
+        dispatchChange();
+        e.stopImmediatePropagation();
+      }
+    }
+  };
 </script>
 
 <ul class="buttongroup" data-component="buttongroup">
@@ -93,6 +104,7 @@ const onButtonDown = (index: number) =>
         isDown="{selectedIndex === index}"
         isControlled="{true}"
         iconSrc="{icon}"
+        on:keydown="{onButtonKeyDown(index)}"
         on:pushed="{onButtonDown(index)}" />
     </li>
   {/each}
