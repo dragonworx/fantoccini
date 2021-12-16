@@ -54,54 +54,46 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import PushButton from "./PushButton.svelte";
-import type { ButtonGroupOption, Position } from "../types";
+import type { ButtonGroupOption } from "../types";
 
 export let isEnabled: boolean = true;
 export let options: ButtonGroupOption[] = [];
 export let selectedIndex: number = -1;
-export let position: Position = "right";
+export let canReset: boolean = false;
 
 const dispatch = createEventDispatcher();
 
-function onPressed(event) {
-  const index = event.detail.index;
-  if (selectedIndex !== index) {
-    selectedIndex = index;
-    dispatch("change", {
-      selectedIndex,
-      selectedValue: options[selectedIndex].name,
-    });
-  }
-}
-
-function onIncrement() {
-  selectedIndex = Math.max(0, selectedIndex - 1);
+function dispatchChange() {
   dispatch("change", {
     selectedIndex,
-    selectedValue: options[selectedIndex].name,
+    selectedValue:
+      selectedIndex === -1 ? undefined : options[selectedIndex].name,
   });
 }
 
-function onDecrement() {
-  selectedIndex = Math.min(options.length - 1, selectedIndex + 1);
-  dispatch("change", {
-    selectedIndex,
-    selectedValue: options[selectedIndex].name,
-  });
-}
+const onButtonDown = (index: number) =>
+  function onButtonDown() {
+    if (selectedIndex == index) {
+      if (canReset) {
+        selectedIndex = -1;
+        dispatchChange();
+      }
+    } else {
+      selectedIndex = index;
+      dispatchChange();
+    }
+  };
 </script>
 
 <ul class="buttongroup" data-component="buttongroup">
-  {#each options as { icon, name, tip }, i}
+  {#each options as { icon }, index}
     <li>
       <PushButton
         isEnabled="{isEnabled}"
-        isDown="{selectedIndex === i}"
+        isDown="{selectedIndex === index}"
+        isControlled="{true}"
         iconSrc="{icon}"
-        canToggle="{true}"
-        on:pressed="{onPressed}"
-        on:decrement="{onIncrement}"
-        on:increment="{onDecrement}" />
+        on:pushed="{onButtonDown(index)}" />
     </li>
   {/each}
 </ul>

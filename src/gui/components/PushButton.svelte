@@ -9,6 +9,7 @@ import Icon from "./Icon.svelte";
 
 export let isEnabled: boolean = true;
 export let canToggle: boolean = false;
+export let isControlled: boolean = false;
 export let isDown: boolean = false;
 export let label: string | undefined = undefined;
 export let iconSrc: string | undefined = undefined;
@@ -24,6 +25,7 @@ export let noStyle: boolean = false;
     isEnabled,
     canToggle,
     isDown,
+    isControlled,
     noStyle,
   }}
   on:mousedown
@@ -35,6 +37,7 @@ export let noStyle: boolean = false;
   on:up
   on:longpress
   on:toggle
+  on:pushed
   on:change>
   {#if label}
     <Label text="{label}" />

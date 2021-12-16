@@ -21,6 +21,7 @@ import Events from "./gui/examples/Events.svelte";
 
 /** gui */
 import { isAlphaNumeric } from "./gui/filters";
+import { RadioGroupOption, ButtonGroupOption } from "./gui/types";
 import Label from "./gui/components/Label.svelte";
 import Icon from "./gui/components/Icon.svelte";
 import PushButton from "./gui/components/PushButton.svelte";
@@ -34,7 +35,7 @@ import Select from "./gui/components/Select.svelte";
 import ScrollBar from "./gui/components/ScrollBar.svelte";
 import ScrollView from "./gui/components/ScrollView.svelte";
 
-const radioOptions = [
+const radioOptions: RadioGroupOption[] = [
   { label: "Option 1", value: "a" },
   { label: "Option 2", value: "b" },
   { label: "Option 3", value: "c" },
@@ -50,7 +51,7 @@ const simpleMenuOptions = [
 
 const simpleSelectOptions = simpleMenuOptions.map((option) => option.label);
 
-const buttonGroupOptions = [
+const buttonGroupOptions: ButtonGroupOption[] = [
   { icon: "img/icons/play.svg", name: "play" },
   { icon: "img/icons/pause.svg", name: "pause" },
   { icon: "img/icons/record.svg", name: "record" },
@@ -197,7 +198,17 @@ function log(component: string, event: string, ...data: any[]) {
 
   <Section title="ButtonGroup">
     <Area>
-      <ButtonGroup options="{buttonGroupOptions}" />
+      <Events
+        ><ButtonGroup
+          options="{buttonGroupOptions}"
+          on:change="{(e) =>
+            log('ButtonGroup', 'change', e.detail)}" /></Events>
+      <Events
+        ><ButtonGroup
+          options="{buttonGroupOptions}"
+          canReset="{true}"
+          on:change="{(e) =>
+            log('ButtonGroup', 'change', e.detail)}" /></Events>
     </Area>
   </Section>
 

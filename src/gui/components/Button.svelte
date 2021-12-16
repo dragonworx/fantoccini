@@ -136,6 +136,7 @@ export const defaultLongPressDuration = 500;
 import { createEventDispatcher } from "svelte";
 export let isEnabled: boolean = true;
 export let canToggle: boolean = false;
+export let isControlled: boolean = false;
 export let hasToggleLock: boolean = false;
 export let isDown: boolean = false;
 export let appearance: "box" | "round" = "box";
@@ -199,7 +200,9 @@ const onMouseUp = () => {
       isToggleDown = true;
     }
   } else {
-    isDown = false;
+    if (!isControlled) {
+      isDown = false;
+    }
   }
   window.removeEventListener("mouseup", onMouseUp);
   dispatch("mouseup");
@@ -216,6 +219,7 @@ const onMouseDown = () => {
       }
     } else {
       isDown = true;
+      dispatch("pushed");
     }
     window.addEventListener("mouseup", onMouseUp);
     !canToggle && onChange();
