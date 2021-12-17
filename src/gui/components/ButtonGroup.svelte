@@ -9,6 +9,7 @@
 
   li {
     margin-bottom: $spacing_small;
+    display: flex;
   }
 }
 
@@ -97,12 +98,13 @@ const onButtonKeyDown = (index: number) =>
 </script>
 
 <ul class="buttongroup" data-component="buttongroup">
-  {#each options as { icon }, index}
+  {#each options as { icon, label }, index}
     <li>
       <PushButton
         isEnabled="{isEnabled}"
         isDown="{selectedIndex === index}"
         isControlled="{true}"
+        label="{label}"
         iconSrc="{icon}"
         on:keydown="{onButtonKeyDown(index)}"
         on:pushed="{onButtonDown(index)}" />

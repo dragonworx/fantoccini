@@ -21,20 +21,19 @@ const dispatch = createEventDispatcher();
 
 let button: Button;
 
-function onButtonChange(event) {
-  dispatch("change", {
-    checked: event.detail.isDown,
-  });
-  isDown = event.detail.isDown;
-}
+const onButtonToggle = (event) => {
+  dispatch("change", event.detail);
+  isDown = event.detail;
+};
 
-function onLabelMouseUp(e) {
+const onLabelMouseUp = (e) => {
   const isLabelClick = e.target.classList.contains("label-wrapper");
   if (isEnabled && isLabelClick) {
     isDown = !isDown;
     button.setIsDown(isDown);
+    dispatch("change", isDown);
   }
-}
+};
 </script>
 
 {#if label !== undefined}
@@ -51,7 +50,7 @@ function onLabelMouseUp(e) {
       isDown="{isDown}"
       canToggle="{true}"
       type="checkbox"
-      on:change="{onButtonChange}"><Icon name="cross" width="{12}" /></Button>
+      on:change="{onButtonToggle}"><Icon name="cross" width="{12}" /></Button>
   </Label>
 {:else}
   <Button
@@ -59,5 +58,5 @@ function onLabelMouseUp(e) {
     isDown="{isDown}"
     canToggle="{true}"
     type="checkbox"
-    on:change="{onButtonChange}"><Icon name="cross" width="{12}" /></Button>
+    on:change="{onButtonToggle}"><Icon name="cross" width="{12}" /></Button>
 {/if}

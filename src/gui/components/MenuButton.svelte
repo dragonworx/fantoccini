@@ -31,7 +31,6 @@ let button: Button;
 
 const onDown = () => {
   isOpen = true;
-  button.setIsDown(true);
   dispatch("open");
 
   if (trigger === "mouseup") {
@@ -43,7 +42,7 @@ const onDown = () => {
       }
       window.removeEventListener("mousedown", handler);
     };
-    window.addEventListener("mousedown", handler);
+    setTimeout(() => window.addEventListener("mousedown", handler), 0);
   }
 };
 
@@ -60,10 +59,6 @@ const onButtonKeydown = (e: KeyboardEvent) => {
   if (isArrowKey(key)) {
     e.preventDefault();
   }
-  // if (key === "Enter" || key === "space") {
-  //   console.log("menubutton keydown");
-  //   dispatch("accept");
-  // }
 };
 
 const onButtonKeyup = (e: KeyboardEvent) => {

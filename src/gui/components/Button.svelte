@@ -180,13 +180,36 @@ $: {
   style = css || undefined;
 }
 
-const onChange = () => {
+// $: console.log({ isDown, isToggleDown });
+
+function onChange() {
   dispatch("change", {
     isDown,
   });
   dispatch(isDown ? "down" : "up");
   if (canToggle) {
     dispatch("toggle", { isDown });
+  }
+}
+
+const onMouseDown = () => {
+  if (isEnabled) {
+    if (canToggle) {
+      dispatch("pushed");
+      if (!isDown) {
+        isDown = true;
+        isToggleDown = false;
+        dispatch("down");
+      }
+    } else {
+      isDown = true;
+      dispatch("pushed");
+      dispatch("down");
+    }
+    window.addEventListener("mouseup", onMouseUp);
+    pressTimeout = setTimeout(() => {
+      dispatch("longpress");
+    }, longPressDuration);
   }
 };
 
@@ -196,38 +219,24 @@ const onMouseUp = () => {
       if (isDown && !hasToggleLock) {
         isDown = false;
         isToggleDown = false;
+        dispatch("toggle", false);
+        dispatch("change", false);
+        dispatch("up");
       }
     } else {
       isToggleDown = true;
+      dispatch("toggle", true);
+      dispatch("change", true);
     }
   } else {
     if (!isControlled) {
       isDown = false;
+      dispatch("up");
     }
   }
   window.removeEventListener("mouseup", onMouseUp);
-  onChange();
   dispatch("mouseup");
   clearTimeout(pressTimeout);
-};
-
-const onMouseDown = () => {
-  if (isEnabled) {
-    if (canToggle) {
-      if (!isDown) {
-        isDown = true;
-        isToggleDown = false;
-      }
-    } else {
-      isDown = true;
-      dispatch("pushed");
-    }
-    window.addEventListener("mouseup", onMouseUp);
-    !canToggle && onChange();
-    pressTimeout = setTimeout(() => {
-      dispatch("longpress");
-    }, longPressDuration);
-  }
 };
 
 const onKeyDown = (e: KeyboardEvent) => {
@@ -249,7 +258,7 @@ const onKeyUp = (e: KeyboardEvent) => {
   class="button"
   class:enabled="{isEnabled}"
   class:disabled="{!isEnabled}"
-  class:isDown="{canToggle ? isToggleDown : isDown}"
+  class:isDown
   class:round="{appearance === 'round'}"
   class:noStyle
   data-type="{type}"

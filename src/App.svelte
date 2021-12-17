@@ -55,6 +55,7 @@ const buttonGroupOptions: ButtonGroupOption[] = [
   { icon: "img/icons/play.svg", name: "play" },
   { icon: "img/icons/pause.svg", name: "pause" },
   { icon: "img/icons/record.svg", name: "record" },
+  { label: "Label", name: "foo" },
 ];
 
 function log(component: string, event: string, ...data: any[]) {
@@ -147,6 +148,7 @@ function log(component: string, event: string, ...data: any[]) {
       <Events>
         <PushButton
           label="Push it"
+          on:pushed="{(e) => log('PushButton', 'pushed')}"
           on:down="{(e) => log('PushButton', 'down')}"
           on:up="{(e) => log('PushButton', 'up')}"
           on:longpress="{(e) => log('PushButton', 'longpress')}" />
@@ -155,6 +157,7 @@ function log(component: string, event: string, ...data: any[]) {
         <PushButton
           label="Push it"
           isEnabled="{false}"
+          on:pushed="{(e) => log('PushButton', 'pushed')}"
           on:down="{(e) => log('PushButton', 'down')}"
           on:up="{(e) => log('PushButton', 'up')}" />
       </Events>
@@ -163,6 +166,7 @@ function log(component: string, event: string, ...data: any[]) {
         <PushButton
           label="No Style"
           noStyle="{true}"
+          on:pushed="{(e) => log('PushButton', 'pushed')}"
           on:down="{(e) => log('PushButton', 'down')}"
           on:up="{(e) => log('PushButton', 'up')}"
           on:longpress="{(e) => log('PushButton', 'longpress')}" />
@@ -175,8 +179,9 @@ function log(component: string, event: string, ...data: any[]) {
           label="Toggle it"
           iconName="tick"
           canToggle="{true}"
-          on:toggle="{(e) => log('PushButton', 'toggle', e.detail.isDown)}"
+          on:pushed="{(e) => log('PushButton', 'pushed')}"
           on:down="{(e) => log('PushButton', 'down')}"
+          on:toggle="{(e) => log('PushButton', 'toggle', e.detail)}"
           on:up="{(e) => log('PushButton', 'up')}" />
       </Events>
       <PushButton
@@ -191,7 +196,7 @@ function log(component: string, event: string, ...data: any[]) {
           iconName="tick"
           canToggle="{true}"
           isDown="{true}"
-          on:toggle="{(e) => log('PushButton', 'toggle', e.detail.isDown)}" />
+          on:toggle="{(e) => log('PushButton', 'toggle', e.detail)}" />
       </Events>
     </Area>
   </Section>
@@ -224,14 +229,13 @@ function log(component: string, event: string, ...data: any[]) {
   <Section title="Checkbox">
     <Area>
       <Events>
-        <Checkbox
-          on:change="{(e) => log('Checkbox', 'change', e.detail.checked)}" />
+        <Checkbox on:change="{(e) => log('Checkbox', 'change', e.detail)}" />
       </Events>
       <Checkbox isDown="{true}" />
       <Events mute="{true}">
         <Checkbox
           isEnabled="{false}"
-          on:change="{(e) => log('Checkbox', 'change', e.detail.checked)}" />
+          on:change="{(e) => log('Checkbox', 'change', e.detail)}" />
       </Events>
       <Checkbox isEnabled="{false}" isDown="{true}" />
     </Area>
@@ -239,7 +243,7 @@ function log(component: string, event: string, ...data: any[]) {
       <Events>
         <Checkbox
           label="Left"
-          on:change="{(e) => log('Checkbox', 'change', e.detail.checked)}" />
+          on:change="{(e) => log('Checkbox', 'change', e.detail)}" />
       </Events>
       <Checkbox label="Right" position="right" />
       <Checkbox label="Top" position="top" />
@@ -248,7 +252,7 @@ function log(component: string, event: string, ...data: any[]) {
         <Checkbox
           label="Disabled"
           isEnabled="{false}"
-          on:change="{(e) => log('Checkbox', 'change', e.detail.checked)}" />
+          on:change="{(e) => log('Checkbox', 'change', e.detail)}" />
       </Events>
       <Checkbox label="Down" isDown="{true}" isEnabled="{false}" />
     </Area>
@@ -338,6 +342,8 @@ function log(component: string, event: string, ...data: any[]) {
         <MenuButton
           options="{simpleMenuOptions}"
           trigger="mouseup"
+          on:open="{(e) => log('MenuButton', 'open')}"
+          on:close="{(e) => log('MenuButton', 'close')}"
           on:select="{(e) => log('MenuButton', 'select', e.detail)}">
           <Label text="Mouseup" />
         </MenuButton>

@@ -4,8 +4,9 @@ export interface RadioGroupOption {
 }
 
 export interface ButtonGroupOption {
-  icon: string;
   name: string;
+  label?: string;
+  icon?: string;
   tip?: string;
 }
 
