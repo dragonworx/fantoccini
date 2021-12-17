@@ -252,9 +252,9 @@ const onKeyDown = (e: KeyboardEvent) => {
 const onMouseWheel = (e: WheelEvent) => {
   const { deltaX, deltaY } = e;
   if (isHorizontal) {
-    if (deltaX < 0) {
+    if (deltaX > 0) {
       setValue(value - incrementSmall);
-    } else if (deltaX > 0) {
+    } else if (deltaX < 0) {
       setValue(value + incrementSmall);
     }
   } else {

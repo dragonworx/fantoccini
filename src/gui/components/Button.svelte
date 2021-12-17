@@ -14,10 +14,10 @@
 }
 
 .button {
+  @include noselect();
   box-sizing: border-box;
   padding: 0;
   position: relative;
-  user-select: none;
   border: 1px solid #030c17;
   border-radius: $border_radius_small;
   box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
@@ -163,6 +163,13 @@ export function containsEvent(e: MouseEvent) {
 export function setIsDown(value: boolean) {
   isDown = value;
   isToggleDown = value;
+}
+
+export function getIsDown() {
+  return {
+    isDown,
+    isToggleDown,
+  };
 }
 
 const dispatch = createEventDispatcher();

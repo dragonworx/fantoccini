@@ -31,6 +31,7 @@ let button: Button;
 
 const onDown = () => {
   isOpen = true;
+  hoverIndex = selectedIndex;
   dispatch("open");
 
   if (trigger === "mouseup") {
@@ -52,17 +53,18 @@ const onUp = () => {
 
 const onButtonKeydown = (e: KeyboardEvent) => {
   const { key } = e;
-  if (key === "ArrowDown" && !isOpen) {
-    onDown();
-  }
   if (isArrowKey(key)) {
     e.preventDefault();
+  }
+  if ((key === "ArrowDown" || key === "ArrowUp") && !isOpen) {
+    onDown();
   }
 };
 
 const onButtonKeyup = (e: KeyboardEvent) => {
   if (isAcceptKey(e.key)) {
-    if (hoverIndex > -1) {
+    const { isToggleDown } = button.getIsDown();
+    if (hoverIndex > -1 && isToggleDown) {
       dispatch("accept");
     }
   }

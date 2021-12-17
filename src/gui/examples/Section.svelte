@@ -2,8 +2,8 @@
 @import "../theme";
 
 .section {
+  @include noselect();
   box-sizing: border-box;
-  user-select: none;
   padding: 0 ($spacing_small * 2);
   border-radius: $spacing_small;
   border: 1px inset #7f7f7f8a;

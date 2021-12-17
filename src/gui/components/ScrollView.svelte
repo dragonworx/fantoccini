@@ -114,9 +114,9 @@ const onVScrollChange = (e: CustomEvent) => (vScroll = e.detail);
 const onHScrollChange = (e: CustomEvent) => (hScroll = e.detail);
 const onMouseWheel = (e: WheelEvent) => {
   const { deltaX, deltaY } = e;
-  if (deltaX < 0) {
+  if (deltaX > 0) {
     hScroll = Math.max(0, hScroll - hIncrementSmall);
-  } else if (deltaX > 0) {
+  } else if (deltaX < 0) {
     hScroll = Math.min(1, hScroll + hIncrementSmall);
   }
   if (deltaY < 0) {

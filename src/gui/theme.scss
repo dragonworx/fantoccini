@@ -20,6 +20,13 @@ $color_textfield_enabled: #bdbec0;
 $scrollbar_size: 20px;
 $scrollbar_radius: 3px;
 
+@mixin noselect() {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
 @mixin debug() {
   border: 1px solid red;
 }
@@ -132,8 +139,8 @@ $scrollbar_radius: 3px;
 }
 
 @mixin label_enabled {
+  @include noselect();
   box-sizing: border-box;
-  user-select: none;
   color: $color_label_enabled;
   text-shadow: 1px 1px 1px $color_label_shadow_enabled;
   font-size: 12px;

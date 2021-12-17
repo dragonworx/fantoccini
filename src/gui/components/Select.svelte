@@ -57,8 +57,8 @@ function decrement() {
 
 function select(index: number) {
   selectedIndex = index;
-  dispatch("change", { index: selectedIndex, value: options[selectedIndex] });
   menuButton.setIsOpen(false);
+  dispatch("change", { index: selectedIndex, value: options[selectedIndex] });
 }
 
 const onSelect = (e: CustomEvent) => {
@@ -74,7 +74,11 @@ const onMenuButtonKeydown = (e: KeyboardEvent) => {
       hoverIndex = Math.max(0, hoverIndex);
     }
   } else if (key === "ArrowUp") {
-    decrement();
+    if (menuButton.getIsOpen()) {
+      decrement();
+    } else {
+      hoverIndex = Math.min(options.length - 1, hoverIndex);
+    }
   } else if (key === "Tab" && menuButton.getIsOpen()) {
     if (shiftKey) {
       decrement();
