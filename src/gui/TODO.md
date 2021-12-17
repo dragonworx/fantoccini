@@ -1,0 +1,3 @@
+- Refactor Select navigation logic into MenuButton
+- Add mouseover trigger, will be used by MenuBar
+- MenuButton should not render anything except its slot and control the Menu
