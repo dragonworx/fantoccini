@@ -42,13 +42,10 @@ function close() {
   dispatch("close");
 }
 
-$: isMouseUp = trigger === "mouseup";
-$: isMouseDown = trigger === "mousedown";
-
 const onButtonDown = () => {
   open();
 
-  if (isMouseUp) {
+  if (trigger === "mouseup") {
     const handler = (e: MouseEvent) => {
       if (!button.containsEvent(e)) {
         onButtonUp();
@@ -71,6 +68,8 @@ const onButtonKeydown = (e: KeyboardEvent) => {
   if (isArrowVerticalKey(key) && !isOpen) {
     onButtonDown();
   }
+
+  onMenuButtonKeydown(e);
 };
 
 const onButtonKeyup = (e: KeyboardEvent) => {
@@ -78,9 +77,64 @@ const onButtonKeyup = (e: KeyboardEvent) => {
     const { isToggleDown } = button.getIsDown();
     if (hoverIndex > -1 && isToggleDown) {
       dispatch("accept");
+      onMenuButtonAccept();
     }
   }
 };
+
+// accept
+// keydown
+// select
+
+const onMenuButtonAccept = () => {
+  if (hoverIndex > -1) {
+    select(hoverIndex);
+  }
+};
+
+const onMenuButtonKeydown = (e: KeyboardEvent) => {
+  const { key, shiftKey } = e;
+  if (key === "ArrowDown") {
+    if (getIsOpen()) {
+      increment();
+    } else {
+      hoverIndex = selectedIndex;
+    }
+  } else if (key === "ArrowUp") {
+    if (getIsOpen()) {
+      decrement();
+    } else {
+      hoverIndex = Math.min(options.length - 1, hoverIndex);
+    }
+  } else if (key === "Tab" && getIsOpen()) {
+    if (shiftKey) {
+      decrement();
+    } else {
+      increment();
+    }
+    e.preventDefault();
+  } else if (key === "Escape") {
+    setIsOpen(false);
+  }
+};
+
+const onSelect = (e: CustomEvent) => {
+  select(e.detail);
+};
+
+function increment() {
+  hoverIndex = Math.min(options.length - 1, hoverIndex + 1);
+}
+
+function decrement() {
+  hoverIndex = Math.max(0, hoverIndex - 1);
+}
+
+function select(index: number) {
+  selectedIndex = index;
+  setIsOpen(false);
+  dispatch("change", { index: selectedIndex, value: options[selectedIndex] });
+}
 </script>
 
 <Menu
