@@ -7,6 +7,7 @@
   padding: 0;
 
   li {
+    margin: 0;
     margin-bottom: $spacing_small;
   }
 }

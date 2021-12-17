@@ -16,6 +16,7 @@ export let hoverIndex: number = selectedIndex;
 export let trigger: MenuTrigger = "mousedown";
 export let position: MenuPosition = "dropdown";
 export let isOpen: boolean = false;
+export let noStyle: boolean = false;
 
 export function getIsOpen() {
   return isOpen;
@@ -85,6 +86,7 @@ const onButtonKeyup = (e: KeyboardEvent) => {
     isDown="{isOpen}"
     canToggle="{trigger === 'mouseup'}"
     isEnabled="{isEnabled}"
+    noStyle="{noStyle}"
     on:down="{onDown}"
     on:up="{onUp}"
     on:keydown

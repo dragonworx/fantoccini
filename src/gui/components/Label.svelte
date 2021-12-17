@@ -106,6 +106,7 @@ export let align: Align = "start";
 export let justify: Justify = "start";
 export let indent: number = 0;
 export let color: string | undefined = undefined;
+export let fontSize: number = -1;
 
 const dispatch = createEventDispatcher();
 
@@ -122,7 +123,8 @@ $: {
   }
 }
 
-$: colorStyle = color ? `color:${color};` : undefined;
+$: colorStyle = color ? `color:${color};` : "";
+$: fontStyle = fontSize > -1 ? `font-size:${fontSize}px;` : "";
 
 function onMouseUp() {
   if (isEnabled && isLink) {
@@ -138,7 +140,7 @@ function onMouseUp() {
   class:enabled="{isEnabled}"
   class:disabled="{!isEnabled}"
   class:link="{isLink}"
-  style="{colorStyle}"
+  style="{colorStyle}{fontStyle}"
   data-component="label"
   data-position="{position}"
   data-align="{align}"

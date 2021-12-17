@@ -10,6 +10,7 @@
   li {
     margin-bottom: $spacing_small;
     display: flex;
+    margin: 0;
   }
 }
 

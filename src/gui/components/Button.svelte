@@ -91,7 +91,7 @@
 
     &:before {
       background: none;
-      border: none;
+      border: none !important;
     }
 
     .content {

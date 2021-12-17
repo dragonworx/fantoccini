@@ -1,6 +1,19 @@
 <style lang="scss">
 @import "../theme";
-.component {
+.menubar {
+  @include linear_gradient(#40404e, #1f232c);
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  padding: 1px 5px;
+
+  li {
+    margin-bottom: $spacing_small;
+    display: flex;
+    margin: 0;
+  }
 }
 </style>
 
@@ -11,10 +24,11 @@ export const staticVar = 500;
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import { fade } from "svelte/transition";
-import {} from "../types";
-import Button from "./Button.svelte";
+import { MenuBarItem } from "../types";
+import Label from "./Label.svelte";
+import MenuButton from "./MenuButton.svelte";
 
-export let prop: string = "foo";
+export let items: MenuBarItem[];
 
 export function api() {}
 
@@ -23,4 +37,12 @@ let local;
 const onHandler = () => {};
 </script>
 
-<div class="component" data-component="component"></div>
+<ul class="menubar" data-component="menubar">
+  {#each items as { label, menu }, i}
+    <li>
+      <MenuButton options="{menu}" noStyle="{true}" trigger="mouseup">
+        <Label text="{label}" fontSize="{11}" />
+      </MenuButton>
+    </li>
+  {/each}
+</ul>

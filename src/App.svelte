@@ -21,7 +21,7 @@ import Events from "./gui/examples/Events.svelte";
 
 /** gui */
 import { isAlphaNumeric } from "./gui/filters";
-import { RadioGroupOption, ButtonGroupOption } from "./gui/types";
+import { RadioGroupOption, ButtonGroupOption, MenuBarItem } from "./gui/types";
 import Label from "./gui/components/Label.svelte";
 import Icon from "./gui/components/Icon.svelte";
 import PushButton from "./gui/components/PushButton.svelte";
@@ -34,6 +34,7 @@ import MenuButton from "./gui/components/MenuButton.svelte";
 import Select from "./gui/components/Select.svelte";
 import ScrollBar from "./gui/components/ScrollBar.svelte";
 import ScrollView from "./gui/components/ScrollView.svelte";
+import MenuBar from "./gui/components/MenuBar.svelte";
 
 const radioOptions: RadioGroupOption[] = [
   { label: "Option 1", value: "a" },
@@ -56,6 +57,12 @@ const buttonGroupOptions: ButtonGroupOption[] = [
   { icon: "img/icons/pause.svg", name: "pause" },
   { icon: "img/icons/record.svg", name: "record" },
   { label: "Label", name: "foo" },
+];
+
+const simpleMenuBar: MenuBarItem[] = [
+  { label: "File", menu: simpleMenuOptions },
+  { label: "Edit", menu: simpleMenuOptions },
+  { label: "Window", menu: simpleMenuOptions },
 ];
 
 function log(component: string, event: string, ...data: any[]) {
@@ -404,7 +411,9 @@ function log(component: string, event: string, ...data: any[]) {
     </Area>
   </Section>
 
-  <Section title="Menubar" />
+  <Section title="Menubar">
+    <MenuBar items="{simpleMenuBar}" />
+  </Section>
 
   <Section title="Panel" />
 
