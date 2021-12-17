@@ -71,7 +71,7 @@ const onMenuButtonKeydown = (e: KeyboardEvent) => {
     if (menuButton.getIsOpen()) {
       increment();
     } else {
-      hoverIndex = Math.max(0, hoverIndex);
+      hoverIndex = selectedIndex;
     }
   } else if (key === "ArrowUp") {
     if (menuButton.getIsOpen()) {
