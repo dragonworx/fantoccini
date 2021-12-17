@@ -28,7 +28,7 @@ export type MenuItem = {
 
 export type MenuPosition = "dropdown" | "popout";
 
-export type MenuTrigger = "mousedown" | "mouseup" | "mouseover";
+export type MenuTrigger = "mousedown" | "mouseup";
 
 export interface MenuBarItem {
   label: string;

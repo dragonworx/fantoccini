@@ -7,7 +7,7 @@ import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
 import Menu from "./Menu.svelte";
 import { MenuItem, MenuPosition, MenuTrigger } from "../types";
-import { isAcceptKey, isArrowKey } from "../filters";
+import { isAcceptKey, isArrowKey, isArrowVerticalKey } from "../filters";
 
 export let isEnabled: boolean = true;
 export let options: MenuItem[];
@@ -30,15 +30,28 @@ export function setIsOpen(value: boolean) {
 let dispatch = createEventDispatcher();
 let button: Button;
 
-const onDown = () => {
+function open() {
   isOpen = true;
   hoverIndex = selectedIndex;
   dispatch("open");
+}
 
-  if (trigger === "mouseup") {
+function close() {
+  isOpen = false;
+  button.setIsDown(false);
+  dispatch("close");
+}
+
+$: isMouseUp = trigger === "mouseup";
+$: isMouseDown = trigger === "mousedown";
+
+const onButtonDown = () => {
+  open();
+
+  if (isMouseUp) {
     const handler = (e: MouseEvent) => {
       if (!button.containsEvent(e)) {
-        onUp();
+        onButtonUp();
       }
       window.removeEventListener("mousedown", handler);
     };
@@ -46,10 +59,8 @@ const onDown = () => {
   }
 };
 
-const onUp = () => {
-  button.setIsDown(false);
-  isOpen = false;
-  dispatch("close");
+const onButtonUp = () => {
+  close();
 };
 
 const onButtonKeydown = (e: KeyboardEvent) => {
@@ -57,8 +68,8 @@ const onButtonKeydown = (e: KeyboardEvent) => {
   if (isArrowKey(key)) {
     e.preventDefault();
   }
-  if ((key === "ArrowDown" || key === "ArrowUp") && !isOpen) {
-    onDown();
+  if (isArrowVerticalKey(key) && !isOpen) {
+    onButtonDown();
   }
 };
 
@@ -87,8 +98,11 @@ const onButtonKeyup = (e: KeyboardEvent) => {
     canToggle="{trigger === 'mouseup'}"
     isEnabled="{isEnabled}"
     noStyle="{noStyle}"
-    on:down="{onDown}"
-    on:up="{onUp}"
+    on:pushed
+    on:down="{onButtonDown}"
+    on:up="{onButtonUp}"
+    on:mouseover
+    on:mouseout
     on:keydown
     on:keydown="{onButtonKeydown}"
     on:keyup="{onButtonKeyup}"

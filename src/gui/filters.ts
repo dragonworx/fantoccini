@@ -27,6 +27,14 @@ export function isScrollDownKey(key: string) {
   return key === "ArrowDown" || key === "ArrowRight";
 }
 
+export function isArrowVerticalKey(key: string) {
+  return key === "ArrowUp" || key === "ArrowDown";
+}
+
+export function isArrowHorizontalKey(key: string) {
+  return key === "ArrowLeft" || key === "ArrowRight";
+}
+
 export function isArrowKey(key: string) {
   return isIncrementKey(key) || isDecrementKey(key);
 }
