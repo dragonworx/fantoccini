@@ -107,6 +107,7 @@
       &.isDown {
         background: none;
         border: none;
+        box-shadow: none;
 
         .content {
           top: 0;

@@ -178,7 +178,16 @@ function log(component: string, event: string, ...data: any[]) {
           on:up="{(e) => log('PushButton', 'up')}"
           on:longpress="{(e) => log('PushButton', 'longpress')}" />
       </Events>
-      <PushButton isEnabled="{false}" label="No Style" noStyle="{true}" />
+      <Events mute="{true}">
+        <PushButton
+          isEnabled="{false}"
+          label="No Style (disabled)"
+          noStyle="{true}"
+          on:pushed="{(e) => log('PushButton', 'pushed')}"
+          on:down="{(e) => log('PushButton', 'down')}"
+          on:up="{(e) => log('PushButton', 'up')}"
+          on:longpress="{(e) => log('PushButton', 'longpress')}" />
+      </Events>
     </Area>
     <Area>
       <Events>
