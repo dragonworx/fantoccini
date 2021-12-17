@@ -167,8 +167,8 @@ export function setIsDown(value: boolean) {
 
 const dispatch = createEventDispatcher();
 
-let buttonEl;
-let pressTimeout;
+let buttonEl: HTMLButtonElement;
+let pressTimeout: number;
 let isToggleDown: boolean = isDown;
 let style = undefined;
 
@@ -178,18 +178,6 @@ $: {
   if (height) css += `height: ${height}px;`;
   if (padding) css += `padding: ${padding}px;`;
   style = css || undefined;
-}
-
-// $: console.log({ isDown, isToggleDown });
-
-function onChange() {
-  dispatch("change", {
-    isDown,
-  });
-  dispatch(isDown ? "down" : "up");
-  if (canToggle) {
-    dispatch("toggle", { isDown });
-  }
 }
 
 const onMouseDown = () => {
@@ -209,7 +197,7 @@ const onMouseDown = () => {
     window.addEventListener("mouseup", onMouseUp);
     pressTimeout = setTimeout(() => {
       dispatch("longpress");
-    }, longPressDuration);
+    }, longPressDuration) as unknown as number;
   }
 };
 

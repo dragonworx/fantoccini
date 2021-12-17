@@ -36,9 +36,7 @@ const onDown = () => {
   if (trigger === "mouseup") {
     const handler = (e: MouseEvent) => {
       if (!button.containsEvent(e)) {
-        button.setIsDown(false);
-        isOpen = false;
-        dispatch("close");
+        onUp();
       }
       window.removeEventListener("mousedown", handler);
     };
@@ -47,6 +45,7 @@ const onDown = () => {
 };
 
 const onUp = () => {
+  button.setIsDown(false);
   isOpen = false;
   dispatch("close");
 };
@@ -63,8 +62,9 @@ const onButtonKeydown = (e: KeyboardEvent) => {
 
 const onButtonKeyup = (e: KeyboardEvent) => {
   if (isAcceptKey(e.key)) {
-    e.stopImmediatePropagation();
-    dispatch("accept");
+    if (hoverIndex > -1) {
+      dispatch("accept");
+    }
   }
 };
 </script>
