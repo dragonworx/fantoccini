@@ -27,7 +27,7 @@ export function setIsOpen(value: boolean) {
   button.setIsDown(value);
 }
 
-let dispatch = createEventDispatcher();
+const dispatch = createEventDispatcher();
 let button: Button;
 
 function open() {
@@ -40,6 +40,20 @@ function close() {
   isOpen = false;
   button.setIsDown(false);
   dispatch("close");
+}
+
+function increment() {
+  hoverIndex = Math.min(options.length - 1, hoverIndex + 1);
+}
+
+function decrement() {
+  hoverIndex = Math.max(0, hoverIndex - 1);
+}
+
+function select(index: number) {
+  selectedIndex = index;
+  setIsOpen(false);
+  dispatch("select", { index: selectedIndex, value: options[selectedIndex] });
 }
 
 const onButtonDown = () => {
@@ -61,52 +75,31 @@ const onButtonUp = () => {
 };
 
 const onButtonKeydown = (e: KeyboardEvent) => {
-  const { key } = e;
+  const { key, shiftKey } = e;
+
   if (isArrowKey(key)) {
     e.preventDefault();
+    e.stopImmediatePropagation();
   }
+
   if (isArrowVerticalKey(key) && !isOpen) {
     onButtonDown();
+    return;
   }
 
-  onMenuButtonKeydown(e);
-};
-
-const onButtonKeyup = (e: KeyboardEvent) => {
-  if (isAcceptKey(e.key)) {
-    const { isToggleDown } = button.getIsDown();
-    if (hoverIndex > -1 && isToggleDown) {
-      dispatch("accept");
-      onMenuButtonAccept();
-    }
-  }
-};
-
-// accept
-// keydown
-// select
-
-const onMenuButtonAccept = () => {
-  if (hoverIndex > -1) {
-    select(hoverIndex);
-  }
-};
-
-const onMenuButtonKeydown = (e: KeyboardEvent) => {
-  const { key, shiftKey } = e;
   if (key === "ArrowDown") {
-    if (getIsOpen()) {
+    if (isOpen) {
       increment();
     } else {
       hoverIndex = selectedIndex;
     }
   } else if (key === "ArrowUp") {
-    if (getIsOpen()) {
+    if (isOpen) {
       decrement();
     } else {
       hoverIndex = Math.min(options.length - 1, hoverIndex);
     }
-  } else if (key === "Tab" && getIsOpen()) {
+  } else if (key === "Tab" && isOpen) {
     if (shiftKey) {
       decrement();
     } else {
@@ -118,23 +111,28 @@ const onMenuButtonKeydown = (e: KeyboardEvent) => {
   }
 };
 
+const onButtonKeyup = (e: KeyboardEvent) => {
+  if (isAcceptKey(e.key)) {
+    const { isToggleDown } = button.getIsDown();
+    if (
+      (hoverIndex > -1 && isToggleDown && trigger === "mouseup") ||
+      trigger === "mousedown"
+    ) {
+      dispatch("accept");
+      onMenuButtonAccept();
+    }
+  }
+};
+
+const onMenuButtonAccept = () => {
+  if (hoverIndex > -1) {
+    select(hoverIndex);
+  }
+};
+
 const onSelect = (e: CustomEvent) => {
   select(e.detail);
 };
-
-function increment() {
-  hoverIndex = Math.min(options.length - 1, hoverIndex + 1);
-}
-
-function decrement() {
-  hoverIndex = Math.max(0, hoverIndex - 1);
-}
-
-function select(index: number) {
-  selectedIndex = index;
-  setIsOpen(false);
-  dispatch("change", { index: selectedIndex, value: options[selectedIndex] });
-}
 </script>
 
 <Menu
@@ -145,7 +143,7 @@ function select(index: number) {
   trigger="{trigger}"
   selectedIndex="{selectedIndex}"
   hoverIndex="{hoverIndex}"
-  on:select
+  on:select="{onSelect}"
   ><Button
     bind:this="{button}"
     isDown="{isOpen}"
