@@ -24,6 +24,7 @@ export type MenuItem = {
   value?: any;
   icon?: string;
   shortcut?: string;
+  menu?: MenuItem[];
   onSelect?: () => void;
 };
 

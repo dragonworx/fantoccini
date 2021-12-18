@@ -21,7 +21,12 @@ import Events from "./gui/examples/Events.svelte";
 
 /** gui */
 import { isAlphaNumeric } from "./gui/filters";
-import { RadioGroupOption, ButtonGroupOption, MenuBarItem } from "./gui/types";
+import {
+  RadioGroupOption,
+  ButtonGroupOption,
+  MenuBarItem,
+  MenuItem,
+} from "./gui/types";
 import Label from "./gui/components/Label.svelte";
 import Icon from "./gui/components/Icon.svelte";
 import PushButton from "./gui/components/PushButton.svelte";
@@ -44,11 +49,14 @@ const radioOptions: RadioGroupOption[] = [
 
 const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 
-const simpleMenuOptions = [
+const simpleMenuOptions: MenuItem[] = [
   { label: "Action 1", onSelect: () => console.log("Action 1!") },
   { label: "Option 2" },
   { label: "Option 3" },
+  { label: "Option 4" },
 ];
+
+simpleMenuOptions[3].menu = simpleMenuOptions;
 
 const buttonGroupOptions: ButtonGroupOption[] = [
   { icon: "img/icons/play.svg", name: "play" },

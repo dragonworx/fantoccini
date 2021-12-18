@@ -29,6 +29,9 @@
 
       & li {
         padding: $spacing_small ($spacing_small * 2);
+
+        .menu-subitem {
+        }
       }
 
       :global(& [data-component="label"]) {
@@ -83,6 +86,7 @@ let dispatch = createEventDispatcher();
 let containerEl: HTMLDivElement;
 let menuPositionEl: HTMLDivElement;
 let menuViewEl: HTMLUListElement;
+let activeIndex: number = -1;
 
 $: {
   if (isOpen && containerEl && menuViewEl) {
@@ -126,12 +130,22 @@ function select(index: number) {
   dispatch("select", index);
 }
 
-const onLIMouseOver = (index: number) => () => {
-  hoverIndex = index;
+function setHoverIndex(index: number) {
+  if (hoverIndex !== index) {
+    hoverIndex = index;
+    if (index > -1 && index !== activeIndex) {
+      activeIndex = index;
+      console.log(index);
+    }
+  }
+}
+
+const onLIMouseOver = (index: number) => (e: MouseEvent) => {
+  setHoverIndex(index);
 };
 
-const onLIMouseOut = (e: MouseEvent) => {
-  hoverIndex = -1;
+const onLIMouseOut = (index: number) => (e: MouseEvent) => {
+  setHoverIndex(-1);
 };
 
 const onLIMouseUp = (index: number) => () => {
@@ -171,10 +185,20 @@ const onLIMouseDown = (index: number) => () => {
             class:hover="{hoverIndex === i}"
             data-index="{i}"
             on:mouseover="{onLIMouseOver(i)}"
-            on:mouseout="{onLIMouseOut}"
+            on:mouseout="{onLIMouseOut(i)}"
             on:mouseup="{onLIMouseUp(i)}"
             on:mousedown="{onLIMouseDown(i)}">
-            <Label text="{option.label}" />
+            {#if activeIndex === i && options[i].menu}
+              <svelte:self
+                options="{options[i].menu}"
+                isOpen="{true}"
+                position="popout"
+                ><div class="menu-subitem">
+                  <Label text="{option.label}" />
+                </div></svelte:self>
+            {:else}
+              <Label text="{option.label}" />
+            {/if}
           </li>
         {/each}
       </ul>
