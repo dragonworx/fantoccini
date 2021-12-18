@@ -24,6 +24,10 @@ export function getIsOpen() {
   return isOpen;
 }
 
+export function blur() {
+  button.blur();
+}
+
 export function setIsOpen(value: boolean) {
   if (value === true) {
     onButtonDown();
@@ -32,19 +36,26 @@ export function setIsOpen(value: boolean) {
   }
 }
 
+export function focus() {
+  button.focus();
+}
+
 const dispatch = createEventDispatcher();
 let button: Button;
+let wasOpened = false;
 
 function open() {
   isOpen = true;
   hoverIndex = selectedIndex;
+  button.applyCustomDownStyle();
+  button.focus();
   dispatch("open");
 }
 
-function close() {
+function close(shouldDispatch: boolean = true) {
   isOpen = false;
   button.setIsDown(false);
-  dispatch("close");
+  shouldDispatch && dispatch("close");
   if (!retainSelection) {
     selectedIndex = hoverIndex = -1;
   }
@@ -61,15 +72,15 @@ function decrement() {
 
 function select(index: number) {
   selectedIndex = index;
-  setIsOpen(false);
+  options[selectedIndex].onSelect && options[selectedIndex].onSelect();
   dispatch("select", {
     index: selectedIndex,
-    value: options[selectedIndex],
+    option: options[selectedIndex],
   });
+  setIsOpen(false);
 }
 
 const onButtonDown = () => {
-  button.applyCustomDownStyle();
   open();
 
   if (trigger === "mouseup") {
@@ -84,19 +95,27 @@ const onButtonDown = () => {
 };
 
 const onButtonUp = () => {
-  close();
+  console.log(2, { wasOpened });
+  !wasOpened && close(false);
+  if (wasOpened) {
+    button.setIsDown(true);
+  }
 };
 
 const onButtonKeydown = (e: KeyboardEvent) => {
   const { key, shiftKey } = e;
+  wasOpened = false;
 
   if (isArrowKey(key)) {
     e.preventDefault();
     e.stopImmediatePropagation();
   }
 
-  if (isArrowVerticalKey(key) && !isOpen) {
+  if ((isArrowVerticalKey(key) || isAcceptKey(key)) && !isOpen) {
+    console.log("$!@$!");
     onButtonDown();
+    wasOpened = true;
+
     return;
   }
 
@@ -134,6 +153,11 @@ const onButtonKeyup = (e: KeyboardEvent) => {
       dispatch("accept");
       onMenuButtonAccept();
     }
+  }
+
+  if (trigger === "mouseup" && !wasOpened) {
+    console.log(1, { wasOpened });
+    button.setIsToggleDown(true);
   }
 };
 

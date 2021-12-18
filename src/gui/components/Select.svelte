@@ -29,6 +29,7 @@
 </style>
 
 <script lang="ts">
+import { createEventDispatcher } from "svelte";
 import { MenuItem } from "../types";
 import Icon from "./Icon.svelte";
 import Label from "./Label.svelte";
@@ -40,10 +41,15 @@ export let width: number = -1;
 export let selectedIndex: number = -1;
 export let placeholder: string = "";
 
+const dispatch = createEventDispatcher();
+
 $: style = `width:${width === -1 ? "auto" : `${width}px`}`;
 $: prompt = selectedIndex === -1 ? placeholder : options[selectedIndex].label;
 
 const onSelect = (e: CustomEvent) => {
+  if (selectedIndex !== e.detail.index) {
+    dispatch("change", e.detail);
+  }
   selectedIndex = e.detail.index;
 };
 </script>

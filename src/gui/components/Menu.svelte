@@ -122,6 +122,10 @@ $: {
   }
 }
 
+function select(index: number) {
+  dispatch("select", index);
+}
+
 const onLIMouseOver = (index: number) => () => {
   hoverIndex = index;
 };
@@ -133,14 +137,14 @@ const onLIMouseOut = (e: MouseEvent) => {
 const onLIMouseUp = (index: number) => () => {
   if (trigger === "mousedown") {
     hoverIndex = -1;
-    dispatch("select", index);
+    select(index);
   }
 };
 
 const onLIMouseDown = (index: number) => () => {
   if (trigger === "mouseup") {
     hoverIndex = -1;
-    dispatch("select", index);
+    select(index);
   }
 };
 </script>

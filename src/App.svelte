@@ -45,7 +45,7 @@ const radioOptions: RadioGroupOption[] = [
 const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 
 const simpleMenuOptions = [
-  { label: "Option 1" },
+  { label: "Action 1", onSelect: () => console.log("Action 1") },
   { label: "Option 2" },
   { label: "Option 3" },
 ];
@@ -68,10 +68,7 @@ function log(component: string, event: string, e?: CustomEvent) {
     `%c${component}🔆%c${event}%c${
       e
         ? ": " +
-          JSON.stringify(e.detail)
-            .replace(/[\[{()}\]]/g, "")
-            .replace(/,/g, ", ")
-            .replace(/:/g, ": ")
+          JSON.stringify(e.detail).replace(/,/g, ", ").replace(/:/g, ": ")
         : ""
     }`,
     "color:cyan",
@@ -416,7 +413,11 @@ function log(component: string, event: string, e?: CustomEvent) {
   </Section>
 
   <Section title="Menubar">
-    <MenuBar items="{simpleMenuBar}" />
+    <Events>
+      <MenuBar
+        items="{simpleMenuBar}"
+        on:select="{(e) => log('MenuBar', 'select', e)}" />
+    </Events>
   </Section>
 
   <Section title="Panel" />

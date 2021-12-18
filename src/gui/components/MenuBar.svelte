@@ -22,11 +22,16 @@
 </style>
 
 <script lang="ts">
-import { MenuBarItem } from "../types";
+import { createEventDispatcher } from "svelte";
+import { select_options } from "svelte/internal";
+import { isArrowHorizontalKey } from "../filters";
+import { MenuBarItem, MenuItem } from "../types";
 import Label from "./Label.svelte";
 import MenuButton from "./MenuButton.svelte";
 
 export let items: MenuBarItem[];
+
+const dispatch = createEventDispatcher();
 
 let currentLi: HTMLLIElement;
 let currentIndex: number = -1;
@@ -34,7 +39,7 @@ let menuButtons: MenuButton[] = [];
 
 function setCurrentIndex(i: number, li: HTMLLIElement) {
   let currentMenuButton = menuButtons[currentIndex];
-  const wasOpen = currentMenuButton.getIsOpen();
+  const wasOpen = currentMenuButton && currentMenuButton.getIsOpen();
   if (wasOpen) {
     currentMenuButton.setIsOpen(false);
   }
@@ -44,15 +49,15 @@ function setCurrentIndex(i: number, li: HTMLLIElement) {
   if (wasOpen) {
     currentMenuButton.setIsOpen(true);
   }
+  currentMenuButton.focus();
 }
 
 const onMouseOver = (i: number) => (e: MouseEvent) => {
   if (currentIndex === -1) {
-    currentLi = e.currentTarget as HTMLLIElement;
-    currentIndex = i;
+    setCurrentIndex(i, e.currentTarget as HTMLLIElement);
   } else {
-    if (!currentLi.contains(e.target as Node)) {
-      setCurrentIndex(i, e.target as HTMLLIElement);
+    if (!currentLi.contains(e.currentTarget as Node)) {
+      setCurrentIndex(i, e.currentTarget as HTMLLIElement);
     }
   }
 };
@@ -70,12 +75,22 @@ const onMenuKeyDown = (e: KeyboardEvent) => {
       currentLi.nextElementSibling as HTMLLIElement
     );
   }
+  if (isArrowHorizontalKey(key)) {
+    const currentMenuButton = menuButtons[currentIndex];
+  }
 };
 
 const onMenuClose = () => {
-  // currentIndex = -1;
-  // currentLi = undefined;
+  const currentMenuButton = menuButtons[currentIndex];
+  currentMenuButton.blur();
+  currentIndex = -1;
+  currentLi = undefined;
 };
+
+const onSelect = (e: CustomEvent) => {
+  dispatch("select", e.detail);
+};
+const onMenuButtonDown = () => {};
 </script>
 
 <ul class="menubar" data-component="menubar">
@@ -88,8 +103,10 @@ const onMenuClose = () => {
         noStyle="{true}"
         customClasses="{{ down: 'menubar-down' }}"
         trigger="mouseup"
+        on:pushed="{onMenuButtonDown}"
         on:keydown="{onMenuKeyDown}"
-        on:close="{onMenuClose}">
+        on:close="{onMenuClose}"
+        on:select="{onSelect}">
         <Label text="{label}" fontSize="{11}" />
       </MenuButton>
     </li>

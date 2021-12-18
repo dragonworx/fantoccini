@@ -154,6 +154,10 @@ export function focus() {
   buttonEl.focus();
 }
 
+export function blur() {
+  buttonEl.blur();
+}
+
 export function click() {
   onMouseDown();
 }
@@ -167,8 +171,13 @@ export function setIsDown(value: boolean) {
   isToggleDown = value;
   if (value === false) {
     clearCustomClasses();
+  } else {
+    buttonEl.focus();
   }
-  buttonEl.focus();
+}
+
+export function setIsToggleDown(value: boolean) {
+  isToggleDown = value;
 }
 
 export function getIsDown() {

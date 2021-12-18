@@ -20,10 +20,11 @@ export interface ButtonGroupOption {
 
 export type MenuItem = {
   label: string;
-  enabled?: boolean;
+  isEnabled?: boolean;
   value?: any;
   icon?: string;
   shortcut?: string;
+  onSelect?: () => void;
 };
 
 export type MenuPosition = "dropdown" | "popout";
