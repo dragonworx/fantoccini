@@ -50,8 +50,6 @@ const simpleMenuOptions = [
   { label: "Option 3" },
 ];
 
-const simpleSelectOptions = simpleMenuOptions.map((option) => option.label);
-
 const buttonGroupOptions: ButtonGroupOption[] = [
   { icon: "img/icons/play.svg", name: "play" },
   { icon: "img/icons/pause.svg", name: "pause" },
@@ -373,15 +371,15 @@ function log(component: string, event: string, e?: CustomEvent) {
   <Section title="Select">
     <Events
       ><Select
-        options="{simpleSelectOptions}"
+        options="{simpleMenuOptions}"
         on:change="{(e) => log('Select', 'change', e)}" /></Events>
     <Events mute="{true}"
       ><Select
         isEnabled="{false}"
-        options="{simpleSelectOptions}"
+        options="{simpleMenuOptions}"
         selectedIndex="{1}"
         on:change="{(e) => log('Select', 'change', e)}" /></Events>
-    <Select options="{simpleSelectOptions}" width="{100}" />
+    <Select options="{simpleMenuOptions}" width="{100}" />
   </Section>
 
   <Section title="ScrollBar">

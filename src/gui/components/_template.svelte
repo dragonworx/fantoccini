@@ -4,7 +4,7 @@
 }
 </style>
 
-<script context="module">
+<script lang="ts" context="module">
 export const staticVar = 500;
 </script>
 

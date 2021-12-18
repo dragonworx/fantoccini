@@ -131,10 +131,8 @@ const onLIMouseOut = (e: MouseEvent) => {
 };
 
 const onLIMouseUp = (index: number) => () => {
-  if (trigger === "mousedown") {
-    hoverIndex = -1;
-    dispatch("select", index);
-  }
+  hoverIndex = -1;
+  dispatch("select", index);
 };
 
 const onLIMouseDown = (index: number) => () => {

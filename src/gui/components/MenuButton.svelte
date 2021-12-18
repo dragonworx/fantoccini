@@ -53,7 +53,10 @@ function decrement() {
 function select(index: number) {
   selectedIndex = index;
   setIsOpen(false);
-  dispatch("select", { index: selectedIndex, value: options[selectedIndex] });
+  dispatch("select", {
+    index: selectedIndex,
+    value: options[selectedIndex],
+  });
 }
 
 const onButtonDown = () => {

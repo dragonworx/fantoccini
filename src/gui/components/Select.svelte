@@ -29,72 +29,22 @@
 </style>
 
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
+import { MenuItem } from "../types";
 import Icon from "./Icon.svelte";
 import Label from "./Label.svelte";
 import MenuButton from "./MenuButton.svelte";
 
 export let isEnabled: boolean = true;
-export let options: string[];
+export let options: MenuItem[];
 export let width: number = -1;
 export let selectedIndex: number = -1;
 export let placeholder: string = "";
 
-let dispatch = createEventDispatcher();
-let menuButton: MenuButton;
-let hoverIndex: number = selectedIndex;
-
 $: style = `width:${width === -1 ? "auto" : `${width}px`}`;
-$: prompt = selectedIndex === -1 ? placeholder : options[selectedIndex];
-
-function increment() {
-  hoverIndex = Math.min(options.length - 1, hoverIndex + 1);
-}
-
-function decrement() {
-  hoverIndex = Math.max(0, hoverIndex - 1);
-}
-
-function select(index: number) {
-  selectedIndex = index;
-  menuButton.setIsOpen(false);
-  dispatch("change", { index: selectedIndex, value: options[selectedIndex] });
-}
+$: prompt = selectedIndex === -1 ? placeholder : options[selectedIndex].label;
 
 const onSelect = (e: CustomEvent) => {
-  select(e.detail);
-};
-
-const onMenuButtonKeydown = (e: KeyboardEvent) => {
-  const { key, shiftKey } = e;
-  if (key === "ArrowDown") {
-    if (menuButton.getIsOpen()) {
-      increment();
-    } else {
-      hoverIndex = selectedIndex;
-    }
-  } else if (key === "ArrowUp") {
-    if (menuButton.getIsOpen()) {
-      decrement();
-    } else {
-      hoverIndex = Math.min(options.length - 1, hoverIndex);
-    }
-  } else if (key === "Tab" && menuButton.getIsOpen()) {
-    if (shiftKey) {
-      decrement();
-    } else {
-      increment();
-    }
-    e.preventDefault();
-  } else if (key === "Escape") {
-    menuButton.setIsOpen(false);
-  }
-};
-
-const onMenuButtonAccept = () => {
-  if (hoverIndex > -1) {
-    select(hoverIndex);
-  }
+  selectedIndex = e.detail.index;
 };
 </script>
 
@@ -105,14 +55,11 @@ const onMenuButtonAccept = () => {
   data-component="select"
   style="{style}">
   <MenuButton
-    bind:this="{menuButton}"
     isEnabled="{isEnabled}"
-    options="{options.map((value) => ({ label: value }))}"
+    options="{options}"
     trigger="{'mouseup'}"
     selectedIndex="{selectedIndex}"
-    hoverIndex="{hoverIndex}"
-    on:accept="{onMenuButtonAccept}"
-    on:keydown="{onMenuButtonKeydown}"
+    on:select
     on:select="{onSelect}">
     <div class="select-content">
       <Label text="{String(prompt)}" />
