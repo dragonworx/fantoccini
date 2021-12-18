@@ -23,6 +23,7 @@
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
+import { isAcceptKey } from "../filters";
 import { MenuBarItem } from "../types";
 import Label from "./Label.svelte";
 import MenuButton from "./MenuButton.svelte";
@@ -68,21 +69,23 @@ const onKeyDown = (e: KeyboardEvent) => {
   }
 };
 
-const onFocus = (i: number) => () => {
-  currentIndex = i;
+const onKeyUp = (e: KeyboardEvent) => {
+  if (isAcceptKey(e.key)) {
+    menuButtons[currentIndex].getButton().blur();
+  }
 };
 
-const onOpen = (i: number) => () => {
-  currentIndex = i;
-};
-
-const onClose = () => {
-  menuButtons[currentIndex].getButton().blur();
-  currentIndex = -1;
+const onFocusOrOpen = (i: number) => () => {
+  if (currentIndex !== i) {
+    setCurrentIndex(i);
+  }
 };
 
 const onSelect = (e: CustomEvent) => {
-  dispatch("select", e.detail);
+  dispatch("select", {
+    menu: items[currentIndex],
+    option: e.detail,
+  });
 };
 </script>
 
@@ -97,9 +100,9 @@ const onSelect = (e: CustomEvent) => {
         customClasses="{{ down: 'menubar-down' }}"
         trigger="mouseup"
         on:keydown="{onKeyDown}"
-        on:focus="{onFocus(i)}"
-        on:open="{onOpen(i)}"
-        on:close="{onClose}"
+        on:keyup="{onKeyUp}"
+        on:focus="{onFocusOrOpen(i)}"
+        on:open="{onFocusOrOpen(i)}"
         on:select="{onSelect}">
         <Label text="{label}" fontSize="{11}" />
       </MenuButton>
