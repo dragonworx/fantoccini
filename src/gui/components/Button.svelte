@@ -165,6 +165,9 @@ export function containsEvent(e: MouseEvent) {
 export function setIsDown(value: boolean) {
   isDown = value;
   isToggleDown = value;
+  if (value === false) {
+    clearCustomClasses();
+  }
 }
 
 export function getIsDown() {
@@ -172,6 +175,12 @@ export function getIsDown() {
     isDown,
     isToggleDown,
   };
+}
+
+export function clearCustomClasses() {
+  if (customClasses.down) {
+    buttonEl.classList.remove(customClasses.down);
+  }
 }
 
 const dispatch = createEventDispatcher();
@@ -189,26 +198,35 @@ $: {
   style = css || undefined;
 }
 
+export function applyCustomDownStyle() {
+  if (customClasses.down) {
+    buttonEl.classList.add(customClasses.down);
+  }
+}
+
 function down() {
   isDown = true;
+  applyCustomDownStyle();
   dispatch("down");
 }
 
-function up() {}
+function up() {
+  isDown = false;
+  clearCustomClasses();
+  dispatch("up");
+}
 
 const onMouseDown = () => {
   if (isEnabled) {
     if (canToggle) {
       dispatch("pushed");
       if (!isDown) {
-        isDown = true;
         isToggleDown = false;
-        dispatch("down");
+        down();
       }
     } else {
-      isDown = true;
       dispatch("pushed");
-      dispatch("down");
+      down();
     }
     window.addEventListener("mouseup", onMouseUp);
     pressTimeout = setTimeout(() => {
@@ -221,11 +239,10 @@ const onMouseUp = () => {
   if (canToggle) {
     if (isToggleDown) {
       if (isDown && !hasToggleLock) {
-        isDown = false;
         isToggleDown = false;
+        up();
         dispatch("toggle", false);
         dispatch("change", false);
-        dispatch("up");
       }
     } else {
       isToggleDown = true;
@@ -234,8 +251,7 @@ const onMouseUp = () => {
     }
   } else {
     if (!isControlled) {
-      isDown = false;
-      dispatch("up");
+      up();
     }
   }
   window.removeEventListener("mouseup", onMouseUp);

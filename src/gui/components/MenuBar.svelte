@@ -15,15 +15,13 @@
     margin: 0;
   }
 }
+
+:global([data-component="button"].menubar-down) {
+  background: linear-gradient(0deg, #2f343c 0, #1d2127 100%) !important;
+}
 </style>
 
-<script context="module">
-export const staticVar = 500;
-</script>
-
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
-import { fade } from "svelte/transition";
 import { MenuBarItem } from "../types";
 import Label from "./Label.svelte";
 import MenuButton from "./MenuButton.svelte";

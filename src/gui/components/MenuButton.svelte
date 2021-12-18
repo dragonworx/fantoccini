@@ -27,8 +27,10 @@ export function getIsOpen() {
 export function setIsOpen(value: boolean) {
   isOpen = value;
   button.setIsDown(value);
-  if (value) {
+  if (value === true) {
     onButtonDown();
+  } else {
+    button.clearCustomClasses();
   }
 }
 
@@ -68,6 +70,7 @@ function select(index: number) {
 }
 
 const onButtonDown = () => {
+  button.applyCustomDownStyle();
   open();
 
   if (trigger === "mouseup") {
