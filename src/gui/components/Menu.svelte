@@ -84,6 +84,8 @@ let containerEl: HTMLDivElement;
 let menuPositionEl: HTMLDivElement;
 let menuViewEl: HTMLUListElement;
 
+// $: console.log("menu", { selectedIndex, hoverIndex });
+
 $: {
   if (isOpen && containerEl && menuViewEl) {
     const containerRect = containerEl.getBoundingClientRect();
@@ -131,8 +133,10 @@ const onLIMouseOut = (e: MouseEvent) => {
 };
 
 const onLIMouseUp = (index: number) => () => {
-  hoverIndex = -1;
-  dispatch("select", index);
+  if (trigger === "mousedown") {
+    hoverIndex = -1;
+    dispatch("select", index);
+  }
 };
 
 const onLIMouseDown = (index: number) => () => {

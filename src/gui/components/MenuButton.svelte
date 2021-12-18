@@ -17,6 +17,7 @@ export let trigger: MenuTrigger = "mousedown";
 export let position: MenuPosition = "dropdown";
 export let isOpen: boolean = false;
 export let noStyle: boolean = false;
+export let retainSelection: boolean = false;
 
 export function getIsOpen() {
   return isOpen;
@@ -30,6 +31,8 @@ export function setIsOpen(value: boolean) {
 const dispatch = createEventDispatcher();
 let button: Button;
 
+// $: console.log("menubutton", { selectedIndex, hoverIndex });
+
 function open() {
   isOpen = true;
   hoverIndex = selectedIndex;
@@ -40,6 +43,9 @@ function close() {
   isOpen = false;
   button.setIsDown(false);
   dispatch("close");
+  if (!retainSelection) {
+    selectedIndex = hoverIndex = -1;
+  }
 }
 
 function increment() {

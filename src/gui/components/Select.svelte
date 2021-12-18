@@ -59,6 +59,7 @@ const onSelect = (e: CustomEvent) => {
     options="{options}"
     trigger="{'mouseup'}"
     selectedIndex="{selectedIndex}"
+    retainSelection="{true}"
     on:select
     on:select="{onSelect}">
     <div class="select-content">
