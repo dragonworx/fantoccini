@@ -162,8 +162,8 @@ export function click() {
   onMouseDown();
 }
 
-export function containsEvent(e: MouseEvent) {
-  return buttonEl.contains(e.target as Node);
+export function containsEvent(node: Node) {
+  return buttonEl.contains(node);
 }
 
 export function setIsDown(value: boolean) {

@@ -31,6 +31,26 @@ export function open() {
   isOpen = true;
   button.setIsDown(true);
   dispatch("open");
+
+  setTimeout(() => {
+    const onMouseDown = (e: MouseEvent) => {
+      if (!button.containsEvent(e.target as Node)) {
+        close();
+      }
+      window.removeEventListener("mousedown", onMouseDown);
+    };
+    window.addEventListener("mousedown", onMouseDown);
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Tab" || e.key === "Shift") {
+        return;
+      }
+      if (!button.containsEvent(e.target as Node)) {
+        close();
+      }
+      window.removeEventListener("keydown", onKeyDown);
+    };
+    window.addEventListener("keydown", onKeyDown);
+  }, 0);
 }
 
 export function close() {
@@ -83,13 +103,6 @@ const onToggle = (e: CustomEvent) => {
   if (trigger === "mouseup") {
     if (e.detail) {
       open();
-      const handler = (e: MouseEvent) => {
-        if (!button.containsEvent(e)) {
-          close();
-        }
-        window.removeEventListener("mousedown", handler);
-      };
-      window.addEventListener("mousedown", handler);
     } else {
       close();
     }
