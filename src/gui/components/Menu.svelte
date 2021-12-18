@@ -84,8 +84,6 @@ let containerEl: HTMLDivElement;
 let menuPositionEl: HTMLDivElement;
 let menuViewEl: HTMLUListElement;
 
-// $: console.log("menu", { selectedIndex, hoverIndex });
-
 $: {
   if (isOpen && containerEl && menuViewEl) {
     const containerRect = containerEl.getBoundingClientRect();

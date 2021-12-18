@@ -148,6 +148,7 @@ export let padding: number = 0;
 export let type: string = "button";
 export let longPressDuration: number = defaultLongPressDuration;
 export let noStyle: boolean = false;
+export let customClasses: { down?: string } = {};
 
 export function focus() {
   buttonEl.focus();
@@ -187,6 +188,13 @@ $: {
   if (padding) css += `padding: ${padding}px;`;
   style = css || undefined;
 }
+
+function down() {
+  isDown = true;
+  dispatch("down");
+}
+
+function up() {}
 
 const onMouseDown = () => {
   if (isEnabled) {

@@ -30,17 +30,42 @@ import MenuButton from "./MenuButton.svelte";
 
 export let items: MenuBarItem[];
 
-export function api() {}
+let currentLi: HTMLLIElement;
+let currentIndex: number = -1;
+let menuButtons: MenuButton[] = [];
 
-let local;
-
-const onHandler = () => {};
+const onMouseOver = (i: number) => (e: MouseEvent) => {
+  if (currentIndex === -1) {
+    currentLi = e.currentTarget as HTMLLIElement;
+    currentIndex = i;
+  } else {
+    if (!currentLi.contains(e.target as Node)) {
+      let currentMenuButton = menuButtons[currentIndex];
+      const wasOpen = currentMenuButton.getIsOpen();
+      if (wasOpen) {
+        currentMenuButton.setIsOpen(false);
+      }
+      currentIndex = i;
+      currentLi = e.target as HTMLLIElement;
+      currentMenuButton = menuButtons[currentIndex];
+      if (wasOpen) {
+        currentMenuButton.setIsOpen(true);
+      }
+    }
+  }
+};
 </script>
 
 <ul class="menubar" data-component="menubar">
   {#each items as { label, menu }, i}
-    <li>
-      <MenuButton options="{menu}" noStyle="{true}" trigger="mouseup">
+    <!-- svelte-ignore a11y-mouse-events-have-key-events -->
+    <li on:mouseover="{onMouseOver(i)}">
+      <MenuButton
+        bind:this="{menuButtons[i]}"
+        options="{menu}"
+        noStyle="{true}"
+        customClasses="{{ down: 'menubar-down' }}"
+        trigger="mouseup">
         <Label text="{label}" fontSize="{11}" />
       </MenuButton>
     </li>

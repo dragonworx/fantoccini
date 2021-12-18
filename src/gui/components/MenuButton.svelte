@@ -18,6 +18,7 @@ export let position: MenuPosition = "dropdown";
 export let isOpen: boolean = false;
 export let noStyle: boolean = false;
 export let retainSelection: boolean = false;
+export let customClasses: { down?: string } = {};
 
 export function getIsOpen() {
   return isOpen;
@@ -26,12 +27,13 @@ export function getIsOpen() {
 export function setIsOpen(value: boolean) {
   isOpen = value;
   button.setIsDown(value);
+  if (value) {
+    onButtonDown();
+  }
 }
 
 const dispatch = createEventDispatcher();
 let button: Button;
-
-// $: console.log("menubutton", { selectedIndex, hoverIndex });
 
 function open() {
   isOpen = true;
@@ -159,6 +161,7 @@ const onSelect = (e: CustomEvent) => {
     canToggle="{trigger === 'mouseup'}"
     isEnabled="{isEnabled}"
     noStyle="{noStyle}"
+    customClasses="{customClasses}"
     on:pushed
     on:down="{onButtonDown}"
     on:up="{onButtonUp}"
