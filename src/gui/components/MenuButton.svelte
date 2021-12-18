@@ -20,46 +20,34 @@ export let noStyle: boolean = false;
 export let retainSelection: boolean = false;
 export let customClasses: { down?: string } = {};
 
+const dispatch = createEventDispatcher();
+let button: Button;
+
 export function getIsOpen() {
   return isOpen;
 }
 
-export function blur() {
-  button.blur();
-}
-
-export function setIsOpen(value: boolean) {
-  if (value === true) {
-    onButtonDown();
-  } else {
-    close();
-  }
-}
-
-export function focus() {
-  button.focus();
-}
-
-const dispatch = createEventDispatcher();
-let button: Button;
-let wasOpened = false;
-
-function open() {
+export function open() {
   isOpen = true;
-  hoverIndex = selectedIndex;
-  button.applyCustomDownStyle();
-  button.focus();
+  button.setIsDown(true);
   dispatch("open");
 }
 
-function close(shouldDispatch: boolean = true) {
+export function close() {
   isOpen = false;
   button.setIsDown(false);
-  shouldDispatch && dispatch("close");
   if (!retainSelection) {
     selectedIndex = hoverIndex = -1;
   }
-  button.clearCustomClasses();
+  dispatch("close");
+}
+
+export function getButton() {
+  return button;
+}
+
+export function clearSelection() {
+  hoverIndex = selectedIndex = -1;
 }
 
 function increment() {
@@ -71,104 +59,60 @@ function decrement() {
 }
 
 function select(index: number) {
-  selectedIndex = index;
-  options[selectedIndex].onSelect && options[selectedIndex].onSelect();
-  dispatch("select", {
-    index: selectedIndex,
-    option: options[selectedIndex],
-  });
-  setIsOpen(false);
+  const option = options[index];
+  option.onSelect && option.onSelect();
+  dispatch("select", { index, option });
+  if (retainSelection) {
+    selectedIndex = hoverIndex = index;
+  }
 }
 
-const onButtonDown = () => {
-  open();
+const onDown = () => {
+  if (trigger === "mousedown") {
+    open();
+  }
+};
 
+const onUp = () => {
+  if (trigger === "mousedown") {
+    close();
+  }
+};
+
+const onToggle = (e: CustomEvent) => {
   if (trigger === "mouseup") {
-    const handler = (e: MouseEvent) => {
-      if (!button.containsEvent(e)) {
-        onButtonUp();
-      }
-      window.removeEventListener("mousedown", handler);
-    };
-    setTimeout(() => window.addEventListener("mousedown", handler), 0);
-  }
-};
-
-const onButtonUp = () => {
-  console.log(2, { wasOpened });
-  !wasOpened && close(false);
-  if (wasOpened) {
-    button.setIsDown(true);
-  }
-};
-
-const onButtonKeydown = (e: KeyboardEvent) => {
-  const { key, shiftKey } = e;
-  wasOpened = false;
-
-  if (isArrowKey(key)) {
-    e.preventDefault();
-    e.stopImmediatePropagation();
-  }
-
-  if ((isArrowVerticalKey(key) || isAcceptKey(key)) && !isOpen) {
-    console.log("$!@$!");
-    onButtonDown();
-    wasOpened = true;
-
-    return;
-  }
-
-  if (key === "ArrowDown") {
-    if (isOpen) {
-      increment();
+    if (e.detail) {
+      open();
+      const handler = (e: MouseEvent) => {
+        if (!button.containsEvent(e)) {
+          close();
+        }
+        window.removeEventListener("mousedown", handler);
+      };
+      window.addEventListener("mousedown", handler);
     } else {
-      hoverIndex = selectedIndex;
+      close();
     }
-  } else if (key === "ArrowUp") {
-    if (isOpen) {
-      decrement();
-    } else {
-      hoverIndex = Math.min(options.length - 1, hoverIndex);
-    }
-  } else if (key === "Tab" && isOpen) {
-    if (shiftKey) {
-      decrement();
-    } else {
-      increment();
-    }
-    e.preventDefault();
-  } else if (key === "Escape") {
-    setIsOpen(false);
-  }
-};
-
-const onButtonKeyup = (e: KeyboardEvent) => {
-  if (isAcceptKey(e.key)) {
-    const { isToggleDown } = button.getIsDown();
-    if (
-      (hoverIndex > -1 && isToggleDown && trigger === "mouseup") ||
-      trigger === "mousedown"
-    ) {
-      dispatch("accept");
-      onMenuButtonAccept();
-    }
-  }
-
-  if (trigger === "mouseup" && !wasOpened) {
-    console.log(1, { wasOpened });
-    button.setIsToggleDown(true);
-  }
-};
-
-const onMenuButtonAccept = () => {
-  if (hoverIndex > -1) {
-    select(hoverIndex);
   }
 };
 
 const onSelect = (e: CustomEvent) => {
   select(e.detail);
+};
+
+const onKeyDown = (e: KeyboardEvent) => {
+  const { key } = e;
+  if (key === "ArrowUp" && isOpen) {
+    decrement();
+  } else if (key === "ArrowDown") {
+    if (!isOpen) {
+      open();
+      return;
+    }
+    isOpen && increment();
+  } else if (isAcceptKey(key) && isOpen) {
+    hoverIndex > -1 && select(hoverIndex);
+  }
 };
 </script>
 
@@ -183,19 +127,23 @@ const onSelect = (e: CustomEvent) => {
   on:select="{onSelect}"
   ><Button
     bind:this="{button}"
-    isDown="{isOpen}"
-    canToggle="{trigger === 'mouseup'}"
     isEnabled="{isEnabled}"
+    canToggle="{trigger === 'mouseup'}"
     noStyle="{noStyle}"
     customClasses="{customClasses}"
     on:pushed
-    on:down="{onButtonDown}"
-    on:up="{onButtonUp}"
-    on:mouseover
-    on:mouseout
+    on:down="{onDown}"
+    on:down
+    on:up="{onUp}"
+    on:up
+    on:toggle="{onToggle}"
+    on:toggle
     on:keydown
-    on:keydown="{onButtonKeydown}"
-    on:keyup="{onButtonKeyup}"
-    on:keyup>
+    on:keydown="{onKeyDown}"
+    on:keyup
+    on:focus
+    on:blur
+    on:mouseover
+    on:mouseout>
     <slot />
   </Button></Menu>

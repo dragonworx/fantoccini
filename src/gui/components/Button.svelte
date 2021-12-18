@@ -135,7 +135,7 @@ export const defaultLongPressDuration = 500;
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import { isAcceptKey } from "../filters";
+import { isAcceptKey, isArrowKey, isArrowVerticalKey } from "../filters";
 export let isEnabled: boolean = true;
 export let canToggle: boolean = false;
 export let isControlled: boolean = false;
@@ -172,12 +172,9 @@ export function setIsDown(value: boolean) {
   if (value === false) {
     clearCustomClasses();
   } else {
+    applyCustomDownStyle();
     buttonEl.focus();
   }
-}
-
-export function setIsToggleDown(value: boolean) {
-  isToggleDown = value;
 }
 
 export function getIsDown() {
@@ -271,17 +268,26 @@ const onMouseUp = () => {
 };
 
 const onKeyDown = (e: KeyboardEvent) => {
-  if (isEnabled && !isDown && isAcceptKey(e.key)) {
-    onMouseDown();
+  if (isEnabled) {
+    const { key } = e;
+    if (!isDown && isAcceptKey(key)) {
+      onMouseDown();
+    }
+    if (isAcceptKey(key) || isArrowKey(key)) {
+      e.preventDefault();
+    }
   }
 };
 
 const onKeyUp = (e: KeyboardEvent) => {
-  if (isEnabled && isAcceptKey(e.key)) {
-    onMouseUp();
-  }
-  if (e.key === "Escape") {
-    buttonEl.blur();
+  if (isEnabled) {
+    const { key } = e;
+    if (isAcceptKey(key)) {
+      onMouseUp();
+    }
+    if (e.key === "Escape") {
+      buttonEl.blur();
+    }
   }
 };
 </script>

@@ -45,7 +45,7 @@ const radioOptions: RadioGroupOption[] = [
 const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 
 const simpleMenuOptions = [
-  { label: "Action 1", onSelect: () => console.log("Action 1") },
+  { label: "Action 1", onSelect: () => console.log("Action 1!") },
   { label: "Option 2" },
   { label: "Option 3" },
 ];

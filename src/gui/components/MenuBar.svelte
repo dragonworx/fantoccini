@@ -23,9 +23,7 @@
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import { select_options } from "svelte/internal";
-import { isArrowHorizontalKey } from "../filters";
-import { MenuBarItem, MenuItem } from "../types";
+import { MenuBarItem } from "../types";
 import Label from "./Label.svelte";
 import MenuButton from "./MenuButton.svelte";
 
@@ -33,79 +31,75 @@ export let items: MenuBarItem[];
 
 const dispatch = createEventDispatcher();
 
-let currentLi: HTMLLIElement;
 let currentIndex: number = -1;
 let menuButtons: MenuButton[] = [];
+let liElements: HTMLLIElement[] = [];
 
-function setCurrentIndex(i: number, li: HTMLLIElement) {
+function setCurrentIndex(i: number) {
   let currentMenuButton = menuButtons[currentIndex];
   const wasOpen = currentMenuButton && currentMenuButton.getIsOpen();
   if (wasOpen) {
-    currentMenuButton.setIsOpen(false);
+    currentMenuButton.close();
   }
   currentIndex = i;
-  currentLi = li;
   currentMenuButton = menuButtons[currentIndex];
   if (wasOpen) {
-    currentMenuButton.setIsOpen(true);
+    currentMenuButton.open();
   }
-  currentMenuButton.focus();
+  currentMenuButton.getButton().focus();
 }
 
 const onMouseOver = (i: number) => (e: MouseEvent) => {
   if (currentIndex === -1) {
-    setCurrentIndex(i, e.currentTarget as HTMLLIElement);
+    setCurrentIndex(i);
   } else {
-    if (!currentLi.contains(e.currentTarget as Node)) {
-      setCurrentIndex(i, e.currentTarget as HTMLLIElement);
+    if (!liElements[currentIndex].contains(e.currentTarget as Node)) {
+      setCurrentIndex(i);
     }
   }
 };
 
-const onMenuKeyDown = (e: KeyboardEvent) => {
+const onKeyDown = (e: KeyboardEvent) => {
   const { key } = e;
   if (key === "ArrowLeft" && currentIndex > 0) {
-    setCurrentIndex(
-      currentIndex - 1,
-      currentLi.previousElementSibling as HTMLLIElement
-    );
+    setCurrentIndex(currentIndex - 1);
   } else if (key === "ArrowRight" && currentIndex < items.length - 1) {
-    setCurrentIndex(
-      currentIndex + 1,
-      currentLi.nextElementSibling as HTMLLIElement
-    );
-  }
-  if (isArrowHorizontalKey(key)) {
-    const currentMenuButton = menuButtons[currentIndex];
+    setCurrentIndex(currentIndex + 1);
   }
 };
 
-const onMenuClose = () => {
-  const currentMenuButton = menuButtons[currentIndex];
-  currentMenuButton.blur();
+const onFocus = (i: number) => () => {
+  currentIndex = i;
+};
+
+const onOpen = (i: number) => () => {
+  currentIndex = i;
+};
+
+const onClose = () => {
+  menuButtons[currentIndex].getButton().blur();
   currentIndex = -1;
-  currentLi = undefined;
 };
 
 const onSelect = (e: CustomEvent) => {
   dispatch("select", e.detail);
 };
-const onMenuButtonDown = () => {};
 </script>
 
 <ul class="menubar" data-component="menubar">
   {#each items as { label, menu }, i}
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-    <li on:mouseover="{onMouseOver(i)}">
+    <li bind:this="{liElements[i]}" on:mouseover="{onMouseOver(i)}">
       <MenuButton
         bind:this="{menuButtons[i]}"
         options="{menu}"
         noStyle="{true}"
         customClasses="{{ down: 'menubar-down' }}"
         trigger="mouseup"
-        on:pushed="{onMenuButtonDown}"
-        on:keydown="{onMenuKeyDown}"
-        on:close="{onMenuClose}"
+        on:keydown="{onKeyDown}"
+        on:focus="{onFocus(i)}"
+        on:open="{onOpen(i)}"
+        on:close="{onClose}"
         on:select="{onSelect}">
         <Label text="{label}" fontSize="{11}" />
       </MenuButton>
