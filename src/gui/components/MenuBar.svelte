@@ -1,7 +1,7 @@
 <style lang="scss">
 @import "../theme";
 .menubar {
-  @include linear_gradient(#40404e, #1f232c);
+  @include linear_gradient(#40404e, #1f232c, 180deg);
   width: 100%;
   list-style: none;
   margin: 0;
@@ -32,25 +32,49 @@ let currentLi: HTMLLIElement;
 let currentIndex: number = -1;
 let menuButtons: MenuButton[] = [];
 
+function setCurrentIndex(i: number, li: HTMLLIElement) {
+  let currentMenuButton = menuButtons[currentIndex];
+  const wasOpen = currentMenuButton.getIsOpen();
+  if (wasOpen) {
+    currentMenuButton.setIsOpen(false);
+  }
+  currentIndex = i;
+  currentLi = li;
+  currentMenuButton = menuButtons[currentIndex];
+  if (wasOpen) {
+    currentMenuButton.setIsOpen(true);
+  }
+}
+
 const onMouseOver = (i: number) => (e: MouseEvent) => {
   if (currentIndex === -1) {
     currentLi = e.currentTarget as HTMLLIElement;
     currentIndex = i;
   } else {
     if (!currentLi.contains(e.target as Node)) {
-      let currentMenuButton = menuButtons[currentIndex];
-      const wasOpen = currentMenuButton.getIsOpen();
-      if (wasOpen) {
-        currentMenuButton.setIsOpen(false);
-      }
-      currentIndex = i;
-      currentLi = e.target as HTMLLIElement;
-      currentMenuButton = menuButtons[currentIndex];
-      if (wasOpen) {
-        currentMenuButton.setIsOpen(true);
-      }
+      setCurrentIndex(i, e.target as HTMLLIElement);
     }
   }
+};
+
+const onMenuKeyDown = (e: KeyboardEvent) => {
+  const { key } = e;
+  if (key === "ArrowLeft" && currentIndex > 0) {
+    setCurrentIndex(
+      currentIndex - 1,
+      currentLi.previousElementSibling as HTMLLIElement
+    );
+  } else if (key === "ArrowRight" && currentIndex < items.length - 1) {
+    setCurrentIndex(
+      currentIndex + 1,
+      currentLi.nextElementSibling as HTMLLIElement
+    );
+  }
+};
+
+const onMenuClose = () => {
+  // currentIndex = -1;
+  // currentLi = undefined;
 };
 </script>
 
@@ -63,7 +87,9 @@ const onMouseOver = (i: number) => (e: MouseEvent) => {
         options="{menu}"
         noStyle="{true}"
         customClasses="{{ down: 'menubar-down' }}"
-        trigger="mouseup">
+        trigger="mouseup"
+        on:keydown="{onMenuKeyDown}"
+        on:close="{onMenuClose}">
         <Label text="{label}" fontSize="{11}" />
       </MenuButton>
     </li>

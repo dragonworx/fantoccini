@@ -25,12 +25,10 @@ export function getIsOpen() {
 }
 
 export function setIsOpen(value: boolean) {
-  isOpen = value;
-  button.setIsDown(value);
   if (value === true) {
     onButtonDown();
   } else {
-    button.clearCustomClasses();
+    close();
   }
 }
 
@@ -50,6 +48,7 @@ function close() {
   if (!retainSelection) {
     selectedIndex = hoverIndex = -1;
   }
+  button.clearCustomClasses();
 }
 
 function increment() {

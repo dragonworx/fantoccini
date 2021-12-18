@@ -168,6 +168,7 @@ export function setIsDown(value: boolean) {
   if (value === false) {
     clearCustomClasses();
   }
+  buttonEl.focus();
 }
 
 export function getIsDown() {
@@ -218,6 +219,7 @@ function up() {
 
 const onMouseDown = () => {
   if (isEnabled) {
+    buttonEl.focus();
     if (canToggle) {
       dispatch("pushed");
       if (!isDown) {
@@ -268,6 +270,9 @@ const onKeyDown = (e: KeyboardEvent) => {
 const onKeyUp = (e: KeyboardEvent) => {
   if (isEnabled && isAcceptKey(e.key)) {
     onMouseUp();
+  }
+  if (e.key === "Escape") {
+    buttonEl.blur();
   }
 };
 </script>
