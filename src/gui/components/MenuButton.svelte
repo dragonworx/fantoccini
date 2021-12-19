@@ -5,9 +5,9 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
-import Menu from "./Menu.svelte";
+import Menu, { MenuListener } from "./Menu.svelte";
 import { MenuItem, MenuPosition, MenuTrigger } from "../types";
-import { isAcceptKey } from "../filters";
+import { isAcceptKey, isModifier } from "../filters";
 
 export let isEnabled: boolean = true;
 export let options: MenuItem[];
@@ -20,6 +20,7 @@ export let noStyle: boolean = false;
 export let retainSelection: boolean = false;
 export let customClasses: { down?: string } = {};
 
+const stack: MenuListener[] = [];
 const dispatch = createEventDispatcher();
 let button: Button;
 let menu: Menu;
@@ -43,7 +44,7 @@ export function open() {
     };
     window.addEventListener("mousedown", onMouseDown);
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Tab" || e.key === "Shift") {
+      if (isModifier(e.key)) {
         return;
       }
       if (!button.containsEvent(e.target as Node)) {
@@ -75,6 +76,18 @@ export function getHoverIndex() {
 
 export function hasCurrentSubMenu() {
   return hoverIndex === -1 ? false : !!options[hoverIndex].menu;
+}
+
+export function getActiveStack() {
+  for (let i = stack.length - 1; i >= 0; i--) {
+    if (stack[i].isActive) {
+      return stack[i];
+    }
+  }
+}
+
+export function getStackTop() {
+  return stack[stack.length - 1];
 }
 
 function increment() {
@@ -149,6 +162,7 @@ const onKeyDown = (e: KeyboardEvent) => {
   trigger="{trigger}"
   selectedIndex="{selectedIndex}"
   hoverIndex="{hoverIndex}"
+  stack="{stack}"
   on:select="{onSelect}"
   ><Button
     bind:this="{button}"

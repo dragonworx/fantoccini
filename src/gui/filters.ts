@@ -66,3 +66,9 @@ export function isSymbol(key: string) {
 export function isAlphaNumeric(key: string) {
   return isNumeric(key) || isLetter(key);
 }
+
+export function isModifier(key: string) {
+  return (
+    key === "Control" || key === "Shift" || key === "Option" || key === "Alt"
+  );
+}

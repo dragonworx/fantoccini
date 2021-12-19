@@ -71,6 +71,14 @@
 }
 </style>
 
+<script lang="ts" context="module">
+export interface MenuListener {
+  isActive: boolean;
+  setHoverIndex: (index: number) => void;
+  getHoverIndex: () => number;
+}
+</script>
+
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import { fade } from "svelte/transition";
@@ -85,6 +93,7 @@ export let isOpen: boolean = false;
 export let selectedIndex: number = -1;
 export let hoverIndex: number = selectedIndex;
 export let isSubMenu: boolean = false;
+export let stack: MenuListener[];
 
 export function containsEvent(e: MouseEvent) {
   return menuViewEl.contains(e.target as Node);
@@ -92,6 +101,35 @@ export function containsEvent(e: MouseEvent) {
 
 export function clear() {
   hoverIndex = activeIndex = selectedIndex - 1;
+}
+
+export function registerStack() {
+  const isActive = stack.length === 0;
+  stack.push({ isActive, setHoverIndex, getHoverIndex });
+  console.log("register!", stack.length, stack);
+}
+
+export function setHoverIndex(index: number) {
+  if (hoverIndex !== index) {
+    hoverIndex = index;
+    if (index > -1 && index !== activeIndex) {
+      if (activeIndex > -1 && options[activeIndex].menu) {
+        console.log("leave", stack.length, stack);
+      }
+      activeIndex = index;
+      if (options[activeIndex].menu) {
+        console.log("enter", stack.length, stack);
+      }
+    }
+  }
+  if (index === -1) {
+    activeIndex = -1;
+    clearStack();
+  }
+}
+
+export function getHoverIndex() {
+  return hoverIndex;
 }
 
 let dispatch = createEventDispatcher();
@@ -139,16 +177,21 @@ $: {
   }
 }
 
-export function setHoverIndex(index: number) {
-  if (hoverIndex !== index) {
-    hoverIndex = index;
-    if (index > -1 && index !== activeIndex) {
-      activeIndex = index;
-    }
+$: {
+  if (isOpen) {
+    registerStack();
   }
-  if (index === -1) {
-    activeIndex = -1;
+}
+
+$: {
+  if (isOpen === false && stack.length) {
+    clearStack();
   }
+}
+
+function clearStack() {
+  stack.length = 0;
+  console.log("clear");
 }
 
 function select(index: number) {
@@ -204,6 +247,7 @@ const onLIMouseDown = (index: number) => () => {
                 isOpen="{true}"
                 isSubMenu="{true}"
                 position="popout"
+                stack="{stack}"
                 ><div class="menu-item">
                   <Label text="{option.label}" />
                 </div></svelte:self>

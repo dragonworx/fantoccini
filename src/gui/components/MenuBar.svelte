@@ -73,6 +73,7 @@ const onKeyDown = (e: KeyboardEvent) => {
     }
   } else if (key === "ArrowRight" && currentIndex < items.length - 1) {
     if (getCurrentMenuButton().hasCurrentSubMenu()) {
+      getCurrentMenuButton().getStackTop().isActive = true;
     } else {
       setCurrentIndex(currentIndex + 1);
     }
