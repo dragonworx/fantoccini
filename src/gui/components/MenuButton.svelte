@@ -90,7 +90,7 @@ export function getHoverIndex() {
 }
 
 export function hasCurrentSubMenu() {
-  return getActiveStack().hasCurrentSubMenu();
+  return stack.length && getActiveStack().hasCurrentSubMenu();
 }
 
 export function hasPreviousSubMenu() {
@@ -174,6 +174,18 @@ const onKeyDown = (e: KeyboardEvent) => {
     }
   } else if (key === "Escape") {
     close();
+  } else if (key === "ArrowLeft") {
+    if (hasPreviousSubMenu() && getStack().length) {
+      getActiveStack().setHoverIndex(-1);
+      getActiveStack().isActive = false;
+      // console.log("back");
+    }
+  } else if (key === "ArrowRight") {
+    if (hasCurrentSubMenu()) {
+      getStackTop().isActive = true;
+      getActiveStack().setHoverIndex(0);
+      // console.log("forward");
+    }
   }
 };
 </script>

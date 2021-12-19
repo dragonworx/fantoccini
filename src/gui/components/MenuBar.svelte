@@ -68,21 +68,15 @@ const onKeyDown = (e: KeyboardEvent) => {
   const { key } = e;
   const menuButton = getCurrentMenuButton();
   if (key === "ArrowLeft" && currentIndex >= 0) {
-    if (menuButton.hasPreviousSubMenu() && menuButton.getStack().length > 1) {
-      menuButton.getActiveStack().setHoverIndex(-1);
-      menuButton.getActiveStack().isActive = false;
-      // console.log("back");
-    } else {
+    if (
+      !(menuButton.hasPreviousSubMenu() && menuButton.getStack().length > 1)
+    ) {
       if (currentIndex > 0) {
         setCurrentIndex(currentIndex - 1);
       }
     }
   } else if (key === "ArrowRight" && currentIndex <= items.length - 1) {
-    if (menuButton.hasCurrentSubMenu()) {
-      menuButton.getStackTop().isActive = true;
-      menuButton.getActiveStack().setHoverIndex(0);
-      // console.log("forward");
-    } else {
+    if (!menuButton.hasCurrentSubMenu()) {
       if (currentIndex < items.length - 1) {
         setCurrentIndex(currentIndex + 1);
       }
