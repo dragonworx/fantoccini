@@ -2,7 +2,7 @@
 @import "../theme";
 
 .menu {
-  position: relative;
+  position: absolute;
   display: flex;
 
   &[data-position="popout"] .menu-position {
@@ -28,9 +28,13 @@
       padding: 0;
 
       & li {
-        padding: $spacing_small ($spacing_small * 2);
+        position: relative;
+        display: flex;
+        min-height: 26px;
 
-        .menu-subitem {
+        .menu-item {
+          flex-grow: 1;
+          padding: $spacing_small ($spacing_small * 2);
         }
       }
 
@@ -127,6 +131,7 @@ $: {
 }
 
 function select(index: number) {
+  hoverIndex = activeIndex = -1;
   dispatch("select", index);
 }
 
@@ -137,6 +142,9 @@ function setHoverIndex(index: number) {
       activeIndex = index;
       console.log(index);
     }
+  }
+  if (index === -1) {
+    activeIndex = -1;
   }
 }
 
@@ -150,14 +158,12 @@ const onLIMouseOut = (index: number) => (e: MouseEvent) => {
 
 const onLIMouseUp = (index: number) => () => {
   if (trigger === "mousedown") {
-    hoverIndex = -1;
     select(index);
   }
 };
 
 const onLIMouseDown = (index: number) => () => {
   if (trigger === "mouseup") {
-    hoverIndex = -1;
     select(index);
   }
 };
@@ -193,11 +199,13 @@ const onLIMouseDown = (index: number) => () => {
                 options="{options[i].menu}"
                 isOpen="{true}"
                 position="popout"
-                ><div class="menu-subitem">
+                ><div class="menu-item">
                   <Label text="{option.label}" />
                 </div></svelte:self>
             {:else}
-              <Label text="{option.label}" />
+              <div class="menu-item">
+                <Label text="{option.label}" />
+              </div>
             {/if}
           </li>
         {/each}
