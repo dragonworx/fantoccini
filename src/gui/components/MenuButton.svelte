@@ -5,7 +5,7 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
-import Menu, { MenuListener } from "./Menu.svelte";
+import Menu, { MenuListener, onSelectHandler } from "./Menu.svelte";
 import { MenuItem, MenuPosition, MenuTrigger } from "../types";
 import { isAcceptKey, isModifier } from "../filters";
 
@@ -25,6 +25,11 @@ const dispatch = createEventDispatcher();
 let button: Button;
 let menu: Menu;
 
+const onSelect: onSelectHandler = (option: MenuItem) => {
+  option.onSelect && option.onSelect();
+  dispatch("select", option);
+};
+
 export function getIsOpen() {
   return isOpen;
 }
@@ -32,6 +37,7 @@ export function getIsOpen() {
 export function open() {
   isOpen = true;
   hoverIndex = selectedIndex;
+  stack.length && stack[0].setHoverIndex(selectedIndex);
   button.setIsDown(true);
   dispatch("open");
 
@@ -75,13 +81,29 @@ export function getHoverIndex() {
 }
 
 export function hasCurrentSubMenu() {
-  return hoverIndex === -1 ? false : !!options[hoverIndex].menu;
+  // return hoverIndex === -1 ? false : !!options[hoverIndex].menu;
+  return getActiveStack().hasCurrentSubMenu();
+}
+
+export function hasPreviousSubMenu() {
+  // return hoverIndex === -1 ? false : !!options[hoverIndex].menu;
+  const index = getActiveStackIndex();
+  return index > 0 && stack[index - 1].hasCurrentSubMenu();
+}
+
+export function getStack() {
+  return stack;
 }
 
 export function getActiveStack() {
+  const index = getActiveStackIndex();
+  return stack[index];
+}
+
+export function getActiveStackIndex() {
   for (let i = stack.length - 1; i >= 0; i--) {
     if (stack[i].isActive) {
-      return stack[i];
+      return i;
     }
   }
 }
@@ -91,22 +113,20 @@ export function getStackTop() {
 }
 
 function increment() {
-  hoverIndex = Math.min(options.length - 1, hoverIndex + 1);
-  menu.setHoverIndex(hoverIndex);
+  const listener = getActiveStack();
+  listener.setHoverIndex(
+    Math.min(listener.getOptions().length - 1, listener.getHoverIndex() + 1)
+  );
 }
 
 function decrement() {
-  hoverIndex = Math.max(0, hoverIndex - 1);
-  menu.setHoverIndex(hoverIndex);
+  const listener = getActiveStack();
+  listener.setHoverIndex(Math.max(0, listener.getHoverIndex() - 1));
 }
 
-function select(index: number) {
-  const option = options[index];
+function select(option: MenuItem) {
   option.onSelect && option.onSelect();
-  dispatch("select", { index, option });
-  if (retainSelection) {
-    selectedIndex = hoverIndex = index;
-  }
+  dispatch("select", option);
 }
 
 const onDown = () => {
@@ -131,9 +151,9 @@ const onToggle = (e: CustomEvent) => {
   }
 };
 
-const onSelect = (e: CustomEvent) => {
-  select(e.detail);
-};
+// const onSelect = (e: CustomEvent) => {
+//   select(getActiveStack().getCurrentOption());
+// };
 
 const onKeyDown = (e: KeyboardEvent) => {
   const { key } = e;
@@ -146,7 +166,9 @@ const onKeyDown = (e: KeyboardEvent) => {
     }
     isOpen && increment();
   } else if (isAcceptKey(key) && isOpen) {
-    hoverIndex > -1 && select(hoverIndex);
+    if (getActiveStack().getHoverIndex() > -1) {
+      select(getActiveStack().getCurrentOption());
+    }
   } else if (key === "Escape") {
     close();
   }
@@ -155,7 +177,6 @@ const onKeyDown = (e: KeyboardEvent) => {
 
 <Menu
   bind:this="{menu}"
-  isEnabled="{isEnabled}"
   isOpen="{isOpen}"
   options="{options}"
   position="{position}"
@@ -163,7 +184,7 @@ const onKeyDown = (e: KeyboardEvent) => {
   selectedIndex="{selectedIndex}"
   hoverIndex="{hoverIndex}"
   stack="{stack}"
-  on:select="{onSelect}"
+  onSelect="{onSelect}"
   ><Button
     bind:this="{button}"
     isEnabled="{isEnabled}"

@@ -66,14 +66,24 @@ const onMouseOver = (i: number) => (e: MouseEvent) => {
 
 const onKeyDown = (e: KeyboardEvent) => {
   const { key } = e;
-  if (key === "ArrowLeft" && currentIndex > 0) {
-    if (getCurrentMenuButton().hasCurrentSubMenu()) {
+  if (key === "ArrowLeft" && currentIndex >= 0) {
+    if (
+      getCurrentMenuButton().hasPreviousSubMenu() &&
+      getCurrentMenuButton().getStack().length > 1
+    ) {
+      getCurrentMenuButton().getActiveStack().setHoverIndex(-1);
+      getCurrentMenuButton().getActiveStack().isActive = false;
+      console.log("back");
     } else {
-      setCurrentIndex(currentIndex - 1);
+      if (currentIndex > 0) {
+        setCurrentIndex(currentIndex - 1);
+      }
     }
   } else if (key === "ArrowRight" && currentIndex < items.length - 1) {
     if (getCurrentMenuButton().hasCurrentSubMenu()) {
       getCurrentMenuButton().getStackTop().isActive = true;
+      getCurrentMenuButton().getActiveStack().setHoverIndex(0);
+      console.log("forward");
     } else {
       setCurrentIndex(currentIndex + 1);
     }

@@ -76,7 +76,12 @@ export interface MenuListener {
   isActive: boolean;
   setHoverIndex: (index: number) => void;
   getHoverIndex: () => number;
+  hasCurrentSubMenu: () => boolean;
+  getCurrentOption: () => MenuItem;
+  getOptions: () => MenuItem[];
 }
+
+export type onSelectHandler = (option: MenuItem) => void;
 </script>
 
 <script lang="ts">
@@ -85,7 +90,6 @@ import { fade } from "svelte/transition";
 import { MenuItem, MenuPosition, MenuTrigger } from "../types";
 import Label from "../components/Label.svelte";
 
-export let isEnabled: boolean = true;
 export let options: MenuItem[];
 export let trigger: MenuTrigger = "mousedown";
 export let position: MenuPosition = "dropdown";
@@ -94,9 +98,12 @@ export let selectedIndex: number = -1;
 export let hoverIndex: number = selectedIndex;
 export let isSubMenu: boolean = false;
 export let stack: MenuListener[];
+export let onSelect: onSelectHandler;
 
 export function containsEvent(e: MouseEvent) {
-  return menuViewEl.contains(e.target as Node);
+  const r = menuViewEl.getBoundingClientRect();
+  const { clientX: x, clientY: y } = e;
+  return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
 }
 
 export function clear() {
@@ -105,8 +112,16 @@ export function clear() {
 
 export function registerStack() {
   const isActive = stack.length === 0;
-  stack.push({ isActive, setHoverIndex, getHoverIndex });
-  console.log("register!", stack.length, stack);
+  hoverIndex = -1;
+  stack.push({
+    isActive,
+    setHoverIndex,
+    getHoverIndex,
+    hasCurrentSubMenu,
+    getCurrentOption,
+    getOptions,
+  });
+  console.log("register!", stack.length);
 }
 
 export function setHoverIndex(index: number) {
@@ -114,22 +129,34 @@ export function setHoverIndex(index: number) {
     hoverIndex = index;
     if (index > -1 && index !== activeIndex) {
       if (activeIndex > -1 && options[activeIndex].menu) {
-        console.log("leave", stack.length, stack);
+        stack.pop();
+        console.log("leave", stack.length);
       }
       activeIndex = index;
       if (options[activeIndex].menu) {
-        console.log("enter", stack.length, stack);
+        console.log("enter", stack.length);
       }
     }
   }
   if (index === -1) {
     activeIndex = -1;
-    clearStack();
   }
 }
 
 export function getHoverIndex() {
   return hoverIndex;
+}
+
+export function hasCurrentSubMenu() {
+  return hoverIndex > -1 && !!options[hoverIndex].menu;
+}
+
+export function getCurrentOption() {
+  return options[hoverIndex];
+}
+
+export function getOptions() {
+  return options;
 }
 
 let dispatch = createEventDispatcher();
@@ -194,24 +221,23 @@ function clearStack() {
   console.log("clear");
 }
 
-function select(index: number) {
-  hoverIndex = activeIndex = -1;
-  dispatch("select", index);
-}
-
 const onLIMouseOver = (index: number) => (e: MouseEvent) => {
   setHoverIndex(index);
 };
 
-const onLIMouseUp = (index: number) => () => {
+const onLIMouseUp = (index: number) => (e: MouseEvent) => {
   if (trigger === "mousedown") {
-    select(index);
+    if (containsEvent(e) && !options[index].menu) {
+      onSelect(options[index]);
+    }
   }
 };
 
-const onLIMouseDown = (index: number) => () => {
+const onLIMouseDown = (index: number) => (e: MouseEvent) => {
   if (trigger === "mouseup") {
-    select(index);
+    if (containsEvent(e) && !options[index].menu) {
+      onSelect(options[index]);
+    }
   }
 };
 </script>
@@ -248,6 +274,7 @@ const onLIMouseDown = (index: number) => () => {
                 isSubMenu="{true}"
                 position="popout"
                 stack="{stack}"
+                onSelect="{onSelect}"
                 ><div class="menu-item">
                   <Label text="{option.label}" />
                 </div></svelte:self>
