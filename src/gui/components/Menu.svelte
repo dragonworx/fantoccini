@@ -72,7 +72,7 @@
 </style>
 
 <script lang="ts" context="module">
-export interface MenuListener {
+export interface MenuStackItem {
   isActive: boolean;
   setHoverIndex: (index: number) => void;
   getHoverIndex: () => number;
@@ -97,7 +97,7 @@ export let isOpen: boolean = false;
 export let selectedIndex: number = -1;
 export let hoverIndex: number = selectedIndex;
 export let isSubMenu: boolean = false;
-export let stack: MenuListener[];
+export let stack: MenuStackItem[];
 export let onSelect: onSelectHandler;
 
 export function containsEvent(e: MouseEvent) {
@@ -121,7 +121,7 @@ export function registerStack() {
     getCurrentOption,
     getOptions,
   });
-  console.log("register!", stack.length);
+  // console.log("register!", stack.length);
 }
 
 export function setHoverIndex(index: number) {
@@ -130,11 +130,11 @@ export function setHoverIndex(index: number) {
     if (index > -1 && index !== activeIndex) {
       if (activeIndex > -1 && options[activeIndex].menu) {
         stack.pop();
-        console.log("leave", stack.length);
+        // console.log("leave", stack.length);
       }
       activeIndex = index;
       if (options[activeIndex].menu) {
-        console.log("enter", stack.length);
+        // console.log("enter", stack.length);
       }
     }
   }
@@ -218,7 +218,7 @@ $: {
 
 function clearStack() {
   stack.length = 0;
-  console.log("clear");
+  // console.log("clear");
 }
 
 const onLIMouseOver = (index: number) => (e: MouseEvent) => {

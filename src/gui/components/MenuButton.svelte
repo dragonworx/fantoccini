@@ -5,7 +5,7 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
-import Menu, { MenuListener, onSelectHandler } from "./Menu.svelte";
+import Menu, { MenuStackItem, onSelectHandler } from "./Menu.svelte";
 import { MenuItem, MenuPosition, MenuTrigger } from "../types";
 import { isAcceptKey, isModifier } from "../filters";
 
@@ -20,7 +20,7 @@ export let noStyle: boolean = false;
 export let retainSelection: boolean = false;
 export let customClasses: { down?: string } = {};
 
-const stack: MenuListener[] = [];
+const stack: MenuStackItem[] = [];
 const dispatch = createEventDispatcher();
 let button: Button;
 let menu: Menu;
@@ -81,12 +81,10 @@ export function getHoverIndex() {
 }
 
 export function hasCurrentSubMenu() {
-  // return hoverIndex === -1 ? false : !!options[hoverIndex].menu;
   return getActiveStack().hasCurrentSubMenu();
 }
 
 export function hasPreviousSubMenu() {
-  // return hoverIndex === -1 ? false : !!options[hoverIndex].menu;
   const index = getActiveStackIndex();
   return index > 0 && stack[index - 1].hasCurrentSubMenu();
 }
@@ -151,10 +149,6 @@ const onToggle = (e: CustomEvent) => {
   }
 };
 
-// const onSelect = (e: CustomEvent) => {
-//   select(getActiveStack().getCurrentOption());
-// };
-
 const onKeyDown = (e: KeyboardEvent) => {
   const { key } = e;
   if (key === "ArrowUp" && isOpen) {
@@ -182,7 +176,6 @@ const onKeyDown = (e: KeyboardEvent) => {
   position="{position}"
   trigger="{trigger}"
   selectedIndex="{selectedIndex}"
-  hoverIndex="{hoverIndex}"
   stack="{stack}"
   onSelect="{onSelect}"
   ><Button
