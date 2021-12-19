@@ -5,14 +5,6 @@
   position: relative;
   display: flex;
 
-  &.submenu {
-    position: absolute;
-  }
-
-  &[data-position="popout"] .menu-position {
-    z-index: 2;
-  }
-
   & .menu-position {
     position: absolute;
     top: 0;
@@ -33,17 +25,39 @@
 
       & li {
         position: relative;
-        display: flex;
         min-height: 26px;
+        box-sizing: border-box;
 
         .menu-item {
+          display: flex;
           flex-grow: 1;
           padding: $spacing_small ($spacing_small * 2);
+          align-items: center;
+          width: 100%;
+          box-sizing: border-box;
+
+          .menu-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            overflow: hidden;
+          }
+
+          .menu-expand {
+            position: absolute;
+            right: $spacing_small;
+            width: 10px;
+            height: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
         }
       }
 
       :global(& [data-component="label"]) {
         font-size: 12px;
+        margin: 0 $spacing_small;
       }
 
       :global(& [data-component="label"]:focus) {
@@ -79,15 +93,16 @@ export interface MenuStackItem {
   hasCurrentSubMenu: () => boolean;
   getCurrentItem: () => MenuItem;
   getItems: () => MenuItem[];
+  containsEvent: (e: MouseEvent) => boolean;
 }
 
 export type onSelectHandler = (item: MenuItem) => void;
 </script>
 
 <script lang="ts">
-import { fade } from "svelte/transition";
 import { MenuItem, MenuPosition, MenuTrigger } from "../types";
 import Label from "../components/Label.svelte";
+import Icon from "../components/Icon.svelte";
 
 export let items: MenuItem[];
 export let trigger: MenuTrigger = "mousedown";
@@ -122,6 +137,7 @@ export function registerStack() {
     hasCurrentSubMenu,
     getCurrentItem,
     getItems,
+    containsEvent,
   });
   // console.log("register!", stack.length);
 }
@@ -216,6 +232,8 @@ $: {
   }
 }
 
+$: hasIcons = items.some((item) => item.icon);
+
 function clearStack() {
   stack.length = 0;
   // console.log("clear");
@@ -247,18 +265,14 @@ const onLIMouseDown = (index: number) => (e: MouseEvent) => {
   bind:this="{containerEl}"
   class="menu"
   class:submenu="{isSubMenu}"
+  class:withIcons="{hasIcons}"
   data-component="menu"
   data-position="{position}">
   <slot />
   {#if isOpen}
     <div bind:this="{menuPositionEl}" class="menu-position">
-      <ul
-        class="menu-view"
-        bind:this="{menuViewEl}"
-        transition:fade="{{ duration: 150 }}"
-        on:mouseover
-        on:mouseout>
-        {#each items as item, i (i)}
+      <ul class="menu-view" bind:this="{menuViewEl}" on:mouseover on:mouseout>
+        {#each items as { label, icon, items }, i (i)}
           <!-- svelte-ignore a11y-mouse-events-have-key-events -->
           <li
             class:selected="{selectedIndex === i}"
@@ -267,20 +281,36 @@ const onLIMouseDown = (index: number) => (e: MouseEvent) => {
             on:mouseover="{onLIMouseOver(i)}"
             on:mouseup="{onLIMouseUp(i)}"
             on:mousedown="{onLIMouseDown(i)}">
-            {#if activeIndex === i && items[i].items}
+            {#if activeIndex === i && items}
               <svelte:self
-                items="{items[i].items}"
+                items="{items}"
                 isOpen="{true}"
                 isSubMenu="{true}"
                 position="popout"
                 stack="{stack}"
                 onSelect="{onSelect}"
                 ><div class="menu-item">
-                  <Label text="{item.label}" />
+                  {#if hasIcons}
+                    <div class="menu-icon"></div>
+                  {/if}
+                  <Label text="{label}" />
+                  <div class="menu-expand">
+                    <Icon src="img/icons/play.svg" height="{10}" />
+                  </div>
                 </div></svelte:self>
             {:else}
               <div class="menu-item">
-                <Label text="{item.label}" />
+                {#if icon}
+                  <div class="menu-icon"><Icon src="{icon}" /></div>
+                {:else if hasIcons}
+                  <div class="menu-icon"></div>
+                {/if}
+                <Label text="{label}" />
+                {#if items}
+                  <div class="menu-expand">
+                    <Icon src="img/icons/play.svg" height="{10}" />
+                  </div>
+                {/if}
               </div>
             {/if}
           </li>

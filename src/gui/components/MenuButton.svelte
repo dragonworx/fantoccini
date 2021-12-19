@@ -28,6 +28,9 @@ let menu: Menu;
 const onSelect: onSelectHandler = (item: MenuItem) => {
   item.onSelect && item.onSelect();
   dispatch("select", item);
+  if (trigger === "mouseup") {
+    close(false);
+  }
 };
 
 export function getIsOpen() {
@@ -44,7 +47,10 @@ export function open() {
   setTimeout(() => {
     const onMouseDown = (e: MouseEvent) => {
       if (!button.containsEvent(e.target as Node)) {
-        close();
+        const contains = stack.some((item) => item.containsEvent(e));
+        if (!contains) {
+          close();
+        }
       }
       window.removeEventListener("mousedown", onMouseDown);
     };
@@ -62,7 +68,7 @@ export function open() {
   }, 0);
 }
 
-export function close() {
+export function close(shouldDispatch: boolean = true) {
   isOpen = false;
   button.setIsDown(false);
   if (!retainSelection) {
@@ -71,7 +77,7 @@ export function close() {
   } else {
     menu.clear();
   }
-  dispatch("close");
+  shouldDispatch && dispatch("close");
   stack.length = 0;
 }
 

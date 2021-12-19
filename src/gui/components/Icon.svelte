@@ -21,4 +21,5 @@ export let height: number | undefined = undefined;
   src="{src || `img/icons/${name}.svg`}"
   alt="{alt}"
   width="{width}"
-  height="{height}" />
+  height="{height}"
+  data-component="icon" />

@@ -52,13 +52,13 @@ const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 const simpleMenu1: MenuItem[] = [
   { label: "1. Action", onSelect: () => console.log("Action 1!") },
   { label: "Item 1.2" },
-  { label: "Item 1.3" },
+  { label: "1.3" },
 ];
 
 const simpleMenu2: MenuItem[] = [
   { label: "2. Action", onSelect: () => console.log("Action 2!") },
-  { label: "Item 2.2" },
-  { label: "Item 2.3" },
+  { label: "Item 2.2", icon: "img/test-small.png" },
+  { label: "The Item 2.3" },
   { label: "Item 2.4" },
 ];
 
