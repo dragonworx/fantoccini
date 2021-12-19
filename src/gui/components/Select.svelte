@@ -43,14 +43,17 @@ export let placeholder: string = "";
 
 const dispatch = createEventDispatcher();
 
+$: selectedItem = selectedIndex > -1 ? items[selectedIndex] : undefined;
+
 $: style = `width:${width === -1 ? "auto" : `${width}px`}`;
-$: prompt = selectedIndex === -1 ? placeholder : items[selectedIndex].label;
+$: prompt = selectedItem ? selectedItem.label : placeholder;
 
 const onSelect = (e: CustomEvent) => {
-  if (selectedIndex !== e.detail.index) {
-    dispatch("change", e.detail);
+  const item = e.detail as MenuItem;
+  if (selectedItem !== item) {
+    dispatch("change", item);
   }
-  selectedIndex = e.detail.index;
+  selectedItem = item;
 };
 </script>
 
@@ -64,9 +67,8 @@ const onSelect = (e: CustomEvent) => {
     isEnabled="{isEnabled}"
     items="{items}"
     trigger="{'mouseup'}"
-    selectedIndex="{selectedIndex}"
+    selectedIndex="{items.indexOf(selectedItem)}"
     retainSelection="{true}"
-    on:select
     on:select="{onSelect}">
     <div class="select-content">
       <Label text="{String(prompt)}" />

@@ -438,7 +438,7 @@ function log(component: string, event: string, detail?: any) {
     <Events>
       <MenuBar
         items="{simpleMenuBar}"
-        on:select="{(e) => log('MenuBar', 'select', e.detail.option.label)}" />
+        on:select="{(e) => log('MenuBar', 'select', e.detail.item.label)}" />
     </Events>
   </Section>
 

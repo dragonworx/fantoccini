@@ -67,9 +67,12 @@ export function close() {
   button.setIsDown(false);
   if (!retainSelection) {
     selectedIndex = hoverIndex = -1;
+    menu.clear(true);
+  } else {
     menu.clear();
   }
   dispatch("close");
+  stack.length = 0;
 }
 
 export function getButton() {

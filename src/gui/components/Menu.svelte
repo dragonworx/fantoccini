@@ -105,8 +105,11 @@ export function containsEvent(e: MouseEvent) {
   return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
 }
 
-export function clear() {
-  hoverIndex = activeIndex = selectedIndex - 1;
+export function clear(fully: boolean = false) {
+  activeIndex = -1;
+  if (fully) {
+    hoverIndex = selectedIndex - 1;
+  }
 }
 
 export function registerStack() {
