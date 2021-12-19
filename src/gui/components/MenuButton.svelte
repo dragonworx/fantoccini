@@ -7,7 +7,7 @@ import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
 import Menu from "./Menu.svelte";
 import { MenuItem, MenuPosition, MenuTrigger } from "../types";
-import { isAcceptKey, isArrowKey, isArrowVerticalKey } from "../filters";
+import { isAcceptKey } from "../filters";
 
 export let isEnabled: boolean = true;
 export let options: MenuItem[];
@@ -22,6 +22,7 @@ export let customClasses: { down?: string } = {};
 
 const dispatch = createEventDispatcher();
 let button: Button;
+let menu: Menu;
 
 export function getIsOpen() {
   return isOpen;
@@ -29,6 +30,7 @@ export function getIsOpen() {
 
 export function open() {
   isOpen = true;
+  hoverIndex = selectedIndex;
   button.setIsDown(true);
   dispatch("open");
 
@@ -58,6 +60,7 @@ export function close() {
   button.setIsDown(false);
   if (!retainSelection) {
     selectedIndex = hoverIndex = -1;
+    menu.clear();
   }
   dispatch("close");
 }
@@ -66,16 +69,22 @@ export function getButton() {
   return button;
 }
 
-export function clearSelection() {
-  hoverIndex = selectedIndex = -1;
+export function getHoverIndex() {
+  return hoverIndex;
+}
+
+export function hasCurrentSubMenu() {
+  return hoverIndex === -1 ? false : !!options[hoverIndex].menu;
 }
 
 function increment() {
   hoverIndex = Math.min(options.length - 1, hoverIndex + 1);
+  menu.setHoverIndex(hoverIndex);
 }
 
 function decrement() {
   hoverIndex = Math.max(0, hoverIndex - 1);
+  menu.setHoverIndex(hoverIndex);
 }
 
 function select(index: number) {
@@ -125,11 +134,14 @@ const onKeyDown = (e: KeyboardEvent) => {
     isOpen && increment();
   } else if (isAcceptKey(key) && isOpen) {
     hoverIndex > -1 && select(hoverIndex);
+  } else if (key === "Escape") {
+    close();
   }
 };
 </script>
 
 <Menu
+  bind:this="{menu}"
   isEnabled="{isEnabled}"
   isOpen="{isOpen}"
   options="{options}"

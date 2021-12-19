@@ -71,12 +71,11 @@ const simpleMenuBar: MenuBarItem[] = [
   { label: "Window", menu: simpleMenuOptions },
 ];
 
-function log(component: string, event: string, e?: CustomEvent) {
+function log(component: string, event: string, detail?: any) {
   console.log(
     `%c${component}🔆%c${event}%c${
-      e
-        ? ": " +
-          JSON.stringify(e.detail).replace(/,/g, ", ").replace(/:/g, ": ")
+      detail
+        ? ": " + JSON.stringify(detail).replace(/,/g, ", ").replace(/:/g, ": ")
         : ""
     }`,
     "color:cyan",
@@ -200,7 +199,7 @@ function log(component: string, event: string, e?: CustomEvent) {
           canToggle="{true}"
           on:pushed="{(e) => log('PushButton', 'pushed')}"
           on:down="{(e) => log('PushButton', 'down')}"
-          on:toggle="{(e) => log('PushButton', 'toggle', e)}"
+          on:toggle="{(e) => log('PushButton', 'toggle', e.detail)}"
           on:up="{(e) => log('PushButton', 'up')}" />
       </Events>
       <PushButton
@@ -215,7 +214,7 @@ function log(component: string, event: string, e?: CustomEvent) {
           iconName="tick"
           canToggle="{true}"
           isDown="{true}"
-          on:toggle="{(e) => log('PushButton', 'toggle', e)}" />
+          on:toggle="{(e) => log('PushButton', 'toggle', e.detail)}" />
       </Events>
     </Area>
   </Section>
@@ -225,18 +224,21 @@ function log(component: string, event: string, e?: CustomEvent) {
       <Events
         ><ButtonGroup
           options="{buttonGroupOptions}"
-          on:change="{(e) => log('ButtonGroup', 'change', e)}" /></Events>
+          on:change="{(e) =>
+            log('ButtonGroup', 'change', e.detail)}" /></Events>
       <Events mute="{true}"
         ><ButtonGroup
           isEnabled="{false}"
           selectedIndex="{1}"
           options="{buttonGroupOptions}"
-          on:change="{(e) => log('ButtonGroup', 'change', e)}" /></Events>
+          on:change="{(e) =>
+            log('ButtonGroup', 'change', e.detail)}" /></Events>
       <Events
         ><ButtonGroup
           options="{buttonGroupOptions}"
           canReset="{true}"
-          on:change="{(e) => log('ButtonGroup', 'change', e)}" /></Events>
+          on:change="{(e) =>
+            log('ButtonGroup', 'change', e.detail)}" /></Events>
     </Area>
   </Section>
 
@@ -245,13 +247,13 @@ function log(component: string, event: string, e?: CustomEvent) {
   <Section title="Checkbox">
     <Area>
       <Events>
-        <Checkbox on:change="{(e) => log('Checkbox', 'change', e)}" />
+        <Checkbox on:change="{(e) => log('Checkbox', 'change', e.detail)}" />
       </Events>
       <Checkbox isDown="{true}" />
       <Events mute="{true}">
         <Checkbox
           isEnabled="{false}"
-          on:change="{(e) => log('Checkbox', 'change', e)}" />
+          on:change="{(e) => log('Checkbox', 'change', e.detail)}" />
       </Events>
       <Checkbox isEnabled="{false}" isDown="{true}" />
     </Area>
@@ -259,7 +261,7 @@ function log(component: string, event: string, e?: CustomEvent) {
       <Events>
         <Checkbox
           label="Left"
-          on:change="{(e) => log('Checkbox', 'change', e)}" />
+          on:change="{(e) => log('Checkbox', 'change', e.detail)}" />
       </Events>
       <Checkbox label="Right" position="right" />
       <Checkbox label="Top" position="top" />
@@ -268,7 +270,7 @@ function log(component: string, event: string, e?: CustomEvent) {
         <Checkbox
           label="Disabled"
           isEnabled="{false}"
-          on:change="{(e) => log('Checkbox', 'change', e)}" />
+          on:change="{(e) => log('Checkbox', 'change', e.detail)}" />
       </Events>
       <Checkbox label="Down" isDown="{true}" isEnabled="{false}" />
     </Area>
@@ -279,13 +281,13 @@ function log(component: string, event: string, e?: CustomEvent) {
       <Events>
         <RadioGroup
           options="{radioOptions}"
-          on:change="{(e) => log('Radio', 'change', e)}" />
+          on:change="{(e) => log('Radio', 'change', e.detail)}" />
       </Events>
       <Events mute="{true}">
         <RadioGroup
           isEnabled="{false}"
           options="{radioOptions}"
-          on:change="{(e) => log('Radio', 'change', e)}" />
+          on:change="{(e) => log('Radio', 'change', e.detail)}" />
       </Events>
       <RadioGroup options="{radioOptions}" position="left" />
       <RadioGroup options="{radioOptions}" position="top" />
@@ -296,8 +298,8 @@ function log(component: string, event: string, e?: CustomEvent) {
   <Section title="TextField">
     <Events>
       <TextField
-        on:change="{(e) => log('TextField', 'change', e)}"
-        on:accept="{(e) => log('TextField', 'accept', e)}"
+        on:change="{(e) => log('TextField', 'change', e.detail)}"
+        on:accept="{(e) => log('TextField', 'accept', e.detail)}"
         on:focus="{(e) => log('TextField', 'focus')}"
         on:blur="{(e) => log('TextField', 'blur')}" />
     </Events>
@@ -313,7 +315,7 @@ function log(component: string, event: string, e?: CustomEvent) {
     <Area>
       <Events>
         <Spinner
-          on:change="{(e) => log('Spinner', 'change', e)}"
+          on:change="{(e) => log('Spinner', 'change', e.detail)}"
           on:focus="{(e) => log('Spinner', 'focus')}"
           on:blur="{(e) => log('Spinner', 'blur')}" />
       </Events>
@@ -342,7 +344,7 @@ function log(component: string, event: string, e?: CustomEvent) {
           options="{simpleMenuOptions}"
           on:open="{(e) => log('MenuButton', 'open')}"
           on:close="{(e) => log('MenuButton', 'close')}"
-          on:select="{(e) => log('MenuButton', 'select', e)}">
+          on:select="{(e) => log('MenuButton', 'select', e.detail)}">
           <Label text="MouseDown" />
         </MenuButton>
       </Events>
@@ -360,7 +362,7 @@ function log(component: string, event: string, e?: CustomEvent) {
           trigger="mouseup"
           on:open="{(e) => log('MenuButton', 'open')}"
           on:close="{(e) => log('MenuButton', 'close')}"
-          on:select="{(e) => log('MenuButton', 'select', e)}">
+          on:select="{(e) => log('MenuButton', 'select', e.detail)}">
           <Label text="Mouseup" />
         </MenuButton>
       </Events>
@@ -377,13 +379,13 @@ function log(component: string, event: string, e?: CustomEvent) {
     <Events
       ><Select
         options="{simpleMenuOptions}"
-        on:change="{(e) => log('Select', 'change', e)}" /></Events>
+        on:change="{(e) => log('Select', 'change', e.detail)}" /></Events>
     <Events mute="{true}"
       ><Select
         isEnabled="{false}"
         options="{simpleMenuOptions}"
         selectedIndex="{1}"
-        on:change="{(e) => log('Select', 'change', e)}" /></Events>
+        on:change="{(e) => log('Select', 'change', e.detail)}" /></Events>
     <Select options="{simpleMenuOptions}" width="{100}" />
   </Section>
 
@@ -394,7 +396,7 @@ function log(component: string, event: string, e?: CustomEvent) {
           direction="horizontal"
           value="{0}"
           size="{100}"
-          on:change="{(e) => log('ScrollBar', 'change', e)}" /></Events>
+          on:change="{(e) => log('ScrollBar', 'change', e.detail)}" /></Events>
       <ScrollBar direction="horizontal" value="{0.5}" />
       <ScrollBar direction="horizontal" value="{1}" />
       <ScrollBar isEnabled="{false}" direction="horizontal" value="{1}" />
@@ -424,7 +426,7 @@ function log(component: string, event: string, e?: CustomEvent) {
     <Events>
       <MenuBar
         items="{simpleMenuBar}"
-        on:select="{(e) => log('MenuBar', 'select', e)}" />
+        on:select="{(e) => log('MenuBar', 'select', e.detail.option.label)}" />
     </Events>
   </Section>
 

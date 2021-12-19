@@ -36,14 +36,18 @@ let currentIndex: number = -1;
 let menuButtons: MenuButton[] = [];
 let liElements: HTMLLIElement[] = [];
 
+function getCurrentMenuButton() {
+  return menuButtons[currentIndex];
+}
+
 function setCurrentIndex(i: number) {
-  let currentMenuButton = menuButtons[currentIndex];
+  let currentMenuButton = getCurrentMenuButton();
   const wasOpen = currentMenuButton && currentMenuButton.getIsOpen();
   if (wasOpen) {
     currentMenuButton.close();
   }
   currentIndex = i;
-  currentMenuButton = menuButtons[currentIndex];
+  currentMenuButton = getCurrentMenuButton();
   if (wasOpen) {
     currentMenuButton.open();
   }
@@ -63,15 +67,21 @@ const onMouseOver = (i: number) => (e: MouseEvent) => {
 const onKeyDown = (e: KeyboardEvent) => {
   const { key } = e;
   if (key === "ArrowLeft" && currentIndex > 0) {
-    setCurrentIndex(currentIndex - 1);
+    if (getCurrentMenuButton().hasCurrentSubMenu()) {
+    } else {
+      setCurrentIndex(currentIndex - 1);
+    }
   } else if (key === "ArrowRight" && currentIndex < items.length - 1) {
-    setCurrentIndex(currentIndex + 1);
+    if (getCurrentMenuButton().hasCurrentSubMenu()) {
+    } else {
+      setCurrentIndex(currentIndex + 1);
+    }
   }
 };
 
 const onKeyUp = (e: KeyboardEvent) => {
   if (isAcceptKey(e.key)) {
-    menuButtons[currentIndex].getButton().blur();
+    getCurrentMenuButton().getButton().blur();
   }
 };
 

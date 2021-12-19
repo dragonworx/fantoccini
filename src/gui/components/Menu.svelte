@@ -2,8 +2,12 @@
 @import "../theme";
 
 .menu {
-  position: absolute;
+  position: relative;
   display: flex;
+
+  &.submenu {
+    position: absolute;
+  }
 
   &[data-position="popout"] .menu-position {
     z-index: 2;
@@ -80,9 +84,14 @@ export let position: MenuPosition = "dropdown";
 export let isOpen: boolean = false;
 export let selectedIndex: number = -1;
 export let hoverIndex: number = selectedIndex;
+export let isSubMenu: boolean = false;
 
 export function containsEvent(e: MouseEvent) {
   return menuViewEl.contains(e.target as Node);
+}
+
+export function clear() {
+  hoverIndex = activeIndex = selectedIndex - 1;
 }
 
 let dispatch = createEventDispatcher();
@@ -130,17 +139,11 @@ $: {
   }
 }
 
-function select(index: number) {
-  hoverIndex = activeIndex = -1;
-  dispatch("select", index);
-}
-
-function setHoverIndex(index: number) {
+export function setHoverIndex(index: number) {
   if (hoverIndex !== index) {
     hoverIndex = index;
     if (index > -1 && index !== activeIndex) {
       activeIndex = index;
-      console.log(index);
     }
   }
   if (index === -1) {
@@ -148,12 +151,13 @@ function setHoverIndex(index: number) {
   }
 }
 
+function select(index: number) {
+  hoverIndex = activeIndex = -1;
+  dispatch("select", index);
+}
+
 const onLIMouseOver = (index: number) => (e: MouseEvent) => {
   setHoverIndex(index);
-};
-
-const onLIMouseOut = (index: number) => (e: MouseEvent) => {
-  setHoverIndex(-1);
 };
 
 const onLIMouseUp = (index: number) => () => {
@@ -173,6 +177,7 @@ const onLIMouseDown = (index: number) => () => {
 <div
   bind:this="{containerEl}"
   class="menu"
+  class:submenu="{isSubMenu}"
   data-component="menu"
   data-position="{position}">
   <slot />
@@ -191,13 +196,13 @@ const onLIMouseDown = (index: number) => () => {
             class:hover="{hoverIndex === i}"
             data-index="{i}"
             on:mouseover="{onLIMouseOver(i)}"
-            on:mouseout="{onLIMouseOut(i)}"
             on:mouseup="{onLIMouseUp(i)}"
             on:mousedown="{onLIMouseDown(i)}">
             {#if activeIndex === i && options[i].menu}
               <svelte:self
                 options="{options[i].menu}"
                 isOpen="{true}"
+                isSubMenu="{true}"
                 position="popout"
                 ><div class="menu-item">
                   <Label text="{option.label}" />
