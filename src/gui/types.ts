@@ -1,3 +1,5 @@
+import { Shortcut } from "./shortcuts";
+
 export type Position = "left" | "right" | "top" | "bottom";
 
 export type Align = "start" | "center" | "end";
@@ -23,7 +25,7 @@ export type MenuItem = {
   isEnabled?: boolean;
   value?: any;
   icon?: string;
-  shortcut?: string;
+  shortcut?: Shortcut;
   items?: MenuItem[];
   onSelect?: () => void;
 };

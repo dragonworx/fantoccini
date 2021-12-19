@@ -71,6 +71,7 @@ const simpleMenu3: MenuItem[] = [
 ];
 
 simpleMenu1[2].items = simpleMenu2;
+simpleMenu2[2].items = simpleMenu3;
 simpleMenu2[3].items = simpleMenu3;
 
 const buttonGroupOptions: ButtonGroupOption[] = [

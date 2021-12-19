@@ -9,7 +9,6 @@
     position: absolute;
     top: 0;
     left: 0;
-    min-width: 100%;
     z-index: 1;
 
     & .menu-view {
@@ -33,7 +32,6 @@
           flex-grow: 1;
           padding: $spacing_small ($spacing_small * 2);
           align-items: center;
-          width: 100%;
           box-sizing: border-box;
 
           .menu-icon {
@@ -41,6 +39,7 @@
             height: 20px;
             display: flex;
             overflow: hidden;
+            margin-right: $spacing_small * 2;
           }
 
           .menu-expand {
@@ -53,11 +52,6 @@
             justify-content: center;
           }
         }
-      }
-
-      :global(& [data-component="label"]) {
-        font-size: 12px;
-        margin: 0 $spacing_small;
       }
 
       :global(& [data-component="label"]:focus) {
@@ -293,7 +287,7 @@ const onLIMouseDown = (index: number) => (e: MouseEvent) => {
                   {#if hasIcons}
                     <div class="menu-icon"></div>
                   {/if}
-                  <Label text="{label}" />
+                  <Label text="{label}" fontSize="{12}" />
                   <div class="menu-expand">
                     <Icon src="img/icons/play.svg" height="{10}" />
                   </div>
@@ -305,7 +299,7 @@ const onLIMouseDown = (index: number) => (e: MouseEvent) => {
                 {:else if hasIcons}
                   <div class="menu-icon"></div>
                 {/if}
-                <Label text="{label}" />
+                <Label text="{label}" fontSize="{12}" />
                 {#if items}
                   <div class="menu-expand">
                     <Icon src="img/icons/play.svg" height="{10}" />
