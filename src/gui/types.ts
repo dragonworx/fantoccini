@@ -24,7 +24,7 @@ export type MenuItem = {
   value?: any;
   icon?: string;
   shortcut?: string;
-  menu?: MenuItem[];
+  items?: MenuItem[];
   onSelect?: () => void;
 };
 
@@ -34,5 +34,5 @@ export type MenuTrigger = "mousedown" | "mouseup";
 
 export interface MenuBarItem {
   label: string;
-  menu: MenuItem[];
+  items: MenuItem[];
 }

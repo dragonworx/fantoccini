@@ -105,18 +105,18 @@ const onFocusOrOpen = (i: number) => () => {
 const onSelect = (e: CustomEvent) => {
   dispatch("select", {
     menu: items[currentIndex],
-    option: e.detail,
+    item: e.detail,
   });
 };
 </script>
 
 <ul class="menubar" data-component="menubar">
-  {#each items as { label, menu }, i}
+  {#each items as { label, items: menu }, i}
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
     <li bind:this="{liElements[i]}" on:mouseover="{onMouseOver(i)}">
       <MenuButton
         bind:this="{menuButtons[i]}"
-        options="{menu}"
+        items="{menu}"
         noStyle="{true}"
         customClasses="{{ down: 'menubar-down' }}"
         trigger="mouseup"

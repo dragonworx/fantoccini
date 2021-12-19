@@ -36,7 +36,7 @@ import Label from "./Label.svelte";
 import MenuButton from "./MenuButton.svelte";
 
 export let isEnabled: boolean = true;
-export let options: MenuItem[];
+export let items: MenuItem[];
 export let width: number = -1;
 export let selectedIndex: number = -1;
 export let placeholder: string = "";
@@ -44,7 +44,7 @@ export let placeholder: string = "";
 const dispatch = createEventDispatcher();
 
 $: style = `width:${width === -1 ? "auto" : `${width}px`}`;
-$: prompt = selectedIndex === -1 ? placeholder : options[selectedIndex].label;
+$: prompt = selectedIndex === -1 ? placeholder : items[selectedIndex].label;
 
 const onSelect = (e: CustomEvent) => {
   if (selectedIndex !== e.detail.index) {
@@ -62,7 +62,7 @@ const onSelect = (e: CustomEvent) => {
   style="{style}">
   <MenuButton
     isEnabled="{isEnabled}"
-    options="{options}"
+    items="{items}"
     trigger="{'mouseup'}"
     selectedIndex="{selectedIndex}"
     retainSelection="{true}"

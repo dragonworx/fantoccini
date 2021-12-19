@@ -77,20 +77,19 @@ export interface MenuStackItem {
   setHoverIndex: (index: number) => void;
   getHoverIndex: () => number;
   hasCurrentSubMenu: () => boolean;
-  getCurrentOption: () => MenuItem;
-  getOptions: () => MenuItem[];
+  getCurrentItem: () => MenuItem;
+  getItems: () => MenuItem[];
 }
 
-export type onSelectHandler = (option: MenuItem) => void;
+export type onSelectHandler = (item: MenuItem) => void;
 </script>
 
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
 import { fade } from "svelte/transition";
 import { MenuItem, MenuPosition, MenuTrigger } from "../types";
 import Label from "../components/Label.svelte";
 
-export let options: MenuItem[];
+export let items: MenuItem[];
 export let trigger: MenuTrigger = "mousedown";
 export let position: MenuPosition = "dropdown";
 export let isOpen: boolean = false;
@@ -118,8 +117,8 @@ export function registerStack() {
     setHoverIndex,
     getHoverIndex,
     hasCurrentSubMenu,
-    getCurrentOption,
-    getOptions,
+    getCurrentItem,
+    getItems,
   });
   // console.log("register!", stack.length);
 }
@@ -128,12 +127,12 @@ export function setHoverIndex(index: number) {
   if (hoverIndex !== index) {
     hoverIndex = index;
     if (index > -1 && index !== activeIndex) {
-      if (activeIndex > -1 && options[activeIndex].menu) {
+      if (activeIndex > -1 && items[activeIndex].items) {
         stack.pop();
         // console.log("leave", stack.length);
       }
       activeIndex = index;
-      if (options[activeIndex].menu) {
+      if (items[activeIndex].items) {
         // console.log("enter", stack.length);
       }
     }
@@ -148,18 +147,16 @@ export function getHoverIndex() {
 }
 
 export function hasCurrentSubMenu() {
-  return hoverIndex > -1 && !!options[hoverIndex].menu;
+  return hoverIndex > -1 && !!items[hoverIndex].items;
 }
 
-export function getCurrentOption() {
-  return options[hoverIndex];
+export function getCurrentItem() {
+  return items[hoverIndex];
 }
 
-export function getOptions() {
-  return options;
+export function getItems() {
+  return items;
 }
-
-let dispatch = createEventDispatcher();
 
 let containerEl: HTMLDivElement;
 let menuPositionEl: HTMLDivElement;
@@ -227,16 +224,16 @@ const onLIMouseOver = (index: number) => (e: MouseEvent) => {
 
 const onLIMouseUp = (index: number) => (e: MouseEvent) => {
   if (trigger === "mousedown") {
-    if (containsEvent(e) && !options[index].menu) {
-      onSelect(options[index]);
+    if (containsEvent(e) && !items[index].items) {
+      onSelect(items[index]);
     }
   }
 };
 
 const onLIMouseDown = (index: number) => (e: MouseEvent) => {
   if (trigger === "mouseup") {
-    if (containsEvent(e) && !options[index].menu) {
-      onSelect(options[index]);
+    if (containsEvent(e) && !items[index].items) {
+      onSelect(items[index]);
     }
   }
 };
@@ -258,7 +255,7 @@ const onLIMouseDown = (index: number) => (e: MouseEvent) => {
         transition:fade="{{ duration: 150 }}"
         on:mouseover
         on:mouseout>
-        {#each options as option, i (i)}
+        {#each items as item, i (i)}
           <!-- svelte-ignore a11y-mouse-events-have-key-events -->
           <li
             class:selected="{selectedIndex === i}"
@@ -267,20 +264,20 @@ const onLIMouseDown = (index: number) => (e: MouseEvent) => {
             on:mouseover="{onLIMouseOver(i)}"
             on:mouseup="{onLIMouseUp(i)}"
             on:mousedown="{onLIMouseDown(i)}">
-            {#if activeIndex === i && options[i].menu}
+            {#if activeIndex === i && items[i].items}
               <svelte:self
-                options="{options[i].menu}"
+                items="{items[i].items}"
                 isOpen="{true}"
                 isSubMenu="{true}"
                 position="popout"
                 stack="{stack}"
                 onSelect="{onSelect}"
                 ><div class="menu-item">
-                  <Label text="{option.label}" />
+                  <Label text="{item.label}" />
                 </div></svelte:self>
             {:else}
               <div class="menu-item">
-                <Label text="{option.label}" />
+                <Label text="{item.label}" />
               </div>
             {/if}
           </li>

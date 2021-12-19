@@ -51,27 +51,27 @@ const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 
 const simpleMenu1: MenuItem[] = [
   { label: "1. Action", onSelect: () => console.log("Action 1!") },
-  { label: "Option 1.2" },
-  { label: "Option 1.3" },
+  { label: "Item 1.2" },
+  { label: "Item 1.3" },
 ];
 
 const simpleMenu2: MenuItem[] = [
   { label: "2. Action", onSelect: () => console.log("Action 2!") },
-  { label: "Option 2.2" },
-  { label: "Option 2.3" },
-  { label: "Option 2.4" },
+  { label: "Item 2.2" },
+  { label: "Item 2.3" },
+  { label: "Item 2.4" },
 ];
 
 const simpleMenu3: MenuItem[] = [
   { label: "3. Action", onSelect: () => console.log("Action 3!") },
-  { label: "Option 3.2" },
-  { label: "Option 3.3" },
-  { label: "Option 3.4" },
-  { label: "Option 3.5" },
+  { label: "Item 3.2" },
+  { label: "Item 3.3" },
+  { label: "Item 3.4" },
+  { label: "Item 3.5" },
 ];
 
-simpleMenu1[2].menu = simpleMenu2;
-simpleMenu2[3].menu = simpleMenu3;
+simpleMenu1[2].items = simpleMenu2;
+simpleMenu2[3].items = simpleMenu3;
 
 const buttonGroupOptions: ButtonGroupOption[] = [
   { icon: "img/icons/play.svg", name: "play" },
@@ -81,9 +81,9 @@ const buttonGroupOptions: ButtonGroupOption[] = [
 ];
 
 const simpleMenuBar: MenuBarItem[] = [
-  { label: "File", menu: simpleMenu1 },
-  { label: "Edit", menu: simpleMenu1 },
-  { label: "Window", menu: simpleMenu1 },
+  { label: "File", items: simpleMenu1 },
+  { label: "Edit", items: simpleMenu1 },
+  { label: "Window", items: simpleMenu1 },
 ];
 
 function log(component: string, event: string, detail?: any) {
@@ -356,24 +356,24 @@ function log(component: string, event: string, detail?: any) {
     <Area>
       <Events>
         <MenuButton
-          options="{simpleMenu1}"
+          items="{simpleMenu1}"
           on:open="{(e) => log('MenuButton', 'open')}"
           on:close="{(e) => log('MenuButton', 'close')}"
           on:select="{(e) => log('MenuButton', 'select', e.detail)}">
           <Label text="MouseDown" />
         </MenuButton>
       </Events>
-      <MenuButton isEnabled="{false}" options="{simpleMenu1}">
+      <MenuButton isEnabled="{false}" items="{simpleMenu1}">
         <Label text="MouseDown" />
       </MenuButton>
-      <MenuButton options="{simpleMenu1}" position="popout">
+      <MenuButton items="{simpleMenu1}" position="popout">
         <Label text="Popout" />
       </MenuButton>
     </Area>
     <Area>
       <Events>
         <MenuButton
-          options="{simpleMenu1}"
+          items="{simpleMenu1}"
           trigger="mouseup"
           on:open="{(e) => log('MenuButton', 'open')}"
           on:close="{(e) => log('MenuButton', 'close')}"
@@ -381,7 +381,7 @@ function log(component: string, event: string, detail?: any) {
           <Label text="Mouseup" />
         </MenuButton>
       </Events>
-      <MenuButton options="{simpleMenu1}" position="popout" trigger="mouseup">
+      <MenuButton items="{simpleMenu1}" position="popout" trigger="mouseup">
         <Label text="Popout" />
       </MenuButton>
     </Area>
@@ -390,15 +390,15 @@ function log(component: string, event: string, detail?: any) {
   <Section title="Select">
     <Events
       ><Select
-        options="{simpleMenu1}"
+        items="{simpleMenu1}"
         on:change="{(e) => log('Select', 'change', e.detail)}" /></Events>
     <Events mute="{true}"
       ><Select
         isEnabled="{false}"
-        options="{simpleMenu1}"
+        items="{simpleMenu1}"
         selectedIndex="{1}"
         on:change="{(e) => log('Select', 'change', e.detail)}" /></Events>
-    <Select options="{simpleMenu1}" width="{100}" />
+    <Select items="{simpleMenu1}" width="{100}" />
   </Section>
 
   <Section title="ScrollBar">

@@ -10,7 +10,7 @@ import { MenuItem, MenuPosition, MenuTrigger } from "../types";
 import { isAcceptKey, isModifier } from "../filters";
 
 export let isEnabled: boolean = true;
-export let options: MenuItem[];
+export let items: MenuItem[];
 export let selectedIndex: number = -1;
 export let hoverIndex: number = selectedIndex;
 export let trigger: MenuTrigger = "mousedown";
@@ -25,9 +25,9 @@ const dispatch = createEventDispatcher();
 let button: Button;
 let menu: Menu;
 
-const onSelect: onSelectHandler = (option: MenuItem) => {
-  option.onSelect && option.onSelect();
-  dispatch("select", option);
+const onSelect: onSelectHandler = (item: MenuItem) => {
+  item.onSelect && item.onSelect();
+  dispatch("select", item);
 };
 
 export function getIsOpen() {
@@ -113,7 +113,7 @@ export function getStackTop() {
 function increment() {
   const listener = getActiveStack();
   listener.setHoverIndex(
-    Math.min(listener.getOptions().length - 1, listener.getHoverIndex() + 1)
+    Math.min(listener.getItems().length - 1, listener.getHoverIndex() + 1)
   );
 }
 
@@ -122,9 +122,9 @@ function decrement() {
   listener.setHoverIndex(Math.max(0, listener.getHoverIndex() - 1));
 }
 
-function select(option: MenuItem) {
-  option.onSelect && option.onSelect();
-  dispatch("select", option);
+function select(item: MenuItem) {
+  item.onSelect && item.onSelect();
+  dispatch("select", item);
 }
 
 const onDown = () => {
@@ -161,7 +161,7 @@ const onKeyDown = (e: KeyboardEvent) => {
     isOpen && increment();
   } else if (isAcceptKey(key) && isOpen) {
     if (getActiveStack().getHoverIndex() > -1) {
-      select(getActiveStack().getCurrentOption());
+      select(getActiveStack().getCurrentItem());
     }
   } else if (key === "Escape") {
     close();
@@ -172,7 +172,7 @@ const onKeyDown = (e: KeyboardEvent) => {
 <Menu
   bind:this="{menu}"
   isOpen="{isOpen}"
-  options="{options}"
+  items="{items}"
   position="{position}"
   trigger="{trigger}"
   selectedIndex="{selectedIndex}"
