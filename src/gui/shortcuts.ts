@@ -1,19 +1,12 @@
 import EventEmitter from "eventemitter3";
 
-export interface KeyBindings {
-  control?: boolean;
-  shift?: boolean;
-  option?: boolean;
-  command?: boolean;
-}
-
 // todo: register callbacks, listen globally, execut handler if key combination triggered
 
 export interface Command {
-  bindings: KeyBindings;
+  bindings?: string[];
   handler: () => void;
 }
 
-export function cmd(handler: () => void, bindings: KeyBindings = {}): Command {
+export function cmd(handler: () => void, bindings?: string[]): Command {
   return { bindings, handler };
 }

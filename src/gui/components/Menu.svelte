@@ -79,7 +79,6 @@ export let position: MenuPosition = "dropdown";
 export let isOpen: boolean = false;
 export let selectedIndex: number = -1;
 export let hoverIndex: number = selectedIndex;
-export let isSubMenu: boolean = false;
 export let stack: MenuStackItem[];
 export let onSelect: onSelectHandler;
 
@@ -203,6 +202,7 @@ $: {
 
 $: hasIcons = items.some((item) => item.icon);
 $: hasSubMenus = items.some((item) => item.items);
+$: hasShortCuts = items.some((item) => item.command && item.command.bindings);
 
 function clearStack() {
   stack.length = 0;
@@ -236,9 +236,9 @@ const onLIMouseDown = (index: number) => (e: MouseEvent) => {
 <div
   bind:this="{containerEl}"
   class="menu"
-  class:submenu="{isSubMenu}"
   class:withIcons="{hasIcons}"
   class:withSubMenus="{hasSubMenus}"
+  class:withShortCuts="{hasShortCuts}"
   data-component="menu"
   data-position="{position}">
   <slot />
@@ -260,13 +260,18 @@ const onLIMouseDown = (index: number) => (e: MouseEvent) => {
                 <svelte:self
                   items="{item.items}"
                   isOpen="{true}"
-                  isSubMenu="{true}"
                   position="popout"
                   stack="{stack}"
                   onSelect="{onSelect}"
-                  ><MenuRow item="{item}" hasIcons="{hasIcons}" /></svelte:self>
+                  ><MenuRow
+                    item="{item}"
+                    hasIcons="{hasIcons}"
+                    hasShortCuts="{hasShortCuts}" /></svelte:self>
               {:else}
-                <MenuRow item="{item}" hasIcons="{hasIcons}" />
+                <MenuRow
+                  item="{item}"
+                  hasIcons="{hasIcons}"
+                  hasShortCuts="{hasShortCuts}" />
               {/if}
             {/if}
           </li>

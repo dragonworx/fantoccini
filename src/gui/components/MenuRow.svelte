@@ -24,6 +24,11 @@
     align-items: center;
     justify-content: center;
   }
+
+  .menu-shortcuts {
+    width: 20px;
+    border: 1px solid red;
+  }
 }
 </style>
 
@@ -34,6 +39,7 @@ export const staticVar = 500;
 <script lang="ts">
 import { MenuItem } from "../types";
 export let hasIcons: boolean = false;
+export let hasShortCuts: boolean = false;
 import Label from "./Label.svelte";
 import Icon from "./Icon.svelte";
 
@@ -52,6 +58,9 @@ export let item: MenuItem;
     text="{item.label}"
     fontSize="{12}"
     isEnabled="{item.isEnabled !== false}" />
+  {#if hasShortCuts}
+    <div class="menu-shortcuts"></div>
+  {/if}
   {#if item.items}
     <div class="menu-expand">
       <Icon src="img/icons/play.svg" height="{10}" />
