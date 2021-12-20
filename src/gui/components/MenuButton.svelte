@@ -32,8 +32,8 @@ let button: Button;
 let menu: Menu;
 
 const onSelect: onSelectHandler = (item: MenuItem) => {
-  if (item.isEnabled !== false && item.label !== "-") {
-    item.onSelect && item.onSelect();
+  if (isEnabledItem(item)) {
+    item.command && item.command.handler();
     dispatch("select", item);
     if (trigger === "mouseup") {
       close(false);
@@ -98,7 +98,14 @@ export function getHoverIndex() {
 }
 
 export function hasCurrentSubMenu() {
-  return stack.length && getActiveStack().hasCurrentSubMenu();
+  if (stack.length) {
+    const enabledItems = getStackTop()
+      .getItems()
+      .filter((item) => isEnabledItem(item));
+    return enabledItems.length > 0 && getActiveStack().hasCurrentSubMenu();
+  } else {
+    return false;
+  }
 }
 
 export function hasPreviousSubMenu() {
@@ -165,8 +172,16 @@ export function decrement(startFrom: number = -1) {
   }
 }
 
+function isEnabledItem(item: MenuItem) {
+  return item.isEnabled !== false && !isSeparator(item);
+}
+
+function isSeparator(item: MenuItem) {
+  return item.label === "-";
+}
+
 function select(item: MenuItem) {
-  item.onSelect && item.onSelect();
+  item.command && item.command.handler();
   dispatch("select", item);
 }
 
@@ -217,7 +232,6 @@ const onKeyDown = (e: KeyboardEvent) => {
   } else if (key === "ArrowRight") {
     if (hasCurrentSubMenu()) {
       getStackTop().isActive = true;
-      // getActiveStack().setHoverIndex(0);
       increment();
       // console.log("forward");
     }

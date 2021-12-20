@@ -28,6 +28,12 @@
         box-sizing: border-box;
       }
 
+      & li.separator {
+        min-height: 2px;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #414141;
+      }
+
       :global(& [data-component="label"]:focus) {
         outline: none;
       }
@@ -65,7 +71,7 @@ import {
   MenuStackItem,
   onSelectHandler,
 } from "../types";
-import MenuRow from "../components/MenuItem.svelte";
+import MenuRow from "./MenuRow.svelte";
 
 export let items: MenuItem[];
 export let trigger: MenuTrigger = "mousedown";
@@ -244,21 +250,24 @@ const onLIMouseDown = (index: number) => (e: MouseEvent) => {
           <li
             class:selected="{selectedIndex === i}"
             class:hover="{hoverIndex === i}"
+            class:separator="{item.label === '-'}"
             data-index="{i}"
             on:mouseover="{onLIMouseOver(i)}"
             on:mouseup="{onLIMouseUp(i)}"
             on:mousedown="{onLIMouseDown(i)}">
-            {#if activeIndex === i && item.items}
-              <svelte:self
-                items="{item.items}"
-                isOpen="{true}"
-                isSubMenu="{true}"
-                position="popout"
-                stack="{stack}"
-                onSelect="{onSelect}"
-                ><MenuRow item="{item}" hasIcons="{hasIcons}" /></svelte:self>
-            {:else}
-              <MenuRow item="{item}" hasIcons="{hasIcons}" />
+            {#if item.label !== "-"}
+              {#if activeIndex === i && item.items}
+                <svelte:self
+                  items="{item.items}"
+                  isOpen="{true}"
+                  isSubMenu="{true}"
+                  position="popout"
+                  stack="{stack}"
+                  onSelect="{onSelect}"
+                  ><MenuRow item="{item}" hasIcons="{hasIcons}" /></svelte:self>
+              {:else}
+                <MenuRow item="{item}" hasIcons="{hasIcons}" />
+              {/if}
             {/if}
           </li>
         {/each}

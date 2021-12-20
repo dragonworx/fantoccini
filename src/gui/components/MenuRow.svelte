@@ -32,7 +32,7 @@ export const staticVar = 500;
 </script>
 
 <script lang="ts">
-import { MenuItem, MenuStackItem } from "../types";
+import { MenuItem } from "../types";
 export let hasIcons: boolean = false;
 import Label from "./Label.svelte";
 import Icon from "./Icon.svelte";

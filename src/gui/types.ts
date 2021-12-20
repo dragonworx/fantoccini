@@ -1,4 +1,4 @@
-import { Shortcut } from "./shortcuts";
+import { Command } from "./shortcuts";
 
 export type Position = "left" | "right" | "top" | "bottom";
 
@@ -25,9 +25,8 @@ export type MenuItem = {
   isEnabled?: boolean;
   value?: any;
   icon?: string;
-  shortcut?: Shortcut;
   items?: MenuItem[];
-  onSelect?: () => void;
+  command?: Command;
 };
 
 export type MenuPosition = "dropdown" | "popout";
@@ -38,6 +37,8 @@ export interface MenuBarItem {
   label: string;
   items: MenuItem[];
 }
+
+export const separator: MenuItem = { label: "-" };
 
 export interface MenuStackItem {
   isActive: boolean;

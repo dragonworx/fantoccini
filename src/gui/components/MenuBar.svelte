@@ -16,8 +16,12 @@
   }
 }
 
-:global([data-component="button"].menubar-down) {
+:global([data-component="menubar"] [data-component="button"].menubar-down) {
   background: linear-gradient(0deg, #2f343c 0, #1d2127 100%) !important;
+}
+
+:global([data-component="menubar"] [data-component="button"].enabled:focus) {
+  outline: none !important;
 }
 </style>
 

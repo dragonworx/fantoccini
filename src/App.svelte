@@ -26,7 +26,9 @@ import {
   ButtonGroupOption,
   MenuBarItem,
   MenuItem,
+  separator,
 } from "./gui/types";
+import { cmd } from "./gui/shortcuts";
 import Label from "./gui/components/Label.svelte";
 import Icon from "./gui/components/Icon.svelte";
 import PushButton from "./gui/components/PushButton.svelte";
@@ -52,35 +54,36 @@ const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 const simpleMenu1: MenuItem[] = [
   {
     label: "1. Action",
-    onSelect: () => console.log("Action 1!"),
+    command: cmd(() => console.log("Action 1!")),
   },
   { label: "Item 1.2" },
   { label: "1.3" },
+  separator,
   { label: "1.4" },
   { label: "1.5" },
 ];
 
 const simpleMenu2: MenuItem[] = [
-  { label: "2. Action", onSelect: () => console.log("Action 2!") },
+  { label: "2. Action", command: cmd(() => console.log("Action 2!")) },
   { label: "Item 2.2", icon: "img/test-small.png" },
   { label: "The Item 2.3" },
   { label: "Item 2.4" },
 ];
 
 const simpleMenu3: MenuItem[] = [
-  { label: "3. Action", onSelect: () => console.log("Action 3!") },
+  { label: "3. Action", command: cmd(() => console.log("Action 3!")) },
   { label: "Item 3.2" },
   { label: "Item 3.3" },
   { label: "Item 3.4", isEnabled: false },
-  { label: "-" },
+  separator,
   { label: "Item 3.5" },
 ];
 
 const simpleMenu4: MenuItem[] = [
   {
-    label: "4. Action",
-    onSelect: () => console.log("Action 3!"),
     isEnabled: false,
+    label: "4. Action",
+    command: cmd(() => console.log("Action 4!")),
   },
   { label: "Item 3.2", isEnabled: false },
   { label: "Item 3.3", isEnabled: false },
@@ -420,6 +423,7 @@ function log(component: string, event: string, detail?: any) {
         selectedIndex="{1}"
         on:change="{(e) => log('Select', 'change', e.detail)}" /></Events>
     <Select items="{simpleMenu1}" width="{100}" />
+    <Select items="{simpleMenu1}" placeholder="-- Select --" />
   </Section>
 
   <Section title="ScrollBar">
