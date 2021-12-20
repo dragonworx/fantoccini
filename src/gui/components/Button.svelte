@@ -135,7 +135,7 @@ export const defaultLongPressDuration = 500;
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import { isAcceptKey, isArrowKey, isArrowVerticalKey } from "../filters";
+import { isAcceptKey, isArrowKey } from "../filters";
 export let isEnabled: boolean = true;
 export let canToggle: boolean = false;
 export let isControlled: boolean = false;

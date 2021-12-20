@@ -16,7 +16,9 @@ export let iconSrc: string | undefined = undefined;
 export let iconName: string | undefined = undefined;
 export let iconWidth: number = 14;
 export let iconHeight: number = 14;
+export let iconSize: number = -1;
 export let noStyle: boolean = false;
+export let isRound: boolean = false;
 </script>
 
 <Button
@@ -28,6 +30,7 @@ export let noStyle: boolean = false;
     isControlled,
     noStyle,
   }}
+  appearance="{isRound ? 'round' : 'box'}"
   on:mousedown
   on:mouseup
   on:keydown
@@ -46,7 +49,7 @@ export let noStyle: boolean = false;
     <Icon
       src="{iconSrc}"
       name="{iconName}"
-      width="{iconWidth}"
-      height="{iconHeight}" />
+      width="{iconSize > -1 ? iconSize : iconWidth}"
+      height="{iconSize > -1 ? iconSize : iconHeight}" />
   {/if}
 </Button>

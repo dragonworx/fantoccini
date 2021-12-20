@@ -204,7 +204,7 @@ function log(component: string, event: string, detail?: any) {
     <Area>
       <Events>
         <PushButton
-          label="Push it"
+          label="Push"
           on:pushed="{(e) => log('PushButton', 'pushed')}"
           on:down="{(e) => log('PushButton', 'down')}"
           on:up="{(e) => log('PushButton', 'up')}"
@@ -212,7 +212,7 @@ function log(component: string, event: string, detail?: any) {
       </Events>
       <Events mute="{true}">
         <PushButton
-          label="Push it"
+          label="Push"
           isEnabled="{false}"
           on:pushed="{(e) => log('PushButton', 'pushed')}"
           on:down="{(e) => log('PushButton', 'down')}"
@@ -231,7 +231,7 @@ function log(component: string, event: string, detail?: any) {
       <Events mute="{true}">
         <PushButton
           isEnabled="{false}"
-          label="No Style (disabled)"
+          label="No Style"
           noStyle="{true}"
           on:pushed="{(e) => log('PushButton', 'pushed')}"
           on:down="{(e) => log('PushButton', 'down')}"
@@ -242,7 +242,7 @@ function log(component: string, event: string, detail?: any) {
     <Area>
       <Events>
         <PushButton
-          label="Toggle it"
+          label="Toggle"
           iconName="tick"
           canToggle="{true}"
           on:pushed="{(e) => log('PushButton', 'pushed')}"
@@ -251,19 +251,27 @@ function log(component: string, event: string, detail?: any) {
           on:up="{(e) => log('PushButton', 'up')}" />
       </Events>
       <PushButton
-        label="Toggle it"
+        label="Toggle"
         iconName="tick"
         canToggle="{true}"
         isDown="{true}" />
       <Events mute="{true}">
         <PushButton
           isEnabled="{false}"
-          label="Toggle it"
+          label="Toggle"
           iconName="tick"
           canToggle="{true}"
           isDown="{true}"
           on:toggle="{(e) => log('PushButton', 'toggle', e.detail)}" />
       </Events>
+    </Area>
+    <Area>
+      <PushButton iconName="play" isRound="{true}" />
+      <PushButton
+        iconName="record"
+        isRound="{true}"
+        iconSize="{25}"
+        canToggle="{true}" />
     </Area>
   </Section>
 
