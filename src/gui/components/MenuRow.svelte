@@ -29,7 +29,7 @@
     font-size: 10px;
     color: #9f9f9f;
     white-space: nowrap;
-    background-color: #0000001a;
+
     border-radius: $spacing_small;
     padding: 2px;
   }

@@ -43,6 +43,7 @@ import Select from "./gui/components/Select.svelte";
 import ScrollBar from "./gui/components/ScrollBar.svelte";
 import ScrollView from "./gui/components/ScrollView.svelte";
 import MenuBar from "./gui/components/MenuBar.svelte";
+import Tooltip from "./gui/components/Tooltip.svelte";
 
 const radioOptions: RadioGroupOption[] = [
   { label: "Option 1", value: "a" },
@@ -115,6 +116,7 @@ const simpleMenuBar: MenuBarItem[] = [
   { label: "File", items: simpleMenu1 },
   { label: "Edit", items: simpleMenu1 },
   { label: "Window", items: simpleMenu1 },
+  { label: "Disabled", items: simpleMenu4 },
 ];
 
 function log(component: string, event: string, detail?: any) {
@@ -288,7 +290,13 @@ function log(component: string, event: string, detail?: any) {
     </Area>
   </Section>
 
-  <Section title="Tooltip" />
+  <Section title="Tooltip">
+    <Tooltip text="Tooltip"><Label text="Bottom" /></Tooltip>
+    <Tooltip text="Tooltip" position="top"><Label text="Top" /></Tooltip>
+    <Tooltip text="Tooltip" position="left"><Label text="Left" /></Tooltip>
+    <Tooltip text="Tooltip" position="right"><Label text="Right" /></Tooltip>
+    <Tooltip text="Tooltip"><PushButton label="Mouse it" /></Tooltip>
+  </Section>
 
   <Section title="Checkbox">
     <Area>
@@ -476,11 +484,9 @@ function log(component: string, event: string, detail?: any) {
 
   <Section title="Panel" />
 
-  <Section title="Dialog" />
-
   <Section title="Tabs" />
 
-  <Section title="Dockable" />
+  <Section title="Splitter" />
 
-  <Section title="Desktop?" />
+  <Section title="Window & Dialog" />
 </main>
