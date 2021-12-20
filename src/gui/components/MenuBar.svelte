@@ -7,6 +7,7 @@
   margin: 0;
   padding: 0;
   display: flex;
+  box-sizing: border-box;
   padding: 1px 5px;
 
   li {

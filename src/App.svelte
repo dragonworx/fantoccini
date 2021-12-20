@@ -44,6 +44,7 @@ import ScrollBar from "./gui/components/ScrollBar.svelte";
 import ScrollView from "./gui/components/ScrollView.svelte";
 import MenuBar from "./gui/components/MenuBar.svelte";
 import Tooltip from "./gui/components/Tooltip.svelte";
+import Panel from "./gui/components/Panel.svelte";
 
 const radioOptions: RadioGroupOption[] = [
   { label: "Option 1", value: "a" },
@@ -490,7 +491,12 @@ function log(component: string, event: string, detail?: any) {
     </Events>
   </Section>
 
-  <Section title="Panel" />
+  <Section title="Panel">
+    <Panel><Label text="Content..." /></Panel>
+    <Panel title="Title"><Label text="Content..." /></Panel>
+    <Panel title="Title" menuBar="{simpleMenuBar}"
+      ><Label text="Content..." /></Panel>
+  </Section>
 
   <Section title="Tabs" />
 
