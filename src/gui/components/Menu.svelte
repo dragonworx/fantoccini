@@ -30,8 +30,8 @@
 
       & li.separator {
         min-height: 2px;
-        border-top: 1px solid #1a1a1a;
-        border-bottom: 1px solid #414141;
+        border-top: 1px solid #24272c;
+        border-bottom: 1px solid #3d4147;
       }
 
       :global(& [data-component="label"]:focus) {
