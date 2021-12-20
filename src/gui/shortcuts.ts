@@ -1,12 +1,15 @@
-import EventEmitter from "eventemitter3";
-
-// todo: register callbacks, listen globally, execut handler if key combination triggered
+import hotkeys from "hotkeys-js";
 
 export interface Command {
   bindings?: string[];
   handler: () => void;
 }
 
-export function cmd(handler: () => void, bindings?: string[]): Command {
-  return { bindings, handler };
+export function cmd(handler: () => void, bindings: string[] = []): Command {
+  const command = { bindings, handler };
+  hotkeys(bindings.join(","), (event, _handler) => {
+    event.preventDefault();
+    handler();
+  });
+  return command;
 }

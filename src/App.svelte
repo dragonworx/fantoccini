@@ -54,10 +54,7 @@ const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 const simpleMenu1: MenuItem[] = [
   {
     label: "1. Action",
-    command: cmd(
-      () => console.log("Action 1!"),
-      ["Control", "Shift", "Alt", "a"]
-    ),
+    command: cmd(() => console.log("Action 1!"), ["F5"]),
   },
   { label: "Item 1.2" },
   { label: "1.3" },
@@ -76,7 +73,7 @@ const simpleMenu2: MenuItem[] = [
 const simpleMenu3: MenuItem[] = [
   {
     label: "3. Action",
-    command: cmd(() => console.log("Action 3!"), ["Control", "+"]),
+    command: cmd(() => console.log("Action 3!"), ["Ctrl+A"]),
   },
   { label: "Item 3.2" },
   { label: "Item 3.3" },
