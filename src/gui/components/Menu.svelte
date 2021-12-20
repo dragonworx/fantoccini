@@ -26,32 +26,6 @@
         position: relative;
         min-height: 26px;
         box-sizing: border-box;
-
-        .menu-item {
-          display: flex;
-          flex-grow: 1;
-          padding: $spacing_small ($spacing_small * 2);
-          align-items: center;
-          box-sizing: border-box;
-
-          .menu-icon {
-            width: 20px;
-            height: 20px;
-            display: flex;
-            overflow: hidden;
-            margin-right: $spacing_small * 2;
-          }
-
-          .menu-expand {
-            position: absolute;
-            right: $spacing_small;
-            width: 10px;
-            height: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-        }
       }
 
       :global(& [data-component="label"]:focus) {
@@ -79,24 +53,15 @@
 }
 </style>
 
-<script lang="ts" context="module">
-export interface MenuStackItem {
-  isActive: boolean;
-  setHoverIndex: (index: number) => void;
-  getHoverIndex: () => number;
-  hasCurrentSubMenu: () => boolean;
-  getCurrentItem: () => MenuItem;
-  getItems: () => MenuItem[];
-  containsEvent: (e: MouseEvent) => boolean;
-}
-
-export type onSelectHandler = (item: MenuItem) => void;
-</script>
-
 <script lang="ts">
-import { MenuItem, MenuPosition, MenuTrigger } from "../types";
-import Label from "../components/Label.svelte";
-import Icon from "../components/Icon.svelte";
+import {
+  MenuItem,
+  MenuPosition,
+  MenuTrigger,
+  MenuStackItem,
+  onSelectHandler,
+} from "../types";
+import MenuRow from "../components/MenuItem.svelte";
 
 export let items: MenuItem[];
 export let trigger: MenuTrigger = "mousedown";
@@ -234,7 +199,9 @@ function clearStack() {
 }
 
 const onLIMouseOver = (index: number) => (e: MouseEvent) => {
-  setHoverIndex(index);
+  if (items[index].isEnabled !== false && items[index].label !== "-") {
+    setHoverIndex(index);
+  }
 };
 
 const onLIMouseUp = (index: number) => (e: MouseEvent) => {
@@ -266,7 +233,7 @@ const onLIMouseDown = (index: number) => (e: MouseEvent) => {
   {#if isOpen}
     <div bind:this="{menuPositionEl}" class="menu-position">
       <ul class="menu-view" bind:this="{menuViewEl}" on:mouseover on:mouseout>
-        {#each items as { label, icon, items }, i (i)}
+        {#each items as item, i (i)}
           <!-- svelte-ignore a11y-mouse-events-have-key-events -->
           <li
             class:selected="{selectedIndex === i}"
@@ -275,37 +242,17 @@ const onLIMouseDown = (index: number) => (e: MouseEvent) => {
             on:mouseover="{onLIMouseOver(i)}"
             on:mouseup="{onLIMouseUp(i)}"
             on:mousedown="{onLIMouseDown(i)}">
-            {#if activeIndex === i && items}
+            {#if activeIndex === i && item.items}
               <svelte:self
-                items="{items}"
+                items="{item.items}"
                 isOpen="{true}"
                 isSubMenu="{true}"
                 position="popout"
                 stack="{stack}"
                 onSelect="{onSelect}"
-                ><div class="menu-item">
-                  {#if hasIcons}
-                    <div class="menu-icon"></div>
-                  {/if}
-                  <Label text="{label}" fontSize="{12}" />
-                  <div class="menu-expand">
-                    <Icon src="img/icons/play.svg" height="{10}" />
-                  </div>
-                </div></svelte:self>
+                ><MenuRow item="{item}" hasIcons="{hasIcons}" /></svelte:self>
             {:else}
-              <div class="menu-item">
-                {#if icon}
-                  <div class="menu-icon"><Icon src="{icon}" /></div>
-                {:else if hasIcons}
-                  <div class="menu-icon"></div>
-                {/if}
-                <Label text="{label}" fontSize="{12}" />
-                {#if items}
-                  <div class="menu-expand">
-                    <Icon src="img/icons/play.svg" height="{10}" />
-                  </div>
-                {/if}
-              </div>
+              <MenuRow item="{item}" hasIcons="{hasIcons}" />
             {/if}
           </li>
         {/each}

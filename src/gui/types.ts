@@ -38,3 +38,15 @@ export interface MenuBarItem {
   label: string;
   items: MenuItem[];
 }
+
+export interface MenuStackItem {
+  isActive: boolean;
+  setHoverIndex: (index: number) => void;
+  getHoverIndex: () => number;
+  hasCurrentSubMenu: () => boolean;
+  getCurrentItem: () => MenuItem;
+  getItems: () => MenuItem[];
+  containsEvent: (e: MouseEvent) => boolean;
+}
+
+export type onSelectHandler = (item: MenuItem) => void;

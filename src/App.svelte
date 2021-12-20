@@ -50,9 +50,14 @@ const radioOptions: RadioGroupOption[] = [
 const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 
 const simpleMenu1: MenuItem[] = [
-  { label: "1. Action", onSelect: () => console.log("Action 1!") },
+  {
+    label: "1. Action",
+    onSelect: () => console.log("Action 1!"),
+  },
   { label: "Item 1.2" },
   { label: "1.3" },
+  { label: "1.4" },
+  { label: "1.5" },
 ];
 
 const simpleMenu2: MenuItem[] = [
@@ -66,10 +71,25 @@ const simpleMenu3: MenuItem[] = [
   { label: "3. Action", onSelect: () => console.log("Action 3!") },
   { label: "Item 3.2" },
   { label: "Item 3.3" },
-  { label: "Item 3.4" },
+  { label: "Item 3.4", isEnabled: false },
+  { label: "-" },
   { label: "Item 3.5" },
 ];
 
+const simpleMenu4: MenuItem[] = [
+  {
+    label: "4. Action",
+    onSelect: () => console.log("Action 3!"),
+    isEnabled: false,
+  },
+  { label: "Item 3.2", isEnabled: false },
+  { label: "Item 3.3", isEnabled: false },
+  { label: "Item 3.4", isEnabled: false },
+  { label: "-" },
+  { label: "Item 3.5", isEnabled: false },
+];
+
+simpleMenu1[1].items = simpleMenu4;
 simpleMenu1[2].items = simpleMenu2;
 simpleMenu2[2].items = simpleMenu3;
 simpleMenu2[3].items = simpleMenu3;

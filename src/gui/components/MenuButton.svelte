@@ -5,8 +5,14 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import Button from "./Button.svelte";
-import Menu, { MenuStackItem, onSelectHandler } from "./Menu.svelte";
-import { MenuItem, MenuPosition, MenuTrigger } from "../types";
+import Menu from "./Menu.svelte";
+import {
+  MenuItem,
+  MenuPosition,
+  MenuTrigger,
+  MenuStackItem,
+  onSelectHandler,
+} from "../types";
 import { isAcceptKey, isModifier } from "../filters";
 
 export let isEnabled: boolean = true;
@@ -26,10 +32,12 @@ let button: Button;
 let menu: Menu;
 
 const onSelect: onSelectHandler = (item: MenuItem) => {
-  item.onSelect && item.onSelect();
-  dispatch("select", item);
-  if (trigger === "mouseup") {
-    close(false);
+  if (item.isEnabled !== false && item.label !== "-") {
+    item.onSelect && item.onSelect();
+    dispatch("select", item);
+    if (trigger === "mouseup") {
+      close(false);
+    }
   }
 };
 
@@ -119,16 +127,42 @@ export function getStackTop() {
   return stack[stack.length - 1];
 }
 
-function increment() {
+export function increment(startFrom: number = -1) {
   const listener = getActiveStack();
-  listener.setHoverIndex(
-    Math.min(listener.getItems().length - 1, listener.getHoverIndex() + 1)
+  const currentItems = listener.getItems();
+  const nextIndex = Math.min(
+    currentItems.length - 1,
+    (startFrom > -1 ? startFrom : listener.getHoverIndex()) + 1
   );
+  if (
+    currentItems[nextIndex].isEnabled === false ||
+    currentItems[nextIndex].label === "-"
+  ) {
+    if (nextIndex < currentItems.length - 1) {
+      increment(nextIndex);
+    }
+  } else {
+    listener.setHoverIndex(nextIndex);
+  }
 }
 
-function decrement() {
+export function decrement(startFrom: number = -1) {
   const listener = getActiveStack();
-  listener.setHoverIndex(Math.max(0, listener.getHoverIndex() - 1));
+  const currentItems = listener.getItems();
+  const nextIndex = Math.max(
+    0,
+    (startFrom > -1 ? startFrom : listener.getHoverIndex()) - 1
+  );
+  if (
+    currentItems[nextIndex].isEnabled === false ||
+    currentItems[nextIndex].label === "-"
+  ) {
+    if (nextIndex > 0) {
+      decrement(nextIndex);
+    }
+  } else {
+    listener.setHoverIndex(nextIndex);
+  }
 }
 
 function select(item: MenuItem) {
@@ -165,9 +199,9 @@ const onKeyDown = (e: KeyboardEvent) => {
   } else if (key === "ArrowDown") {
     if (!isOpen) {
       open();
-      return;
+    } else if (isOpen) {
+      increment();
     }
-    isOpen && increment();
   } else if (isAcceptKey(key) && isOpen) {
     if (getActiveStack().getHoverIndex() > -1) {
       select(getActiveStack().getCurrentItem());
@@ -183,7 +217,8 @@ const onKeyDown = (e: KeyboardEvent) => {
   } else if (key === "ArrowRight") {
     if (hasCurrentSubMenu()) {
       getStackTop().isActive = true;
-      getActiveStack().setHoverIndex(0);
+      // getActiveStack().setHoverIndex(0);
+      increment();
       // console.log("forward");
     }
   }
