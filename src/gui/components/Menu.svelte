@@ -57,10 +57,6 @@
 :global([data-component="menu"] [data-component="label"]) {
   text-shadow: none;
 }
-
-:global([data-component="menu"].withSubMenus .menu-item) {
-  padding-right: $spacing_small * 4 !important;
-}
 </style>
 
 <script lang="ts">

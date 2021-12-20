@@ -16,8 +16,7 @@
   }
 
   .menu-expand {
-    position: absolute;
-    right: $spacing_small;
+    margin-left: $spacing_small;
     width: 10px;
     height: 10px;
     display: flex;
@@ -26,9 +25,18 @@
   }
 
   .menu-shortcuts {
-    width: 20px;
-    border: 1px solid red;
+    margin-left: $spacing_small * 2;
+    font-size: 10px;
+    color: #9f9f9f;
+    white-space: nowrap;
+    background-color: #0000001a;
+    border-radius: $spacing_small;
+    padding: 2px;
   }
+}
+
+:global([data-component="menuitem"] [data-component="label"]) {
+  flex-grow: 1;
 }
 </style>
 
@@ -59,7 +67,11 @@ export let item: MenuItem;
     fontSize="{12}"
     isEnabled="{item.isEnabled !== false}" />
   {#if hasShortCuts}
-    <div class="menu-shortcuts"></div>
+    <div class="menu-shortcuts">
+      {#if item.command && item.command.bindings}
+        {item.command.bindings.join(" ")}
+      {/if}
+    </div>
   {/if}
   {#if item.items}
     <div class="menu-expand">

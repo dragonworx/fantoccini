@@ -74,7 +74,10 @@ const simpleMenu2: MenuItem[] = [
 ];
 
 const simpleMenu3: MenuItem[] = [
-  { label: "3. Action", command: cmd(() => console.log("Action 3!")) },
+  {
+    label: "3. Action",
+    command: cmd(() => console.log("Action 3!"), ["Control", "+"]),
+  },
   { label: "Item 3.2" },
   { label: "Item 3.3" },
   { label: "Item 3.4", isEnabled: false },
