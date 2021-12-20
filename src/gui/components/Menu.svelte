@@ -43,13 +43,17 @@
 
       & li.selected {
         @include linear_gradient(#73849d, #3a556f, 180deg);
-
-        :global(& [data-component="label"]) {
-          text-shadow: none;
-        }
       }
     }
   }
+}
+
+:global([data-component="menu"] [data-component="label"]) {
+  text-shadow: none;
+}
+
+:global([data-component="menu"].withSubMenus .menu-item) {
+  padding-right: $spacing_small * 4 !important;
 }
 </style>
 
@@ -192,6 +196,7 @@ $: {
 }
 
 $: hasIcons = items.some((item) => item.icon);
+$: hasSubMenus = items.some((item) => item.items);
 
 function clearStack() {
   stack.length = 0;
@@ -227,6 +232,7 @@ const onLIMouseDown = (index: number) => (e: MouseEvent) => {
   class="menu"
   class:submenu="{isSubMenu}"
   class:withIcons="{hasIcons}"
+  class:withSubMenus="{hasSubMenus}"
   data-component="menu"
   data-position="{position}">
   <slot />
