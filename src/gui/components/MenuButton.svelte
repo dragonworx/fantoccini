@@ -12,9 +12,10 @@ import {
   MenuTrigger,
   MenuStackItem,
   onSelectHandler,
+  Command,
+  pubSub,
 } from "../types";
 import { isAcceptKey, isModifier } from "../filters";
-import { pubSub } from "../shortcuts";
 
 export let isEnabled: boolean = true;
 export let items: MenuItem[];
@@ -32,8 +33,9 @@ const dispatch = createEventDispatcher();
 let button: Button;
 let menu: Menu;
 
-pubSub.on("command", (command) => {
+pubSub.on("command", (command: Command) => {
   if (isOpen) {
+    console.log(command.item);
     close();
   }
 });

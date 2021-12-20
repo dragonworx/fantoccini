@@ -27,8 +27,9 @@ import {
   MenuBarItem,
   MenuItem,
   separator,
+  cmd,
+  item,
 } from "./gui/types";
-import { cmd } from "./gui/shortcuts";
 import Label from "./gui/components/Label.svelte";
 import Icon from "./gui/components/Icon.svelte";
 import PushButton from "./gui/components/PushButton.svelte";
@@ -52,10 +53,13 @@ const radioOptions: RadioGroupOption[] = [
 const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 
 const simpleMenu1: MenuItem[] = [
-  {
-    label: "1. Action",
-    command: cmd(() => console.log("Action 1!"), ["F5"]),
-  },
+  item(
+    {
+      label: "1. Action",
+    },
+    () => console.log("Action 1!"),
+    ["F5"]
+  ),
   { label: "Item 1.2" },
   { label: "1.3" },
   separator,
