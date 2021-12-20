@@ -14,6 +14,7 @@ import {
   onSelectHandler,
 } from "../types";
 import { isAcceptKey, isModifier } from "../filters";
+import { pubSub } from "../shortcuts";
 
 export let isEnabled: boolean = true;
 export let items: MenuItem[];
@@ -31,15 +32,11 @@ const dispatch = createEventDispatcher();
 let button: Button;
 let menu: Menu;
 
-const onSelect: onSelectHandler = (item: MenuItem) => {
-  if (isEnabledItem(item)) {
-    item.command && item.command.handler();
-    dispatch("select", item);
-    if (trigger === "mouseup") {
-      close(false);
-    }
+pubSub.on("command", (command) => {
+  if (isOpen) {
+    close();
   }
-};
+});
 
 export function getIsOpen() {
   return isOpen;
@@ -171,6 +168,16 @@ export function decrement(startFrom: number = -1) {
     listener.setHoverIndex(nextIndex);
   }
 }
+
+const onSelect: onSelectHandler = (item: MenuItem) => {
+  if (isEnabledItem(item)) {
+    item.command && item.command.handler();
+    dispatch("select", item);
+    if (trigger === "mouseup") {
+      close(false);
+    }
+  }
+};
 
 function isEnabledItem(item: MenuItem) {
   return item.isEnabled !== false && !isSeparator(item);
