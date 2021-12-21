@@ -100,7 +100,7 @@ export function hasCurrentSubMenu() {
   if (stack.length) {
     const enabledItems = getStackTop()
       .getItems()
-      .filter((item) => isEnabledItem(item));
+      .filter((item) => isItemEnabled(item));
     return enabledItems.length > 0 && getActiveStack().hasCurrentSubMenu();
   } else {
     return false;
@@ -172,7 +172,7 @@ export function decrement(startFrom: number = -1) {
 }
 
 const onSelect: onSelectHandler = (item: MenuItem) => {
-  if (isEnabledItem(item)) {
+  if (isItemEnabled(item)) {
     item.command && item.command.handler();
     dispatch("select", item);
     if (trigger === "mouseup") {
@@ -181,8 +181,12 @@ const onSelect: onSelectHandler = (item: MenuItem) => {
   }
 };
 
-function isEnabledItem(item: MenuItem) {
-  return item.isEnabled !== false && !isSeparator(item);
+function isItemEnabled(item: MenuItem) {
+  if (item.command) {
+    return item.command.isEnabled;
+  } else {
+    return item.isEnabled !== false && !isSeparator(item);
+  }
 }
 
 function isSeparator(item: MenuItem) {

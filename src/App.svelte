@@ -27,7 +27,6 @@ import {
   MenuBarItem,
   MenuItem,
   separator,
-  cmd,
   item,
 } from "./gui/types";
 import Label from "./gui/components/Label.svelte";
@@ -70,17 +69,26 @@ const simpleMenu1: MenuItem[] = [
 ];
 
 const simpleMenu2: MenuItem[] = [
-  { label: "2. Action", command: cmd(() => console.log("Action 2!")) },
+  item(
+    {
+      label: "2. Action",
+    },
+    () => console.log("Action 2!"),
+    ["F6"]
+  ),
   { label: "Item 2.2", icon: "img/test-small.png" },
   { label: "The Item 2.3" },
   { label: "Item 2.4" },
 ];
 
 const simpleMenu3: MenuItem[] = [
-  {
-    label: "3. Action",
-    command: cmd(() => console.log("Action 3!"), ["Ctrl+A"]),
-  },
+  item(
+    {
+      label: "3. Action",
+    },
+    () => console.log("Action 3!"),
+    ["ctrl+k"]
+  ),
   { label: "Item 3.2" },
   { label: "Item 3.3" },
   { label: "Item 3.4", isEnabled: false },
@@ -89,11 +97,14 @@ const simpleMenu3: MenuItem[] = [
 ];
 
 const simpleMenu4: MenuItem[] = [
-  {
-    isEnabled: false,
-    label: "4. Action",
-    command: cmd(() => console.log("Action 4!")),
-  },
+  item(
+    {
+      label: "3d. Action",
+      isEnabled: false,
+    },
+    () => console.log("Action 3d!"),
+    ["ctrl+a"]
+  ),
   { label: "Item 3.2", isEnabled: false },
   { label: "Item 3.3", isEnabled: false },
   { label: "Item 3.4", isEnabled: false },

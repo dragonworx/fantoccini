@@ -24,7 +24,6 @@ export interface ButtonGroupOption {
 export type MenuItem = {
   label: string;
   isEnabled?: boolean;
-  isChecked?: boolean;
   value?: any;
   icon?: string;
   items?: MenuItem[];
@@ -56,32 +55,42 @@ export type onSelectHandler = (item: MenuItem) => void;
 
 export function item(
   opts: Omit<MenuItem, "command">,
-  handler?: () => void,
+  handler?: CommandHandler,
   bindings?: string[]
 ): MenuItem {
-  const command = handler ? cmd(handler, bindings) : undefined;
-  const item = {
+  const item: MenuItem = {
     ...opts,
-    command,
   };
-  if (command) {
-    command.item = item;
+  if (handler) {
+    const command = shortcut({ handler, bindings });
+    item.command = command;
   }
   return item;
 }
 
+export type CommandHandler = (command: Command) => void;
+
 export interface Command {
+  isEnabled: boolean;
+  isChecked: boolean;
   bindings?: string[];
-  handler: () => void;
-  item?: MenuItem;
+  handler: CommandHandler;
 }
 
-export function cmd(handler: () => void, bindings: string[] = []): Command {
-  const command = { bindings, handler };
+export function shortcut<T>(opts: {
+  isEnabled?: boolean;
+  isChecked?: boolean;
+  handler: CommandHandler;
+  bindings?: string[];
+}): Command {
+  const { isEnabled = true, isChecked = false, handler, bindings } = opts;
+  const command: Command = { isChecked, isEnabled, handler, bindings };
   hotkeys(bindings.join(","), (event, _handler) => {
     event.preventDefault();
-    pubSub.emit("command", command);
-    handler();
+    if (command.isEnabled) {
+      pubSub.emit("command", command);
+      handler(command);
+    }
   });
   return command;
 }

@@ -1,6 +1,7 @@
 <style lang="scss">
 @import "../theme";
 .panel {
+  @include linear_gradient(#4a4a4a, #5e5e5e);
   box-sizing: border-box;
   border-radius: $border_radius_small;
   background-color: #43546a;
@@ -10,7 +11,7 @@
   border-bottom: 1px solid #333333;
   display: flex;
   flex-direction: column;
-  @include linear_gradient(#4a4a4a, #5e5e5e);
+  flex-grow: 1;
 
   .panel-title {
     @include linear_gradient(#49596d, #2c3038);

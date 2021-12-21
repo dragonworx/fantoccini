@@ -205,8 +205,12 @@ function clearStack() {
   // console.log("clear");
 }
 
+function isEnabled(item: MenuItem) {
+  return item.command ? item.command.isEnabled : item.isEnabled !== false;
+}
+
 const onLIMouseOver = (index: number) => (e: MouseEvent) => {
-  if (items[index].isEnabled !== false && items[index].label !== "-") {
+  if (isEnabled(items[index]) && items[index].label !== "-") {
     setHoverIndex(index);
   }
 };
