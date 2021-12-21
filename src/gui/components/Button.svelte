@@ -135,7 +135,8 @@ export const defaultLongPressDuration = 500;
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import { isAcceptKey, isArrowKey } from "../filters";
+import { isAcceptKey, isArrowKey } from "../";
+
 export let isEnabled: boolean = true;
 export let canToggle: boolean = false;
 export let isControlled: boolean = false;
@@ -149,6 +150,21 @@ export let type: string = "button";
 export let longPressDuration: number = defaultLongPressDuration;
 export let noStyle: boolean = false;
 export let customClasses: { down?: string } = {};
+
+const dispatch = createEventDispatcher();
+
+let buttonEl: HTMLButtonElement;
+let pressTimeout: number;
+let isToggleDown: boolean = isDown;
+let style = undefined;
+
+$: {
+  let css = "";
+  if (width) css += `width: ${width}px;`;
+  if (height) css += `height: ${height}px;`;
+  if (padding) css += `padding: ${padding}px;`;
+  style = css || undefined;
+}
 
 export function focus() {
   buttonEl.focus();
@@ -188,21 +204,6 @@ export function clearCustomClasses() {
   if (customClasses.down) {
     buttonEl.classList.remove(customClasses.down);
   }
-}
-
-const dispatch = createEventDispatcher();
-
-let buttonEl: HTMLButtonElement;
-let pressTimeout: number;
-let isToggleDown: boolean = isDown;
-let style = undefined;
-
-$: {
-  let css = "";
-  if (width) css += `width: ${width}px;`;
-  if (height) css += `height: ${height}px;`;
-  if (padding) css += `padding: ${padding}px;`;
-  style = css || undefined;
 }
 
 export function applyCustomDownStyle() {

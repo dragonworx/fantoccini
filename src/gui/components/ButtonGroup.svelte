@@ -55,8 +55,8 @@
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
+import type { ButtonGroupOption } from "../";
 import PushButton from "./PushButton.svelte";
-import type { ButtonGroupOption } from "../types";
 
 export let isEnabled: boolean = true;
 export let options: ButtonGroupOption[] = [];

@@ -66,7 +66,7 @@ import {
   MenuTrigger,
   MenuStackItem,
   onSelectHandler,
-} from "../types";
+} from "../";
 import MenuRow from "./MenuRow.svelte";
 
 export let items: MenuItem[];
@@ -110,12 +110,12 @@ export function setHoverIndex(index: number) {
   if (hoverIndex !== index) {
     hoverIndex = index;
     if (index > -1 && index !== activeIndex) {
-      if (activeIndex > -1 && items[activeIndex].items) {
+      if (activeIndex > -1 && items[activeIndex].hasSubMenu) {
         stack.pop();
         // console.log("leave", stack.length);
       }
       activeIndex = index;
-      if (items[activeIndex].items) {
+      if (items[activeIndex].hasSubMenu) {
         // console.log("enter", stack.length);
       }
     }

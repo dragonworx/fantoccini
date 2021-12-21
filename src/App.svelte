@@ -27,8 +27,8 @@ import {
   MenuBarItem,
   MenuItem,
   separator,
-  item,
-} from "./gui/types";
+  Command,
+} from "./gui";
 import Label from "./gui/components/Label.svelte";
 import Icon from "./gui/components/Icon.svelte";
 import PushButton from "./gui/components/PushButton.svelte";
@@ -54,62 +54,50 @@ const radioOptions: RadioGroupOption[] = [
 const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 
 const simpleMenu1: MenuItem[] = [
-  item(
-    {
-      label: "1. Action",
-    },
-    () => console.log("Action 1!"),
-    ["F5"]
-  ),
-  { label: "Item 1.2" },
-  { label: "1.3" },
+  new MenuItem({
+    label: "1. Action",
+    command: new Command(() => console.log("Action 1!"), "f5"),
+  }),
+  new MenuItem({ label: "Item 1.2" }),
+  new MenuItem({ label: "1.3" }),
   separator,
-  { label: "1.4" },
-  { label: "1.5" },
+  new MenuItem({ label: "1.4" }),
+  new MenuItem({ label: "1.5" }),
 ];
 
 const simpleMenu2: MenuItem[] = [
-  item(
-    {
-      label: "2. Action",
-    },
-    () => console.log("Action 2!"),
-    ["F6"]
-  ),
-  { label: "Item 2.2", icon: "img/test-small.png" },
-  { label: "The Item 2.3" },
-  { label: "Item 2.4" },
+  new MenuItem({
+    label: "2. Action",
+    command: new Command(() => console.log("Action 2!"), "f6"),
+  }),
+  new MenuItem({ label: "Item 2.2", icon: "img/test-small.png" }),
+  new MenuItem({ label: "The Item 2.3" }),
+  new MenuItem({ label: "Item 2.4" }),
 ];
 
 const simpleMenu3: MenuItem[] = [
-  item(
-    {
-      label: "3. Action",
-    },
-    () => console.log("Action 3!"),
-    ["ctrl+k"]
-  ),
-  { label: "Item 3.2" },
-  { label: "Item 3.3" },
-  { label: "Item 3.4", isEnabled: false },
+  new MenuItem({
+    label: "3. Action",
+    command: new Command(() => console.log("Action 3!"), "ctrl+k"),
+  }),
+  new MenuItem({ label: "Item 3.2" }),
+  new MenuItem({ label: "Item 3.3" }),
+  new MenuItem({ label: "Item 3.4", isEnabled: false }),
   separator,
-  { label: "Item 3.5" },
+  new MenuItem({ label: "Item 3.5" }),
 ];
 
 const simpleMenu4: MenuItem[] = [
-  item(
-    {
-      label: "3d. Action",
-      isEnabled: false,
-    },
-    () => console.log("Action 3d!"),
-    ["ctrl+a"]
-  ),
-  { label: "Item 3.2", isEnabled: false },
-  { label: "Item 3.3", isEnabled: false },
-  { label: "Item 3.4", isEnabled: false },
-  { label: "-" },
-  { label: "Item 3.5", isEnabled: false },
+  new MenuItem({
+    label: "4. Action",
+    isEnabled: false,
+    command: new Command(() => console.log("Action 4!"), "ctrl+a"),
+  }),
+  new MenuItem({ label: "Item 4.2", isEnabled: false }),
+  new MenuItem({ label: "Item 4.3", isEnabled: false }),
+  new MenuItem({ label: "Item 4.4", isEnabled: false }),
+  separator,
+  new MenuItem({ label: "Item 4.5", isEnabled: false }),
 ];
 
 simpleMenu1[1].items = simpleMenu4;
