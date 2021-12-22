@@ -11,7 +11,7 @@ export const staticVar = 500;
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import { fade } from "svelte/transition";
-import {} from "../types";
+import {} from "../";
 import Button from "./Button.svelte";
 
 export let prop: string = "foo";

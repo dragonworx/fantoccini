@@ -7,6 +7,14 @@
 
 - bundle resource set with build and use id instead of src
 
-[MenuItem & Command]
+[Button]
 
-- create class, encapsulate behavior
+- add command to button
+
+[ToggleSwitch]
+
+- TODO...
+
+[Bugs]
+
+- MenuButton & Select keeps firing mousedown and opening after key accept

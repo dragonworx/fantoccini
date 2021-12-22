@@ -28,8 +28,7 @@
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import { isAcceptKey } from "../filters";
-import { MenuBarItem } from "../types";
+import { isAcceptKey, MenuBarItem } from "../";
 import Label from "./Label.svelte";
 import MenuButton from "./MenuButton.svelte";
 

@@ -88,15 +88,15 @@ $minWidth: 32px;
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import TextField from "./TextField.svelte";
-import PushButton from "./PushButton.svelte";
 import {
   isNumericInput,
   isDeleteKey,
   isArrowKey,
   isIncrementKey,
   isDecrementKey,
-} from "../filters";
+} from "../";
+import TextField from "./TextField.svelte";
+import PushButton from "./PushButton.svelte";
 
 export let isEnabled: boolean = true;
 export let autofocus: boolean = false;

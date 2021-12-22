@@ -15,8 +15,8 @@
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
+import type { RadioGroupOption, Position } from "../";
 import Radio from "./Radio.svelte";
-import type { RadioGroupOption, Position } from "../types";
 
 export let isEnabled: boolean = true;
 export let options: RadioGroupOption[] = [];

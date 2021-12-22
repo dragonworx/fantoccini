@@ -130,7 +130,7 @@ export function getHoverIndex() {
 }
 
 export function hasCurrentSubMenu() {
-  return hoverIndex > -1 && !!items[hoverIndex].items;
+  return hoverIndex > -1 && items[hoverIndex].hasIteractiveSubMenu;
 }
 
 export function getCurrentItem() {
@@ -196,28 +196,24 @@ $: {
   }
 }
 
-$: hasIcons = items.some((item) => item.icon);
-$: hasSubMenus = items.some((item) => item.items);
-$: hasShortCuts = items.some((item) => item.command && item.command.bindings);
+$: hasIcons = items.some((item) => item.hasIcon);
+$: hasSubMenus = items.some((item) => item.hasSubMenu);
+$: hasShortCuts = items.some((item) => item.hasShortcut);
 
 function clearStack() {
   stack.length = 0;
   // console.log("clear");
 }
 
-function isEnabled(item: MenuItem) {
-  return item.command ? item.command.isEnabled : item.isEnabled !== false;
-}
-
 const onLIMouseOver = (index: number) => (e: MouseEvent) => {
-  if (isEnabled(items[index]) && items[index].label !== "-") {
+  if (items[index].isInteractive) {
     setHoverIndex(index);
   }
 };
 
 const onLIMouseUp = (index: number) => (e: MouseEvent) => {
   if (trigger === "mousedown") {
-    if (containsEvent(e) && !items[index].items) {
+    if (containsEvent(e) && !items[index].hasSubMenu) {
       onSelect(items[index]);
     }
   }
@@ -225,7 +221,7 @@ const onLIMouseUp = (index: number) => (e: MouseEvent) => {
 
 const onLIMouseDown = (index: number) => (e: MouseEvent) => {
   if (trigger === "mouseup") {
-    if (containsEvent(e) && !items[index].items) {
+    if (containsEvent(e) && !items[index].hasSubMenu) {
       onSelect(items[index]);
     }
   }
@@ -250,13 +246,13 @@ const onLIMouseDown = (index: number) => (e: MouseEvent) => {
           <li
             class:selected="{selectedIndex === i}"
             class:hover="{hoverIndex === i}"
-            class:separator="{item.label === '-'}"
+            class:separator="{item.isSeparator}"
             data-index="{i}"
             on:mouseover="{onLIMouseOver(i)}"
             on:mouseup="{onLIMouseUp(i)}"
             on:mousedown="{onLIMouseDown(i)}">
-            {#if item.label !== "-"}
-              {#if activeIndex === i && item.items}
+            {#if item.isItem}
+              {#if activeIndex === i && item.hasSubMenu}
                 <svelte:self
                   items="{item.items}"
                   isOpen="{true}"

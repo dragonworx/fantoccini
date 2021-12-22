@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import { isGeneralInputKey } from "../filters";
+import { isGeneralInputKey } from "../";
 
 export let isEnabled: boolean = true;
 export let value: string = "";

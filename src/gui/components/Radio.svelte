@@ -7,10 +7,10 @@
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
+import type { Position } from "../";
 import Label from "./Label.svelte";
 import Button from "./Button.svelte";
 import Icon from "./Icon.svelte";
-import type { Position } from "../types";
 
 export let isEnabled: boolean = true;
 export let label: string;

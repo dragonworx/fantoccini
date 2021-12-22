@@ -4,8 +4,6 @@
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import Button from "./Button.svelte";
-import Menu from "./Menu.svelte";
 import {
   MenuItem,
   MenuPosition,
@@ -13,8 +11,9 @@ import {
   MenuStackItem,
   onSelectHandler,
   Command,
-  pubSub,
-} from "../types";
+} from "../";
+import Button from "./Button.svelte";
+import Menu from "./Menu.svelte";
 import { isAcceptKey, isModifier } from "../filters";
 
 export let isEnabled: boolean = true;
@@ -32,10 +31,10 @@ const stack: MenuStackItem[] = [];
 const dispatch = createEventDispatcher();
 let button: Button;
 let menu: Menu;
+let onMouseDown;
 
-pubSub.on("command", (command: Command) => {
+Command.notifications.on("execute", (command: Command) => {
   if (isOpen) {
-    console.log(command.item);
     close();
   }
 });
@@ -51,28 +50,29 @@ export function open() {
   button.setIsDown(true);
   dispatch("open");
 
-  setTimeout(() => {
-    const onMouseDown = (e: MouseEvent) => {
-      if (!button.containsEvent(e.target as Node)) {
-        const contains = stack.some((item) => item.containsEvent(e));
-        if (!contains) {
-          close();
-        }
-      }
-      window.removeEventListener("mousedown", onMouseDown);
-    };
-    window.addEventListener("mousedown", onMouseDown);
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (isModifier(e.key)) {
-        return;
-      }
-      if (!button.containsEvent(e.target as Node)) {
+  // setTimeout(() => {
+  onMouseDown = (e: MouseEvent) => {
+    console.log("mousedown");
+    if (!button.containsEvent(e.target as Node)) {
+      const contains = stack.some((item) => item.containsEvent(e));
+      if (!contains) {
         close();
       }
-      window.removeEventListener("keydown", onKeyDown);
-    };
-    window.addEventListener("keydown", onKeyDown);
-  }, 0);
+    }
+    clearOnMouseDown();
+  };
+  window.addEventListener("mousedown", onMouseDown);
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (isModifier(e.key)) {
+      return;
+    }
+    if (!button.containsEvent(e.target as Node)) {
+      close();
+    }
+    window.removeEventListener("keydown", onKeyDown);
+  };
+  window.addEventListener("keydown", onKeyDown);
+  // }, 0);
 }
 
 export function close(shouldDispatch: boolean = true) {
@@ -86,6 +86,15 @@ export function close(shouldDispatch: boolean = true) {
   }
   shouldDispatch && dispatch("close");
   stack.length = 0;
+  clearOnMouseDown();
+}
+
+function clearOnMouseDown() {
+  if (onMouseDown) {
+    window.removeEventListener("mousedown", onMouseDown);
+    onMouseDown = undefined;
+    console.log("clear!");
+  }
 }
 
 export function getButton() {
@@ -98,10 +107,7 @@ export function getHoverIndex() {
 
 export function hasCurrentSubMenu() {
   if (stack.length) {
-    const enabledItems = getStackTop()
-      .getItems()
-      .filter((item) => isItemEnabled(item));
-    return enabledItems.length > 0 && getActiveStack().hasCurrentSubMenu();
+    return getActiveStack().hasCurrentSubMenu();
   } else {
     return false;
   }
@@ -159,10 +165,7 @@ export function decrement(startFrom: number = -1) {
     0,
     (startFrom > -1 ? startFrom : listener.getHoverIndex()) - 1
   );
-  if (
-    currentItems[nextIndex].isEnabled === false ||
-    currentItems[nextIndex].label === "-"
-  ) {
+  if (!currentItems[nextIndex].isInteractive) {
     if (nextIndex > 0) {
       decrement(nextIndex);
     }
@@ -172,31 +175,14 @@ export function decrement(startFrom: number = -1) {
 }
 
 const onSelect: onSelectHandler = (item: MenuItem) => {
-  if (isItemEnabled(item)) {
-    item.command && item.command.handler();
+  if (item.isInteractive) {
+    item.execute();
     dispatch("select", item);
     if (trigger === "mouseup") {
       close(false);
     }
   }
 };
-
-function isItemEnabled(item: MenuItem) {
-  if (item.command) {
-    return item.command.isEnabled;
-  } else {
-    return item.isEnabled !== false && !isSeparator(item);
-  }
-}
-
-function isSeparator(item: MenuItem) {
-  return item.label === "-";
-}
-
-function select(item: MenuItem) {
-  item.command && item.command.handler();
-  dispatch("select", item);
-}
 
 const onDown = () => {
   if (trigger === "mousedown") {
@@ -232,7 +218,10 @@ const onKeyDown = (e: KeyboardEvent) => {
     }
   } else if (isAcceptKey(key) && isOpen) {
     if (getActiveStack().getHoverIndex() > -1) {
-      select(getActiveStack().getCurrentItem());
+      const item = getActiveStack().getCurrentItem();
+      // onSelect(item);
+      item.execute();
+      dispatch("select", item);
     }
   } else if (key === "Escape") {
     close();
@@ -248,6 +237,14 @@ const onKeyDown = (e: KeyboardEvent) => {
       increment();
       // console.log("forward");
     }
+  }
+};
+
+const onKeyUp = (e: KeyboardEvent) => {
+  if (!isOpen && isAcceptKey(e.key)) {
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+    close();
   }
 };
 </script>
@@ -277,6 +274,7 @@ const onKeyDown = (e: KeyboardEvent) => {
     on:keydown
     on:keydown="{onKeyDown}"
     on:keyup
+    on:keyup="{onKeyUp}"
     on:focus
     on:blur
     on:mouseover

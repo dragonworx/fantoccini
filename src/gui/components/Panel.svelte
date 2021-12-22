@@ -36,7 +36,7 @@ export const staticVar = 500;
 </script>
 
 <script lang="ts">
-import { MenuBarItem } from "../types";
+import { MenuBarItem } from "../";
 import Label from "./Label.svelte";
 import MenuBar from "./MenuBar.svelte";
 

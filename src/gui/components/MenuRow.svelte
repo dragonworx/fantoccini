@@ -45,11 +45,12 @@ export const staticVar = 500;
 </script>
 
 <script lang="ts">
-import { MenuItem } from "../types";
-export let hasIcons: boolean = false;
-export let hasShortCuts: boolean = false;
+import { MenuItem } from "../";
 import Label from "./Label.svelte";
 import Icon from "./Icon.svelte";
+
+export let hasIcons: boolean = false;
+export let hasShortCuts: boolean = false;
 
 export let item: MenuItem;
 </script>
@@ -68,8 +69,8 @@ export let item: MenuItem;
     isEnabled="{item.isEnabled !== false}" />
   {#if hasShortCuts}
     <div class="menu-shortcuts">
-      {#if item.command && item.command.bindings}
-        {item.command.bindings.join(" ")}
+      {#if item.hasShortcut}
+        {item.formatShortcut}
       {/if}
     </div>
   {/if}

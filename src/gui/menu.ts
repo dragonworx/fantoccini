@@ -41,14 +41,22 @@ export class MenuItem {
   command?: Command;
 
   constructor(opts: MenuItemOptions) {
-    const { isChecked, isEnabled, label, value, icon, items, command } = opts;
-    this._isEnabled = isEnabled;
-    this._isChecked = isChecked;
+    const {
+      isChecked = false,
+      isEnabled = true,
+      label,
+      value,
+      icon,
+      items,
+      command,
+    } = opts;
+    this.command = command;
+    this.isEnabled = isEnabled;
+    this.isChecked = isChecked;
     this.label = label;
     this.value = value;
     this.icon = icon;
     this.items = items;
-    this.command = command;
   }
 
   get hasCommand() {
@@ -59,24 +67,58 @@ export class MenuItem {
     return this.hasCommand ? this.command.isEnabled : this._isEnabled;
   }
 
+  set isEnabled(value: boolean) {
+    if (this.hasCommand) {
+      this.command.isEnabled = value;
+    }
+    this._isEnabled = value;
+  }
+
   get isChecked() {
     return this.hasCommand ? this.command.isChecked : this._isChecked;
   }
 
+  set isChecked(value: boolean) {
+    if (this.hasCommand) {
+      this.command.isChecked = value;
+    }
+    this._isChecked = value;
+  }
+
   get isSeparator() {
-    return this.label !== "-";
+    return this.label === "-";
   }
 
   get isItem() {
     return !this.isSeparator;
   }
 
-  get isEnabledItem() {
+  get isInteractive() {
     return this.isEnabled && this.isItem;
   }
 
   get hasSubMenu() {
     return this.items && this.items.length > 0;
+  }
+
+  get hasShortcut() {
+    return this.hasCommand && !!this.command.hotkey;
+  }
+
+  get hasIcon() {
+    return !!this.icon;
+  }
+
+  get hasIteractiveSubMenu() {
+    if (!this.isInteractive || !this.hasSubMenu) {
+      return false;
+    } else {
+      return this.items.some((item) => item.isInteractive);
+    }
+  }
+
+  get formatShortcut() {
+    return this.command.hotkey;
   }
 
   execute() {

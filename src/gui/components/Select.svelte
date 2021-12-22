@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import { MenuItem } from "../types";
+import { MenuItem } from "../";
 import Icon from "./Icon.svelte";
 import Label from "./Label.svelte";
 import MenuButton from "./MenuButton.svelte";

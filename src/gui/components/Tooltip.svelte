@@ -38,7 +38,7 @@ export const staticVar = 500;
 </script>
 
 <script lang="ts">
-import { Position } from "../types";
+import { Position } from "../";
 import Label from "./Label.svelte";
 
 export let text: string = "foo";

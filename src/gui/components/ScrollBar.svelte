@@ -124,8 +124,7 @@ export const longPressRepeatInterval = 100;
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import { isArrowKey, isScrollDownKey, isScrollUpKey } from "../filters";
-import { Direction } from "../types";
+import { isArrowKey, isScrollDownKey, isScrollUpKey, Direction } from "../";
 
 const dispatch = createEventDispatcher();
 

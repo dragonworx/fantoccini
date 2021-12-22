@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import { Direction } from "../types";
+import { Direction } from "../";
 import ScrollBar, { scrollSize } from "./ScrollBar.svelte";
 
 export let scroll: Direction | "both" = "both";

@@ -122,7 +122,7 @@ const simpleMenuBar: MenuBarItem[] = [
 function log(component: string, event: string, detail?: any) {
   console.log(
     `%c${component}🔆%c${event}%c${
-      detail
+      detail !== undefined
         ? ": " + JSON.stringify(detail).replace(/,/g, ", ").replace(/:/g, ": ")
         : ""
     }`,
