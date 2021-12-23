@@ -10,7 +10,7 @@ import {
   MenuTrigger,
   MenuStackItem,
   onSelectHandler,
-  Command,
+  Action,
   nextId,
 } from "../";
 import Button from "./Button.svelte";
@@ -37,7 +37,7 @@ let menu: Menu;
 let onMouseDown;
 let onInternalKeyDown;
 
-Command.notifications.on("execute", (command: Command) => {
+Action.notifications.on("execute", (action: Action) => {
   if (isOpen) {
     close();
   }

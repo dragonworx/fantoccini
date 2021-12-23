@@ -1,18 +1,18 @@
 import hotkeys from "hotkeys-js";
 import EventEmitter from "eventemitter3";
 
-export type CommandHandler = () => void;
+export type ActionHandler = () => void;
 
-export class Command extends EventEmitter {
+export class Action extends EventEmitter {
   isEnabled: boolean = true;
   isChecked: boolean = false;
   canToggle: boolean = false;
   hotkey?: string;
-  handler: CommandHandler;
+  handler: ActionHandler;
 
   static notifications = new EventEmitter();
 
-  constructor(handler: CommandHandler, shortcut?: string) {
+  constructor(handler: ActionHandler, shortcut?: string) {
     super();
     this.handler = handler;
     this.hotkey = shortcut;
@@ -40,25 +40,25 @@ export class Command extends EventEmitter {
         this.isChecked = !this.isChecked;
       }
       this.handler();
-      Command.notifications.emit("execute", this);
+      Action.notifications.emit("execute", this);
     }
   }
 }
 
-export function cmd(
-  handler: CommandHandler,
+export function action(
+  handler: ActionHandler,
   hotkey: string,
   opts: { isEnabled?: boolean; isChecked?: boolean; canToggle?: boolean } = {}
 ) {
-  const command = new Command(handler, hotkey);
+  const action = new Action(handler, hotkey);
   typeof opts.isEnabled === "boolean"
-    ? (command.isEnabled = opts.isEnabled)
+    ? (action.isEnabled = opts.isEnabled)
     : void 0;
   typeof opts.isChecked === "boolean"
-    ? (command.isChecked = opts.isChecked)
+    ? (action.isChecked = opts.isChecked)
     : void 0;
   typeof opts.canToggle === "boolean"
-    ? (command.canToggle = opts.canToggle)
+    ? (action.canToggle = opts.canToggle)
     : void 0;
-  return command;
+  return action;
 }

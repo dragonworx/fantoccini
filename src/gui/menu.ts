@@ -1,4 +1,4 @@
-import { Command } from "./command";
+import { Action } from "./action";
 
 export type MenuPosition = "dropdown" | "popout";
 
@@ -28,7 +28,7 @@ export type MenuItemOptions = {
   value?: any;
   icon?: string;
   items?: MenuItem[];
-  command?: Command;
+  action?: Action;
 };
 
 export class MenuItem {
@@ -38,7 +38,7 @@ export class MenuItem {
   value?: any;
   icon?: string;
   items?: MenuItem[];
-  command?: Command;
+  action?: Action;
 
   constructor(opts: MenuItemOptions) {
     const {
@@ -48,9 +48,9 @@ export class MenuItem {
       value,
       icon,
       items,
-      command,
+      action,
     } = opts;
-    this.command = command;
+    this.action = action;
     this.isEnabled = isEnabled;
     this.isChecked = isChecked;
     this.label = label;
@@ -60,27 +60,27 @@ export class MenuItem {
   }
 
   get hasCommand() {
-    return !!this.command;
+    return !!this.action;
   }
 
   get isEnabled() {
-    return this.hasCommand ? this.command.isEnabled : this._isEnabled;
+    return this.hasCommand ? this.action.isEnabled : this._isEnabled;
   }
 
   set isEnabled(value: boolean) {
     if (this.hasCommand) {
-      this.command.isEnabled = value;
+      this.action.isEnabled = value;
     }
     this._isEnabled = value;
   }
 
   get isChecked() {
-    return this.hasCommand ? this.command.isChecked : this._isChecked;
+    return this.hasCommand ? this.action.isChecked : this._isChecked;
   }
 
   set isChecked(value: boolean) {
     if (this.hasCommand) {
-      this.command.isChecked = value;
+      this.action.isChecked = value;
     }
     this._isChecked = value;
   }
@@ -102,7 +102,7 @@ export class MenuItem {
   }
 
   get hasShortcut() {
-    return !!(this.hasCommand && !!this.command.hotkey);
+    return !!(this.hasCommand && !!this.action.hotkey);
   }
 
   get hasIcon() {
@@ -118,12 +118,12 @@ export class MenuItem {
   }
 
   get formatShortcut() {
-    return this.command.hotkey;
+    return this.action.hotkey;
   }
 
   execute() {
     if (this.hasCommand) {
-      this.command.execute();
+      this.action.execute();
     }
   }
 }

@@ -9,7 +9,7 @@
 
 [Button]
 
-- add command to button
+- add action to button
 
 [ToggleSwitch]
 

@@ -137,7 +137,7 @@ export type ShouldCloseHandler = () => boolean;
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import { isAcceptKey, isArrowKey } from "../";
-import { Command } from "../command";
+import { Action } from "../action";
 
 export let isEnabled: boolean = true;
 export let canToggle: boolean = false;
@@ -153,7 +153,7 @@ export let longPressDuration: number = defaultLongPressDuration;
 export let noStyle: boolean = false;
 export let customClasses: { down?: string } = {};
 export let onShouldClose: ShouldCloseHandler | undefined = undefined;
-export let command: Command | undefined = undefined;
+export let action: Action | undefined = undefined;
 
 const dispatch = createEventDispatcher();
 
@@ -217,8 +217,8 @@ export function applyCustomDownStyle() {
   }
 }
 
-Command.notifications.on("execute", (cmd: Command) => {
-  if (cmd === command) {
+Action.notifications.on("execute", (cmd: Action) => {
+  if (cmd === action) {
     if (canToggle) {
       if (isDown === isToggleDown && isDown !== cmd.isChecked) {
         setIsDown(cmd.isChecked);
@@ -238,8 +238,8 @@ function down() {
   isDown = true;
   applyCustomDownStyle();
   dispatch("down");
-  if (command) {
-    command.execute();
+  if (action) {
+    action.execute();
   }
 }
 
@@ -247,8 +247,8 @@ function up() {
   isDown = false;
   clearCustomClasses();
   dispatch("up");
-  if (canToggle && command) {
-    command.execute();
+  if (canToggle && action) {
+    action.execute();
   }
 }
 

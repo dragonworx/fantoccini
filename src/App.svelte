@@ -27,8 +27,8 @@ import {
   MenuBarItem,
   MenuItem,
   separator,
-  Command,
-  cmd,
+  Action,
+  action,
 } from "./gui";
 import Label from "./gui/components/Label.svelte";
 import Icon from "./gui/components/Icon.svelte";
@@ -57,7 +57,7 @@ const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 const simpleMenu1: MenuItem[] = [
   new MenuItem({
     label: "1. Action",
-    command: new Command(() => console.log("Action 1!"), "f5"),
+    action: new Action(() => console.log("Action 1!"), "f5"),
   }),
   new MenuItem({ label: "Item 1.2" }),
   new MenuItem({ label: "1.3" }),
@@ -69,7 +69,7 @@ const simpleMenu1: MenuItem[] = [
 const simpleMenu2: MenuItem[] = [
   new MenuItem({
     label: "2. Action",
-    command: new Command(() => console.log("Action 2!"), "f6"),
+    action: new Action(() => console.log("Action 2!"), "f6"),
   }),
   new MenuItem({ label: "Item 2.2", icon: "img/test-small.png" }),
   new MenuItem({ label: "The Item 2.3" }),
@@ -79,7 +79,7 @@ const simpleMenu2: MenuItem[] = [
 const simpleMenu3: MenuItem[] = [
   new MenuItem({
     label: "3. Action",
-    command: new Command(() => console.log("Action 3!"), "ctrl+k"),
+    action: new Action(() => console.log("Action 3!"), "ctrl+k"),
   }),
   new MenuItem({ label: "Item 3.2" }),
   new MenuItem({ label: "Item 3.3" }),
@@ -92,7 +92,7 @@ const simpleMenu4: MenuItem[] = [
   new MenuItem({
     label: "4. Action",
     isEnabled: false,
-    command: new Command(() => console.log("Action 4!"), "ctrl+a"),
+    action: new Action(() => console.log("Action 4!"), "ctrl+a"),
   }),
   new MenuItem({ label: "Item 4.2", isEnabled: false }),
   new MenuItem({ label: "Item 4.3", isEnabled: false }),
@@ -273,13 +273,13 @@ function log(component: string, event: string, detail?: any) {
       <PushButton
         iconName="play"
         isRound="{true}"
-        command="{cmd(() => log('Play', 'command'), 'ctrl+p')}" />
+        action="{action(() => log('Play', 'action'), 'ctrl+p')}" />
       <PushButton
         iconName="record"
         isRound="{true}"
         iconSize="{25}"
         canToggle="{true}"
-        command="{cmd(() => log('Record', 'command'), 'alt+r', {
+        action="{action(() => log('Record', 'action'), 'alt+r', {
           canToggle: true,
         })}" />
     </Area>

@@ -6,7 +6,7 @@
 import Button from "./Button.svelte";
 import Label from "./Label.svelte";
 import Icon from "./Icon.svelte";
-import { Command } from "..";
+import { Action } from "..";
 
 export let isEnabled: boolean = true;
 export let canToggle: boolean = false;
@@ -20,7 +20,7 @@ export let iconHeight: number = 14;
 export let iconSize: number = -1;
 export let noStyle: boolean = false;
 export let isRound: boolean = false;
-export let command: Command | undefined = undefined;
+export let action: Action | undefined = undefined;
 </script>
 
 <Button
@@ -31,7 +31,7 @@ export let command: Command | undefined = undefined;
     isDown,
     isControlled,
     noStyle,
-    command,
+    action,
   }}
   appearance="{isRound ? 'round' : 'box'}"
   on:mousedown
