@@ -170,29 +170,6 @@ $: {
   style = css || undefined;
 }
 
-Command.notifications.on("execute", (cmd: Command) => {
-  if (cmd === command) {
-    if (canToggle) {
-      setIsDown(cmd.isChecked);
-    } else {
-      setIsDown(true);
-      const onKeyUp = () => {
-        setIsDown(false);
-        window.removeEventListener("keyup", onKeyUp);
-      };
-      window.addEventListener("keyup", onKeyUp);
-    }
-  }
-});
-
-Command.notifications.on("uncheck", (cmd: Command) => {
-  if (cmd === command) {
-    if (canToggle) {
-      setIsDown(false);
-    }
-  }
-});
-
 export function focus() {
   buttonEl.focus();
 }
@@ -240,6 +217,23 @@ export function applyCustomDownStyle() {
   }
 }
 
+Command.notifications.on("execute", (cmd: Command) => {
+  if (cmd === command) {
+    if (canToggle) {
+      if (isDown === isToggleDown && isDown !== cmd.isChecked) {
+        setIsDown(cmd.isChecked);
+      }
+    } else {
+      setIsDown(true);
+      const onKeyUp = () => {
+        setIsDown(false);
+        window.removeEventListener("keyup", onKeyUp);
+      };
+      window.addEventListener("keyup", onKeyUp);
+    }
+  }
+});
+
 function down() {
   isDown = true;
   applyCustomDownStyle();
@@ -253,6 +247,9 @@ function up() {
   isDown = false;
   clearCustomClasses();
   dispatch("up");
+  if (canToggle && command) {
+    command.execute();
+  }
 }
 
 const onMouseDown = () => {

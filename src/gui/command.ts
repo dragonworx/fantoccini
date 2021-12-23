@@ -23,16 +23,7 @@ export class Command extends EventEmitter {
     if (this.hotkey) {
       hotkeys(this.hotkey, (event, _handler) => {
         event.preventDefault();
-        if (this.canToggle) {
-          this.isChecked = !this.isChecked;
-          if (this.isChecked) {
-            this.execute();
-          } else {
-            Command.notifications.emit("uncheck", this);
-          }
-        } else {
-          this.execute();
-        }
+        this.execute();
       });
     }
   }
@@ -45,6 +36,9 @@ export class Command extends EventEmitter {
 
   execute() {
     if (this.isEnabled) {
+      if (this.canToggle) {
+        this.isChecked = !this.isChecked;
+      }
       this.handler();
       Command.notifications.emit("execute", this);
     }
