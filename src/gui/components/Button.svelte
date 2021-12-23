@@ -129,8 +129,9 @@
 }
 </style>
 
-<script context="module">
+<script lang="ts" context="module">
 export const defaultLongPressDuration = 500;
+export type ShouldCloseHandler = () => boolean;
 </script>
 
 <script lang="ts">
@@ -150,6 +151,7 @@ export let type: string = "button";
 export let longPressDuration: number = defaultLongPressDuration;
 export let noStyle: boolean = false;
 export let customClasses: { down?: string } = {};
+export let onShouldClose: ShouldCloseHandler | undefined = undefined;
 
 const dispatch = createEventDispatcher();
 
@@ -249,6 +251,11 @@ const onMouseUp = () => {
   if (canToggle) {
     if (isToggleDown) {
       if (isDown && !hasToggleLock) {
+        const shouldClose = onShouldClose ? onShouldClose() : true;
+        if (!shouldClose) {
+          // console.log("should not close");
+          return;
+        }
         isToggleDown = false;
         up();
         dispatch("toggle", false);

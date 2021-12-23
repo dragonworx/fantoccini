@@ -54,25 +54,28 @@ export function open() {
   button.setIsDown(true);
   dispatch("open");
 
-  onMouseDown = (e: MouseEvent) => {
-    if (!button.containsEvent(e.target as Node)) {
-      const contains = stack.some((item) => item.containsEvent(e));
-      if (!contains) {
+  setTimeout(() => {
+    onMouseDown = (e: MouseEvent) => {
+      if (!button.containsEvent(e.target as Node)) {
+        const contains = stack.some((item) => item.containsEvent(e));
+        if (!contains) {
+          close();
+        }
+      }
+      clearBlurHandlers();
+    };
+    window.addEventListener("mousedown", onMouseDown);
+    onInternalKeyDown = (e: KeyboardEvent) => {
+      if (isModifier(e.key)) {
+        return;
+      }
+      // console.log("onInternalKeyDown", id);
+      if (!button.containsEvent(e.target as Node)) {
         close();
       }
-    }
-    clearBlurHandlers();
-  };
-  window.addEventListener("mousedown", onMouseDown);
-  onInternalKeyDown = (e: KeyboardEvent) => {
-    if (isModifier(e.key)) {
-      return;
-    }
-    if (!button.containsEvent(e.target as Node)) {
-      close();
-    }
-  };
-  window.addEventListener("keydown", onInternalKeyDown);
+    };
+    window.addEventListener("keydown", onInternalKeyDown);
+  }, 0);
 }
 
 export function close(shouldDispatch: boolean = true) {
@@ -213,7 +216,7 @@ const onKeyDown = (e: KeyboardEvent) => {
   const { key } = e;
   if (key === "ArrowUp" && isOpen) {
     decrement();
-  } else if (key === "ArrowDown" || key === "ArrowRight") {
+  } else if (key === "ArrowDown") {
     if (!isOpen) {
       open();
     } else if (isOpen) {
@@ -222,9 +225,10 @@ const onKeyDown = (e: KeyboardEvent) => {
   } else if (isAcceptKey(key) && isOpen) {
     if (getActiveStack().getHoverIndex() > -1) {
       const item = getActiveStack().getCurrentItem();
-      // onSelect(item);
-      item.execute();
-      dispatch("select", item);
+      if (!item.hasSubMenu) {
+        item.execute();
+        dispatch("select", item);
+      }
     }
   } else if (key === "Escape") {
     close();
@@ -244,11 +248,19 @@ const onKeyDown = (e: KeyboardEvent) => {
 };
 
 const onKeyUp = (e: KeyboardEvent) => {
-  if (!isOpen && isAcceptKey(e.key)) {
+  if (!button.getIsDown().isDown && isAcceptKey(e.key)) {
     e.stopImmediatePropagation();
     e.stopPropagation();
     close();
   }
+};
+
+const onShouldClose = () => {
+  if (getActiveStack().getHoverIndex() > -1) {
+    const item = getActiveStack().getCurrentItem();
+    return !item.hasSubMenu;
+  }
+  return true;
 };
 </script>
 
@@ -267,6 +279,7 @@ const onKeyUp = (e: KeyboardEvent) => {
     canToggle="{trigger === 'mouseup'}"
     noStyle="{noStyle}"
     customClasses="{customClasses}"
+    onShouldClose="{onShouldClose}"
     on:pushed
     on:down="{onDown}"
     on:down

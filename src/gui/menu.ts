@@ -94,15 +94,15 @@ export class MenuItem {
   }
 
   get isInteractive() {
-    return this.isEnabled && this.isItem;
+    return !!(this.isEnabled && this.isItem);
   }
 
   get hasSubMenu() {
-    return this.items && this.items.length > 0;
+    return !!(this.items && this.items.length > 0);
   }
 
   get hasShortcut() {
-    return this.hasCommand && !!this.command.hotkey;
+    return !!(this.hasCommand && !!this.command.hotkey);
   }
 
   get hasIcon() {
