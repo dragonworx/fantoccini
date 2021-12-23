@@ -28,6 +28,7 @@ import {
   MenuItem,
   separator,
   Command,
+  cmd,
 } from "./gui";
 import Label from "./gui/components/Label.svelte";
 import Icon from "./gui/components/Icon.svelte";
@@ -120,6 +121,9 @@ const simpleMenuBar: MenuBarItem[] = [
 ];
 
 function log(component: string, event: string, detail?: any) {
+  if (detail instanceof MenuItem) {
+    detail = detail.label;
+  }
   console.log(
     `%c${component}🔆%c${event}%c${
       detail !== undefined
@@ -266,12 +270,18 @@ function log(component: string, event: string, detail?: any) {
       </Events>
     </Area>
     <Area>
-      <PushButton iconName="play" isRound="{true}" />
+      <PushButton
+        iconName="play"
+        isRound="{true}"
+        command="{cmd(() => log('Play', 'command'), 'ctrl+p')}" />
       <PushButton
         iconName="record"
         isRound="{true}"
         iconSize="{25}"
-        canToggle="{true}" />
+        canToggle="{true}"
+        command="{cmd(() => log('Record', 'command'), 'alt+r', {
+          canToggle: true,
+        })}" />
     </Area>
   </Section>
 

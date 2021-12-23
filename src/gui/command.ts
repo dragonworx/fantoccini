@@ -6,6 +6,7 @@ export type CommandHandler = () => void;
 export class Command extends EventEmitter {
   isEnabled: boolean = true;
   isChecked: boolean = false;
+  canToggle: boolean = false;
   hotkey?: string;
   handler: CommandHandler;
 
@@ -22,7 +23,16 @@ export class Command extends EventEmitter {
     if (this.hotkey) {
       hotkeys(this.hotkey, (event, _handler) => {
         event.preventDefault();
-        this.execute();
+        if (this.canToggle) {
+          this.isChecked = !this.isChecked;
+          if (this.isChecked) {
+            this.execute();
+          } else {
+            Command.notifications.emit("uncheck", this);
+          }
+        } else {
+          this.execute();
+        }
       });
     }
   }
@@ -41,6 +51,20 @@ export class Command extends EventEmitter {
   }
 }
 
-export function cmd(handler: CommandHandler, hotkey: string) {
-  return new Command(handler, hotkey);
+export function cmd(
+  handler: CommandHandler,
+  hotkey: string,
+  opts: { isEnabled?: boolean; isChecked?: boolean; canToggle?: boolean } = {}
+) {
+  const command = new Command(handler, hotkey);
+  typeof opts.isEnabled === "boolean"
+    ? (command.isEnabled = opts.isEnabled)
+    : void 0;
+  typeof opts.isChecked === "boolean"
+    ? (command.isChecked = opts.isChecked)
+    : void 0;
+  typeof opts.canToggle === "boolean"
+    ? (command.canToggle = opts.canToggle)
+    : void 0;
+  return command;
 }

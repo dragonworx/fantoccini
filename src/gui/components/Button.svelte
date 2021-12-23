@@ -137,6 +137,7 @@ export type ShouldCloseHandler = () => boolean;
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import { isAcceptKey, isArrowKey } from "../";
+import { Command } from "../command";
 
 export let isEnabled: boolean = true;
 export let canToggle: boolean = false;
@@ -152,6 +153,7 @@ export let longPressDuration: number = defaultLongPressDuration;
 export let noStyle: boolean = false;
 export let customClasses: { down?: string } = {};
 export let onShouldClose: ShouldCloseHandler | undefined = undefined;
+export let command: Command | undefined = undefined;
 
 const dispatch = createEventDispatcher();
 
@@ -167,6 +169,29 @@ $: {
   if (padding) css += `padding: ${padding}px;`;
   style = css || undefined;
 }
+
+Command.notifications.on("execute", (cmd: Command) => {
+  if (cmd === command) {
+    if (canToggle) {
+      setIsDown(cmd.isChecked);
+    } else {
+      setIsDown(true);
+      const onKeyUp = () => {
+        setIsDown(false);
+        window.removeEventListener("keyup", onKeyUp);
+      };
+      window.addEventListener("keyup", onKeyUp);
+    }
+  }
+});
+
+Command.notifications.on("uncheck", (cmd: Command) => {
+  if (cmd === command) {
+    if (canToggle) {
+      setIsDown(false);
+    }
+  }
+});
 
 export function focus() {
   buttonEl.focus();
@@ -219,6 +244,9 @@ function down() {
   isDown = true;
   applyCustomDownStyle();
   dispatch("down");
+  if (command) {
+    command.execute();
+  }
 }
 
 function up() {
