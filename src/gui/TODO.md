@@ -16,5 +16,3 @@
 - TODO...
 
 [Bugs]
-
-- MenuButton & Select keeps firing mousedown and opening after key accept

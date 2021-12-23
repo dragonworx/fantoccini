@@ -66,6 +66,7 @@ import {
   MenuTrigger,
   MenuStackItem,
   onSelectHandler,
+  nextId,
 } from "../";
 import MenuRow from "./MenuRow.svelte";
 
@@ -77,6 +78,8 @@ export let selectedIndex: number = -1;
 export let hoverIndex: number = selectedIndex;
 export let stack: MenuStackItem[];
 export let onSelect: onSelectHandler;
+
+let id = nextId();
 
 export function containsEvent(e: MouseEvent) {
   const r = menuViewEl.getBoundingClientRect();

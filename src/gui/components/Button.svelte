@@ -187,6 +187,7 @@ export function setIsDown(value: boolean) {
   isToggleDown = value;
   if (value === false) {
     clearCustomClasses();
+    window.removeEventListener("mouseup", onMouseUp);
   } else {
     applyCustomDownStyle();
     buttonEl.focus();

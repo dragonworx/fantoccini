@@ -11,6 +11,7 @@ import {
   MenuStackItem,
   onSelectHandler,
   Command,
+  nextId,
 } from "../";
 import Button from "./Button.svelte";
 import Menu from "./Menu.svelte";
@@ -27,11 +28,14 @@ export let noStyle: boolean = false;
 export let retainSelection: boolean = false;
 export let customClasses: { down?: string } = {};
 
+let id = nextId();
+
 const stack: MenuStackItem[] = [];
 const dispatch = createEventDispatcher();
 let button: Button;
 let menu: Menu;
 let onMouseDown;
+let onInternalKeyDown;
 
 Command.notifications.on("execute", (command: Command) => {
   if (isOpen) {
@@ -50,29 +54,25 @@ export function open() {
   button.setIsDown(true);
   dispatch("open");
 
-  // setTimeout(() => {
   onMouseDown = (e: MouseEvent) => {
-    console.log("mousedown");
     if (!button.containsEvent(e.target as Node)) {
       const contains = stack.some((item) => item.containsEvent(e));
       if (!contains) {
         close();
       }
     }
-    clearOnMouseDown();
+    clearBlurHandlers();
   };
   window.addEventListener("mousedown", onMouseDown);
-  const onKeyDown = (e: KeyboardEvent) => {
+  onInternalKeyDown = (e: KeyboardEvent) => {
     if (isModifier(e.key)) {
       return;
     }
     if (!button.containsEvent(e.target as Node)) {
       close();
     }
-    window.removeEventListener("keydown", onKeyDown);
   };
-  window.addEventListener("keydown", onKeyDown);
-  // }, 0);
+  window.addEventListener("keydown", onInternalKeyDown);
 }
 
 export function close(shouldDispatch: boolean = true) {
@@ -86,14 +86,17 @@ export function close(shouldDispatch: boolean = true) {
   }
   shouldDispatch && dispatch("close");
   stack.length = 0;
-  clearOnMouseDown();
+  clearBlurHandlers();
 }
 
-function clearOnMouseDown() {
+function clearBlurHandlers() {
   if (onMouseDown) {
     window.removeEventListener("mousedown", onMouseDown);
     onMouseDown = undefined;
-    console.log("clear!");
+  }
+  if (onInternalKeyDown) {
+    window.removeEventListener("keydown", onInternalKeyDown);
+    onInternalKeyDown = undefined;
   }
 }
 
@@ -210,7 +213,7 @@ const onKeyDown = (e: KeyboardEvent) => {
   const { key } = e;
   if (key === "ArrowUp" && isOpen) {
     decrement();
-  } else if (key === "ArrowDown") {
+  } else if (key === "ArrowDown" || key === "ArrowRight") {
     if (!isOpen) {
       open();
     } else if (isOpen) {
