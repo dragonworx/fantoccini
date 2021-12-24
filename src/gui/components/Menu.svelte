@@ -208,6 +208,13 @@ function clearStack() {
   // console.log("clear");
 }
 
+function select(item: MenuItem) {
+  if (item.canToggle) {
+    item.isChecked = !item.isChecked;
+  }
+  onSelect(item);
+}
+
 const onLIMouseOver = (index: number) => (e: MouseEvent) => {
   if (items[index].isInteractive) {
     setHoverIndex(index);
@@ -217,7 +224,7 @@ const onLIMouseOver = (index: number) => (e: MouseEvent) => {
 const onLIMouseUp = (index: number) => (e: MouseEvent) => {
   if (trigger === "mousedown") {
     if (containsEvent(e) && !items[index].hasSubMenu) {
-      onSelect(items[index]);
+      select(items[index]);
     }
   }
 };
@@ -225,7 +232,7 @@ const onLIMouseUp = (index: number) => (e: MouseEvent) => {
 const onLIMouseDown = (index: number) => (e: MouseEvent) => {
   if (trigger === "mouseup") {
     if (containsEvent(e) && !items[index].hasSubMenu) {
-      onSelect(items[index]);
+      select(items[index]);
     }
   }
 };

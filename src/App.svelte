@@ -63,7 +63,11 @@ const simpleMenu1: MenuItem[] = [
   new MenuItem({ label: "1.3", icon: "img/test-small.png" }),
   separator,
   new MenuItem({ label: "1.4", canToggle: true, isChecked: true }),
-  new MenuItem({ label: "1.5", canToggle: true }),
+  new MenuItem({
+    label: "1.5",
+    canToggle: true,
+    action: new Action(() => console.log("1.5!"), "f4"),
+  }),
 ];
 
 const simpleMenu2: MenuItem[] = [
