@@ -24,6 +24,7 @@ export type onSelectHandler = (item: MenuItem) => void;
 export type MenuItemOptions = {
   isChecked?: boolean;
   isEnabled?: boolean;
+  canToggle?: boolean;
   label: string;
   value?: any;
   icon?: string;
@@ -34,6 +35,7 @@ export type MenuItemOptions = {
 export class MenuItem {
   private _isEnabled: boolean;
   private _isChecked: boolean;
+  private _canToggle: boolean;
   label: string;
   value?: any;
   icon?: string;
@@ -44,6 +46,7 @@ export class MenuItem {
     const {
       isChecked = false,
       isEnabled = true,
+      canToggle = false,
       label,
       value,
       icon,
@@ -53,6 +56,7 @@ export class MenuItem {
     this.action = action;
     this.isEnabled = isEnabled;
     this.isChecked = isChecked;
+    this.canToggle = canToggle;
     this.label = label;
     this.value = value;
     this.icon = icon;
@@ -69,6 +73,7 @@ export class MenuItem {
 
   set isEnabled(value: boolean) {
     if (this.hasCommand) {
+      this._isEnabled = value;
       this.action.isEnabled = value;
     }
     this._isEnabled = value;
@@ -80,9 +85,22 @@ export class MenuItem {
 
   set isChecked(value: boolean) {
     if (this.hasCommand) {
+      this._isChecked = value;
       this.action.isChecked = value;
     }
     this._isChecked = value;
+  }
+
+  get canToggle() {
+    return this.hasCommand ? this.action.canToggle : this._canToggle;
+  }
+
+  set canToggle(value: boolean) {
+    if (this.hasCommand) {
+      this._canToggle = value;
+      this.action.canToggle = value;
+    }
+    this._canToggle = value;
   }
 
   get isSeparator() {
@@ -102,11 +120,11 @@ export class MenuItem {
   }
 
   get hasShortcut() {
-    return !!(this.hasCommand && !!this.action.hotkey);
+    return !!(this.hasCommand && this.action.hotkey);
   }
 
   get hasIcon() {
-    return !!this.icon;
+    return !!(this.icon || this.canToggle || this.isChecked);
   }
 
   get hasIteractiveSubMenu() {

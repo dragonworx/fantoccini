@@ -1,6 +1,6 @@
 <style lang="scss">
 @import "../theme";
-.menu-item {
+.menu-row {
   display: flex;
   flex-grow: 1;
   padding: $spacing_small ($spacing_small * 2);
@@ -13,6 +13,7 @@
     display: flex;
     overflow: hidden;
     margin-right: $spacing_small * 2;
+    justify-content: center;
   }
 
   .menu-expand {
@@ -35,8 +36,13 @@
   }
 }
 
-:global([data-component="menuitem"] [data-component="label"]) {
+:global([data-component="menurow"] [data-component="label"]) {
   flex-grow: 1;
+}
+
+:global([data-component="menurow"] [data-component="icon"]) {
+  width: 100%;
+  align-self: center;
 }
 </style>
 
@@ -55,11 +61,17 @@ export let hasShortCuts: boolean = false;
 export let item: MenuItem;
 </script>
 
-<div class="menu-item" data-component="menuitem">
+<div class="menu-row" data-component="menurow">
   {#if hasIcons}
     <div class="menu-icon">
-      {#if item.icon}
-        <Icon src="{item.icon}" />
+      {#if item.hasIcon}
+        {#if item.canToggle}
+          {#if item.isChecked}
+            <Icon src="img/icons/tick.svg" size="{16}" />
+          {/if}
+        {:else}
+          <Icon src="{item.icon}" />
+        {/if}
       {/if}
     </div>
   {/if}
