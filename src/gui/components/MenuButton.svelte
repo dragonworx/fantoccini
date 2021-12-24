@@ -34,14 +34,8 @@ const stack: MenuStackItem[] = [];
 const dispatch = createEventDispatcher();
 let button: Button;
 let menu: Menu;
-let onMouseDown;
-let onInternalKeyDown;
-
-Action.notifications.on("execute", (action: Action) => {
-  if (isOpen) {
-    close();
-  }
-});
+let onMouseDown: (e: MouseEvent) => void;
+let onInternalKeyDown: (e: KeyboardEvent) => void;
 
 export function getIsOpen() {
   return isOpen;
