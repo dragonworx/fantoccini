@@ -82,7 +82,7 @@ export let item: MenuItem;
   {#if hasShortCuts}
     <div class="menu-shortcuts">
       {#if item.hasShortcut}
-        {item.formatShortcut}
+        {item.printShortcut}
       {/if}
     </div>
   {/if}

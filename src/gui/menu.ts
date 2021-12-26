@@ -135,8 +135,8 @@ export class MenuItem {
     }
   }
 
-  get formatShortcut() {
-    return this.action.hotkey;
+  get printShortcut() {
+    return this.hasShortcut ? this.action.printShortcut : "";
   }
 
   execute() {

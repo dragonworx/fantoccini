@@ -19,6 +19,13 @@ export class Action extends EventEmitter {
     this.register();
   }
 
+  get printShortcut() {
+    return this.hotkey
+      .split("+")
+      .map((part) => part[0].toUpperCase() + part.substring(1))
+      .join(" ");
+  }
+
   register() {
     if (this.hotkey) {
       hotkeys(this.hotkey, (event, _handler) => {
