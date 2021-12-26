@@ -209,7 +209,7 @@ function clearStack() {
 }
 
 function select(item: MenuItem) {
-  if (item.canToggle) {
+  if (item.canToggle && !item.hasAction) {
     item.isChecked = !item.isChecked;
   }
   onSelect(item);

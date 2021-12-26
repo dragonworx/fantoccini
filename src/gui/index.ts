@@ -3,6 +3,7 @@ export * from "./menu";
 export * from "./option";
 export * from "./action";
 export * from "./filters";
+export * from "./tabs";
 
 let id = 0;
 

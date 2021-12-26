@@ -63,16 +63,16 @@ export class MenuItem {
     this.items = items;
   }
 
-  get hasCommand() {
+  get hasAction() {
     return !!this.action;
   }
 
   get isEnabled() {
-    return this.hasCommand ? this.action.isEnabled : this._isEnabled;
+    return this.hasAction ? this.action.isEnabled : this._isEnabled;
   }
 
   set isEnabled(value: boolean) {
-    if (this.hasCommand) {
+    if (this.hasAction) {
       this._isEnabled = value;
       this.action.isEnabled = value;
     }
@@ -80,11 +80,11 @@ export class MenuItem {
   }
 
   get isChecked() {
-    return this.hasCommand ? this.action.isChecked : this._isChecked;
+    return this.hasAction ? this.action.isChecked : this._isChecked;
   }
 
   set isChecked(value: boolean) {
-    if (this.hasCommand) {
+    if (this.hasAction) {
       this._isChecked = value;
       this.action.isChecked = value;
     }
@@ -92,11 +92,11 @@ export class MenuItem {
   }
 
   get canToggle() {
-    return this.hasCommand ? this.action.canToggle : this._canToggle;
+    return this.hasAction ? this.action.canToggle : this._canToggle;
   }
 
   set canToggle(value: boolean) {
-    if (this.hasCommand) {
+    if (this.hasAction) {
       this._canToggle = value;
       this.action.canToggle = value;
     }
@@ -120,7 +120,7 @@ export class MenuItem {
   }
 
   get hasShortcut() {
-    return !!(this.hasCommand && this.action.hotkey);
+    return !!(this.hasAction && this.action.hotkey);
   }
 
   get hasIcon() {
@@ -140,7 +140,7 @@ export class MenuItem {
   }
 
   execute() {
-    if (this.hasCommand) {
+    if (this.hasAction) {
       this.action.execute();
     }
   }
