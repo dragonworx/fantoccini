@@ -21,6 +21,8 @@ export let iconSize: number = -1;
 export let noStyle: boolean = false;
 export let isRound: boolean = false;
 export let action: Action | undefined = undefined;
+export let padding: number = -1;
+export let canFocus: boolean = true;
 </script>
 
 <Button
@@ -32,6 +34,8 @@ export let action: Action | undefined = undefined;
     isControlled,
     noStyle,
     action,
+    padding,
+    canFocus,
   }}
   appearance="{isRound ? 'round' : 'box'}"
   on:mousedown
@@ -43,7 +47,8 @@ export let action: Action | undefined = undefined;
   on:up
   on:longpress
   on:toggle
-  on:pushed
+  on:push
+  on:click
   on:change>
   {#if label}
     <Label text="{label}" />

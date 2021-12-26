@@ -21,6 +21,7 @@
   border: 1px solid #030c17;
   border-radius: $border_radius_small;
   box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
+  cursor: inherit;
 
   & .content {
     display: flex;
@@ -38,6 +39,10 @@
     }
 
     &:focus {
+      outline: none;
+    }
+
+    &:focus:not(.noFocus) {
       @include focus;
     }
 
@@ -147,13 +152,14 @@ export let isDown: boolean = false;
 export let appearance: "box" | "round" = "box";
 export let width: number | undefined = undefined;
 export let height: number | undefined = undefined;
-export let padding: number = 0;
+export let padding: number = -1;
 export let type: string = "button";
 export let longPressDuration: number = defaultLongPressDuration;
 export let noStyle: boolean = false;
 export let customClasses: { down?: string } = {};
 export let onShouldClose: ShouldCloseHandler | undefined = undefined;
 export let action: Action | undefined = undefined;
+export let canFocus: boolean = true;
 
 const dispatch = createEventDispatcher();
 
@@ -166,7 +172,7 @@ $: {
   let css = "";
   if (width) css += `width: ${width}px;`;
   if (height) css += `height: ${height}px;`;
-  if (padding) css += `padding: ${padding}px;`;
+  if (padding > -1) css += `padding: ${padding}px;`;
   style = css || undefined;
 }
 
@@ -256,13 +262,13 @@ const onMouseDown = () => {
   if (isEnabled) {
     buttonEl.focus();
     if (canToggle) {
-      dispatch("pushed");
+      dispatch("push");
       if (!isDown) {
         isToggleDown = false;
         down();
       }
     } else {
-      dispatch("pushed");
+      dispatch("push");
       down();
     }
     window.addEventListener("mouseup", onMouseUp);
@@ -272,7 +278,7 @@ const onMouseDown = () => {
   }
 };
 
-const onMouseUp = () => {
+const onMouseUp = (e: MouseEvent) => {
   if (canToggle) {
     if (isToggleDown) {
       if (isDown && !hasToggleLock) {
@@ -285,15 +291,24 @@ const onMouseUp = () => {
         up();
         dispatch("toggle", false);
         dispatch("change", false);
+        if (containsEvent(e.target as Node)) {
+          dispatch("click");
+        }
       }
     } else {
       isToggleDown = true;
       dispatch("toggle", true);
       dispatch("change", true);
+      if (containsEvent(e.target as Node)) {
+        dispatch("click");
+      }
     }
   } else {
     if (!isControlled) {
       up();
+      if (containsEvent(e.target as Node)) {
+        dispatch("click");
+      }
     }
   }
   window.removeEventListener("mouseup", onMouseUp);
@@ -317,7 +332,7 @@ const onKeyUp = (e: KeyboardEvent) => {
   if (isEnabled) {
     const { key } = e;
     if (isAcceptKey(key)) {
-      onMouseUp();
+      onMouseUp(e as unknown as MouseEvent);
     }
     if (e.key === "Escape") {
       buttonEl.blur();
@@ -328,16 +343,16 @@ const onKeyUp = (e: KeyboardEvent) => {
 
 <button
   bind:this="{buttonEl}"
-  style="{style}"
   class="button"
   class:enabled="{isEnabled}"
   class:disabled="{!isEnabled}"
   class:isDown
   class:round="{appearance === 'round'}"
   class:noStyle
+  class:noFocus="{!canFocus}"
   data-type="{type}"
   data-cantoggle="{canToggle}"
-  tabindex="{isEnabled ? 0 : -1}"
+  tabindex="{isEnabled && canFocus ? 0 : -1}"
   data-component="button"
   on:change
   on:mousedown
@@ -350,4 +365,6 @@ const onKeyUp = (e: KeyboardEvent) => {
   on:keydown="{onKeyDown}"
   on:keyup
   on:keyup="{onKeyUp}"
-  ><div class="content" data-component="button-content"><slot /></div></button>
+  ><div class="content" style="{style}" data-component="button-content">
+    <slot />
+  </div></button>

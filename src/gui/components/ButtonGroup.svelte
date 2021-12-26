@@ -108,7 +108,7 @@ const onButtonKeyDown = (index: number) =>
         label="{label}"
         iconSrc="{icon}"
         on:keydown="{onButtonKeyDown(index)}"
-        on:pushed="{onButtonDown(index)}" />
+        on:push="{onButtonDown(index)}" />
     </li>
   {/each}
 </ul>

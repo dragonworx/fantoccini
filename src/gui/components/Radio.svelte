@@ -70,6 +70,7 @@ function onButtonKeyDown(e: KeyboardEvent) {
     type="radio"
     width="{18}"
     height="{18}"
+    padding="{0}"
     on:keydown="{onButtonKeyDown}"
     on:change="{onButtonChange}"
     >{#if isDown}<Icon name="circle" width="{8}" />{/if}</Button

@@ -50,7 +50,7 @@ export function open() {
 
   setTimeout(() => {
     onMouseDown = (e: MouseEvent) => {
-      if (!button.containsEvent(e.target as Node)) {
+      if (button && !button.containsEvent(e.target as Node)) {
         const contains = stack.some((item) => item.containsEvent(e));
         if (!contains) {
           close();
@@ -64,7 +64,7 @@ export function open() {
         return;
       }
       // console.log("onInternalKeyDown", id);
-      if (!button.containsEvent(e.target as Node)) {
+      if (button && !button.containsEvent(e.target as Node)) {
         close();
       }
     };
@@ -242,7 +242,7 @@ const onKeyDown = (e: KeyboardEvent) => {
 };
 
 const onKeyUp = (e: KeyboardEvent) => {
-  if (!button.getIsDown().isDown && isAcceptKey(e.key)) {
+  if (button && !button.getIsDown().isDown && isAcceptKey(e.key)) {
     e.stopImmediatePropagation();
     e.stopPropagation();
     close();
@@ -274,7 +274,7 @@ const onShouldClose = () => {
     noStyle="{noStyle}"
     customClasses="{customClasses}"
     onShouldClose="{onShouldClose}"
-    on:pushed
+    on:push
     on:down="{onDown}"
     on:down
     on:up="{onUp}"

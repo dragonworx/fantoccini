@@ -45,6 +45,9 @@ import ScrollView from "./gui/components/ScrollView.svelte";
 import MenuBar from "./gui/components/MenuBar.svelte";
 import Tooltip from "./gui/components/Tooltip.svelte";
 import Panel from "./gui/components/Panel.svelte";
+import TabView from "./gui/components/TabView.svelte";
+import TabDoc from "./gui/components/TabDoc.svelte";
+import Button from "./gui/components/Button.svelte";
 
 const radioOptions: RadioGroupOption[] = [
   { label: "Option 1", value: "a" },
@@ -213,16 +216,17 @@ function log(component: string, event: string, detail?: any) {
       <Events>
         <PushButton
           label="Push"
-          on:pushed="{(e) => log('PushButton', 'pushed')}"
+          on:push="{(e) => log('PushButton', 'push')}"
           on:down="{(e) => log('PushButton', 'down')}"
           on:up="{(e) => log('PushButton', 'up')}"
+          on:click="{(e) => log('PushButton', 'click')}"
           on:longpress="{(e) => log('PushButton', 'longpress')}" />
       </Events>
       <Events mute="{true}">
         <PushButton
           label="Push"
           isEnabled="{false}"
-          on:pushed="{(e) => log('PushButton', 'pushed')}"
+          on:push="{(e) => log('PushButton', 'push')}"
           on:down="{(e) => log('PushButton', 'down')}"
           on:up="{(e) => log('PushButton', 'up')}" />
       </Events>
@@ -231,7 +235,7 @@ function log(component: string, event: string, detail?: any) {
         <PushButton
           label="No Style"
           noStyle="{true}"
-          on:pushed="{(e) => log('PushButton', 'pushed')}"
+          on:push="{(e) => log('PushButton', 'push')}"
           on:down="{(e) => log('PushButton', 'down')}"
           on:up="{(e) => log('PushButton', 'up')}"
           on:longpress="{(e) => log('PushButton', 'longpress')}" />
@@ -241,7 +245,7 @@ function log(component: string, event: string, detail?: any) {
           isEnabled="{false}"
           label="No Style"
           noStyle="{true}"
-          on:pushed="{(e) => log('PushButton', 'pushed')}"
+          on:push="{(e) => log('PushButton', 'push')}"
           on:down="{(e) => log('PushButton', 'down')}"
           on:up="{(e) => log('PushButton', 'up')}"
           on:longpress="{(e) => log('PushButton', 'longpress')}" />
@@ -253,10 +257,11 @@ function log(component: string, event: string, detail?: any) {
           label="Toggle"
           iconName="tick"
           canToggle="{true}"
-          on:pushed="{(e) => log('PushButton', 'pushed')}"
+          on:push="{(e) => log('PushButton', 'push')}"
           on:down="{(e) => log('PushButton', 'down')}"
           on:toggle="{(e) => log('PushButton', 'toggle', e.detail)}"
-          on:up="{(e) => log('PushButton', 'up')}" />
+          on:up="{(e) => log('PushButton', 'up')}"
+          on:click="{(e) => log('PushButton', 'click')}" />
       </Events>
       <PushButton
         label="Toggle"
@@ -511,7 +516,25 @@ function log(component: string, event: string, detail?: any) {
       ><Label text="Content..." /></Panel>
   </Section>
 
-  <Section title="Tabs" />
+  <Section title="Tabs">
+    <Area>
+      <TabView>
+        <TabDoc title="a"
+          ><Panel menuBar="{simpleMenuBar}"><Label text="Content A..." /></Panel
+          ></TabDoc>
+        <TabDoc title="b"><Panel><Label text="Content B..." /></Panel></TabDoc>
+      </TabView>
+    </Area>
+    <Area>
+      <TabView>
+        <TabDoc title="c" isClosable="{false}" icon="img/test-small.png"
+          ><Label text="Content C..." /></TabDoc>
+        <TabDoc title="d"><Label text="Content D..." /></TabDoc>
+        <TabDoc title="e"><Label text="Content E..." /></TabDoc>
+        <TabDoc title="f"><Label text="Content F..." /></TabDoc>
+      </TabView>
+    </Area>
+  </Section>
 
   <Section title="Splitter" />
 

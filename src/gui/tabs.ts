@@ -1,6 +1,6 @@
 export interface TabDocument {
-  name: string;
+  title: string;
   icon?: string;
-  isCloseable?: boolean;
+  isClosable?: boolean;
   isMovable?: boolean;
 }

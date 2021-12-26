@@ -5,6 +5,7 @@
   @include label_enabled;
   position: relative;
   outline: none;
+  cursor: inherit;
 
   &.link {
     text-decoration: underline;
