@@ -1,33 +1,69 @@
 import EventEmitter from 'eventemitter3';
-
 import { element, findStyleSheet } from './util';
 
 export type MountEvents = 'mount' | 'unmount';
-export type MouseEvents = 'mousedown';
-export type BaseEvents = MountEvents | MouseEvents;
+export type MouseEvents = 'mousedown' | 'mouseup' | 'mouseover' | 'mouseout';
+export type KeyboardEvents = 'keydown' | 'keyup';
+export type BaseEvents = MountEvents | MouseEvents | KeyboardEvents;
 export type Handler = (...args: any[]) => any;
 
-export abstract class Control<
-  Props,
+export abstract class BaseControl<
+  Props extends Record<string, any>,
   RootElement extends HTMLElement,
-  Events extends BaseEvents = BaseEvents
+  Events extends string
 > {
+  protected props: Props;
   protected element: RootElement;
   protected notifier: EventEmitter;
   protected className: string;
   protected styleSheet: CSSStyleSheet | null;
 
-  constructor(protected readonly props: Props) {
+  constructor(props: Props) {
+    this.props = props;
+
+    Object.keys(props).forEach((key) =>
+      Object.defineProperty(this, key, {
+        get: () => this.props[key],
+        set: (value: Props[keyof Props]) => {
+          (this.props as Record<string, any>)[key] = value;
+          if (this.onPropChange(key, value) !== false) {
+            const { cssStyleDeclaration } = this;
+            if (
+              cssStyleDeclaration &&
+              (cssStyleDeclaration as any)[key] !== ''
+            ) {
+              (cssStyleDeclaration as any)[key] = value;
+            }
+          }
+          return this;
+        },
+      })
+    );
+
     this.notifier = new EventEmitter();
-    const { html, style: className } = this.render();
+    const html = this.renderHTML();
+    const className = this.renderStyle();
     this.element = element<RootElement>(html);
     this.className = className;
     this.element.className = className;
     this.styleSheet = findStyleSheet(className);
-    this.bindEvents();
+    this.bindDomEvents();
+    this.init();
   }
 
-  protected abstract render(): { html: string; style: string };
+  protected onPropChange(key: string, value: any): false | void {}
+
+  protected updateStyle(key: string, value: string) {
+    const { cssStyleDeclaration } = this;
+    if (cssStyleDeclaration) {
+      (cssStyleDeclaration as any)[key] = value;
+    }
+  }
+
+  protected abstract renderHTML(): string;
+  protected abstract renderStyle(): string;
+
+  protected init() {}
 
   protected get cssStyleDeclaration() {
     const sheet = this.styleSheet;
@@ -40,14 +76,16 @@ export abstract class Control<
     return null;
   }
 
-  protected bindEvents() {
-    this.bindEvent('mousedown', 'onMouseDown');
-    this.bindEvent('mouseup', 'onMouseUp');
-    this.bindEvent('mousedown', 'onMouseDown');
-    this.bindEvent('mousedown', 'onMouseDown');
+  protected bindDomEvents() {
+    this.bindDomEvent('mousedown', 'onMouseDown');
+    this.bindDomEvent('mouseup', 'onMouseUp');
+    this.bindDomEvent('mouseover', 'onMouseOver');
+    this.bindDomEvent('mouseout', 'onMouseOut');
+    this.bindDomEvent('keydown', 'onKeyDown');
+    this.bindDomEvent('keyup', 'onKeyUp');
   }
 
-  protected bindEvent(eventName: string, selfHandlerKey: string) {
+  protected bindDomEvent(eventName: string, selfHandlerKey: string) {
     this.element.addEventListener(eventName, (e) => {
       ((this as any)[selfHandlerKey] as any)(e);
       this.notifier.emit(eventName, e);
@@ -57,6 +95,11 @@ export abstract class Control<
   protected onMount(element: HTMLElement) {}
   protected onUnMount() {}
   protected onMouseDown(e: MouseEvent) {}
+  protected onMouseUp(e: MouseEvent) {}
+  protected onMouseOver(e: MouseEvent) {}
+  protected onMouseOut(e: MouseEvent) {}
+  protected onKeyDown(e: KeyboardEvent) {}
+  protected onKeyUp(e: KeyboardEvent) {}
 
   on(eventName: Events, handler: Handler) {
     this.notifier.on(eventName, handler);
@@ -68,21 +111,8 @@ export abstract class Control<
     return this;
   }
 
-  append(control: Control<any, any, any>) {
+  append(control: BaseControl<any, any, any>) {
     this.element.appendChild(control.element);
-  }
-
-  set<T>(key: keyof Props, value: Props[keyof Props]) {
-    this.props[key] = value;
-    const { cssStyleDeclaration } = this;
-    const cssKey = String(key);
-    if (
-      cssStyleDeclaration &&
-      cssStyleDeclaration.getPropertyValue(cssKey) !== ''
-    ) {
-      cssStyleDeclaration.setProperty(cssKey, String(value));
-    }
-    return this;
   }
 
   mount(element: HTMLElement | null) {
@@ -110,3 +140,13 @@ export abstract class Control<
     }
   }
 }
+
+export const Control = BaseControl as {
+  new <
+    Props extends Record<string, any>,
+    RootElement extends HTMLElement,
+    Events extends string
+  >(
+    props: Props
+  ): BaseControl<Props, RootElement, Events> & Props;
+};

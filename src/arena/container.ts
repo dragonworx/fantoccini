@@ -1,35 +1,43 @@
-import { Control } from './control';
+import { Control, BaseEvents } from './control';
 import { css } from '@emotion/css';
 
+export type Events = BaseEvents | 'foo';
+
 export interface Props {
+  visible: boolean;
   width: string;
   height: string;
   backgroundColor: string;
 }
 
-export const defaultProps: Props = {
-  width: '100%',
-  height: '100%',
-  backgroundColor: 'transparent',
-};
-
-export class Container extends Control<Props, HTMLDivElement> {
+export class Container extends Control<Props, HTMLDivElement, Events> {
   constructor(props?: Partial<Props>) {
     super({
-      ...defaultProps,
+      visible: true,
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'transparent',
       ...props,
     });
   }
 
-  protected render() {
-    const { width, height, backgroundColor } = this.props;
-    return {
-      html: `<div></div>`,
-      style: css`
-        width: ${width};
-        height: ${height};
-        background-color: ${backgroundColor};
-      `,
-    };
+  protected renderHTML() {
+    return '<div></div>';
+  }
+
+  protected renderStyle() {
+    const { visible, width, height, backgroundColor } = this.props;
+    return css`
+      width: ${width};
+      height: ${height};
+      background-color: ${backgroundColor};
+    `;
+  }
+
+  onPropChange(key: string, value: any) {
+    if (key === 'visible') {
+      this.updateStyle('height', value ? '20px' : '50px');
+      return false;
+    }
   }
 }
