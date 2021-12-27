@@ -5,16 +5,21 @@ import { size } from './util';
 export interface Props {
   width: string | number;
   height: string | number;
+  backgroundColor: string;
 }
 
 export const defaultProps: Props = {
   width: '100%',
   height: '100%',
+  backgroundColor: 'transprent',
 };
 
 export class Container extends Control<Props, HTMLDivElement, BaseEvents> {
-  constructor(props: Props = defaultProps) {
-    super(props);
+  constructor(props: Partial<Props> = {}) {
+    super({
+      ...defaultProps,
+      ...props,
+    });
   }
 
   protected html() {
@@ -35,8 +40,6 @@ export class Container extends Control<Props, HTMLDivElement, BaseEvents> {
   }
 
   protected updateStyles(key: string, value: string) {
-    if (key === 'width') {
-      this.updateStyle(key, size(value));
-    }
+    this.updateStyle(key, size(value));
   }
 }

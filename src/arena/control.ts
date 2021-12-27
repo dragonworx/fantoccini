@@ -59,6 +59,7 @@ export abstract class Control<
   set<T>(key: keyof Props, value: Props[keyof Props]) {
     this.props[key] = value;
     this.updateStyles(key as string, value);
+    return this;
   }
 
   findStyleSheet() {

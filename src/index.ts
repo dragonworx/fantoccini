@@ -8,7 +8,9 @@ container.append(text);
 container
   .on('mount', (element) => console.log('mount', element))
   .on('mousedown', (e) =>
-    container.set('width', Math.round(Math.random() * 500))
+    container
+      .set('width', Math.round(Math.random() * 500))
+      .set('backgroundColor', 'red')
   );
 
 container.install(document.getElementById('main')!);
