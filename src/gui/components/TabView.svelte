@@ -2,6 +2,9 @@
 @import "../theme";
 .tabview {
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 
   ul {
     margin: 0;
@@ -14,10 +17,15 @@
       padding: $spacing_tiny $spacing_small * 2;
       display: flex;
       align-items: center;
+      position: relative;
+    }
+
+    li.tabview-tab:hover {
+      @include linear_gradient(#4a4a4a, #4e4d4d);
     }
 
     li.tabview-tab {
-      @include linear_gradient(#35383e, #4f545a);
+      @include linear_gradient(#4a4a4a, #484848);
       border-left: 1px solid #747474;
       border-top: 1px solid #747474;
       border-right: 1px solid #2b2b2b;
@@ -32,7 +40,39 @@
     }
 
     li.selected {
-      @include linear_gradient(#35383e, #656f7b);
+      @include linear_gradient(#505050, #6e6f70);
+      height: calc(100% + 5px);
+      top: -3px;
+    }
+
+    li.tabview-tab.selected:hover {
+      @include linear_gradient(#505050, #737476);
+    }
+  }
+
+  .tabview-content {
+    flex-grow: 1;
+    border-left: 1px solid #747474;
+    border-right: 1px solid #2b2b2b;
+    border-bottom: 1px solid #2b2b2b;
+    border-radius: $border_radius_tiny;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    display: flex;
+  }
+}
+
+.tabview.tool {
+  ul {
+    li {
+      /* max-height: 17px; */
+      height: calc(100% - 2px);
+      top: 3px;
+    }
+
+    li.selected {
+      height: calc(100% - 1px);
+      top: 2px;
     }
   }
 }
@@ -46,20 +86,32 @@
 }
 
 :global([data-component="tabview"] .tabview-tab [data-component="button"]) {
-  border: none;
-  box-shadow: none;
   @include button_close();
+  border: none !important;
+  box-shadow: none !important;
+}
+
+:global([data-component="tabview"].tool .tabview-tab [data-component="label"]) {
+  font-size: 10px !important;
 }
 </style>
 
+<script lang="ts" context="module">
+export type onCanCloseHandler = (selectedIndex: number) => boolean;
+</script>
+
 <script lang="ts">
-import { setContext } from "svelte";
+import { setContext, createEventDispatcher } from "svelte";
 import EventEmitter from "eventemitter3";
 import { nextId, TabDocument } from "../";
 import Label from "./Label.svelte";
 import Icon from "./Icon.svelte";
 import PushButton from "./PushButton.svelte";
+
 export let selectedIndex: number = 0;
+export let appearance: "document" | "tool" = "document";
+
+const dispatch = createEventDispatcher();
 
 let tabs: TabDocument[] = [];
 
@@ -69,7 +121,6 @@ const notifications = new EventEmitter();
 setContext("tabs", {
   registerTab(tabDoc: TabDocument) {
     tabs = [...tabs, tabDoc];
-    console.log("register", id, tabs.length - 1);
     if (selectedIndex === -1) {
       selectedIndex = 0;
     }
@@ -77,7 +128,6 @@ setContext("tabs", {
   },
 
   unregisterTab(index: number) {
-    console.log("unregister", id, index);
     tabs.splice(index, 1);
     tabs = [...tabs];
   },
@@ -93,10 +143,18 @@ const onMouseDown = (i: number) => (e: MouseEvent) => {
   if (selectedIndex !== i) {
     selectedIndex = i;
     notifications.emit("change");
+    dispatch("change", selectedIndex);
   }
 };
 
 const onCloseClick = (index: number) => () => {
+  const onCanClose = tabs[index].onCanClose;
+  if (onCanClose) {
+    const canClose = onCanClose(index);
+    if (!canClose) {
+      return;
+    }
+  }
   tabs.splice(index, 1);
   tabs = [...tabs];
   if (selectedIndex === tabs.length) {
@@ -106,7 +164,11 @@ const onCloseClick = (index: number) => () => {
 };
 </script>
 
-<div class="tabview" data-component="tabview">
+<div
+  class="tabview"
+  class:document="{appearance === 'document'}"
+  class:tool="{appearance === 'tool'}"
+  data-component="tabview">
   <ul>
     {#each tabs as { title, isClosable, icon }, i (i)}
       <li
@@ -129,5 +191,5 @@ const onCloseClick = (index: number) => () => {
     {/each}
     <li class="tabview-spacer"></li>
   </ul>
-  <slot />
+  <div class="tabview-content"><slot /></div>
 </div>

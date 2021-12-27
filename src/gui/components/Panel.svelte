@@ -1,10 +1,7 @@
 <style lang="scss">
 @import "../theme";
 .panel {
-  @include linear_gradient(#4a4a4a, #5e5e5e);
   box-sizing: border-box;
-  border-radius: $border_radius_small;
-  background-color: #43546a;
   border-top: 1px solid #686868;
   border-left: 1px solid #484848;
   border-right: 1px solid #484848;
@@ -12,6 +9,10 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+
+  &.withTitle {
+    border-radius: $border_radius_small;
+  }
 
   .panel-title {
     @include linear_gradient(#49596d, #2c3038);
@@ -44,7 +45,7 @@ export let title: string | undefined = undefined;
 export let menuBar: MenuBarItem[] | undefined = undefined;
 </script>
 
-<div class="panel" data-component="panel">
+<div class="panel" class:withTitle="{!!title}" data-component="panel">
   {#if title}
     <div class="panel-title"><Label text="{title}" /></div>
   {/if}

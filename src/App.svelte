@@ -517,21 +517,41 @@ function log(component: string, event: string, detail?: any) {
   </Section>
 
   <Section title="Tabs">
+    <Area height="{100}">
+      <Events>
+        <TabView on:change="{(e) => log('TabView', 'change', e.detail)}">
+          <TabDoc title="Document.a" menuBar="{simpleMenuBar}"
+            ><Label text="Content A..." /></TabDoc>
+          <TabDoc title="Document.b"><Label text="Content B..." /></TabDoc>
+        </TabView>
+      </Events>
+    </Area>
     <Area>
-      <TabView>
-        <TabDoc title="a"
-          ><Panel menuBar="{simpleMenuBar}"><Label text="Content A..." /></Panel
-          ></TabDoc>
-        <TabDoc title="b"><Panel><Label text="Content B..." /></Panel></TabDoc>
+      <TabView selectedIndex="{1}">
+        <TabDoc
+          title="Document.c"
+          isClosable="{false}"
+          icon="img/test-small.png"><Label text="Content C..." /></TabDoc>
+        <TabDoc
+          title="Document.d"
+          onCanClose="{(index) => {
+            log('TabDoc', 'onCanClose', index);
+            return false;
+          }}"><Label text="Content D...Can't close this" /></TabDoc>
+        <TabDoc title="Document.e"><Label text="Content E..." /></TabDoc>
+        <TabDoc title="Document.f"><Label text="Content F..." /></TabDoc>
       </TabView>
     </Area>
     <Area>
-      <TabView>
-        <TabDoc title="c" isClosable="{false}" icon="img/test-small.png"
+      <TabView appearance="tool">
+        <TabDoc title="Tool C" isClosable="{false}" icon="img/test-small.png"
           ><Label text="Content C..." /></TabDoc>
-        <TabDoc title="d"><Label text="Content D..." /></TabDoc>
-        <TabDoc title="e"><Label text="Content E..." /></TabDoc>
-        <TabDoc title="f"><Label text="Content F..." /></TabDoc>
+        <TabDoc title="Tool D" isClosable="{false}"
+          ><Label text="Content D..." /></TabDoc>
+        <TabDoc title="Tool E" isClosable="{false}"
+          ><Label text="Content E..." /></TabDoc>
+        <TabDoc title="Tool F" isClosable="{false}"
+          ><Label text="Content F..." /></TabDoc>
       </TabView>
     </Area>
   </Section>

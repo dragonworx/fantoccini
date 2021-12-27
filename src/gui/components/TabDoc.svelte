@@ -1,17 +1,15 @@
-<style lang="scss">
-@import "../theme";
-.tabdoc {
-}
-</style>
-
 <script lang="ts">
 import { getContext, onMount, onDestroy } from "svelte";
 import {} from "../";
+import { MenuBarItem } from "../menu";
+import Panel from "./Panel.svelte";
+import { onCanCloseHandler } from "./TabView.svelte";
 
 export let title: string = "";
 export let icon: string | undefined = undefined;
 export let isClosable: boolean = true;
-export let isMovable: boolean = true;
+export let menuBar: MenuBarItem[] | undefined = undefined;
+export let onCanClose: onCanCloseHandler | undefined = undefined;
 
 let index: number = -1;
 let visible: boolean = false;
@@ -24,21 +22,17 @@ const onChange = () => {
 };
 
 onMount(() => {
-  index = registerTab({ title, icon, isClosable, isMovable });
+  index = registerTab({ title, icon, isClosable, onCanClose });
   onChange();
-  notifications.on("change", () => {
-    console.log("change");
-    onChange();
-  });
+  notifications.on("change", onChange);
 });
 
 onDestroy(() => {
   unregisterTab(index);
+  notifications.off("change", onChange);
 });
 </script>
 
 {#if visible}
-  <div class="tabdoc" data-component="tabdoc">
-    <slot />
-  </div>
+  <Panel menuBar="{menuBar}"><slot /></Panel>
 {/if}
