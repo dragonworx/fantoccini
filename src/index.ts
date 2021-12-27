@@ -1,16 +1,35 @@
 import { Container } from './arena/container';
-import { Text } from './arena/text';
 
-const container = new Container({ width: 100, height: 20 });
-const text = new Text({ text: 'abc' });
-container.append(text);
+const container1 = new Container({
+  width: '100px',
+  height: '20px',
+  backgroundColor: 'blue',
+});
+const container2 = new Container({
+  width: '200px',
+  height: '20px',
+  backgroundColor: 'red',
+});
 
-container
-  .on('mount', (element) => console.log('mount', element))
-  .on('mousedown', (e) =>
-    container
-      .set('width', Math.round(Math.random() * 500))
-      .set('backgroundColor', 'red')
+container1
+  .on('mount', (element) => console.log('mount1', element))
+  .on('unmount', () => console.log('unmount1'))
+  .on(
+    'mousedown',
+    (e) => container1.unmount()
+    // .set('width', `${Math.round(Math.random() * 500)}px`)
+    // .set('backgroundColor', 'red')
   );
 
-container.install(document.getElementById('main')!);
+container2
+  .on('mount', (element) => console.log('mount2', element))
+  .on('unmount', () => console.log('unmount2'))
+  .on(
+    'mousedown',
+    (e) => container2.unmount()
+    // .set('width', `${Math.round(Math.random() * 500)}px`)
+    // .set('backgroundColor', 'red')
+  );
+
+container1.mount(document.getElementById('main'));
+container2.mount(document.getElementById('main'));

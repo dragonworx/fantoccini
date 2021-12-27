@@ -1,5 +1,6 @@
 import EventEmitter from 'eventemitter3';
-import { element } from './util';
+
+import { element, findStyleSheet } from './util';
 
 export type MountEvents = 'mount' | 'unmount';
 export type MouseEvents = 'mousedown';
@@ -9,7 +10,7 @@ export type Handler = (...args: any[]) => any;
 export abstract class Control<
   Props,
   RootElement extends HTMLElement,
-  Events extends BaseEvents
+  Events extends BaseEvents = BaseEvents
 > {
   protected element: RootElement;
   protected notifier: EventEmitter;
@@ -18,24 +19,32 @@ export abstract class Control<
 
   constructor(protected readonly props: Props) {
     this.notifier = new EventEmitter();
-    this.element = element<RootElement>(this.html());
-    this.className = this.style();
-    this.element.className = this.className;
-    this.styleSheet = this.findStyleSheet();
+    const { html, style: className } = this.render();
+    this.element = element<RootElement>(html);
+    this.className = className;
+    this.element.className = className;
+    this.styleSheet = findStyleSheet(className);
     this.bindEvents();
-    this.element.setAttribute('data-control-base', '');
-    this.controlType().forEach((controlType) =>
-      this.element.setAttribute(`data-control-${controlType}`, '')
-    );
   }
 
-  protected abstract html(): string;
-  protected abstract style(): string;
-  protected abstract controlType(): string[];
+  protected abstract render(): { html: string; style: string };
 
-  on(eventName: Events, handler: Handler) {
-    this.notifier.on(eventName, handler);
-    return this;
+  protected get cssStyleDeclaration() {
+    const sheet = this.styleSheet;
+    if (sheet) {
+      const rule = sheet.cssRules.item(0);
+      if (rule instanceof CSSStyleRule) {
+        return rule.style;
+      }
+    }
+    return null;
+  }
+
+  protected bindEvents() {
+    this.bindEvent('mousedown', 'onMouseDown');
+    this.bindEvent('mouseup', 'onMouseUp');
+    this.bindEvent('mousedown', 'onMouseDown');
+    this.bindEvent('mousedown', 'onMouseDown');
   }
 
   protected bindEvent(eventName: string, selfHandlerKey: string) {
@@ -45,12 +54,19 @@ export abstract class Control<
     });
   }
 
-  protected bindEvents() {
-    this.bindEvent('mousedown', 'onMouseDown');
+  protected onMount(element: HTMLElement) {}
+  protected onUnMount() {}
+  protected onMouseDown(e: MouseEvent) {}
+
+  on(eventName: Events, handler: Handler) {
+    this.notifier.on(eventName, handler);
+    return this;
   }
 
-  protected onMount(element: HTMLElement) {}
-  protected onMouseDown(e: MouseEvent) {}
+  off(eventName: Events, handler: Handler) {
+    this.notifier.off(eventName, handler);
+    return this;
+  }
 
   append(control: Control<any, any, any>) {
     this.element.appendChild(control.element);
@@ -58,40 +74,39 @@ export abstract class Control<
 
   set<T>(key: keyof Props, value: Props[keyof Props]) {
     this.props[key] = value;
-    this.updateStyles(key as string, value);
+    const { cssStyleDeclaration } = this;
+    const cssKey = String(key);
+    if (
+      cssStyleDeclaration &&
+      cssStyleDeclaration.getPropertyValue(cssKey) !== ''
+    ) {
+      cssStyleDeclaration.setProperty(cssKey, String(value));
+    }
     return this;
   }
 
-  findStyleSheet() {
-    //document.head.querySelectorAll('[data-emotion]')[0].sheet.cssRules[0].selectorText
-    //document.head.querySelectorAll('[data-emotion]')[0].sheet.cssRules[0].style.backgroundColor
-    const nodes = document.head.querySelectorAll('[data-emotion]');
-    for (let i = 0; i < nodes.length; i++) {
-      const sheet = (nodes[i] as HTMLStyleElement).sheet;
-      const rule = sheet?.cssRules[0];
-      if (!(rule instanceof CSSStyleRule)) {
-        continue;
-      }
-      if (rule.selectorText === `.${this.className}`) {
-        return sheet;
-      }
-    }
-    return null;
-  }
-
-  protected updateStyles(key: string, value: any) {}
-
-  updateStyle(key: string, value: string) {
-    const sheet = this.styleSheet;
-    if (sheet) {
-      const dec = (sheet.cssRules[0] as CSSStyleRule).style;
-      (dec as any)[key] = value;
+  mount(element: HTMLElement | null) {
+    if (element) {
+      element.appendChild(this.element);
+      this.onMount(element);
+      this.notifier.emit('mount', element);
+    } else {
+      throw new Error('Cannot mount to null element');
     }
   }
 
-  install(element: HTMLElement) {
-    element.appendChild(this.element);
-    this.onMount(element);
-    this.notifier.emit('mount', element);
+  unmount() {
+    const element = this.element;
+    if (element.parentElement !== null) {
+      element.parentElement.removeChild(element);
+      if (this.styleSheet) {
+        const styleElement = this.styleSheet.ownerNode!;
+        document.head.removeChild(styleElement);
+      }
+      this.onUnMount();
+      this.notifier.emit('unmount');
+    } else {
+      throw new Error('Cannot unmount from null parent');
+    }
   }
 }
