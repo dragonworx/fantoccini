@@ -21,8 +21,8 @@ container1
   .on('unmount', () => console.log('unmount1'))
   .on('mousedown', (e) => {
     container1.width = `${Math.round(Math.random() * 500)}px`;
-    container1.visible = !container1.visible;
-    console.log(container1.visible);
+    container2.visible = !container2.visible;
+    console.log(container2.visible);
   })
   .on('mouseover', () => (container1.backgroundColor = randomRgb()));
 

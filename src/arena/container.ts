@@ -36,7 +36,7 @@ export class Container extends Control<Props, HTMLDivElement, Events> {
 
   onPropChange(key: string, value: any) {
     if (key === 'visible') {
-      this.updateStyle('height', value ? '20px' : '50px');
+      this.updateStyle('display', value ? '' : 'none');
       return false;
     }
   }
