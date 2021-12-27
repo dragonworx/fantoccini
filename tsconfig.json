@@ -4,6 +4,6 @@
   "include": ["src/**/*"],
   "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
   "compilerOptions": {
-    "importsNotUsedAsValues": "preserve"
+    "importsNotUsedAsValues": "preserve",
   }
 }

@@ -1,20 +1,20 @@
-import "./scss/container.scss";
+import "./scss/text.scss";
 import { Control, BaseEvents } from "./control";
 
 export interface Props {
-  width?: string | number;
-  height?: string | number;
+  text?: string;
+  color?: string;
 }
 
 export const defaultProps: Props = {};
 
-export class Container extends Control<Props, HTMLDivElement, BaseEvents> {
+export class Text extends Control<Props, HTMLSpanElement, BaseEvents> {
   constructor(props: Props = defaultProps) {
     super(props);
   }
 
   protected html() {
-    return `<div></div>`;
+    return `<span>${this.props.text}</span>`;
   }
 
   protected controlType(): string[] {

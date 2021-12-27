@@ -1,7 +1,5 @@
-export function create<T>(elementName: string): T {
-  return document.createElement(elementName) as unknown as T;
-}
-
-export function div() {
-  return create<HTMLDivElement>("div");
+export function element<T>(html: string): T {
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = html;
+  return wrapper.firstElementChild as unknown as T;
 }
