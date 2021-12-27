@@ -7,7 +7,7 @@ module.exports = function (env, argv) {
   console.log('Building for ' + environment);
   return [
     {
-      entry: path.resolve(__dirname, './src/index.tsx'),
+      entry: path.resolve(__dirname, './src/index.ts'),
       mode: environment,
       devtool: 'eval-source-map',
       module: {
@@ -24,7 +24,7 @@ module.exports = function (env, argv) {
         ],
       },
       resolve: {
-        extensions: ['.ts', '.tsx', '.js'],
+        extensions: ['.ts', '.js'],
       },
       output: {
         filename: 'bundle.js',
