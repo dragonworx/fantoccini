@@ -155,6 +155,7 @@ const onCloseClick = (index: number) => () => {
       return;
     }
   }
+  dispatch("closing", index);
   tabs.splice(index, 1);
   tabs = [...tabs];
   if (selectedIndex === tabs.length) {

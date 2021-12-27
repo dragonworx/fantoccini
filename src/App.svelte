@@ -518,15 +518,17 @@ function log(component: string, event: string, detail?: any) {
   </Section>
 
   <Section title="Tabs">
-    <Area height="{100}">
-      <Events>
-        <TabView on:change="{(e) => log('TabView', 'change', e.detail)}">
+    <Events>
+      <Area height="{100}">
+        <TabView
+          on:change="{(e) => log('TabView', 'change', e.detail)}"
+          on:closing="{(e) => log('TabView', 'closing', e.detail)}">
           <TabDoc title="Document.a" menuBar="{simpleMenuBar}"
             ><Label text="Content A..." /></TabDoc>
           <TabDoc title="Document.b"><Label text="Content B..." /></TabDoc>
         </TabView>
-      </Events>
-    </Area>
+      </Area>
+    </Events>
     <Area>
       <TabView selectedIndex="{1}">
         <TabDoc
@@ -539,7 +541,8 @@ function log(component: string, event: string, detail?: any) {
             log('TabDoc', 'onCanClose', index);
             return false;
           }}"><Label text="Content D...Can't close this" /></TabDoc>
-        <TabDoc title="Document.e"><Label text="Content E..." /></TabDoc>
+        <TabDoc title="Document.e" isClosable="{false}"
+          ><Label text="Content E..." /></TabDoc>
         <TabDoc title="Document.f"><Label text="Content F..." /></TabDoc>
       </TabView>
     </Area>
