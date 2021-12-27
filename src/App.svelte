@@ -128,6 +128,13 @@ const simpleMenuBar: MenuBarItem[] = [
   { label: "Disabled", items: simpleMenu4 },
 ];
 
+let simpleTabs = ["Tool A", "Tool B", "Tool C", "Tool D"];
+
+const closeTabHandler = (index: number) => () => {
+  simpleTabs.splice(index, 1);
+  simpleTabs = [...simpleTabs];
+};
+
 function log(component: string, event: string, detail?: any) {
   if (detail instanceof MenuItem) {
     detail = detail.label;
@@ -548,14 +555,12 @@ function log(component: string, event: string, detail?: any) {
     </Area>
     <Area>
       <TabView appearance="tool">
-        <TabDoc title="Tool C" isClosable="{false}" icon="img/test-small.png"
-          ><Label text="Content C..." /></TabDoc>
-        <TabDoc title="Tool D" isClosable="{false}"
-          ><Label text="Content D..." /></TabDoc>
-        <TabDoc title="Tool E" isClosable="{false}"
-          ><Label text="Content E..." /></TabDoc>
-        <TabDoc title="Tool F" isClosable="{false}"
-          ><Label text="Content F..." /></TabDoc>
+        {#each simpleTabs as tabTitle, i (tabTitle)}
+          <TabDoc title="{tabTitle}" isClosable="{false}">
+            <Label text="{`Content for ${tabTitle}`}" />
+            <PushButton label="Close" on:click="{closeTabHandler(i)}" />
+          </TabDoc>
+        {/each}
       </TabView>
     </Area>
   </Section>
