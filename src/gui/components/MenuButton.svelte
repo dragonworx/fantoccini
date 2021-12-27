@@ -37,6 +37,12 @@ let menu: Menu;
 let onMouseDown: (e: MouseEvent) => void;
 let onInternalKeyDown: (e: KeyboardEvent) => void;
 
+Action.notifications.on("execute", (action) => {
+  if (isOpen) {
+    close();
+  }
+});
+
 export function getIsOpen() {
   return isOpen;
 }
