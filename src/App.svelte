@@ -48,6 +48,7 @@ import Panel from "./gui/components/Panel.svelte";
 import TabView from "./gui/components/TabView.svelte";
 import TabDoc from "./gui/components/TabDoc.svelte";
 import Button from "./gui/components/Button.svelte";
+import { text } from "svelte/internal";
 
 const radioOptions: RadioGroupOption[] = [
   { label: "Option 1", value: "a" },

@@ -8,6 +8,28 @@
 }
 </style>
 
+<script lang="ts" context="module">
+export const preload = (filename: string) => {
+  const img = new Image();
+  img.src = `img/icons/${filename}`;
+};
+[
+  "circle.svg",
+  "cross.svg",
+  "increment-down.svg",
+  "increment-up.svg",
+  "next-frame.svg",
+  "pause.svg",
+  "play.svg",
+  "prev-frame.svg",
+  "record.svg",
+  "search.svg",
+  "select.svg",
+  "stop.svg",
+  "tick.svg",
+].forEach((filename) => preload(filename));
+</script>
+
 <script lang="ts">
 export let src: string | undefined = undefined;
 export let name: string | undefined = undefined;
