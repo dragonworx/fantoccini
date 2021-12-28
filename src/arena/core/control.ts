@@ -1,4 +1,5 @@
 import { DynamicStyleSheet, CSSRuleNode, css } from './stylesheet';
+import { Element } from './element';
 
 export { css };
 
@@ -34,6 +35,7 @@ export abstract class BaseControl<
   protected _id: number;
   protected props: Props;
   protected element: RootElement;
+  protected refElement: Element;
   protected styleSheet: DynamicStyleSheet;
   protected handlers: Map<string, Handler[]>;
 
@@ -51,8 +53,9 @@ export abstract class BaseControl<
     };
     this.props = propsWithDefaults;
     this.handlers = new Map();
-    this.element = BaseControl.html<RootElement>(this.$template());
+    this.element = BaseControl.html<RootElement>(this.$html());
     this.element.setAttribute('data-id', this.id);
+    this.refElement = new Element(this.element);
     const style = this.$style();
     style.css(
       defaultStyle.selector,
@@ -96,13 +99,13 @@ export abstract class BaseControl<
     this.onPropChange(key, value);
   }
 
-  protected onPropChange(key: string, value: any) {}
-
-  get id() {
-    return `arena-ctrl-${this._id}`;
+  protected get rootCss() {
+    return this.styleSheet.root;
   }
 
-  protected abstract $template(): string;
+  protected onPropChange(key: string, value: any) {}
+
+  protected abstract $html(): string;
   protected abstract $style(): CSSRuleNode;
   protected init?(): void;
 
@@ -137,6 +140,10 @@ export abstract class BaseControl<
   protected onMouseOut(e: MouseEvent) {}
   protected onKeyDown(e: KeyboardEvent) {}
   protected onKeyUp(e: KeyboardEvent) {}
+
+  get id() {
+    return `arena-ctrl-${this._id}`;
+  }
 
   on(eventName: Events, handler: Handler) {
     if (!this.handlers.get(eventName)) {
@@ -194,15 +201,18 @@ export abstract class BaseControl<
     return this.element.querySelectorAll(selector);
   }
 
-  ref(refName: string, deep: boolean = false) {
-    const selector = deep
-      ? `[data-ref="${refName}"]`
-      : `[data-ref-id="${this.id}-${refName}"]`;
+  ref(refName: string) {
+    const selector = `[data-ref-id="${this.id}-${refName}"]`;
     const element = this.select(`[data-id="${this.id}"] ${selector}`);
     if (!element) {
       throw new Error(`Element with ref "${refName}" not found`);
     }
     return element as HTMLElement;
+  }
+
+  refAsElement(refName: string) {
+    const element = this.ref(refName);
+    return new Element(element);
   }
 
   addClass(cssClassName: string) {

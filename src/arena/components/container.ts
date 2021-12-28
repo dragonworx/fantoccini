@@ -22,7 +22,7 @@ export class Container extends Control<Props, HTMLDivElement, Events> {
     });
   }
 
-  protected $template() {
+  protected $html() {
     return '<div><p data-ref="foo">hi</p></div>';
   }
 
@@ -47,7 +47,7 @@ export class Container extends Control<Props, HTMLDivElement, Events> {
 
   protected init() {
     if (this._id === 0) {
-      this.ref('foo').setAttribute('found', '');
+      this.refAsElement('foo').attr('found', '');
     }
   }
 

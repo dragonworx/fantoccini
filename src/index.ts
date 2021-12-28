@@ -1,4 +1,5 @@
 import { Container } from './arena/components/container';
+import { Text } from './arena/components/text';
 import Color from 'color';
 
 const container1 = new Container({
@@ -11,6 +12,8 @@ const container2 = new Container({
   height: 50,
   backgroundColor: 'red',
 });
+
+const text = new Text({ text: 'Foobar' });
 
 container1
   .on('mount', () => console.log('mount1'))
@@ -32,5 +35,7 @@ container2
   .on('unmount', () => console.log('unmount2'))
   .on('mousedown', () => container2.unmount());
 
-container1.mount(document.getElementById('main'));
-container2.mount(document.getElementById('main'));
+const main = document.getElementById('main');
+container1.mount(main);
+container2.mount(main);
+text.mount(main);
