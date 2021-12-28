@@ -1,4 +1,5 @@
 import EventEmitter from 'eventemitter3';
+import { DynamicStyleSheet, css } from './stylesheet';
 import { element, findStyleSheet } from './util';
 
 export type MountEvents = 'mount' | 'unmount';
@@ -42,14 +43,58 @@ export abstract class BaseControl<
 
     this.notifier = new EventEmitter();
     const html = this.renderHTML();
-    const className = this.renderStyle();
     this.element = element<RootElement>(html);
+    const className = 'foo';
+    // const className = this.renderStyle();
     this.className = className;
     this.element.className = className;
     this.styleSheet = findStyleSheet(className);
     this.bindDomEvents();
     this.init();
+    this.test();
   }
+
+  test() {
+    const sheet = new DynamicStyleSheet(
+      css(
+        'div',
+        {
+          border: '1px solid red',
+        },
+        css('p', {
+          color: 'white',
+        })
+      )
+    );
+    this.element.className = sheet.className;
+    console.log('!!', sheet.get('div'));
+
+    // css(
+    //   'div',
+    //   {
+    //     color: 'red',
+    //   },
+    //   css('ul', {
+    //     color: 'orange',
+    //   })
+    // );
+    // css('p', {
+    //   color: 'blue',
+    // });
+
+    // sheet.get('div').get('ul')
+  }
+
+  // test() {
+  //   const style = document.createElement('style');
+  //   style.innerHTML =
+  //     'div { border: 1px solid cyan; } div p {font-style: italic}';
+  //   const a = style.sheet?.cssRules[0];
+  //   if (a instanceof CSSStyleRule) {
+  //     a.style.backgroundColor = 'red';
+  //   }
+  //   document.getElementsByTagName('head')[0].appendChild(style);
+  // }
 
   protected onPropChange(key: string, value: any): false | void {}
 

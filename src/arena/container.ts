@@ -22,7 +22,7 @@ export class Container extends Control<Props, HTMLDivElement, Events> {
   }
 
   protected renderHTML() {
-    return '<div></div>';
+    return '<div><p>hi</p></div>';
   }
 
   protected renderStyle() {
@@ -31,6 +31,10 @@ export class Container extends Control<Props, HTMLDivElement, Events> {
       width: ${width};
       height: ${height};
       background-color: ${backgroundColor};
+
+      p {
+        color: red;
+      }
     `;
   }
 
