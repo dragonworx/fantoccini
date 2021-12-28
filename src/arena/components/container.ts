@@ -1,23 +1,23 @@
-import { Control, BaseEvents } from './control';
-import { css } from './stylesheet';
-import { size } from './util';
+import { Control, BaseEvents, css, size } from '../core/';
 
 export type Events = BaseEvents | 'foo';
 
 export interface Props {
-  visible: boolean;
   width: string | number;
   height: string | number;
   backgroundColor: string;
 }
 
+export const defaultProps: Props = {
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'green',
+};
+
 export class Container extends Control<Props, HTMLDivElement, Events> {
   constructor(props?: Partial<Props>) {
     super({
-      visible: true,
-      width: '100%',
-      height: '100%',
-      backgroundColor: 'transparent',
+      ...defaultProps,
       ...props,
     });
   }
@@ -31,6 +31,7 @@ export class Container extends Control<Props, HTMLDivElement, Events> {
       'div',
       {
         backgroundColor: 'blue',
+        border: '1px solid red',
       },
       css('&:hover', {
         borderStyle: 'dashed',
@@ -45,7 +46,7 @@ export class Container extends Control<Props, HTMLDivElement, Events> {
   }
 
   protected init() {
-    if (this.id === 0) {
+    if (this._id === 0) {
       this.ref('foo').setAttribute('found', '');
     }
   }
@@ -53,8 +54,6 @@ export class Container extends Control<Props, HTMLDivElement, Events> {
   protected onPropChange(key: string, value: any) {
     if (key === 'width' || key === 'height') {
       this.css('div').set(key, size(value));
-    } else if (key === 'visible') {
-      this.css('div').set('display', value ? '' : 'none');
     } else if (key === 'backgroundColor') {
       this.css('div').set(key, value);
     }

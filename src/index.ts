@@ -1,15 +1,14 @@
-import { Container } from './arena/container';
+import { Container } from './arena/components/container';
 import Color from 'color';
 
 const container1 = new Container({
   width: 100,
-  height: 20,
-  backgroundColor: 'blue',
+  height: 50,
 });
 
 const container2 = new Container({
   width: 200,
-  height: 20,
+  height: 50,
   backgroundColor: 'red',
 });
 

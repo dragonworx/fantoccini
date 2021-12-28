@@ -1,11 +1,7 @@
-let id: number = 0;
-
 export class DynamicStyleSheet {
   element: HTMLStyleElement;
-  id: number;
 
-  constructor(readonly root: CSSRuleNode) {
-    this.id = id++;
+  constructor(readonly id: string, readonly root: CSSRuleNode) {
     const element = (this.element = document.createElement('style'));
     element.setAttribute(this.className, '');
     document.head.appendChild(element);
@@ -21,7 +17,7 @@ export class DynamicStyleSheet {
   }
 
   get className() {
-    return `style-${this.id}`;
+    return `${this.id}`;
   }
 
   private parse(node: CSSRuleNode, selectorPrefix?: string) {
@@ -77,7 +73,7 @@ export class DynamicStyleSheet {
     if (parts.length === 0) {
       throw new Error(`Invalid css selector "${selector}"`);
     } else if (parts.length === 1) {
-      if (node.selector !== parts[0]) {
+      if (node.selector !== parts[0] && node.selector !== '&') {
         throw new Error(`Invalid css selector "${selector}"`);
       }
       return node;
@@ -97,8 +93,8 @@ export class CSSRuleNode {
 
   constructor(
     readonly selector: string,
-    protected readonly rules: { [Property in CSSRuleKey]?: string },
-    protected readonly children: CSSRuleNode[]
+    readonly rules: { [Property in CSSRuleKey]?: string },
+    readonly children: CSSRuleNode[]
   ) {}
 
   private get cssStyleRule() {
@@ -118,7 +114,18 @@ export class CSSRuleNode {
   }
 
   set(ruleKey: CSSRuleKey, value: string) {
-    (this.cssStyleRule.style as any)[ruleKey] = value;
+    const { stylesheet } = this.$!;
+    if (stylesheet.sheet !== null) {
+      (this.cssStyleRule.style as any)[ruleKey] = value;
+    }
+  }
+
+  css(
+    selector: string,
+    rules: { [Property in CSSRuleKey]?: string },
+    ...children: CSSRuleNode[]
+  ) {
+    this.children.push(css(selector, rules, ...children));
   }
 }
 
