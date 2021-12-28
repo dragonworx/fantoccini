@@ -36,7 +36,7 @@ export class Text extends Control<Props, HTMLDivElement, Events> {
 
   protected onPropChange(key: string, value: any) {
     if (key === 'text') {
-      this.refElement.value = value;
+      this.elementRef.value = value;
     } else if (key === 'color') {
       this.rootCss.set(key, value);
     }

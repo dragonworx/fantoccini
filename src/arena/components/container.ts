@@ -47,7 +47,7 @@ export class Container extends Control<Props, HTMLDivElement, Events> {
 
   protected init() {
     if (this._id === 0) {
-      this.refAsElement('foo').attr('found', '');
+      this.refElement('foo').attr('found', '');
     }
   }
 

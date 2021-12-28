@@ -32,12 +32,12 @@ export abstract class BaseControl<
   RootElement extends HTMLElement,
   Events extends string
 > {
-  protected _id: number;
-  protected props: Props;
-  protected element: RootElement;
-  protected refElement: Element;
-  protected styleSheet: DynamicStyleSheet;
-  protected handlers: Map<string, Handler[]>;
+  protected readonly _id: number;
+  protected readonly props: Props;
+  protected readonly element: RootElement;
+  protected readonly elementRef: Element;
+  protected readonly styleSheet: DynamicStyleSheet;
+  protected readonly handlers: Map<string, Handler[]>;
 
   static html<T>(html: string): T {
     const wrapper = document.createElement('div');
@@ -55,7 +55,7 @@ export abstract class BaseControl<
     this.handlers = new Map();
     this.element = BaseControl.html<RootElement>(this.$html());
     this.element.setAttribute('data-id', this.id);
-    this.refElement = new Element(this.element);
+    this.elementRef = new Element(this.element);
     const style = this.$style();
     style.css(
       defaultStyle.selector,
@@ -210,7 +210,7 @@ export abstract class BaseControl<
     return element as HTMLElement;
   }
 
-  refAsElement(refName: string) {
+  refElement(refName: string) {
     const element = this.ref(refName);
     return new Element(element);
   }
@@ -225,6 +225,14 @@ export abstract class BaseControl<
 
   hasClass(cssClassName: string) {
     return this.element.classList.contains(cssClassName);
+  }
+
+  add(control: BaseControl<any, any, any>, refName?: string) {
+    let element: HTMLElement = this.element;
+    if (refName) {
+      element = this.ref(refName);
+    }
+    element.appendChild(control.element);
   }
 }
 
