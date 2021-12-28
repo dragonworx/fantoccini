@@ -12,7 +12,7 @@
     "test:watch": "jest --maxWorkers=1 --watch"
   },
   "dependencies": {
-    "@emotion/css": "^11.7.1",
+    "color": "^4.1.0",
     "eventemitter3": "^4.0.7"
   },
   "devDependencies": {

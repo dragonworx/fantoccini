@@ -1,6 +1,8 @@
 import EventEmitter from 'eventemitter3';
-import { DynamicStyleSheet, css } from './stylesheet';
-import { element, findStyleSheet } from './util';
+import { DynamicStyleSheet, CSSRuleNode, CSSRuleKey } from './stylesheet';
+import { element } from './util';
+
+export { CSSRuleNode };
 
 export type MountEvents = 'mount' | 'unmount';
 export type MouseEvents = 'mousedown' | 'mouseup' | 'mouseover' | 'mouseout';
@@ -15,111 +17,47 @@ export abstract class BaseControl<
 > {
   protected props: Props;
   protected element: RootElement;
+  protected styleSheet: DynamicStyleSheet;
   protected notifier: EventEmitter;
-  protected className: string;
-  protected styleSheet: CSSStyleSheet | null;
 
   constructor(props: Props) {
     this.props = props;
+    this.notifier = new EventEmitter();
+    this.element = element<RootElement>(this.createTemplate());
+    this.styleSheet = new DynamicStyleSheet(this.createStyle());
+    this.element.className = this.styleSheet.className;
 
-    Object.keys(props).forEach((key) =>
+    Object.keys(props).forEach((key) => {
       Object.defineProperty(this, key, {
         get: () => this.props[key],
         set: (value: Props[keyof Props]) => {
           (this.props as Record<string, any>)[key] = value;
-          if (this.onPropChange(key, value) !== false) {
-            const { cssStyleDeclaration } = this;
-            if (
-              cssStyleDeclaration &&
-              (cssStyleDeclaration as any)[key] !== ''
-            ) {
-              (cssStyleDeclaration as any)[key] = value;
-            }
-          }
+          this.onPropChange(key, value);
           return this;
         },
-      })
+      });
+    });
+
+    Object.keys(props).forEach((key) =>
+      this.onPropChange(key, (this as Props[keyof Props])[key])
     );
 
-    this.notifier = new EventEmitter();
-    const html = this.renderHTML();
-    this.element = element<RootElement>(html);
-    const className = 'foo';
-    // const className = this.renderStyle();
-    this.className = className;
-    this.element.className = className;
-    this.styleSheet = findStyleSheet(className);
     this.bindDomEvents();
     this.init();
-    this.test();
   }
 
-  test() {
-    const sheet = new DynamicStyleSheet(
-      css(
-        'div',
-        {
-          border: '1px solid red',
-        },
-        css('p', {
-          color: 'white',
-        })
-      )
-    );
-    this.element.className = sheet.className;
-    console.log('!!', sheet.get('div'));
-
-    // css(
-    //   'div',
-    //   {
-    //     color: 'red',
-    //   },
-    //   css('ul', {
-    //     color: 'orange',
-    //   })
-    // );
-    // css('p', {
-    //   color: 'blue',
-    // });
-
-    // sheet.get('div').get('ul')
+  protected onPropChange(key: string, value: any) {
+    return;
   }
 
-  // test() {
-  //   const style = document.createElement('style');
-  //   style.innerHTML =
-  //     'div { border: 1px solid cyan; } div p {font-style: italic}';
-  //   const a = style.sheet?.cssRules[0];
-  //   if (a instanceof CSSStyleRule) {
-  //     a.style.backgroundColor = 'red';
-  //   }
-  //   document.getElementsByTagName('head')[0].appendChild(style);
-  // }
-
-  protected onPropChange(key: string, value: any): false | void {}
-
-  protected updateStyle(key: string, value: string) {
-    const { cssStyleDeclaration } = this;
-    if (cssStyleDeclaration) {
-      (cssStyleDeclaration as any)[key] = value;
-    }
+  protected css(selector: string) {
+    return this.styleSheet.select(selector);
   }
 
-  protected abstract renderHTML(): string;
-  protected abstract renderStyle(): string;
+  protected abstract createTemplate(): string;
+  protected abstract createStyle(): CSSRuleNode;
 
   protected init() {}
-
-  protected get cssStyleDeclaration() {
-    const sheet = this.styleSheet;
-    if (sheet) {
-      const rule = sheet.cssRules.item(0);
-      if (rule instanceof CSSStyleRule) {
-        return rule.style;
-      }
-    }
-    return null;
-  }
 
   protected bindDomEvents() {
     this.bindDomEvent('mousedown', 'onMouseDown');
@@ -175,8 +113,7 @@ export abstract class BaseControl<
     if (element.parentElement !== null) {
       element.parentElement.removeChild(element);
       if (this.styleSheet) {
-        const styleElement = this.styleSheet.ownerNode!;
-        document.head.removeChild(styleElement);
+        this.styleSheet.dispose();
       }
       this.onUnMount();
       this.notifier.emit('unmount');

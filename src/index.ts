@@ -1,35 +1,38 @@
 import { Container } from './arena/container';
-import { BaseControl } from './arena/control';
+import Color from 'color';
 import { randomRgb } from './arena/util';
 
 const container1 = new Container({
-  width: '100px',
-  height: '20px',
+  width: 100,
+  height: 20,
   backgroundColor: 'blue',
 });
 
 const container2 = new Container({
-  width: '200px',
-  height: '20px',
+  width: 200,
+  height: 20,
   backgroundColor: 'red',
 });
 
-console.log(container1 instanceof BaseControl);
-
 container1
-  .on('mount', (element) => console.log('mount1', element))
+  .on('mount', () => console.log('mount1'))
   .on('unmount', () => console.log('unmount1'))
-  .on('mousedown', (e) => {
+  .on('mousedown', () => {
     container1.width = `${Math.round(Math.random() * 500)}px`;
     container2.visible = !container2.visible;
-    console.log(container2.visible);
   })
-  .on('mouseover', () => (container1.backgroundColor = randomRgb()));
+  .on(
+    'mouseover',
+    () =>
+      (container2.backgroundColor = Color(container2.backgroundColor)
+        .darken(0.1)
+        .hex())
+  );
 
 container2
-  .on('mount', (element) => console.log('mount2', element))
+  .on('mount', () => console.log('mount2'))
   .on('unmount', () => console.log('unmount2'))
-  .on('mousedown', (e) => container2.unmount());
+  .on('mousedown', () => container2.unmount());
 
 container1.mount(document.getElementById('main'));
 container2.mount(document.getElementById('main'));
