@@ -1,5 +1,5 @@
 import EventEmitter from 'eventemitter3';
-import { DynamicStyleSheet, CSSRuleNode, CSSRuleKey } from './stylesheet';
+import { DynamicStyleSheet, CSSRuleNode } from './stylesheet';
 import { element } from './util';
 
 export { CSSRuleNode };
@@ -23,8 +23,8 @@ export abstract class BaseControl<
   constructor(props: Props) {
     this.props = props;
     this.notifier = new EventEmitter();
-    this.element = element<RootElement>(this.createTemplate());
-    this.styleSheet = new DynamicStyleSheet(this.createStyle());
+    this.element = element<RootElement>(this.$template());
+    this.styleSheet = new DynamicStyleSheet(this.$style());
     this.element.className = this.styleSheet.className;
 
     Object.keys(props).forEach((key) => {
@@ -32,32 +32,49 @@ export abstract class BaseControl<
         get: () => this.props[key],
         set: (value: Props[keyof Props]) => {
           (this.props as Record<string, any>)[key] = value;
-          this.onPropChange(key, value);
+          this.onPropChange && this.onPropChange(key, value);
           return this;
         },
       });
     });
 
-    Object.keys(props).forEach((key) =>
-      this.onPropChange(key, (this as Props[keyof Props])[key])
-    );
+    if (this.onPropChange) {
+      Object.keys(props).forEach(
+        (key) =>
+          this.onPropChange &&
+          this.onPropChange(key, (this as Props[keyof Props])[key])
+      );
+    }
 
     this.bindDomEvents();
-    this.init();
+    this.init && this.init();
   }
 
-  protected onPropChange(key: string, value: any) {
-    return;
-  }
+  protected onPropChange?(key: string, value: any): void;
 
   protected css(selector: string) {
     return this.styleSheet.select(selector);
   }
 
-  protected abstract createTemplate(): string;
-  protected abstract createStyle(): CSSRuleNode;
+  protected select(selector: string) {
+    return this.element.querySelector(selector);
+  }
 
-  protected init() {}
+  protected selectAll(selector: string) {
+    return this.element.querySelectorAll(selector);
+  }
+
+  protected ref(refName: string) {
+    const element = this.select(`[ref="${refName}"]`);
+    if (!element) {
+      throw new Error(`Element with ref "${refName}" not found`);
+    }
+    return element as HTMLElement;
+  }
+
+  protected abstract $template(): string;
+  protected abstract $style(): CSSRuleNode;
+  protected init?(): void;
 
   protected bindDomEvents() {
     this.bindDomEvent('mousedown', 'onMouseDown');

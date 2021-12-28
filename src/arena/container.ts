@@ -22,11 +22,11 @@ export class Container extends Control<Props, HTMLDivElement, Events> {
     });
   }
 
-  protected createTemplate() {
-    return '<div><p>hi</p></div>';
+  protected $template() {
+    return '<div><p ref="foo">hi</p></div>';
   }
 
-  protected createStyle() {
+  protected $style() {
     return css(
       'div',
       {
@@ -44,8 +44,11 @@ export class Container extends Control<Props, HTMLDivElement, Events> {
     );
   }
 
-  onPropChange(key: string, value: any) {
-    const { styleSheet } = this;
+  protected init() {
+    this.ref('foo').style.border = '1px solid black';
+  }
+
+  protected onPropChange(key: string, value: any) {
     if (key === 'width' || key === 'height') {
       this.css('div').set(key, size(value));
     } else if (key === 'visible') {

@@ -1,6 +1,5 @@
 import { Container } from './arena/container';
 import Color from 'color';
-import { randomRgb } from './arena/util';
 
 const container1 = new Container({
   width: 100,
