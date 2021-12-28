@@ -10,20 +10,25 @@ export type KeyboardEvents = 'keydown' | 'keyup';
 export type BaseEvents = MountEvents | MouseEvents | KeyboardEvents;
 export type Handler = (...args: any[]) => any;
 
+let id: number = 0;
+
 export abstract class BaseControl<
   Props extends Record<string, any>,
   RootElement extends HTMLElement,
   Events extends string
 > {
+  protected id: number;
   protected props: Props;
   protected element: RootElement;
   protected styleSheet: DynamicStyleSheet;
   protected notifier: EventEmitter;
 
   constructor(props: Props) {
+    this.id = id++;
     this.props = props;
     this.notifier = new EventEmitter();
     this.element = element<RootElement>(this.$template());
+    this.element.setAttribute('id', `control-${this.id}`);
     this.styleSheet = new DynamicStyleSheet(this.$style());
     this.element.className = this.styleSheet.className;
 
@@ -65,7 +70,7 @@ export abstract class BaseControl<
   }
 
   protected ref(refName: string) {
-    const element = this.select(`[ref="${refName}"]`);
+    const element = this.select(`#control-${this.id} [data-ref="${refName}"]`);
     if (!element) {
       throw new Error(`Element with ref "${refName}" not found`);
     }

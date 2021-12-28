@@ -23,7 +23,7 @@ export class Container extends Control<Props, HTMLDivElement, Events> {
   }
 
   protected $template() {
-    return '<div><p ref="foo">hi</p></div>';
+    return '<div><p data-ref="foo">hi</p></div>';
   }
 
   protected $style() {
@@ -45,7 +45,9 @@ export class Container extends Control<Props, HTMLDivElement, Events> {
   }
 
   protected init() {
-    this.ref('foo').style.border = '1px solid black';
+    if (this.id === 0) {
+      this.ref('foo').setAttribute('found', '');
+    }
   }
 
   protected onPropChange(key: string, value: any) {
