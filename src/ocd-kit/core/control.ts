@@ -22,19 +22,23 @@ export type K<Props> = keyof Props;
 export type V<Props> = Props[keyof Props];
 export type AnyBaseControl = BaseControl<any, any, any>;
 
-export type BaseEvents = {
-  mount: void;
-  unmount: void;
-  update: void;
-  init: void;
-  dispose: void;
-  mousedown: void;
-  mouseup: void;
-  mouseover: void;
-  mouseout: void;
-  click: void;
-  keydown: void;
-  keyup: void;
+export type BasicEventHandler = () => any;
+export type MouseEventHandler = (event: MouseEvent) => any;
+export type KeyboardEventHandler = (event: MouseEvent) => any;
+
+export type BaseEvents<Props> = {
+  mount: (containerElement: HTMLElement) => any;
+  unmount: (containerElement: HTMLElement, dispose: boolean) => any;
+  update: (props: Props) => any;
+  init: BasicEventHandler;
+  dispose: BasicEventHandler;
+  mousedown: MouseEventHandler;
+  mouseup: MouseEventHandler;
+  mouseover: MouseEventHandler;
+  mouseout: MouseEventHandler;
+  click: MouseEventHandler;
+  keydown: KeyboardEventHandler;
+  keyup: KeyboardEventHandler;
 };
 
 /**
@@ -43,7 +47,7 @@ export type BaseEvents = {
 export abstract class BaseControl<
   Props extends Record<string, any>,
   RootElement extends HTMLElement = HTMLDivElement,
-  Events extends BaseEvents = BaseEvents
+  Events extends BaseEvents<Props> = BaseEvents<Props>
 > {
   private _isMounted: boolean;
   protected readonly _id: number;
@@ -187,7 +191,10 @@ export abstract class BaseControl<
 
   protected init() {}
 
-  protected emit(eventName: keyof Events, ...args: any[]) {
+  protected emit<T extends Events, K extends keyof T>(
+    eventName: K,
+    ...args: any[]
+  ) {
     this.emitter.emit(String(eventName), ...args);
     return this;
   }
@@ -298,13 +305,13 @@ export abstract class BaseControl<
     return this;
   }
 
-  on(eventName: keyof Events, handler: (...args: any[]) => any) {
-    this.emitter.on(String(eventName), handler.bind(this));
+  on<T extends Events, K extends keyof T>(eventName: K, handler: T[K]) {
+    this.emitter.on(String(eventName), handler as any);
     return this;
   }
 
-  off(eventName: keyof Events, handler: (...args: any[]) => any) {
-    this.emitter.off(String(eventName), handler);
+  ff<T extends Events, K extends keyof T>(eventName: K, handler: T[K]) {
+    this.emitter.off(String(eventName), handler as any);
     return this;
   }
 }
@@ -312,7 +319,7 @@ export abstract class BaseControl<
 export function Control<
   Props,
   Element extends HTMLElement,
-  Events extends BaseEvents = BaseEvents,
+  Events extends BaseEvents<Props> = BaseEvents<Props>,
   SubClass = {}
 >(
   subclass: unknown = BaseControl
