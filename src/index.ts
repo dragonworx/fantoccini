@@ -59,3 +59,16 @@ container1.mount(main);
 container2.mount(main);
 container1.add(container3);
 container4.mount(main);
+
+function css(strings: TemplateStringsArray, ...args: any[]) {
+  console.log('CSS', { strings, args });
+  return 'foo';
+}
+
+const foo = 'red';
+
+css`
+  div {
+    background-color: ${foo};
+  }
+`;
