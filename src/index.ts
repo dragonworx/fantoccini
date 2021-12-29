@@ -29,7 +29,7 @@ const container3 = new TestContainer({
 const container4 = new TestContainer2({});
 
 container4
-  .on('mouseover', () => container4.css().push('backgroundColor', 'red'))
+  .on('mousedown', () => container4.css().push('backgroundColor', 'red'))
   .on('mouseout', () => container4.css().pop());
 
 container1

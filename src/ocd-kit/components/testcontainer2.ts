@@ -1,4 +1,4 @@
-import { Control } from '../core';
+import { Control, BaseEvents } from '../core';
 import {
   Container,
   defaultProps as baseDefaultProps,
@@ -14,7 +14,11 @@ export const defaultProps: Props = {
   title: 'Title',
 };
 
-export class TestContainer2 extends Control<Props, HTMLDivElement>(Container) {
+export class TestContainer2 extends Control<
+  Props,
+  HTMLDivElement,
+  BaseEvents & { foo: void }
+>(Container) {
   constructor(props?: Partial<Props>) {
     super({
       ...defaultProps,

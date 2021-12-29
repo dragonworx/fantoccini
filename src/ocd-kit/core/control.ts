@@ -20,15 +20,30 @@ export const defaultStyle = css('&', {
 
 export type K<Props> = keyof Props;
 export type V<Props> = Props[keyof Props];
+export type AnyBaseControl = BaseControl<any, any, any>;
 
-export type Events = 'mouseover' | 'mouseout';
+export type BaseEvents = {
+  mount: void;
+  unmount: void;
+  update: void;
+  init: void;
+  dispose: void;
+  mousedown: void;
+  mouseup: void;
+  mouseover: void;
+  mouseout: void;
+  click: void;
+  keydown: void;
+  keyup: void;
+};
 
 /**
  * BaseControl
  */
 export abstract class BaseControl<
   Props extends Record<string, any>,
-  RootElement extends HTMLElement = HTMLDivElement
+  RootElement extends HTMLElement = HTMLDivElement,
+  Events extends BaseEvents = BaseEvents
 > {
   private _isMounted: boolean;
   protected readonly _id: number;
@@ -36,8 +51,8 @@ export abstract class BaseControl<
   protected readonly element: RootElement;
   protected readonly elementRef: Element;
   protected readonly styleSheet: DynamicStyleSheet;
-  protected readonly children: BaseControl<any, any>[];
-  protected parent?: BaseControl<any, any>;
+  protected readonly children: AnyBaseControl[];
+  protected parent?: AnyBaseControl;
   protected emitter: EventEmitter;
 
   constructor(props: Partial<Props>) {
@@ -128,7 +143,7 @@ export abstract class BaseControl<
   private bindDomEvents() {
     this.domEvents.forEach((eventName) => {
       this.element.addEventListener(eventName, (e) => {
-        this.emit(eventName, e);
+        this.emit(eventName as keyof Events, e);
       });
     });
   }
@@ -171,6 +186,11 @@ export abstract class BaseControl<
   }
 
   protected init() {}
+
+  protected emit(eventName: keyof Events, ...args: any[]) {
+    this.emitter.emit(String(eventName), ...args);
+    return this;
+  }
 
   get type() {
     return (this as any).__proto__.constructor.name.toLowerCase();
@@ -217,8 +237,11 @@ export abstract class BaseControl<
     const containerElement = element.parentElement;
     if (containerElement !== null) {
       containerElement.removeChild(element);
-      if (dispose && this.styleSheet) {
-        this.styleSheet.dispose();
+      if (dispose) {
+        if (this.styleSheet) {
+          this.styleSheet.dispose();
+        }
+        this.emit('dispose');
       }
       this._isMounted = false;
       this.emit('unmount', containerElement, dispose);
@@ -256,7 +279,7 @@ export abstract class BaseControl<
     return new Element(element);
   }
 
-  add(control: BaseControl<any, any>, refName?: string) {
+  add(control: AnyBaseControl, refName?: string) {
     let element: HTMLElement = this.element;
     if (refName) {
       element = this.ref(refName);
@@ -267,7 +290,7 @@ export abstract class BaseControl<
     return this;
   }
 
-  remove(control: BaseControl<any, any>) {
+  remove(control: AnyBaseControl) {
     delete control.parent;
     const index = this.children.indexOf(control);
     this.children.splice(index, 1);
@@ -275,125 +298,32 @@ export abstract class BaseControl<
     return this;
   }
 
-  on(eventName: string, handler: (...args: any[]) => any) {
-    this.emitter.on(eventName, handler.bind(this));
+  on(eventName: keyof Events, handler: (...args: any[]) => any) {
+    this.emitter.on(String(eventName), handler.bind(this));
     return this;
   }
 
-  off(eventName: string, handler: (...args: any[]) => any) {
-    this.emitter.off(eventName, handler);
-    return this;
-  }
-
-  emit(eventName: string, ...args: any[]) {
-    this.emitter.emit(eventName, ...args);
+  off(eventName: keyof Events, handler: (...args: any[]) => any) {
+    this.emitter.off(String(eventName), handler);
     return this;
   }
 }
 
-export function Control<Props, Element extends HTMLElement, SubClass = {}>(
+export function Control<
+  Props,
+  Element extends HTMLElement,
+  Events extends BaseEvents = BaseEvents,
+  SubClass = {}
+>(
   subclass: unknown = BaseControl
 ): {
-  new (props: Props): BaseControl<Props, Element> &
+  new (props: Props): BaseControl<Props, Element, Events> &
     Omit<SubClass, 'element'> &
     Props;
 } {
   return subclass as {
-    new (props: Props): BaseControl<Props, Element> &
+    new (props: Props): BaseControl<Props, Element, Events> &
       Omit<SubClass, 'element'> &
       Props;
   };
 }
-
-// export type PropsBase = {
-//   id: string;
-// };
-
-// export type SubProps = PropsBase & {
-//   subA: string;
-//   subB?: number;
-// };
-
-// export type SubProps1 = SubProps & {
-//   subC: boolean;
-// };
-
-// export class Base<Props extends Record<string, any>, E extends HTMLElement> {
-//   element: E;
-//   props: Props;
-
-//   constructor(props: Props) {
-//     this.element = {} as any;
-//     this.props = props;
-//     Object.keys(props).forEach((key) => {
-//       Object.defineProperty(this, key, {
-//         get: () => props[key as any],
-//         set: (value: V<Props>) => {
-//           (this.props as Record<string, any>)[key] = value;
-//         },
-//       });
-//     });
-//   }
-
-//   getElement(): E {
-//     return this.element as E;
-//   }
-
-//   baseMethod() {
-//     return 'baseMethod';
-//   }
-// }
-
-// export class Sub extends Control<SubProps, HTMLDivElement>() {
-//   constructor(props: Partial<SubProps>) {
-//     super({
-//       id: 'foo',
-//       subA: 's',
-//       subB: 4,
-//       ...props,
-//     });
-//   }
-
-//   subMethod() {
-//     return 'subMethod';
-//   }
-// }
-
-// export class Sub1 extends Control<SubProps1, HTMLLabelElement, Sub>(Sub) {
-//   constructor(props: Partial<SubProps>) {
-//     super({
-//       id: 'foo',
-//       subA: 's',
-//       subB: 4,
-//       subC: false,
-//       ...props,
-//     });
-//   }
-
-//   sub1Method() {
-//     return 'sub1Method';
-//   }
-// }
-
-// const sub = new Sub({ id: 'a' });
-// sub.getElement();
-// sub.baseMethod();
-// sub.subMethod();
-// const subEl = sub.element;
-// const subId = sub.id;
-// const subA = sub.subA;
-// const subB = sub.subB;
-
-// const sub1 = new Sub1({ id: 'b' });
-// sub1.getElement();
-// sub1.baseMethod();
-// sub1.subMethod();
-// sub1.sub1Method();
-// const sub1El = sub1.element;
-// const sub1Id = sub1.id;
-// const sub1SubA = sub1.subA;
-// const sub1SubB = sub1.subB;
-// const sub1SubC = sub1.subC;
-
-// (window as any).sub = sub;
-// (window as any).sub1 = sub1;
