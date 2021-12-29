@@ -94,7 +94,6 @@ export abstract class BaseControl<
         dataAttr('tag'),
         propsWithDefaults.tag
       );
-      console.log('TAG', this.id, propsWithDefaults.tag);
     }
 
     this.element.querySelectorAll('[ref]').forEach((node) => {
@@ -232,7 +231,6 @@ export abstract class BaseControl<
       containerElement.appendChild(this.element);
       this._isMounted = true;
       this.emit('mount', containerElement);
-      console.log('mount', this.id);
     } else {
       throw new Error('Cannot mount to null element');
     }
@@ -252,7 +250,6 @@ export abstract class BaseControl<
       }
       this._isMounted = false;
       this.emit('unmount', containerElement, dispose);
-      console.log('unmount', this.id);
       this.children.forEach((child) => child.unmount(dispose));
     } else {
       throw new Error('Cannot unmount from null parent');
