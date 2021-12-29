@@ -1,3 +1,4 @@
+import EventEmitter from 'eventemitter3';
 import { DynamicStyleSheet, CSSRuleNode, css } from './stylesheet';
 import { Element } from './element';
 
@@ -77,37 +78,40 @@ export abstract class BaseControl<
         get: () => this.props[key],
         set: (value: Props[keyof Props]) => {
           (this.props as Record<string, any>)[key] = value;
-          this.propChange(key, value);
+          const props: Partial<Props> = {};
+          props[key as keyof Props] = value;
+          this.updateProps(props);
           return this;
         },
       });
     });
 
-    Object.keys(propsWithDefaults).forEach((key) =>
-      this.propChange(key, (this as Props[keyof Props])[key])
-    );
-
     this.bindDomEvents();
-    this.init && this.init();
+    this.init();
+    this.setInitialState();
   }
 
-  private propChange(key: string, value: any) {
+  private updateProps(props: Partial<Props>) {
     const root = this.styleSheet.root;
-    if (key === 'visible') {
-      root.set('display', value ? '' : 'none');
+    if ('visible' in props) {
+      root.set('display', props.visible ? '' : 'none');
     }
-    this.onPropChange(key, value);
+    this.onPropsUpdated(props);
+  }
+
+  private setInitialState() {
+    this.updateProps(this.props);
   }
 
   protected get rootCss() {
     return this.styleSheet.root;
   }
 
-  protected onPropChange(key: string, value: any) {}
+  protected onPropsUpdated(props: Partial<Props>) {}
 
   protected abstract $html(): string;
   protected abstract $style(): CSSRuleNode;
-  protected init?(): void;
+  protected init() {}
 
   protected bindDomEvents() {
     this.bindDomEvent('mousedown', 'onMouseDown');

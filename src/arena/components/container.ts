@@ -51,11 +51,14 @@ export class Container extends Control<Props, HTMLDivElement, Events> {
     }
   }
 
-  protected onPropChange(key: string, value: any) {
-    if (key === 'width' || key === 'height') {
-      this.css('div').set(key, size(value));
-    } else if (key === 'backgroundColor') {
-      this.css('div').set(key, value);
-    }
+  protected onPropsUpdated(props: Partial<Props>) {
+    Object.keys(props).forEach((key) => {
+      if (key === 'width' || key === 'height') {
+        this.css('div').set(key, size(props[value]));
+      }
+      if (key === 'backgroundColor') {
+        this.css('div').set(key, value);
+      }
+    });
   }
 }
