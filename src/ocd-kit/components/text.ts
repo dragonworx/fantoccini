@@ -1,11 +1,4 @@
-import {
-  Control,
-  BaseProps,
-  defaultProps as baseDefaultProps,
-  css,
-  K,
-  V,
-} from '../core';
+import { Control, BaseProps, baseDefaultProps, css, K, V } from '../core';
 
 export type Props = BaseProps & {
   value: string;

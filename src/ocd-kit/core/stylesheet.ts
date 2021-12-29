@@ -66,7 +66,7 @@ export class DynamicStyleSheet {
   }
 
   set(ruleKey: CSSRuleKey, value: string) {
-    this.root.set(ruleKey, value);
+    return this.root.set(ruleKey, value);
   }
 
   select(selector: string) {
@@ -137,11 +137,13 @@ export class CSSRuleNode {
     if (stylesheet.sheet !== null) {
       (this.cssStyleRule.style as any)[ruleKey] = value;
     }
+    return this;
   }
 
   push(ruleKey: CSSRuleKey, value: string) {
     this.stack.push([ruleKey, this.valueOf(ruleKey)]);
     this.set(ruleKey, value);
+    return this;
   }
 
   pop() {
@@ -149,6 +151,7 @@ export class CSSRuleNode {
       const [ruleKey, value] = this.stack.pop() as CSSRuleStackItem;
       this.set(ruleKey, value);
     }
+    return this;
   }
 
   css(
@@ -157,6 +160,7 @@ export class CSSRuleNode {
     ...children: CSSRuleNode[]
   ) {
     this.children.push(css(selector, rules, ...children));
+    return this;
   }
 }
 

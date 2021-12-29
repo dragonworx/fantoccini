@@ -1,4 +1,4 @@
-import { Control, css } from '../core';
+import { Control } from '../core';
 import {
   Container,
   defaultProps as baseDefaultProps,
@@ -27,11 +27,9 @@ export class TestContainer2 extends Control<Props, HTMLDivElement>(Container) {
   }
 
   protected style() {
-    const rule = super.style()!;
-    rule.css('&', {
+    return super.style().css('&', {
       transition: 'background-color 1s',
     });
-    return rule;
   }
 
   protected init() {

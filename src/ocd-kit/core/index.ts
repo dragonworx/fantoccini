@@ -1,5 +1,4 @@
-export const dataAttr = (attribute: string) => `data-ocdk-${attribute}`;
-
+export * from './util';
 export * from './control';
 export * from './stylesheet';
 export * from './element';

@@ -1,13 +1,7 @@
 import EventEmitter from 'eventemitter3';
-import { dataAttr } from '.';
+import { dataAttr, px, parseHTML } from '.';
 import { DynamicStyleSheet, CSSRuleNode, css, CSSRuleKey } from './stylesheet';
 import { Element } from './element';
-
-export { css };
-
-export function px(value: string | number) {
-  return typeof value === 'string' ? value : `${value}px`;
-}
 
 let id: number = 0;
 
@@ -16,7 +10,7 @@ export interface BaseProps {
   visible: boolean;
 }
 
-export const defaultProps: BaseProps = {
+export const baseDefaultProps: BaseProps = {
   visible: true,
 };
 
@@ -27,13 +21,15 @@ export const defaultStyle = css('&', {
 export type K<Props> = keyof Props;
 export type V<Props> = Props[keyof Props];
 
+export type Events = 'mouseover' | 'mouseout';
+
 /**
  * BaseControl
  */
 export abstract class BaseControl<
   Props extends Record<string, any>,
   RootElement extends HTMLElement = HTMLDivElement
-> extends EventEmitter {
+> {
   private _isMounted: boolean;
   protected readonly _id: number;
   protected readonly props: Props;
@@ -42,40 +38,32 @@ export abstract class BaseControl<
   protected readonly styleSheet: DynamicStyleSheet;
   protected readonly children: BaseControl<any, any>[];
   protected parent?: BaseControl<any, any>;
-
-  private static parseHTML<T>(html: string): T {
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = html;
-    return wrapper.firstElementChild as unknown as T;
-  }
+  protected emitter: EventEmitter;
 
   constructor(props: Partial<Props>) {
-    super();
-
     this._id = id++;
     this._isMounted = false;
     this.children = [];
+    this.emitter = new EventEmitter();
 
     const propsWithDefaults = {
-      ...defaultProps,
+      ...baseDefaultProps,
       ...props,
     } as unknown as Props;
     this.props = propsWithDefaults;
 
     const html = this.html();
-    this.element = BaseControl.parseHTML<RootElement>(html);
+    this.element = parseHTML<RootElement>(html);
     this.element.setAttribute(dataAttr('control'), this.type);
     this.elementRef = new Element(this.element);
 
     let rootCssNode = this.style();
-    if (rootCssNode) {
+    if (rootCssNode !== defaultStyle) {
       rootCssNode.css(
         defaultStyle.selector,
         defaultStyle.rules,
         ...defaultStyle.children
       );
-    } else {
-      rootCssNode = defaultStyle;
     }
 
     this.styleSheet = new DynamicStyleSheet(this.id, rootCssNode);
@@ -165,8 +153,8 @@ export abstract class BaseControl<
     return '<div></div>';
   }
 
-  protected style(): CSSRuleNode | undefined {
-    return;
+  protected style(): CSSRuleNode {
+    return defaultStyle;
   }
 
   protected onUpdate(key: K<Props>, value: V<Props>) {}
@@ -284,6 +272,21 @@ export abstract class BaseControl<
     const index = this.children.indexOf(control);
     this.children.splice(index, 1);
     control.unmount();
+    return this;
+  }
+
+  on(eventName: string, handler: (...args: any[]) => any) {
+    this.emitter.on(eventName, handler.bind(this));
+    return this;
+  }
+
+  off(eventName: string, handler: (...args: any[]) => any) {
+    this.emitter.off(eventName, handler);
+    return this;
+  }
+
+  emit(eventName: string, ...args: any[]) {
+    this.emitter.emit(eventName, ...args);
     return this;
   }
 }
