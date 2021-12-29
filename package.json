@@ -1,5 +1,5 @@
 {
-  "name": "socket-game",
+  "name": "ocd-kit",
   "version": "1.0.0",
   "main": "./server/index.js",
   "license": "MIT",
@@ -9,7 +9,8 @@
     "build": "webpack --config webpack.config.js",
     "build:watch": "webpack --config webpack.config.js --watch",
     "test": "jest --maxWorkers=1",
-    "test:watch": "jest --maxWorkers=1 --watch"
+    "test:watch": "jest --maxWorkers=1 --watch",
+    "doc": "npx typedoc \"src\\ocd-kit\\core\\index.ts\" --out api"
   },
   "dependencies": {
     "color": "^4.1.0",

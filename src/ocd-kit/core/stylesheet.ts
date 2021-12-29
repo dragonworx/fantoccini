@@ -73,7 +73,8 @@ export class DynamicStyleSheet {
     if (parts.length === 0) {
       throw new Error(`Invalid css selector "${selector}"`);
     } else if (parts.length === 1) {
-      if (node.selector !== parts[0] && node.selector !== '&') {
+      const part = parts[0] === '&' ? node.selector : parts[0];
+      if (node.selector !== part) {
         throw new Error(`Invalid css selector "${selector}"`);
       }
       return node;
@@ -82,6 +83,13 @@ export class DynamicStyleSheet {
       parts.forEach((part) => (node = node.get(part)));
       return node;
     }
+  }
+
+  isCssProperty(key: string) {
+    if (!this.sheet) {
+      return false;
+    }
+    return key in (this.sheet.cssRules[0] as CSSStyleRule).style;
   }
 }
 

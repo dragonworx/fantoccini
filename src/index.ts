@@ -1,5 +1,5 @@
-import { Container } from './arena/components/container';
-import { Text } from './arena/components/text';
+import { Container } from './ocd-kit/components/container';
+import { Text } from './ocd-kit/components/text';
 import Color from 'color';
 
 const container1 = new Container({
@@ -13,14 +13,19 @@ const container2 = new Container({
   backgroundColor: 'red',
 });
 
-const text = new Text({ text: 'Foobar' });
+const text = new Text({ value: 'Foobar' });
 
 container1
-  .on('mount', () => console.log('mount1'))
-  .on('unmount', () => console.log('unmount1'))
+  .on('mount', () => console.log('container1 mount'))
+  .on('unmount', () => console.log('container1 unmount'))
   .on('mousedown', () => {
+    console.log('mousedown');
     container1.width = `${Math.round(Math.random() * 500)}px`;
-    container2.visible = !container2.visible;
+    if (container2.isMounted) {
+      container2.visible = !container2.visible;
+    } else {
+      console.log('abort');
+    }
   })
   .on(
     'mouseover',
@@ -30,12 +35,17 @@ container1
         .hex())
   );
 
+text
+  .on('mouseover', () => (text.value += 'change!'))
+  .on('mount', () => console.log('text mount'))
+  .on('unmount', () => console.log('text unmount'));
+
 container2
-  .on('mount', () => console.log('mount2'))
-  .on('unmount', () => console.log('unmount2'))
-  .on('mousedown', () => container2.unmount());
+  .on('mount', () => console.log('container2 mount'))
+  .on('unmount', () => console.log('container2 unmount'))
+  .on('mousedown', () => container2.unmount())
+  .add(text);
 
 const main = document.getElementById('main');
 container1.mount(main);
 container2.mount(main);
-text.mount(main);

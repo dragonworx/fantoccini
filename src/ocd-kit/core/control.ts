@@ -1,16 +1,10 @@
 import EventEmitter from 'eventemitter3';
-import { DynamicStyleSheet, CSSRuleNode, css } from './stylesheet';
+import { DynamicStyleSheet, CSSRuleNode, css, CSSRuleKey } from './stylesheet';
 import { Element } from './element';
 
 export { css };
 
-export type MountEvents = 'mount' | 'unmount';
-export type MouseEvents = 'mousedown' | 'mouseup' | 'mouseover' | 'mouseout';
-export type KeyboardEvents = 'keydown' | 'keyup';
-export type BaseEvents = MountEvents | MouseEvents | KeyboardEvents;
-export type Handler = (...args: any[]) => any;
-
-export function size(value: string | number) {
+export function px(value: string | number) {
   return typeof value === 'string' ? value : `${value}px`;
 }
 
@@ -28,36 +22,44 @@ export const defaultStyle = css('&', {
   boxSizing: 'border-box',
 });
 
+export type K<Props> = keyof Props;
+export type V<Props> = Props[keyof Props];
+
+/**
+ * BaseControl
+ */
 export abstract class BaseControl<
   Props extends Record<string, any>,
-  RootElement extends HTMLElement,
-  Events extends string
-> {
+  RootElement extends HTMLElement
+> extends EventEmitter {
   protected readonly _id: number;
   protected readonly props: Props;
   protected readonly element: RootElement;
   protected readonly elementRef: Element;
   protected readonly styleSheet: DynamicStyleSheet;
-  protected readonly handlers: Map<string, Handler[]>;
+  protected readonly children: BaseControl<any, any>[];
+  protected parent?: BaseControl<any, any>;
+  isMounted: boolean;
 
-  static html<T>(html: string): T {
+  private static parseHTML<T>(html: string): T {
     const wrapper = document.createElement('div');
     wrapper.innerHTML = html;
     return wrapper.firstElementChild as unknown as T;
   }
 
   constructor(props: Props) {
+    super();
     this._id = id++;
+    this.isMounted = false;
     const propsWithDefaults = {
       ...defaultProps,
       ...props,
     };
     this.props = propsWithDefaults;
-    this.handlers = new Map();
-    this.element = BaseControl.html<RootElement>(this.$html());
+    const { html, style } = this.template();
+    this.element = BaseControl.parseHTML<RootElement>(html);
     this.element.setAttribute('data-id', this.id);
     this.elementRef = new Element(this.element);
-    const style = this.$style();
     style.css(
       defaultStyle.selector,
       defaultStyle.rules,
@@ -65,6 +67,7 @@ export abstract class BaseControl<
     );
     this.styleSheet = new DynamicStyleSheet(this.id, style);
     this.element.className = this.styleSheet.className;
+    this.children = [];
 
     this.selectAll('[data-ref]').forEach((node) =>
       node.setAttribute(
@@ -76,10 +79,10 @@ export abstract class BaseControl<
     Object.keys(propsWithDefaults).forEach((key) => {
       Object.defineProperty(this, key, {
         get: () => this.props[key],
-        set: (value: Props[keyof Props]) => {
+        set: (value: V<Props>) => {
           (this.props as Record<string, any>)[key] = value;
           const props: Partial<Props> = {};
-          props[key as keyof Props] = value;
+          props[key as K<Props>] = value;
           this.updateProps(props);
           return this;
         },
@@ -89,93 +92,84 @@ export abstract class BaseControl<
     this.bindDomEvents();
     this.init();
     this.setInitialState();
+    this.emit('init');
   }
 
   private updateProps(props: Partial<Props>) {
-    const root = this.styleSheet.root;
+    const { styleSheet } = this;
     if ('visible' in props) {
-      root.set('display', props.visible ? '' : 'none');
+      styleSheet.root.set('display', props.visible ? '' : 'none');
     }
-    this.onPropsUpdated(props);
+    Object.keys(props).forEach((key) => {
+      const value = props[key] as V<Props>;
+      if (styleSheet.isCssProperty(key)) {
+        const cssValue = this.convertPropToCssValue(key, value);
+        const selector = this.cssSelectorForPropUpdate(key);
+        this.css(selector).set(key as CSSRuleKey, cssValue);
+      }
+      this.onUpdate(key, value);
+      this.emit('update', props);
+    });
   }
 
   private setInitialState() {
     this.updateProps(this.props);
   }
 
+  private bindDomEvents() {
+    this.domEvents.forEach((eventName) => {
+      this.element.addEventListener(eventName, (e) => {
+        this.emit(eventName, e);
+      });
+    });
+  }
+
   protected get rootCss() {
     return this.styleSheet.root;
   }
 
-  protected onPropsUpdated(props: Partial<Props>) {}
-
-  protected abstract $html(): string;
-  protected abstract $style(): CSSRuleNode;
-  protected init() {}
-
-  protected bindDomEvents() {
-    this.bindDomEvent('mousedown', 'onMouseDown');
-    this.bindDomEvent('mouseup', 'onMouseUp');
-    this.bindDomEvent('mouseover', 'onMouseOver');
-    this.bindDomEvent('mouseout', 'onMouseOut');
-    this.bindDomEvent('keydown', 'onKeyDown');
-    this.bindDomEvent('keyup', 'onKeyUp');
+  protected get domEvents(): string[] {
+    return [
+      'mousedown',
+      'mouseup',
+      'mouseover',
+      'mouseout',
+      'click',
+      'keydown',
+      'keyup',
+    ];
   }
 
-  protected bindDomEvent(eventName: string, selfHandlerKey: string) {
-    this.element.addEventListener(eventName, (e) => {
-      ((this as any)[selfHandlerKey] as any)(e);
-      this.emit(eventName, e);
-    });
-  }
+  protected abstract template(): { html: string; style: CSSRuleNode };
 
-  protected emit(eventName: string, ...data: any[]) {
-    const handlers = this.handlers.get(eventName);
-    if (handlers) {
-      handlers.forEach((handler) => handler(eventName, ...data));
+  protected onUpdate(key: K<Props>, value: V<Props>) {}
+
+  protected convertPropToCssValue(key: K<Props>, value: V<Props>) {
+    if (typeof value === 'number') {
+      return px(value);
     }
+    return value;
   }
 
-  protected onMount(containerElement: HTMLElement) {}
-  protected onUnMount(containerElement: HTMLElement) {}
-  protected onMouseDown(e: MouseEvent) {}
-  protected onMouseUp(e: MouseEvent) {}
-  protected onMouseOver(e: MouseEvent) {}
-  protected onMouseOut(e: MouseEvent) {}
-  protected onKeyDown(e: KeyboardEvent) {}
-  protected onKeyUp(e: KeyboardEvent) {}
+  protected cssSelectorForPropUpdate(propKkeyey: K<Props>) {
+    return '&';
+  }
+
+  protected init() {}
 
   get id() {
     return `arena-ctrl-${this._id}`;
   }
 
-  on(eventName: Events, handler: Handler) {
-    if (!this.handlers.get(eventName)) {
-      this.handlers.set(eventName, []);
-    }
-    this.handlers.get(eventName)!.push(handler);
-    return this;
-  }
-
-  off(eventName: Events, handler: Handler) {
-    const handlers = this.handlers.get(eventName);
-    if (handlers) {
-      const index = handlers.indexOf(handler);
-      if (index > -1) {
-        handlers.splice(index, 1);
-      }
-    }
-    return this;
-  }
-
   mount(containerElement: HTMLElement | null) {
     if (containerElement) {
       containerElement.appendChild(this.element);
-      this.onMount(containerElement);
+      this.isMounted = true;
       this.emit('mount', containerElement);
     } else {
       throw new Error('Cannot mount to null element');
     }
+    return this;
   }
 
   unmount() {
@@ -186,11 +180,13 @@ export abstract class BaseControl<
       if (this.styleSheet) {
         this.styleSheet.dispose();
       }
-      this.onUnMount(containerElement);
+      this.isMounted = false;
       this.emit('unmount', containerElement);
+      this.children.forEach((child) => child.unmount());
     } else {
       throw new Error('Cannot unmount from null parent');
     }
+    return this;
   }
 
   css(selector: string) {
@@ -221,31 +217,40 @@ export abstract class BaseControl<
 
   addClass(cssClassName: string) {
     this.element.classList.add(cssClassName);
+    return this;
   }
 
   removeClass(cssClassName: string) {
     this.element.classList.remove(cssClassName);
+    return this;
   }
 
   hasClass(cssClassName: string) {
     return this.element.classList.contains(cssClassName);
   }
 
-  add(control: BaseControl<any, any, any>, refName?: string) {
+  add(control: BaseControl<any, any>, refName?: string) {
     let element: HTMLElement = this.element;
     if (refName) {
       element = this.ref(refName);
     }
-    element.appendChild(control.element);
+    control.mount(element);
+    control.parent = this;
+    this.children.push(control);
+    return this;
+  }
+
+  remove(control: BaseControl<any, any>) {
+    delete control.parent;
+    const index = this.children.indexOf(control);
+    this.children.splice(index, 1);
+    control.unmount();
+    return this;
   }
 }
 
 export const Control = BaseControl as unknown as {
-  new <
-    Props extends Record<string, any>,
-    RootElement extends HTMLElement,
-    Events extends string
-  >(
+  new <Props extends Record<string, any>, RootElement extends HTMLElement>(
     props: Props
-  ): BaseControl<Props, RootElement, Events> & Props & BaseProps;
+  ): BaseControl<Props, RootElement> & Props & BaseProps;
 };
