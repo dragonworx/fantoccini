@@ -1,4 +1,11 @@
-import { BaseProps, Control, css, K, V } from '../core';
+import {
+  Control,
+  BaseProps,
+  defaultProps as baseDefaultProps,
+  css,
+  K,
+  V,
+} from '../core';
 
 export type Props = BaseProps & {
   value: string;
@@ -6,35 +13,37 @@ export type Props = BaseProps & {
   fontSize: number;
 };
 
-export const defaultProps: Partial<Props> = {
+export const defaultProps: Props = {
+  ...baseDefaultProps,
   value: '',
   color: '#bdbec0',
   fontSize: 12,
 };
 
-export class Text extends Control<Props, HTMLDivElement> {
+export class Text extends Control<Props, HTMLSpanElement>() {
   constructor(props?: Partial<Props>) {
     super({
       ...defaultProps,
+      visible: true,
       ...props,
     });
   }
 
-  protected template() {
-    return {
-      html: '<span></span>',
-
-      style: css('span', {
-        textShadow: '1px 1px 1px #080808',
-        display: 'inline-block',
-        whiteSpace: 'nowrap',
-      }),
-    };
+  protected html() {
+    return '<span></span>';
   }
 
-  protected onUpdate(key: K<Props>, value: V<Props>) {
+  protected style() {
+    return css('span', {
+      textShadow: '1px 1px 1px #080808',
+      display: 'inline-block',
+      whiteSpace: 'nowrap',
+    });
+  }
+
+  protected onUpdate(key: string) {
     if (key === 'value') {
-      this.elementRef.value = String(value);
+      this.elementRef.value = this.value;
     }
   }
 }

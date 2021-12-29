@@ -1,6 +1,7 @@
 import { Container } from './ocd-kit/components/container';
 import { Text } from './ocd-kit/components/text';
-import { TestContainer } from './ocd-kit/components/test';
+import { TestContainer } from './ocd-kit/components/testcontainer';
+import { TestContainer2 } from './ocd-kit/components/testcontainer2';
 import Color from 'color';
 
 const container1 = new Container({
@@ -25,24 +26,31 @@ const container3 = new TestContainer({
   backgroundColor: 'pink',
 });
 
+const container4 = new TestContainer2({});
+
+container4
+  .on('mouseover', () => container4.css().push('backgroundColor', 'red'))
+  .on('mouseout', () => container4.css().pop());
+
 container1
   .on('mousedown', () => {
     console.log('mousedown');
-    container1.set('width', `${Math.round(Math.random() * 500)}px`);
+    container1.width = Math.round(Math.random() * 500);
     if (container2.isMounted) {
-      container2.set('visible', !container2.get('visible'));
+      container2.visible = !container2.visible;
     } else {
       console.log('abort');
     }
   })
-  .on('mouseover', () =>
-    container2.set(
-      'backgroundColor',
-      Color(container2.get('backgroundColor')).darken(0.1).hex()
-    )
+  .on(
+    'mouseover',
+    () =>
+      (container2.backgroundColor = Color(container2.backgroundColor)
+        .darken(0.1)
+        .hex())
   );
 
-text.on('mouseover', () => text.set('value', text.get('value') + 'change!'));
+text.on('mouseover', () => (text.value = text.value + 'change!'));
 
 container2.on('mousedown', () => container2.unmount()).add(text);
 
@@ -50,3 +58,4 @@ const main = document.getElementById('main');
 container1.mount(main);
 container2.mount(main);
 container1.add(container3);
+container4.mount(main);

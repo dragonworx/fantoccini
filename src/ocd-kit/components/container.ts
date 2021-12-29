@@ -1,4 +1,9 @@
-import { BaseProps, Control, css } from '../core';
+import {
+  Control,
+  BaseProps,
+  defaultProps as baseDefaultProps,
+  css,
+} from '../core';
 
 export type Props = BaseProps & {
   width: string | number;
@@ -6,41 +11,43 @@ export type Props = BaseProps & {
   backgroundColor: string;
 };
 
-export const defaultProps: Partial<Props> = {
-  width: '100%',
-  height: '100%',
+export const defaultProps: Props = {
+  ...baseDefaultProps,
+  width: 'auto',
+  height: 'auto',
   backgroundColor: 'green',
 };
 
-export class Container extends Control<Props, HTMLDivElement> {
+export class Container extends Control<Props, HTMLDivElement>() {
   constructor(props?: Partial<Props>) {
     super({
       ...defaultProps,
+      tag: props?.tag || 'notag',
       ...props,
     });
   }
 
-  protected template() {
-    return {
-      html: '<div><p data-ref="foo">hi</p></div>',
+  protected html() {
+    return '<div><p ref="foo">hi</p></div>';
+  }
 
-      style: css(
-        'div',
-        {
-          backgroundColor: 'blue',
-          border: '1px solid red',
-        },
-        css('&:hover', {
-          borderStyle: 'dashed',
-        }),
-        css('p', {
-          color: 'white',
-        }),
-        css('p:hover', {
-          color: 'blue',
-        })
-      ),
-    };
+  protected style() {
+    return css(
+      'div',
+      {
+        backgroundColor: 'blue',
+        border: '1px solid red',
+      },
+      css('&:hover', {
+        borderStyle: 'dashed',
+      }),
+      css('p', {
+        color: 'white',
+      }),
+      css('p:hover', {
+        color: 'blue',
+      })
+    );
   }
 
   protected init() {

@@ -1,9 +1,11 @@
+import { dataAttr } from '.';
+
 export class DynamicStyleSheet {
   element: HTMLStyleElement;
 
   constructor(readonly id: string, readonly root: CSSRuleNode) {
     const element = (this.element = document.createElement('style'));
-    element.setAttribute(this.className, '');
+    element.setAttribute(dataAttr('class'), this.className);
     document.head.appendChild(element);
     this.parse(root);
   }
@@ -93,22 +95,31 @@ export class DynamicStyleSheet {
   }
 }
 
+export type CSSRuleStackItem = [CSSRuleKey, string];
+
 export class CSSRuleNode {
   private $?: {
     stylesheet: DynamicStyleSheet;
     ruleIndex: number;
   };
+  private stack: CSSRuleStackItem[];
 
   constructor(
     readonly selector: string,
     readonly rules: { [Property in CSSRuleKey]?: string },
     readonly children: CSSRuleNode[]
-  ) {}
+  ) {
+    this.stack = [];
+  }
 
   private get cssStyleRule() {
     const { stylesheet, ruleIndex } = this.$!;
     const rule = stylesheet.sheet.cssRules[ruleIndex];
     return rule as CSSStyleRule;
+  }
+
+  valueOf(ruleKey: CSSRuleKey) {
+    return (this.cssStyleRule.style as any)[ruleKey];
   }
 
   get(selector: string) {
@@ -125,6 +136,18 @@ export class CSSRuleNode {
     const { stylesheet } = this.$!;
     if (stylesheet.sheet !== null) {
       (this.cssStyleRule.style as any)[ruleKey] = value;
+    }
+  }
+
+  push(ruleKey: CSSRuleKey, value: string) {
+    this.stack.push([ruleKey, this.valueOf(ruleKey)]);
+    this.set(ruleKey, value);
+  }
+
+  pop() {
+    if (this.stack.length) {
+      const [ruleKey, value] = this.stack.pop() as CSSRuleStackItem;
+      this.set(ruleKey, value);
     }
   }
 
