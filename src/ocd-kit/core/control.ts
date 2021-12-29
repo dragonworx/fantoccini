@@ -11,10 +11,12 @@ export function px(value: string | number) {
 let id: number = 0;
 
 export interface BaseProps {
+  tag: string;
   visible: boolean;
 }
 
 export const defaultProps: BaseProps = {
+  tag: 'a',
   visible: true,
 };
 
@@ -47,18 +49,21 @@ export abstract class BaseControl<
     return wrapper.firstElementChild as unknown as T;
   }
 
-  constructor(props: Props) {
+  constructor(props: Partial<Props>) {
     super();
     this._id = id++;
     this.isMounted = false;
     const propsWithDefaults = {
       ...defaultProps,
       ...props,
-    };
+    } as unknown as Props;
     this.props = propsWithDefaults;
     const { html, style } = this.template();
     this.element = BaseControl.parseHTML<RootElement>(html);
     this.element.setAttribute('data-id', this.id);
+    if (propsWithDefaults.tag) {
+      this.element.setAttribute('data-tag', propsWithDefaults.tag);
+    }
     this.elementRef = new Element(this.element);
     style.css(
       defaultStyle.selector,
@@ -166,6 +171,7 @@ export abstract class BaseControl<
       containerElement.appendChild(this.element);
       this.isMounted = true;
       this.emit('mount', containerElement);
+      console.log('mount', this.id);
     } else {
       throw new Error('Cannot mount to null element');
     }
@@ -182,6 +188,7 @@ export abstract class BaseControl<
       }
       this.isMounted = false;
       this.emit('unmount', containerElement);
+      console.log('unmount', this.id);
       this.children.forEach((child) => child.unmount());
     } else {
       throw new Error('Cannot unmount from null parent');
@@ -213,20 +220,6 @@ export abstract class BaseControl<
   refElement(refName: string) {
     const element = this.ref(refName);
     return new Element(element);
-  }
-
-  addClass(cssClassName: string) {
-    this.element.classList.add(cssClassName);
-    return this;
-  }
-
-  removeClass(cssClassName: string) {
-    this.element.classList.remove(cssClassName);
-    return this;
-  }
-
-  hasClass(cssClassName: string) {
-    return this.element.classList.contains(cssClassName);
   }
 
   add(control: BaseControl<any, any>, refName?: string) {
