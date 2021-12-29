@@ -1,21 +1,18 @@
-import { BaseProps, Control, css, px } from '../core';
+import { BaseProps, Control, css } from '../core';
 
-export interface Props {
+export type Props = BaseProps & {
   width: string | number;
   height: string | number;
   backgroundColor: string;
-}
+};
 
-export const defaultProps: Props = {
+export const defaultProps: Partial<Props> = {
   width: '100%',
   height: '100%',
   backgroundColor: 'green',
 };
 
-export class Container extends Control<
-  Partial<BaseProps> & Props,
-  HTMLDivElement
-> {
+export class Container extends Control<Props, HTMLDivElement> {
   constructor(props?: Partial<Props>) {
     super({
       ...defaultProps,

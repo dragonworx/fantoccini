@@ -4,7 +4,7 @@
   "main": "./server/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "webpack serve",
+    "dev": "webpack serve",
     "serve": "http-server ./public -p 80",
     "build": "webpack --config webpack.config.js",
     "build:watch": "webpack --config webpack.config.js --watch",

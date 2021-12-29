@@ -1,12 +1,12 @@
-import { Control, css, K, V } from '../core';
+import { BaseProps, Control, css, K, V } from '../core';
 
-export interface Props {
+export type Props = BaseProps & {
   value: string;
   color: string;
   fontSize: number;
-}
+};
 
-export const defaultProps: Props = {
+export const defaultProps: Partial<Props> = {
   value: '',
   color: '#bdbec0',
   fontSize: 12,
