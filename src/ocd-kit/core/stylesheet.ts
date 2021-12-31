@@ -1,4 +1,4 @@
-import { dataAttr } from '.';
+import { dataAttr, parseCss } from '.';
 
 export class DynamicStyleSheet {
   element: HTMLStyleElement;
@@ -160,6 +160,11 @@ export class CSSRuleNode {
     ...children: CSSRuleNode[]
   ) {
     this.children.push(cssRule(selector, rules, ...children));
+    return this;
+  }
+
+  append(ruleNode: CSSRuleNode) {
+    this.children.push(ruleNode);
     return this;
   }
 }

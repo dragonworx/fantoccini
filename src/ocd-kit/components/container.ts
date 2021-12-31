@@ -29,11 +29,11 @@ export class Container extends Control<Props, HTMLDivElement>() {
     });
   }
 
-  protected getHtml() {
+  protected template() {
     return html`<div><p ref="foo">hi</p></div>`;
   }
 
-  protected getStyle() {
+  protected style() {
     return css`
       div {
         background-color: blue;

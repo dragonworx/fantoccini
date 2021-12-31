@@ -1,11 +1,12 @@
+import { html } from '../core';
 import { Container } from './container';
 import { Text } from './text';
 
 export class TestContainer extends Container {
   text?: Text;
 
-  protected getHtml() {
-    return '<div><p ref="foo">hi</p><p ref="test"></div></div>';
+  protected template() {
+    return html`<div><p ref="foo">hi</p><p ref="test"></div></div>`;
   }
 
   protected init() {

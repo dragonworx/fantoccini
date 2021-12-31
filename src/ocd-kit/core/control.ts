@@ -77,12 +77,12 @@ export abstract class BaseControl<
     } as unknown as Props;
     this.props = propsWithDefaults;
 
-    const html = this.getHtml();
+    const html = this.template();
     this.element = parseHTML<RootElement>(html);
     this.element.setAttribute(dataAttr('control'), this.type);
     this.elementRef = new Element(this.element);
 
-    let rootCssNode = this.getStyle();
+    let rootCssNode = this.style();
     if (rootCssNode !== defaultStyle) {
       rootCssNode.css(
         defaultStyle.selector,
@@ -138,7 +138,7 @@ export abstract class BaseControl<
       if (styleSheet.isCssProperty(k)) {
         const cssValue = this.convertPropToCssValue(key, value);
         const selector = this.cssSelectorForPropUpdate(key);
-        this.selectCss(selector).set(key as CSSRuleKey, String(cssValue));
+        this.css(selector).set(key as CSSRuleKey, String(cssValue));
       }
       this.onUpdate(key, value);
       this.emit('update', props);
@@ -173,11 +173,11 @@ export abstract class BaseControl<
     ];
   }
 
-  protected getHtml(): string {
+  protected template(): string {
     return html`<div></div>`;
   }
 
-  protected getStyle(): CSSRuleNode {
+  protected style(): CSSRuleNode {
     return defaultStyle;
   }
 
@@ -263,7 +263,7 @@ export abstract class BaseControl<
     return this;
   }
 
-  selectCss(selector?: string) {
+  css(selector?: string) {
     return selector ? this.styleSheet.select(selector) : this.styleSheet.root;
   }
 

@@ -1,4 +1,4 @@
-import { Control, BaseEvents } from '../core';
+import { Control, BaseEvents, html, css } from '../core';
 import {
   Container,
   defaultProps as baseDefaultProps,
@@ -26,14 +26,18 @@ export class TestContainer2 extends Control<
     });
   }
 
-  protected getHtml() {
-    return '<div><h1 ref="title"></h1></div>';
+  protected template() {
+    return html`<div><h1 ref="title"></h1></div>`;
   }
 
-  protected getStyle() {
-    return super.getStyle().css('&', {
-      transition: 'background-color 1s',
-    });
+  protected style() {
+    return super.style().append(
+      css`
+        & {
+          transition: background-color 1s;
+        }
+      `
+    );
   }
 
   protected init() {
