@@ -34,26 +34,6 @@ export class Container extends Control<Props, HTMLDivElement>() {
   }
 
   protected getStyle() {
-    console.log(this.getStyleNew());
-    return cssRule(
-      'div',
-      {
-        backgroundColor: 'blue',
-        border: '1px solid red',
-      },
-      cssRule('&:hover', {
-        borderStyle: 'dashed',
-      }),
-      cssRule('p', {
-        color: 'white',
-      }),
-      cssRule('p:hover', {
-        color: 'blue',
-      })
-    );
-  }
-
-  protected getStyleNew() {
     return css`
       div {
         background-color: blue;

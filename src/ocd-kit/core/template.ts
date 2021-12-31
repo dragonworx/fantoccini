@@ -38,6 +38,9 @@ function parseRule(cssText: string, info: ParseInfo) {
 
 function parseNext(cssText: string, info: ParseInfo, node: CSSRuleNode) {
   const nextChar = whichIsNext(cssText, info.index, [';', '{', '}']);
+  if (nextChar === null) {
+    throw new Error('Expected token not found. Invalid css format');
+  }
   const isNode = nextChar === '{';
   const isCloseNode = nextChar === '}';
   if (isCloseNode) {
@@ -49,9 +52,12 @@ function parseNext(cssText: string, info: ParseInfo, node: CSSRuleNode) {
     node.children.push(subNode);
     parseNext(cssText, info, node);
   } else {
-    const [ruleKey, value] = parseUntil(cssText, info, ';').split(':');
+    let [ruleKey, value] = parseUntil(cssText, info, ';').split(':');
     if (!value) {
       throw 'Invalid chunk';
+    }
+    if (ruleKey.indexOf('-') > -1) {
+      ruleKey = ruleKey.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
     }
     node.rules[ruleKey.trim() as CSSRuleKey] = value.trim();
     parseNext(cssText, info, node);
