@@ -159,12 +159,12 @@ export class CSSRuleNode {
     rules: { [Property in CSSRuleKey]?: string },
     ...children: CSSRuleNode[]
   ) {
-    this.children.push(css(selector, rules, ...children));
+    this.children.push(cssRule(selector, rules, ...children));
     return this;
   }
 }
 
-export function css(
+export function cssRule(
   selector: string,
   rules: { [Property in CSSRuleKey]?: string },
   ...children: CSSRuleNode[]

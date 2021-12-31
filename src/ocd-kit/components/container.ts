@@ -1,4 +1,11 @@
-import { Control, BaseProps, baseDefaultProps, css } from '../core';
+import {
+  Control,
+  BaseProps,
+  baseDefaultProps,
+  cssRule,
+  html,
+  css,
+} from '../core';
 
 export type Props = BaseProps & {
   width: string | number;
@@ -22,27 +29,49 @@ export class Container extends Control<Props, HTMLDivElement>() {
     });
   }
 
-  protected html() {
-    return '<div><p ref="foo">hi</p></div>';
+  protected getHtml() {
+    return html`<div><p ref="foo">hi</p></div>`;
   }
 
-  protected style() {
-    return css(
+  protected getStyle() {
+    console.log(this.getStyleNew());
+    return cssRule(
       'div',
       {
         backgroundColor: 'blue',
         border: '1px solid red',
       },
-      css('&:hover', {
+      cssRule('&:hover', {
         borderStyle: 'dashed',
       }),
-      css('p', {
+      cssRule('p', {
         color: 'white',
       }),
-      css('p:hover', {
+      cssRule('p:hover', {
         color: 'blue',
       })
     );
+  }
+
+  protected getStyleNew() {
+    return css`
+      div {
+        background-color: blue;
+        border: 1px solid red;
+
+        &:hover {
+          border-style: dashed;
+        }
+
+        p {
+          color: white;
+        }
+
+        p:hover {
+          color: blue;
+        }
+      }
+    `;
   }
 
   protected init() {

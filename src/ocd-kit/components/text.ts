@@ -1,4 +1,4 @@
-import { Control, BaseProps, baseDefaultProps, css, K, V } from '../core';
+import { Control, BaseProps, baseDefaultProps, cssRule, K, V } from '../core';
 
 export type Props = BaseProps & {
   value: string;
@@ -22,12 +22,12 @@ export class Text extends Control<Props, HTMLSpanElement>() {
     });
   }
 
-  protected html() {
+  protected getHtml() {
     return '<span></span>';
   }
 
-  protected style() {
-    return css('span', {
+  protected getStyle() {
+    return cssRule('span', {
       textShadow: '1px 1px 1px #080808',
       display: 'inline-block',
       whiteSpace: 'nowrap',

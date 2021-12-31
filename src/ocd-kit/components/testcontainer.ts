@@ -4,7 +4,7 @@ import { Text } from './text';
 export class TestContainer extends Container {
   text?: Text;
 
-  protected html() {
+  protected getHtml() {
     return '<div><p ref="foo">hi</p><p ref="test"></div></div>';
   }
 

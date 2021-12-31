@@ -26,12 +26,12 @@ export class TestContainer2 extends Control<
     });
   }
 
-  protected html() {
+  protected getHtml() {
     return '<div><h1 ref="title"></h1></div>';
   }
 
-  protected style() {
-    return super.style().css('&', {
+  protected getStyle() {
+    return super.getStyle().css('&', {
       transition: 'background-color 1s',
     });
   }

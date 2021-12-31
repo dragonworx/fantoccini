@@ -29,8 +29,8 @@ const container3 = new TestContainer({
 const container4 = new TestContainer2({});
 
 container4
-  .on('mouseover', () => container4.css().push('backgroundColor', 'red'))
-  .on('mouseout', () => container4.css().pop());
+  .on('mouseover', () => container4.selectCss().push('backgroundColor', 'red'))
+  .on('mouseout', () => container4.selectCss().pop());
 
 container1
   .on('mousedown', () => {
@@ -59,16 +59,3 @@ container1.mount(main);
 container2.mount(main);
 container1.add(container3);
 container4.mount(main);
-
-function css(strings: TemplateStringsArray, ...args: any[]) {
-  console.log('CSS', { strings, args });
-  return 'foo';
-}
-
-const foo = 'red';
-
-css`
-  div {
-    background-color: ${foo};
-  }
-`;

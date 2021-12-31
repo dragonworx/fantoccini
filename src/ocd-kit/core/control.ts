@@ -1,7 +1,13 @@
 import EventEmitter from 'eventemitter3';
-import { dataAttr, px, parseHTML } from '.';
-import { DynamicStyleSheet, CSSRuleNode, css, CSSRuleKey } from './stylesheet';
+import { dataAttr, px, parseHTML, html } from '.';
+import {
+  DynamicStyleSheet,
+  CSSRuleNode,
+  cssRule,
+  CSSRuleKey,
+} from './stylesheet';
 import { Element } from './element';
+import { join, parseCss } from './template';
 
 let id: number = 0;
 
@@ -14,7 +20,7 @@ export const baseDefaultProps: BaseProps = {
   visible: true,
 };
 
-export const defaultStyle = css('&', {
+export const defaultStyle = cssRule('&', {
   boxSizing: 'border-box',
 });
 
@@ -71,12 +77,12 @@ export abstract class BaseControl<
     } as unknown as Props;
     this.props = propsWithDefaults;
 
-    const html = this.html();
+    const html = this.getHtml();
     this.element = parseHTML<RootElement>(html);
     this.element.setAttribute(dataAttr('control'), this.type);
     this.elementRef = new Element(this.element);
 
-    let rootCssNode = this.style();
+    let rootCssNode = this.getStyle();
     if (rootCssNode !== defaultStyle) {
       rootCssNode.css(
         defaultStyle.selector,
@@ -132,7 +138,7 @@ export abstract class BaseControl<
       if (styleSheet.isCssProperty(k)) {
         const cssValue = this.convertPropToCssValue(key, value);
         const selector = this.cssSelectorForPropUpdate(key);
-        this.css(selector).set(key as CSSRuleKey, String(cssValue));
+        this.selectCss(selector).set(key as CSSRuleKey, String(cssValue));
       }
       this.onUpdate(key, value);
       this.emit('update', props);
@@ -167,11 +173,11 @@ export abstract class BaseControl<
     ];
   }
 
-  protected html(): string {
-    return '<div></div>';
+  protected getHtml(): string {
+    return html`<div></div>`;
   }
 
-  protected style(): CSSRuleNode {
+  protected getStyle(): CSSRuleNode {
     return defaultStyle;
   }
 
@@ -257,7 +263,7 @@ export abstract class BaseControl<
     return this;
   }
 
-  css(selector?: string) {
+  selectCss(selector?: string) {
     return selector ? this.styleSheet.select(selector) : this.styleSheet.root;
   }
 
