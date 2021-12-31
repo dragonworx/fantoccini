@@ -41,6 +41,6 @@ export class TestContainer2 extends Control<
   }
 
   protected init() {
-    this.refElement('title').value = this.title;
+    this.ref('title').value = this.title;
   }
 }

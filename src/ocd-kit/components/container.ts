@@ -56,7 +56,7 @@ export class Container extends Control<Props, HTMLDivElement>() {
 
   protected init() {
     if (this._id === 0) {
-      this.refElement('foo').attr('found', '');
+      this.ref('foo').attr('found', '');
     }
   }
 }

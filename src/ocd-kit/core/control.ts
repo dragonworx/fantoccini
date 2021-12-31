@@ -281,18 +281,13 @@ export abstract class BaseControl<
     if (!element) {
       throw new Error(`Element with ref "${refName}" not found`);
     }
-    return element as HTMLElement;
-  }
-
-  refElement(refName: string) {
-    const element = this.ref(refName);
-    return new Element(element);
+    return new Element(element as HTMLElement);
   }
 
   add(control: AnyBaseControl, refName?: string) {
     let element: HTMLElement = this.element;
     if (refName) {
-      element = this.ref(refName);
+      element = this.ref(refName).element;
     }
     control.mount(element);
     control.parent = this;
