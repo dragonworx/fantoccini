@@ -76,10 +76,14 @@ export abstract class BaseControl<
     this.props = propsWithDefaults;
 
     const template = this.template();
+    const isHtmlTemplate = typeof template === 'string';
     this.element = (
-      typeof template === 'string' ? parseHTML<RootElement>(template) : template
+      isHtmlTemplate ? parseHTML<RootElement>(template) : template
     ) as RootElement;
     this.element.setAttribute(dataAttr('control'), this.type);
+    if (!isHtmlTemplate) {
+      this._isMounted = true;
+    }
 
     let rootCssNode = this.style();
     if (rootCssNode !== defaultStyle) {
