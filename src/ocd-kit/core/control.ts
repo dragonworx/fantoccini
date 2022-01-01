@@ -63,7 +63,7 @@ export abstract class BaseControl<
   protected parent?: AnyBaseControl;
   protected emitter: EventEmitter;
 
-  constructor(props: Partial<Props>) {
+  constructor(props: Partial<Props>, parent?: BaseControl<any>) {
     this._id = id++;
     this._isMounted = false;
     this.children = [];
@@ -73,18 +73,55 @@ export abstract class BaseControl<
       ...baseDefaultProps,
       ...props,
     } as unknown as Props;
+
     this.props = propsWithDefaults;
 
+    this.styleSheet = this.createStyleSheet();
+    this.element = this.createElement();
+    this.bindGettersSetters();
+    this.bindDomEvents();
+    this.init();
+    this.setInitialState();
+    this.emit('init');
+
+    if (parent) {
+      parent.add(this);
+    }
+  }
+
+  private createElement() {
+    const { props } = this;
     const template = this.template();
     const isHtmlTemplate = typeof template === 'string';
-    this.element = (
+    const element = (
       isHtmlTemplate ? parseHTML<RootElement>(template) : template
     ) as RootElement;
-    this.element.setAttribute(dataAttr('control'), this.type);
+    if (element === null) {
+      throw new Error('Existing element not found');
+    }
+    element.setAttribute(dataAttr('control'), this.type);
+
     if (!isHtmlTemplate) {
       this._isMounted = true;
     }
 
+    if (props.tag) {
+      element.setAttribute(dataAttr('tag'), props.tag);
+      this.styleSheet.element.setAttribute(dataAttr('tag'), props.tag);
+    }
+
+    element.querySelectorAll('[ref]').forEach((node) => {
+      const refName = node.getAttribute('ref')!;
+      node.removeAttribute('ref');
+      node.setAttribute(dataAttr('ref'), `${this.id}-${refName}`);
+    });
+
+    element.className = this.styleSheet.className;
+
+    return element;
+  }
+
+  private createStyleSheet() {
     let rootCssNode = this.style();
     if (rootCssNode !== defaultStyle) {
       rootCssNode.css(
@@ -94,24 +131,11 @@ export abstract class BaseControl<
       );
     }
 
-    this.styleSheet = new DynamicStyleSheet(this.id, rootCssNode);
-    this.element.className = this.styleSheet.className;
+    return new DynamicStyleSheet(this.id, rootCssNode);
+  }
 
-    if (propsWithDefaults.tag) {
-      this.element.setAttribute(dataAttr('tag'), propsWithDefaults.tag);
-      this.styleSheet.element.setAttribute(
-        dataAttr('tag'),
-        propsWithDefaults.tag
-      );
-    }
-
-    this.element.querySelectorAll('[ref]').forEach((node) => {
-      const refName = node.getAttribute('ref')!;
-      node.removeAttribute('ref');
-      node.setAttribute(dataAttr('ref'), `${this.id}-${refName}`);
-    });
-
-    Object.keys(propsWithDefaults).forEach((key) => {
+  private bindGettersSetters() {
+    Object.keys(this.props).forEach((key) => {
       Object.defineProperty(this, key, {
         get: () => this.props[key],
         set: (value: V<Props>) => {
@@ -123,11 +147,6 @@ export abstract class BaseControl<
         },
       });
     });
-
-    this.bindDomEvents();
-    this.init();
-    this.setInitialState();
-    this.emit('init');
   }
 
   private updateProps(props: Partial<Props>) {
@@ -275,7 +294,7 @@ export abstract class BaseControl<
   }
 
   selectAll(selector: string) {
-    return this.element.querySelectorAll(selector);
+    return Array.from(this.element.querySelectorAll(selector));
   }
 
   ref(refName?: string) {
@@ -292,8 +311,13 @@ export abstract class BaseControl<
 
   add(control: AnyBaseControl, refName?: string) {
     let element: HTMLElement = this.element;
+    if (!refName) {
+      refName = control.type;
+    }
     if (refName) {
-      element = this.ref(refName).element;
+      try {
+        element = this.ref(refName).element;
+      } catch (e) {}
     }
     control.mount(element);
     control.parent = this;

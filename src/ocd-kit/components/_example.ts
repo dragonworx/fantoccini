@@ -1,18 +1,5 @@
 import { Control, BaseProps, baseDefaultProps, html, css } from '../core';
 
-export type Props = BaseProps & {
-  value: string;
-  color: string;
-  fontSize: number;
-};
-
-export const defaultProps: Props = {
-  ...baseDefaultProps,
-  value: '',
-  color: '#bdbec0',
-  fontSize: 12,
-};
-
 export class Text extends Control<Props, HTMLSpanElement>() {
   constructor(props?: Partial<Props>) {
     super({
