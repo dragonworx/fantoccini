@@ -16,6 +16,12 @@ export function join(strings: TemplateStringsArray, args: any[]) {
     .trim();
 }
 
+export function parseHTML<T>(html: string): T {
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = html;
+  return wrapper.firstElementChild as unknown as T;
+}
+
 type ParseInfo = {
   index: number;
 };
