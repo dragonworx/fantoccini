@@ -13,7 +13,7 @@ export const defaultProps: Props = {
   backgroundColor: 'green',
 };
 
-export class Container extends Control<Props, HTMLDivElement>() {
+export class Container extends Control<HTMLDivElement, Props>() {
   constructor(props?: Partial<Props>) {
     super({
       ...defaultProps,

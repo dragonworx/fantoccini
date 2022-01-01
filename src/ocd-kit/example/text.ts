@@ -13,7 +13,7 @@ export const defaultProps: Props = {
   fontSize: 12,
 };
 
-export class Text extends Control<Props, HTMLSpanElement>() {
+export class Text extends Control<HTMLSpanElement, Props>() {
   constructor(props?: Partial<Props>) {
     super({
       ...defaultProps,

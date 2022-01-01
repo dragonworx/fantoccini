@@ -29,6 +29,9 @@ const container3 = new TestContainer({
 
 const container4 = new TestContainer2();
 
+const element = document.createElement('div');
+element.setAttribute('id', 'test');
+document.body.appendChild(element);
 const testtext = new TestText({ value: 'diditit!' });
 
 testtext.on('mouseover', () => (testtext.value += '1'));

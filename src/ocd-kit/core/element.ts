@@ -19,6 +19,10 @@ export class Element {
     }
   }
 
+  get bounds() {
+    return this.element.getBoundingClientRect();
+  }
+
   attr(key: string, value?: string) {
     const { element } = this;
     if (value === undefined) {

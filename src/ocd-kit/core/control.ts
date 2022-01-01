@@ -50,8 +50,8 @@ export type BaseEvents<Props> = {
  * BaseControl
  */
 export abstract class BaseControl<
-  Props extends Record<string, any>,
   RootElement extends HTMLElement = HTMLDivElement,
+  Props extends Record<string, any> = BaseProps,
   Events extends BaseEvents<Props> = BaseEvents<Props>
 > {
   private _isMounted: boolean;
@@ -63,7 +63,7 @@ export abstract class BaseControl<
   protected parent?: AnyBaseControl;
   protected emitter: EventEmitter;
 
-  constructor(props: Partial<Props>, parent?: BaseControl<any>) {
+  constructor(props: Partial<Props> = {}, parent?: BaseControl<any>) {
     this._id = id++;
     this._isMounted = false;
     this.children = [];
@@ -290,11 +290,17 @@ export abstract class BaseControl<
   }
 
   select(selector: string) {
-    return this.element.querySelector(selector);
+    const element = this.element.querySelector(selector);
+    if (element) {
+      return new Element(element as HTMLElement);
+    }
+    return null;
   }
 
   selectAll(selector: string) {
-    return Array.from(this.element.querySelectorAll(selector));
+    return Array.from(this.element.querySelectorAll(selector)).map(
+      (element) => new Element(element as HTMLElement)
+    );
   }
 
   ref(refName?: string) {
@@ -306,7 +312,7 @@ export abstract class BaseControl<
     if (!element) {
       throw new Error(`Element with ref "${refName}" not found`);
     }
-    return new Element(element as HTMLElement);
+    return element;
   }
 
   add(control: AnyBaseControl, refName?: string) {
@@ -338,26 +344,26 @@ export abstract class BaseControl<
     return this;
   }
 
-  ff<T extends Events, K extends keyof T>(eventName: K, handler: T[K]) {
+  off<T extends Events, K extends keyof T>(eventName: K, handler: T[K]) {
     this.emitter.off(String(eventName), handler as any);
     return this;
   }
 }
 
 export function Control<
-  Props,
   Element extends HTMLElement,
+  Props = BaseProps,
   Events extends BaseEvents<Props> = BaseEvents<Props>,
   SubClass = {}
 >(
   subclass: unknown = BaseControl
 ): {
-  new (props: Props): BaseControl<Props, Element, Events> &
+  new (props?: Props): BaseControl<Element, Props, Events> &
     Omit<SubClass, 'element'> &
     Props;
 } {
   return subclass as {
-    new (props: Props): BaseControl<Props, Element, Events> &
+    new (props?: Props): BaseControl<Element, Props, Events> &
       Omit<SubClass, 'element'> &
       Props;
   };

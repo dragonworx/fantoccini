@@ -15,8 +15,8 @@ export const defaultProps: Props = {
 };
 
 export class TestContainer2 extends Control<
-  Props,
   HTMLDivElement,
+  Props,
   BaseEvents<Props> & { foo: (foo: string) => boolean }
 >(Container) {
   constructor(props?: Partial<Props>) {

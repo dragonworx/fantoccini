@@ -1,31 +1,20 @@
-import { Control, BaseProps, baseDefaultProps, html, css } from '../core';
+import { Control, html, css } from '../core';
+import { Text } from '.';
 
-export class Text extends Control<Props, HTMLSpanElement>() {
-  constructor(props?: Partial<Props>) {
-    super({
-      ...defaultProps,
-      visible: true,
-      ...props,
-    });
-  }
-
+export class Example extends Control<HTMLSpanElement>() {
   protected template(): HTMLElement | string {
-    return html`<span></span>`;
+    return html`<div></div>`;
   }
 
   protected style() {
     return css`
-      span {
-        text-shadow: 1px 1px 1px #080808;
-        display: inline-block;
-        white-space: nowrap;
+      & {
+        height: 100%;
       }
     `;
   }
 
-  protected onUpdate(key: string) {
-    if (key === 'value') {
-      this.ref().value = this.value;
-    }
+  init() {
+    this.add(new Text({ value: 'Text' }));
   }
 }
