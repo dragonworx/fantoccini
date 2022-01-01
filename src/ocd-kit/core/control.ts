@@ -7,7 +7,6 @@ import {
   CSSRuleKey,
 } from './stylesheet';
 import { Element } from './element';
-import { join, parseCss } from './template';
 
 let id: number = 0;
 
@@ -59,7 +58,6 @@ export abstract class BaseControl<
   protected readonly _id: number;
   protected readonly props: Props;
   protected readonly element: RootElement;
-  protected readonly elementRef: Element;
   protected readonly styleSheet: DynamicStyleSheet;
   protected readonly children: AnyBaseControl[];
   protected parent?: AnyBaseControl;
@@ -77,10 +75,11 @@ export abstract class BaseControl<
     } as unknown as Props;
     this.props = propsWithDefaults;
 
-    const html = this.template();
-    this.element = parseHTML<RootElement>(html);
+    const template = this.template();
+    this.element = (
+      typeof template === 'string' ? parseHTML<RootElement>(template) : template
+    ) as RootElement;
     this.element.setAttribute(dataAttr('control'), this.type);
-    this.elementRef = new Element(this.element);
 
     let rootCssNode = this.style();
     if (rootCssNode !== defaultStyle) {
@@ -173,7 +172,7 @@ export abstract class BaseControl<
     ];
   }
 
-  protected template(): string {
+  protected template(): string | HTMLElement {
     return html`<div></div>`;
   }
 
@@ -275,7 +274,10 @@ export abstract class BaseControl<
     return this.element.querySelectorAll(selector);
   }
 
-  ref(refName: string) {
+  ref(refName?: string) {
+    if (!refName) {
+      return new Element(this.element);
+    }
     const selector = `[${dataAttr('ref')}="${this.id}-${refName}"]`;
     const element = this.select(`.${this.id} ${selector}`);
     if (!element) {

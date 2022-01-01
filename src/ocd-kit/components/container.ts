@@ -1,11 +1,4 @@
-import {
-  Control,
-  BaseProps,
-  baseDefaultProps,
-  cssRule,
-  html,
-  css,
-} from '../core';
+import { Control, BaseProps, baseDefaultProps, html, css } from '../core';
 
 export type Props = BaseProps & {
   width: string | number;

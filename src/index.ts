@@ -2,6 +2,7 @@ import { Container } from './ocd-kit/components/container';
 import { Text } from './ocd-kit/components/text';
 import { TestContainer } from './ocd-kit/components/testcontainer';
 import { TestContainer2 } from './ocd-kit/components/testcontainer2';
+import { TestText } from './ocd-kit/components/testtext';
 import Color from 'color';
 
 const container1 = new Container({
@@ -26,7 +27,9 @@ const container3 = new TestContainer({
   backgroundColor: 'pink',
 });
 
-const container4 = new TestContainer2({});
+const container4 = new TestContainer2();
+
+const testtext = new TestText({ value: 'diditit!' });
 
 container4
   .on('mouseover', () => container4.css().push('backgroundColor', 'red'))

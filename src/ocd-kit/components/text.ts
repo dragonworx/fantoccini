@@ -31,7 +31,7 @@ export class Text extends Control<Props, HTMLSpanElement>() {
     });
   }
 
-  protected template() {
+  protected template(): HTMLElement | string {
     return html`<span></span>`;
   }
 
@@ -47,7 +47,7 @@ export class Text extends Control<Props, HTMLSpanElement>() {
 
   protected onUpdate(key: string) {
     if (key === 'value') {
-      this.elementRef.value = this.value;
+      this.ref().value = this.value;
     }
   }
 }
