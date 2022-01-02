@@ -2,18 +2,26 @@ type WithProps<P> = {
   props: P;
 };
 
-function Extend<B extends WithProps<any>, S extends WithProps<any>>(
-  base: B,
-  sub: S
-) {
+function extend<B extends WithProps<any>, P>(base: B, props: P) {
   return {
     ...base,
-    ...sub,
     props: {
       ...base.props,
-      ...sub.props,
+      ...props,
     },
-  } as B & S;
+  } as B & P;
+}
+
+function Control<T, Props>(proto: T & WithProps<Props>) {
+  return function (props: Partial<Props> = proto.props): typeof proto {
+    return {
+      ...proto,
+      props: {
+        ...proto.props,
+        ...props,
+      },
+    };
+  };
 }
 
 const baseProto = {
@@ -27,34 +35,22 @@ const baseProto = {
   },
 };
 
-const subProto = Extend(baseProto, {
-  props: {
+const subProto = {
+  ...extend(baseProto, {
     subProp: 2,
-  },
+  }),
   template: 'efg',
   subMethod() {
-    return baseProto.baseMethod.call(this);
+    return this.baseMethod() + '!';
   },
-});
+};
 
-const subProto1 = Extend(subProto, {
-  props: {
+const subProto1 = {
+  ...extend(subProto, {
     subProp1: 3,
-  },
+  }),
   sub1Method() {},
-});
-
-function Control<T, Props>(proto: T & WithProps<Props>) {
-  return function (props: Partial<Props> = proto.props): typeof proto {
-    return {
-      ...proto,
-      props: {
-        ...proto.props,
-        ...props,
-      },
-    };
-  };
-}
+};
 
 const Sub = Control(subProto);
 const sub = Sub();
