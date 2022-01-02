@@ -6,18 +6,17 @@ export type Props = BaseProps & {
   fontSize: number;
 };
 
-export const defaultProps: Props = {
-  ...BaseControl.defaultProps,
-  value: '',
-  color: '#bdbec0',
-  fontSize: 12,
-};
-
 export class Text extends Control<HTMLSpanElement, Props>() {
+  static defaultProps: Props = {
+    ...BaseControl.defaultProps,
+    value: '',
+    color: '#bdbec0',
+    fontSize: 12,
+  };
+
   constructor(props?: Partial<Props>) {
     super({
-      ...defaultProps,
-      visible: true,
+      ...Text.defaultProps,
       ...props,
     });
   }

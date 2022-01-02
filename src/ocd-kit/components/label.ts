@@ -5,15 +5,15 @@ export type Props = BaseProps & {
   text: string;
 };
 
-export const defaultProps: Props = {
-  ...BaseControl.defaultProps,
-  text: 'LabelText',
-};
-
 export class Label extends Control<HTMLLabelElement, Props>() {
+  static defaultProps: Props = {
+    ...BaseControl.defaultProps,
+    text: 'LabelText',
+  };
+
   constructor(props?: Partial<Props>) {
     super({
-      ...defaultProps,
+      ...Label.defaultProps,
       ...props,
     });
   }
