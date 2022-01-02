@@ -29,7 +29,7 @@ export class Label extends Control<HTMLLabelElement, Props>() {
     return 'content';
   }
 
-  protected template(): HTMLElement | string {
+  protected template() {
     return html`<label
       >${new Text({ tag: 'text', value: this.props.text })}
       <div ref="content"></div>

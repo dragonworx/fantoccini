@@ -1,7 +1,10 @@
-import { Control, html, css } from '../core';
+import { Control, html, css, setDataAttr, setIdPrefix } from '../core';
 import { Row } from '.';
 import { Text } from '.';
 import { Label } from '.';
+
+setDataAttr();
+setIdPrefix();
 
 export class Example extends Control<HTMLSpanElement>() {
   protected template(): HTMLElement | string {

@@ -1,5 +1,5 @@
 import EventEmitter from 'eventemitter3';
-import { dataAttr, px, parseHTML, html } from '.';
+import { dataAttr, px, parseHTML, html, idPrefix } from '.';
 import {
   DynamicStyleSheet,
   CSSRuleNode,
@@ -65,6 +65,10 @@ export abstract class BaseControl<
 
   static controlById: Map<string, BaseControl<any, any, any>> = new Map();
 
+  // static defaultProps: BaseProps = {
+
+  // };
+
   constructor(props: Partial<Props> = {}, parent?: BaseControl<any>) {
     this._id = id++;
     BaseControl.controlById.set(this.id, this);
@@ -126,6 +130,9 @@ export abstract class BaseControl<
       const refName = node.getAttribute('ref')!;
       node.removeAttribute('ref');
       node.setAttribute(dataAttr('ref'), `${this.id}-${refName}`);
+      if (!node.getAttribute('class')) {
+        node.setAttribute('class', refName);
+      }
     });
 
     element.className = this.styleSheet.className;
@@ -243,7 +250,7 @@ export abstract class BaseControl<
   }
 
   get id() {
-    return `ocdk-${this.type}-${this._id}`;
+    return `${idPrefix()}${this.type}-${this._id}`;
   }
 
   get isMounted() {
