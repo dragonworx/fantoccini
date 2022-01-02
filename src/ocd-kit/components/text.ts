@@ -1,4 +1,4 @@
-import { Control, BaseProps, baseDefaultProps, html, css } from '../core';
+import { Control, BaseProps, html, css, BaseControl } from '../core';
 
 export type Props = BaseProps & {
   value: string;
@@ -7,7 +7,7 @@ export type Props = BaseProps & {
 };
 
 export const defaultProps: Props = {
-  ...baseDefaultProps,
+  ...BaseControl.defaultProps,
   value: '',
   color: '#bdbec0',
   fontSize: 12,
@@ -38,7 +38,7 @@ export class Text extends Control<HTMLSpanElement, Props>() {
 
   protected onUpdate(key: string) {
     if (key === 'value') {
-      this.ref().value = this.value;
+      this.element.value = this.value;
     }
   }
 }

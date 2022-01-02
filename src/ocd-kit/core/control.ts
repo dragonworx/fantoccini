@@ -1,5 +1,5 @@
 import EventEmitter from 'eventemitter3';
-import { dataAttr, px, parseHTML, html, idPrefix } from '.';
+import { dataAttr, px, parseHTML, html, css, idPrefix } from '.';
 import {
   DynamicStyleSheet,
   CSSRuleNode,
@@ -14,14 +14,6 @@ export interface BaseProps {
   tag?: string;
   visible: boolean;
 }
-
-export const baseDefaultProps: BaseProps = {
-  visible: true,
-};
-
-export const defaultStyle = cssRule('&', {
-  boxSizing: 'border-box',
-});
 
 export type K<Props> = keyof Props;
 export type V<Props> = Props[keyof Props];
@@ -57,7 +49,7 @@ export abstract class BaseControl<
   private _isMounted: boolean;
   protected readonly _id: number;
   protected readonly props: Props;
-  protected readonly element: RootElement;
+  protected readonly element: Element<RootElement>;
   protected readonly styleSheet: DynamicStyleSheet;
   protected readonly children: AnyBaseControl[];
   protected parent?: AnyBaseControl;
@@ -65,9 +57,15 @@ export abstract class BaseControl<
 
   static controlById: Map<string, BaseControl<any, any, any>> = new Map();
 
-  // static defaultProps: BaseProps = {
+  static defaultProps: BaseProps = {
+    visible: true,
+  };
 
-  // };
+  static defaultStyle: CSSRuleNode = css`
+    & {
+      box-sizing: border-box;
+    }
+  `;
 
   constructor(props: Partial<Props> = {}, parent?: BaseControl<any>) {
     this._id = id++;
@@ -77,7 +75,7 @@ export abstract class BaseControl<
     this.emitter = new EventEmitter();
 
     const propsWithDefaults = {
-      ...baseDefaultProps,
+      ...BaseControl.defaultProps,
       ...props,
     } as unknown as Props;
 
@@ -115,7 +113,7 @@ export abstract class BaseControl<
         const id = node.getAttribute(idAttr)!;
         const control = BaseControl.controlById.get(id);
         if (control && control.element) {
-          node.replaceWith(control.element);
+          node.replaceWith(control.element.node);
         }
       });
     } else {
@@ -126,21 +124,13 @@ export abstract class BaseControl<
       element.setAttribute(dataAttr('tag'), props.tag);
     }
 
-    element.querySelectorAll('[ref]').forEach((node) => {
-      const refName = node.getAttribute('ref')!;
-      node.removeAttribute('ref');
-      node.setAttribute(dataAttr('ref'), `${this.id}-${refName}`);
-      if (!node.getAttribute('class')) {
-        node.setAttribute('class', refName);
-      }
-    });
-
     element.className = this.styleSheet.className;
 
-    return element;
+    return new Element(element);
   }
 
   private createStyleSheet() {
+    const defaultStyle = BaseControl.defaultStyle;
     let rootCssNode = this.style();
     if (rootCssNode !== defaultStyle) {
       rootCssNode.css(
@@ -192,7 +182,7 @@ export abstract class BaseControl<
 
   private bindDomEvents() {
     this.domEvents.forEach((eventName) => {
-      this.element.addEventListener(eventName, (e) => {
+      this.element.node.addEventListener(eventName, (e) => {
         this.emit(eventName as keyof Events, e);
       });
     });
@@ -219,7 +209,7 @@ export abstract class BaseControl<
   }
 
   protected style(): CSSRuleNode {
-    return defaultStyle;
+    return BaseControl.defaultStyle;
   }
 
   protected onUpdate(key: K<Props>, value: V<Props>) {}
@@ -245,8 +235,12 @@ export abstract class BaseControl<
     return this;
   }
 
+  protected getContainer(control: AnyBaseControl): string | undefined {
+    return;
+  }
+
   get type() {
-    return (this as any).__proto__.constructor.name.toLowerCase();
+    return (this as any).__proto__.constructor.name;
   }
 
   get id() {
@@ -255,10 +249,6 @@ export abstract class BaseControl<
 
   get isMounted() {
     return this._isMounted;
-  }
-
-  get defaultRefTarget(): string | undefined {
-    return;
   }
 
   get<T extends Props, K extends keyof T>(key: K): T[K] {
@@ -279,7 +269,7 @@ export abstract class BaseControl<
 
   mount(containerElement: HTMLElement | null) {
     if (containerElement) {
-      containerElement.appendChild(this.element);
+      containerElement.appendChild(this.element.node);
       this._isMounted = true;
       this.emit('mount', containerElement);
     } else {
@@ -290,9 +280,9 @@ export abstract class BaseControl<
 
   unmount(dispose?: boolean) {
     const element = this.element;
-    const containerElement = element.parentElement;
+    const containerElement = element.node.parentElement;
     if (containerElement !== null) {
-      containerElement.removeChild(element);
+      containerElement.removeChild(element.node);
       if (dispose) {
         BaseControl.controlById.delete(this.id);
         if (this.styleSheet) {
@@ -314,7 +304,7 @@ export abstract class BaseControl<
   }
 
   select(selector: string) {
-    const element = this.element.querySelector(selector);
+    const element = this.element.node.querySelector(selector);
     if (element) {
       return new Element(element as HTMLElement);
     }
@@ -322,22 +312,9 @@ export abstract class BaseControl<
   }
 
   selectAll(selector: string) {
-    return Array.from(this.element.querySelectorAll(selector)).map(
+    return Array.from(this.element.node.querySelectorAll(selector)).map(
       (element) => new Element(element as HTMLElement)
     );
-  }
-
-  ref(refName?: string) {
-    if (!refName) {
-      return new Element(this.element);
-    }
-    const selector = `[${dataAttr('ref')}="${this.id}-${refName}"]`;
-    // const element = this.select(`.${this.id} ${selector}`);
-    const element = this.select(selector);
-    if (!element) {
-      throw new Error(`Element with ref "${refName}" not found`);
-    }
-    return element;
   }
 
   tag<T extends BaseControl<any, any, any>>(tagName: string): T {
@@ -349,15 +326,16 @@ export abstract class BaseControl<
     return BaseControl.controlById.get(element.attr('class')!) as T;
   }
 
-  add(control: AnyBaseControl, refName?: string) {
-    let element: HTMLElement = this.element;
-    if (!refName) {
-      refName = this.defaultRefTarget || control.type;
+  add(control: AnyBaseControl, containerClassName?: string) {
+    let element: HTMLElement = this.element.node;
+    if (!containerClassName) {
+      containerClassName = this.getContainer(control);
     }
-    if (refName) {
-      try {
-        element = this.ref(refName).element;
-      } catch (e) {}
+    if (containerClassName) {
+      const containerElement = this.select(containerClassName);
+      if (containerElement) {
+        element = containerElement.node;
+      }
     }
     control.mount(element);
     control.parent = this;

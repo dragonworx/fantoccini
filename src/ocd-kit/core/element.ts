@@ -1,60 +1,60 @@
-export class Element {
-  constructor(readonly element: HTMLElement) {}
+export class Element<T extends HTMLElement> {
+  constructor(readonly node: T) {}
 
   get value() {
-    const { element } = this;
-    if ('value' in element) {
-      return (element as any).value;
+    const { node } = this;
+    if ('value' in node) {
+      return (node as any).value;
     } else {
-      return element.innerText;
+      return node.innerText;
     }
   }
 
   set value(value: string) {
-    const { element } = this;
-    if ('value' in element) {
-      (element as any).value = value;
+    const { node } = this;
+    if ('value' in node) {
+      (node as any).value = value;
     } else {
-      element.innerHTML = value;
+      node.innerHTML = value;
     }
   }
 
   get bounds() {
-    return this.element.getBoundingClientRect();
+    return this.node.getBoundingClientRect();
   }
 
   attr(key: string) {
-    const { element } = this;
-    return element.getAttribute(key);
+    const { node } = this;
+    return node.getAttribute(key);
   }
 
   setAttr(key: string, value: string) {
-    const { element } = this;
-    element.setAttribute(key, value);
+    const { node } = this;
+    node.setAttribute(key, value);
     return this;
   }
 
-  add(element: HTMLElement) {
-    this.element.appendChild(element);
+  add(node: T) {
+    this.node.appendChild(node);
     return this;
   }
 
-  remove(element: HTMLElement) {
-    this.element.removeChild(element);
+  remove(node: T) {
+    this.node.removeChild(node);
     return this;
   }
 
   addClass(cssClassName: string) {
-    this.element.classList.add(cssClassName);
+    this.node.classList.add(cssClassName);
     return this;
   }
 
   removeClass(cssClassName: string) {
-    this.element.classList.remove(cssClassName);
+    this.node.classList.remove(cssClassName);
     return this;
   }
 
   hasClass(cssClassName: string) {
-    return this.element.classList.contains(cssClassName);
+    return this.node.classList.contains(cssClassName);
   }
 }
