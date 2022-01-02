@@ -1,12 +1,6 @@
 import EventEmitter from 'eventemitter3';
 import { dataAttr, px, parseHTML, html, css, idPrefix } from '.';
-import {
-  DynamicStyleSheet,
-  CSSRuleNode,
-  cssRule,
-  CSSRuleKey,
-} from './stylesheet';
-import { Element } from './element';
+import { DynamicStyleSheet, CSSRuleNode, CSSRuleKey } from './stylesheet';
 
 let id: number = 0;
 
@@ -49,7 +43,7 @@ export abstract class BaseControl<
   private _isMounted: boolean;
   protected readonly _id: number;
   protected readonly props: Props;
-  protected readonly element: Element<RootElement>;
+  protected readonly element: RootElement;
   protected readonly styleSheet: DynamicStyleSheet;
   protected readonly children: AnyBaseControl[];
   protected parent?: AnyBaseControl;
@@ -113,7 +107,7 @@ export abstract class BaseControl<
         const id = node.getAttribute(idAttr)!;
         const control = BaseControl.controlById.get(id);
         if (control && control.element) {
-          node.replaceWith(control.element.node);
+          node.replaceWith(control.element);
         }
       });
     } else {
@@ -126,7 +120,7 @@ export abstract class BaseControl<
 
     element.className = this.styleSheet.className;
 
-    return new Element(element);
+    return element;
   }
 
   private createStyleSheet() {
@@ -181,18 +175,14 @@ export abstract class BaseControl<
   }
 
   private bindDomEvents() {
-    this.domEvents.forEach((eventName) => {
-      this.element.node.addEventListener(eventName, (e) => {
+    this.defineDomEvents.forEach((eventName) => {
+      this.element.addEventListener(eventName, (e) => {
         this.emit(eventName as keyof Events, e);
       });
     });
   }
 
-  protected get rootCss() {
-    return this.styleSheet.root;
-  }
-
-  protected get domEvents(): string[] {
+  protected get defineDomEvents(): string[] {
     return [
       'mousedown',
       'mouseup',
@@ -251,25 +241,9 @@ export abstract class BaseControl<
     return this._isMounted;
   }
 
-  get<T extends Props, K extends keyof T>(key: K): T[K] {
-    return (this.props as any)[key];
-  }
-
-  set(propKey: K<Props>, value: V<Props>) {
-    this.props[propKey] = value;
-    const props: Partial<Props> = {};
-    props[propKey] = value;
-    this.updateProps(props);
-    return this;
-  }
-
-  getElement() {
-    return this.element;
-  }
-
   mount(containerElement: HTMLElement | null) {
     if (containerElement) {
-      containerElement.appendChild(this.element.node);
+      containerElement.appendChild(this.element);
       this._isMounted = true;
       this.emit('mount', containerElement);
     } else {
@@ -280,9 +254,9 @@ export abstract class BaseControl<
 
   unmount(dispose?: boolean) {
     const element = this.element;
-    const containerElement = element.node.parentElement;
+    const containerElement = element.parentElement;
     if (containerElement !== null) {
-      containerElement.removeChild(element.node);
+      containerElement.removeChild(element);
       if (dispose) {
         BaseControl.controlById.delete(this.id);
         if (this.styleSheet) {
@@ -304,17 +278,11 @@ export abstract class BaseControl<
   }
 
   select(selector: string) {
-    const element = this.element.node.querySelector(selector);
-    if (element) {
-      return new Element(element as HTMLElement);
-    }
-    return null;
+    return this.element.querySelector(selector);
   }
 
   selectAll(selector: string) {
-    return Array.from(this.element.node.querySelectorAll(selector)).map(
-      (element) => new Element(element as HTMLElement)
-    );
+    return Array.from(this.element.querySelectorAll(selector));
   }
 
   tag<T extends BaseControl<any, any, any>>(tagName: string): T {
@@ -323,18 +291,18 @@ export abstract class BaseControl<
     if (!element) {
       throw new Error(`Control with tag "${tagName}" not found`);
     }
-    return BaseControl.controlById.get(element.attr('class')!) as T;
+    return BaseControl.controlById.get(element.getAttribute('class')!) as T;
   }
 
   add(control: AnyBaseControl, containerClassName?: string) {
-    let element: HTMLElement = this.element.node;
+    let element: HTMLElement = this.element;
     if (!containerClassName) {
       containerClassName = this.getContainer(control);
     }
     if (containerClassName) {
       const containerElement = this.select(containerClassName);
       if (containerElement) {
-        element = containerElement.node;
+        element = containerElement as HTMLElement;
       }
     }
     control.mount(element);

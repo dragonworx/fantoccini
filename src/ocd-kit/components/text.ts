@@ -37,7 +37,7 @@ export class Text extends Control<HTMLSpanElement, Props>() {
 
   protected onUpdate(key: string) {
     if (key === 'value') {
-      this.element.value = this.value;
+      this.element.innerText = this.value;
     }
   }
 }
