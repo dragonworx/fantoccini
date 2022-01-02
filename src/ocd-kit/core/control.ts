@@ -41,6 +41,7 @@ export abstract class BaseControl<
   Events extends BaseEvents<Props> = BaseEvents<Props>
 > {
   private _isMounted: boolean;
+
   protected readonly _id: number;
   protected readonly props: Props;
   protected readonly element: RootElement;
@@ -63,20 +64,16 @@ export abstract class BaseControl<
 
   constructor(props: Partial<Props> = {}, parent?: BaseControl<any>) {
     this._id = id++;
-    BaseControl.controlById.set(this.id, this);
-    this._isMounted = false;
+    this.props = props as unknown as Props;
     this.children = [];
     this.emitter = new EventEmitter();
+    this._isMounted = false;
 
-    const propsWithDefaults = {
-      ...BaseControl.defaultProps,
-      ...props,
-    } as unknown as Props;
-
-    this.props = propsWithDefaults;
+    BaseControl.controlById.set(this.id, this);
 
     this.styleSheet = this.createStyleSheet();
     this.element = this.createElement();
+
     this.bindGettersSetters();
     this.bindDomEvents();
     this.init();
@@ -117,6 +114,12 @@ export abstract class BaseControl<
     if (props.tag) {
       element.setAttribute(dataAttr('tag'), props.tag);
     }
+
+    element.querySelectorAll(`[${dataAttr('slot')}]`).forEach((node) => {
+      const slotName = node.getAttribute('slot');
+      node.removeAttribute('slot');
+      node.setAttribute(dataAttr('slot'), slotName || '');
+    });
 
     element.className = this.styleSheet.className;
 
@@ -225,8 +228,21 @@ export abstract class BaseControl<
     return this;
   }
 
-  protected getContainer(control: AnyBaseControl): string | undefined {
-    return;
+  protected get isMounted() {
+    return this._isMounted;
+  }
+
+  protected get slots() {
+    const slots = new Map<string, HTMLElement>();
+    this.selectAll(`[${dataAttr('slot')}]`).forEach((node) => {
+      const slotName = node.getAttribute(dataAttr('slot'))!;
+      if (slotName) {
+        slots.set(slotName, node as HTMLElement);
+      } else {
+        slots.set('default', node as HTMLElement);
+      }
+    });
+    return slots;
   }
 
   get type() {
@@ -235,10 +251,6 @@ export abstract class BaseControl<
 
   get id() {
     return `${idPrefix()}${this.type}-${this._id}`;
-  }
-
-  get isMounted() {
-    return this._isMounted;
   }
 
   mount(containerElement: HTMLElement | null) {
@@ -294,16 +306,13 @@ export abstract class BaseControl<
     return BaseControl.controlById.get(element.getAttribute('class')!) as T;
   }
 
-  add(control: AnyBaseControl, containerClassName?: string) {
+  add(control: AnyBaseControl, slotName?: string) {
     let element: HTMLElement = this.element;
-    if (!containerClassName) {
-      containerClassName = this.getContainer(control);
-    }
-    if (containerClassName) {
-      const containerElement = this.select(containerClassName);
-      if (containerElement) {
-        element = containerElement as HTMLElement;
-      }
+    const slots = this.slots;
+    if (!slotName && slots.has('default')) {
+      element = slots.get('default')!;
+    } else if (slotName && slots.has(slotName)) {
+      element = slots.get(slotName)!;
     }
     control.mount(element);
     control.parent = this;

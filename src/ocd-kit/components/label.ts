@@ -18,14 +18,10 @@ export class Label extends Control<HTMLLabelElement, Props>() {
     });
   }
 
-  protected getContainer() {
-    return '.content';
-  }
-
   protected template() {
     return html`<label
       >${new Text({ tag: 'text', value: this.props.text })}
-      <div class="content"></div>
+      <div class="content" slot></div>
     </label>`;
   }
 
