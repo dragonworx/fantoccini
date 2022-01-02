@@ -2,14 +2,17 @@ type WithProps<P> = {
   props: P;
 };
 
-function extend<B extends WithProps<any>, P>(base: B, props: P) {
+function extend<Base, BaseProps extends WithProps<BaseProps>, SubProps>(
+  base: Base,
+  props: SubProps
+) {
   return {
     ...base,
     props: {
-      ...base.props,
+      ...(base as unknown as BaseProps).props,
       ...props,
     },
-  } as B & P;
+  };
 }
 
 function Control<T, Props>(proto: T & WithProps<Props>) {
@@ -28,7 +31,6 @@ const baseProto = {
   props: {
     baseProp: 1,
   },
-  template: 'abc',
   baseMethod() {
     this.props.baseProp++;
     return 'base';
@@ -39,16 +41,13 @@ const subProto = {
   ...extend(baseProto, {
     subProp: 2,
   }),
-  template: 'efg',
   subMethod() {
-    return this.baseMethod() + '!';
+    return this.baseMethod() + '?';
   },
 };
 
 const subProto1 = {
-  ...extend(subProto, {
-    subProp1: 3,
-  }),
+  ...extend(subProto, { subProp1: 3 }),
   sub1Method() {},
 };
 
@@ -59,7 +58,5 @@ const Sub1 = Control(subProto1);
 const sub1 = Sub1();
 const foo = sub1.subMethod();
 const bar = sub1.props.baseProp;
-const baz = sub1.template;
-foo; //base
-bar; //2
-baz; //efg
+foo;
+bar;
