@@ -3,11 +3,13 @@ type WithProps<P> = {
 };
 
 function extend<Base, BaseProps extends WithProps<BaseProps>, SubProps>(
+  type: string,
   base: Base,
   props: SubProps
 ) {
   return {
     ...base,
+    type,
     props: {
       ...(base as unknown as BaseProps).props,
       ...props,
@@ -38,7 +40,7 @@ const baseProto = {
 };
 
 const subProto = {
-  ...extend(baseProto, {
+  ...extend('Sub', baseProto, {
     subProp: 2,
   }),
   subMethod() {
@@ -47,21 +49,21 @@ const subProto = {
 };
 
 const subProto1 = {
-  ...extend(subProto, { subProp1: 3 }),
+  ...extend('Sub1', subProto, { subProp1: 3 }),
   sub1Method() {
     return this.subMethod() + '!';
   },
 };
 
 const subProto2 = {
-  ...extend(subProto, { subProp2: 4 }),
+  ...extend('Sub2', subProto, { subProp2: 4 }),
   sub2Method() {
     return this.subMethod() + '@';
   },
 };
 
 const subProto3 = {
-  ...extend(subProto2, { subProp3: 5 }),
+  ...extend('Sub3', subProto2, { subProp3: 5 }),
   sub3Method() {
     return this.sub2Method() + '@';
   },
@@ -72,9 +74,11 @@ const sub = Sub();
 
 const Sub1 = Control(subProto1);
 const sub1 = Sub1({ subProp1: 7 });
+const sub1Type = sub1.type;
 const sub1Method = sub1.subMethod();
 const sub1BaseProp = sub1.props.baseProp;
 const sub1SubProp1 = sub1.sub1Method() + sub1.props.subProp1;
+sub1Type;
 sub1Method;
 sub1BaseProp;
 sub1SubProp1;
@@ -83,9 +87,14 @@ const Sub2 = Control(subProto2);
 const sub2 = Sub2({ subProp2: 8 });
 const sub2SubProp2 = sub2.sub2Method();
 const sub2Prop2 = sub2.props.subProp2;
+const sub2Type = sub2.type;
 sub2SubProp2;
 sub2Prop2;
+sub2Type;
 
 const Sub3 = Control(subProto3);
 const sub3 = Sub3({ baseProp: 5, subProp3: 4 });
 const sub3Prop = sub3.props.subProp3;
+const sub3Type = sub3.type;
+sub3Prop;
+sub3Type;
