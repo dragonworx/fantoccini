@@ -50,7 +50,7 @@ export type BaseEvents<Props> = {
  * BaseControl
  */
 export abstract class BaseControl<
-  RootElement extends HTMLElement = HTMLDivElement,
+  RootElement extends HTMLElement = HTMLElement,
   Props extends Record<string, any> = BaseProps,
   Events extends BaseEvents<Props> = BaseEvents<Props>
 > {
@@ -250,6 +250,10 @@ export abstract class BaseControl<
     return this._isMounted;
   }
 
+  get defaultRefTarget(): string | undefined {
+    return;
+  }
+
   get<T extends Props, K extends keyof T>(key: K): T[K] {
     return (this.props as any)[key];
   }
@@ -341,7 +345,7 @@ export abstract class BaseControl<
   add(control: AnyBaseControl, refName?: string) {
     let element: HTMLElement = this.element;
     if (!refName) {
-      refName = control.type;
+      refName = this.defaultRefTarget || control.type;
     }
     if (refName) {
       try {

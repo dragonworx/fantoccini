@@ -18,8 +18,10 @@ export class Example extends Control<HTMLSpanElement>() {
 
   init() {
     const label = new Label();
+    const text = new Text({ value: 'contentText!' });
+    label.add(text);
     this.add(new Row().add(new Text({ value: 'Text' })));
     this.add(new Row().add(label));
-    label.text = 'abc';
+    label.text = 'labelText!';
   }
 }

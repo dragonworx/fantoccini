@@ -9,7 +9,6 @@ import {
 } from '../core';
 
 export type Props = BaseProps & {
-  content?: BaseControl;
   text: string;
 };
 
@@ -26,10 +25,15 @@ export class Label extends Control<HTMLLabelElement, Props>() {
     });
   }
 
+  get defaultRefTarget() {
+    return 'content';
+  }
+
   protected template(): HTMLElement | string {
     return html`<label
-      >${new Text({ tag: 'text', value: this.props.text })}</label
-    >`;
+      >${new Text({ tag: 'text', value: this.props.text })}
+      <div ref="content"></div>
+    </label>`;
   }
 
   protected style() {

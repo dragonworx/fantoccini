@@ -16,7 +16,7 @@ export function join(strings: TemplateStringsArray, args: any[]) {
         str +
         (args[i]
           ? args[i] instanceof BaseControl
-            ? `<template ${dataAttr('id')}="${args[i].id}"/>`
+            ? `<template ${dataAttr('id')}="${args[i].id}"></template>`
             : args[i]
           : '')
     )
