@@ -1,25 +1,30 @@
-import { Control, BaseProps, baseDefaultProps, html, css } from '../core';
+import { Text } from '.';
+import {
+  Control,
+  BaseProps,
+  baseDefaultProps,
+  html,
+  css,
+  BaseControl,
+} from '../core';
 
 export type Props = BaseProps & {
-  value: string;
-  color: string;
-  fontSize: number;
+  content?: BaseControl;
 };
 
 export const defaultProps: Props = {
   ...baseDefaultProps,
-  value: '',
-  color: '#bdbec0',
-  fontSize: 12,
 };
 
-export class Label extends Control<HTMLSpanElement, Props>() {
+export class Label extends Control<HTMLLabelElement, Props>() {
+  text: Text;
+
   constructor(props?: Partial<Props>) {
     super({
       ...defaultProps,
-      visible: true,
       ...props,
     });
+    this.text = new Text();
   }
 
   protected template(): HTMLElement | string {
@@ -28,17 +33,11 @@ export class Label extends Control<HTMLSpanElement, Props>() {
 
   protected style() {
     return css`
-      span {
-        text-shadow: 1px 1px 1px #080808;
-        display: inline-block;
-        white-space: nowrap;
+      label {
+        display: flex;
       }
     `;
   }
 
-  protected onUpdate(key: string) {
-    if (key === 'value') {
-      this.ref().value = this.value;
-    }
-  }
+  protected onUpdate(key: string) {}
 }
