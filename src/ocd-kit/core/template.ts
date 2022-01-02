@@ -1,4 +1,4 @@
-import { CSSRuleKey, CSSRuleNode } from '.';
+import { BaseControl, CSSRuleKey, CSSRuleNode, dataAttr } from '.';
 
 export function html(strings: TemplateStringsArray, ...args: any[]) {
   return join(strings, args);
@@ -11,7 +11,15 @@ export function css(strings: TemplateStringsArray, ...args: any[]) {
 
 export function join(strings: TemplateStringsArray, args: any[]) {
   return strings
-    .map((str, i) => str + (args[i] ? args[i] : ''))
+    .map(
+      (str, i) =>
+        str +
+        (args[i]
+          ? args[i] instanceof BaseControl
+            ? `<template ${dataAttr('id')}="${args[i].id}"/>`
+            : args[i]
+          : '')
+    )
     .join('')
     .trim();
 }

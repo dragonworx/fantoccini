@@ -49,7 +49,7 @@ export class Container extends Control<HTMLDivElement, Props>() {
 
   protected init() {
     if (this._id === 0) {
-      this.ref('foo').attr('found', '');
+      this.ref('foo').setAttr('found', '');
     }
   }
 }

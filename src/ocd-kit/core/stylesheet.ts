@@ -1,4 +1,4 @@
-import { dataAttr, parseCss } from '.';
+const dataAttr = (attribute: string) => `data-ocdk-${attribute}`;
 
 export class DynamicStyleSheet {
   element: HTMLStyleElement;

@@ -10,25 +10,26 @@ import {
 
 export type Props = BaseProps & {
   content?: BaseControl;
+  text: string;
 };
 
 export const defaultProps: Props = {
   ...baseDefaultProps,
+  text: 'LabelText',
 };
 
 export class Label extends Control<HTMLLabelElement, Props>() {
-  text: Text;
-
   constructor(props?: Partial<Props>) {
     super({
       ...defaultProps,
       ...props,
     });
-    this.text = new Text();
   }
 
   protected template(): HTMLElement | string {
-    return html`<label></label>`;
+    return html`<label
+      >${new Text({ tag: 'text', value: this.props.text })}</label
+    >`;
   }
 
   protected style() {
@@ -39,5 +40,9 @@ export class Label extends Control<HTMLLabelElement, Props>() {
     `;
   }
 
-  protected onUpdate(key: string) {}
+  protected onUpdate(key: string, value: any) {
+    if (key === 'text') {
+      this.tag<Text>('text').value = value;
+    }
+  }
 }

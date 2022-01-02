@@ -23,14 +23,15 @@ export class Element {
     return this.element.getBoundingClientRect();
   }
 
-  attr(key: string, value?: string) {
+  attr(key: string) {
     const { element } = this;
-    if (value === undefined) {
-      return element.getAttribute(key);
-    } else {
-      element.setAttribute(key, value);
-      return this;
-    }
+    return element.getAttribute(key);
+  }
+
+  setAttr(key: string, value: string) {
+    const { element } = this;
+    element.setAttribute(key, value);
+    return this;
   }
 
   add(element: HTMLElement) {

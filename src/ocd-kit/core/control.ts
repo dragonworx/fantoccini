@@ -63,8 +63,11 @@ export abstract class BaseControl<
   protected parent?: AnyBaseControl;
   protected emitter: EventEmitter;
 
+  static controlById: Map<string, BaseControl<any, any, any>> = new Map();
+
   constructor(props: Partial<Props> = {}, parent?: BaseControl<any>) {
     this._id = id++;
+    BaseControl.controlById.set(this.id, this);
     this._isMounted = false;
     this.children = [];
     this.emitter = new EventEmitter();
@@ -101,13 +104,22 @@ export abstract class BaseControl<
     }
     element.setAttribute(dataAttr('control'), this.type);
 
-    if (!isHtmlTemplate) {
+    if (isHtmlTemplate) {
+      const idAttr = dataAttr('id');
+      const nodes = element.querySelectorAll(`template[${idAttr}]`);
+      nodes.forEach((node) => {
+        const id = node.getAttribute(idAttr)!;
+        const control = BaseControl.controlById.get(id);
+        if (control && control.element) {
+          node.replaceWith(control.element);
+        }
+      });
+    } else {
       this._isMounted = true;
     }
 
     if (props.tag) {
       element.setAttribute(dataAttr('tag'), props.tag);
-      this.styleSheet.element.setAttribute(dataAttr('tag'), props.tag);
     }
 
     element.querySelectorAll('[ref]').forEach((node) => {
@@ -271,6 +283,7 @@ export abstract class BaseControl<
     if (containerElement !== null) {
       containerElement.removeChild(element);
       if (dispose) {
+        BaseControl.controlById.delete(this.id);
         if (this.styleSheet) {
           this.styleSheet.dispose();
         }
@@ -308,11 +321,21 @@ export abstract class BaseControl<
       return new Element(this.element);
     }
     const selector = `[${dataAttr('ref')}="${this.id}-${refName}"]`;
-    const element = this.select(`.${this.id} ${selector}`);
+    // const element = this.select(`.${this.id} ${selector}`);
+    const element = this.select(selector);
     if (!element) {
       throw new Error(`Element with ref "${refName}" not found`);
     }
     return element;
+  }
+
+  tag<T extends BaseControl<any, any, any>>(tagName: string): T {
+    const selector = `[${dataAttr('tag')}="${tagName}"]`;
+    const element = this.select(selector);
+    if (!element) {
+      throw new Error(`Control with tag "${tagName}" not found`);
+    }
+    return BaseControl.controlById.get(element.attr('class')!) as T;
   }
 
   add(control: AnyBaseControl, refName?: string) {
