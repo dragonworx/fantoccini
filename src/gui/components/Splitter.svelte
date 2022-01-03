@@ -148,6 +148,7 @@ const onStartDrag = (e: MouseEvent) => {
   dragInfo.startX = e.clientX;
   dragInfo.startY = e.clientY;
   dragInfo.startValue = value;
+  let limit = separatorSize / 2 / elementWidth;
 
   const onMouseMove = (e: MouseEvent) => {
     let newValue: number;
@@ -157,8 +158,9 @@ const onStartDrag = (e: MouseEvent) => {
     } else if (direction === "vertical") {
       const delta = e.clientY - dragInfo.startY;
       newValue = (elementHeight * dragInfo.startValue + delta) / elementHeight;
+      limit = separatorSize / elementWidth;
     }
-    value = Math.min(Math.max(0, newValue), 1);
+    value = Math.min(Math.max(limit, newValue), 1 - limit);
     setLayout();
   };
 
@@ -170,6 +172,12 @@ const onStartDrag = (e: MouseEvent) => {
   window.addEventListener("mousemove", onMouseMove);
   window.addEventListener("mouseup", onMouseUp);
 };
+
+$: {
+  if (elementWidth > 0) {
+    setLayout();
+  }
+}
 </script>
 
 <div
