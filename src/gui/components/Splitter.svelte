@@ -27,6 +27,10 @@ $thumbSize: 20px;
       height: $separatorSize;
       z-index: 1;
 
+      &:active {
+        background-color: #424242;
+      }
+
       :global([data-component="icon"]) {
         opacity: 0.5;
       }
