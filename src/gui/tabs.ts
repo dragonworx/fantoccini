@@ -1,4 +1,4 @@
-import { onCanCloseHandler } from "./components/TabView.svelte";
+export type onCanCloseHandler = (selectedIndex: number) => boolean;
 
 export interface TabDocument {
   title: string;

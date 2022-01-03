@@ -96,10 +96,6 @@
 }
 </style>
 
-<script lang="ts" context="module">
-export type onCanCloseHandler = (selectedIndex: number) => boolean;
-</script>
-
 <script lang="ts">
 import { setContext, createEventDispatcher } from "svelte";
 import EventEmitter from "eventemitter3";
