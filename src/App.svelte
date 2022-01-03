@@ -47,8 +47,7 @@ import Tooltip from "./gui/components/Tooltip.svelte";
 import Panel from "./gui/components/Panel.svelte";
 import TabView from "./gui/components/TabView.svelte";
 import TabDoc from "./gui/components/TabDoc.svelte";
-import Button from "./gui/components/Button.svelte";
-import { text } from "svelte/internal";
+import Splitter from "./gui/components/Splitter.svelte";
 
 const radioOptions: RadioGroupOption[] = [
   { label: "Option 1", value: "a" },
@@ -565,7 +564,20 @@ function log(component: string, event: string, detail?: any) {
     </Area>
   </Section>
 
-  <Section title="Splitter" />
+  <Section title="Splitter">
+    <Area>
+      <Splitter direction="horizontal">
+        <Panel slot="panel1"><Label text="Panel1" /></Panel>
+        <Panel slot="panel2"><Label text="Panel2" /></Panel>
+      </Splitter>
+    </Area>
+    <Area height="{100}">
+      <Splitter direction="vertical">
+        <Panel slot="panel1"><Label text="Panel1" /></Panel>
+        <Panel slot="panel2"><Label text="Panel2" /></Panel>
+      </Splitter>
+    </Area>
+  </Section>
 
   <Section title="Window & Dialog" />
 </main>
