@@ -48,6 +48,8 @@ import Panel from "./gui/components/Panel.svelte";
 import TabView from "./gui/components/TabView.svelte";
 import TabDoc from "./gui/components/TabDoc.svelte";
 import Splitter from "./gui/components/Splitter.svelte";
+import Window from "./gui/components/Window.svelte";
+import Button from "./gui/components/Button.svelte";
 
 const radioOptions: RadioGroupOption[] = [
   { label: "Option 1", value: "a" },
@@ -579,5 +581,28 @@ function log(component: string, event: string, detail?: any) {
     </Area>
   </Section>
 
-  <Section title="Window & Dialog" />
+  <Section title="Window">
+    <Area height="{100}">
+      <Events fill="{true}">
+        <Window
+          icon="img/test-small.png"
+          title="Window with really really really really really long title.txt"
+          menuBar="{simpleMenuBar}"
+          on:minimise="{(e) => log('Window', 'minimise', e.detail)}"
+          on:maximise="{(e) => log('Window', 'maximise')}"
+          on:close="{(e) => log('Window', 'close')}">
+          <Label text="Content..." />
+        </Window>
+      </Events>
+    </Area>
+    <Area>
+      <Window
+        appearance="tool"
+        icon="img/test-small.png"
+        title="Window Tool"
+        menuBar="{simpleMenuBar}">
+        <Label text="Content..." />
+      </Window>
+    </Area>
+  </Section>
 </main>

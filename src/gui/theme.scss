@@ -150,6 +150,7 @@ $scrollbar_radius: 3px;
   text-shadow: 1px 1px 1px $color_label_shadow_enabled;
   font-size: 12px;
   white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 @mixin label_disabled {
@@ -159,4 +160,8 @@ $scrollbar_radius: 3px;
 
 @mixin debug {
   outline: 1px solid red;
+}
+
+@mixin outline($color: red) {
+  outline: 1px solid $color;
 }
