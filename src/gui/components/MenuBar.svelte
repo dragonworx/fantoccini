@@ -1,7 +1,7 @@
 <style lang="scss">
 @import "../theme";
 .menubar {
-  @include linear_gradient(#40404e, #1f232c, 180deg);
+  @include linear_gradient(#212434, #343638, 180deg);
   width: 100%;
   list-style: none;
   margin: 0;
