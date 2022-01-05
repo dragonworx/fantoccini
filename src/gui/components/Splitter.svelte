@@ -88,11 +88,12 @@ $thumbSize: 20px;
 
 <script lang="ts">
 import { onMount } from "svelte";
-import { Direction } from "../";
+import { Direction, getLocalStorage, setLocalStorage } from "../";
 import Icon from "./Icon.svelte";
 
 export let direction: Direction = "horizontal";
 export let value: number = 0.5;
+export let storageKey: string = "";
 
 const separatorSize = 5;
 
@@ -140,6 +141,14 @@ function setLayout() {
 }
 
 onMount(() => {
+  if (storageKey) {
+    const storedValue = getLocalStorage(storageKey);
+    if (storedValue !== null) {
+      try {
+        value = parseFloat(storedValue);
+      } catch (e) {}
+    }
+  }
   setLayout();
 });
 
@@ -165,6 +174,9 @@ const onStartDrag = (e: MouseEvent) => {
   };
 
   const onMouseUp = () => {
+    if (storageKey) {
+      setLocalStorage(storageKey, value);
+    }
     window.removeEventListener("mouseup", onMouseUp);
     window.removeEventListener("mousemove", onMouseMove);
   };

@@ -4,8 +4,9 @@ export * from "./option";
 export * from "./action";
 export * from "./filters";
 export * from "./tabs";
-export * from "./template";
-export * from "./stylesheet";
+// export * from "./template";
+// export * from "./stylesheet";
+export * from "./storage";
 
 let id = 0;
 

@@ -566,7 +566,7 @@ function log(component: string, event: string, detail?: any) {
 
   <Section title="Splitter">
     <Area>
-      <Splitter direction="horizontal">
+      <Splitter direction="horizontal" storageKey="splitter1">
         <Panel slot="panel1"><Label text="Panel1" /></Panel>
         <Panel slot="panel2"><Label text="Panel2" /></Panel>
       </Splitter>
