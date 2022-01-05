@@ -1,9 +1,8 @@
 <script lang="ts">
 import { getContext, onMount, onDestroy } from "svelte";
-import {} from "../";
+import { onCanCloseHandler } from "../";
 import { MenuBarItem } from "../menu";
 import Panel from "./Panel.svelte";
-import { onCanCloseHandler } from "./TabView.svelte";
 
 export let title: string = "";
 export let icon: string | undefined = undefined;

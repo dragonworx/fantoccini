@@ -49,6 +49,10 @@
       :global([data-component="button"]) {
         margin-left: $spacing_small;
       }
+
+      :global([data-component="button"]) {
+        @include linear_gradient(#264e95, #2f343c);
+      }
     }
 
     &.isTool {
