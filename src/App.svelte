@@ -49,7 +49,6 @@ import TabView from "./gui/components/TabView.svelte";
 import TabDoc from "./gui/components/TabDoc.svelte";
 import Splitter from "./gui/components/Splitter.svelte";
 import Window from "./gui/components/Window.svelte";
-import Button from "./gui/components/Button.svelte";
 
 const radioOptions: RadioGroupOption[] = [
   { label: "Option 1", value: "a" },
@@ -130,11 +129,7 @@ const simpleMenuBar: MenuBarItem[] = [
 ];
 
 let simpleTabs = ["Tool A", "Tool B", "Tool C", "Tool D"];
-
-const closeTabHandler = (index: number) => () => {
-  simpleTabs.splice(index, 1);
-  simpleTabs = [...simpleTabs];
-};
+let isDialogOpen = false;
 
 function log(component: string, event: string, detail?: any) {
   if (detail instanceof MenuItem) {
@@ -151,6 +146,15 @@ function log(component: string, event: string, detail?: any) {
     "color:white"
   );
 }
+
+const closeTabHandler = (index: number) => () => {
+  simpleTabs.splice(index, 1);
+  simpleTabs = [...simpleTabs];
+};
+
+const onOpenDialog = () => {
+  isDialogOpen = true;
+};
 </script>
 
 <main>
@@ -582,7 +586,7 @@ function log(component: string, event: string, detail?: any) {
   </Section>
 
   <Section title="Window">
-    <Area height="{100}">
+    <Area height="{200}">
       <Events fill="{true}">
         <Window
           icon="img/test-small.png"
@@ -592,6 +596,22 @@ function log(component: string, event: string, detail?: any) {
           on:maximise="{(e) => log('Window', 'maximise')}"
           on:close="{(e) => log('Window', 'close')}">
           <Label text="Content..." />
+          <PushButton label="Open Dialog" on:click="{onOpenDialog}" />
+          {#if isDialogOpen}
+            <Window
+              icon="img/test-small.png"
+              title="Window with really really really really really long title.txt"
+              menuBar="{simpleMenuBar}"
+              x="{window.innerWidth / 2 - window.innerWidth / 4}"
+              y="{window.innerHeight / 2 - window.innerHeight / 4}"
+              width="{window.innerWidth / 2}"
+              height="{window.innerHeight / 2}"
+              on:minimise="{(e) => log('Window', 'minimise', e.detail)}"
+              on:maximise="{(e) => log('Window', 'maximise')}"
+              on:close="{(e) => log('Window', 'close')}">
+              <Label text="Content..." />
+            </Window>
+          {/if}
         </Window>
       </Events>
     </Area>

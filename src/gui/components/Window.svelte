@@ -7,6 +7,8 @@
   border-left: 1px solid #666;
   border-right: 1px solid #666;
   border-bottom: 1px solid #666;
+  box-shadow: 5px 10px 10px 0px rgba(0, 0, 0, 0.25);
+  background-color: #505050;
 
   .titleBar {
     @include linear_gradient(#495b76, #252f44, 180deg);
@@ -85,7 +87,8 @@
   }
 
   &.positioned {
-    position: absolute;
+    position: fixed;
+    z-index: 1;
   }
 }
 </style>
@@ -100,7 +103,7 @@ import Panel from "./Panel.svelte";
 export let isOpen: boolean = true;
 export let title: string = "";
 export let icon: string | undefined = undefined;
-export let appearance: "window" | "tool" | "modal" = "window";
+export let appearance: "window" | "tool" = "window";
 export let menuBar: MenuBarItem[] | undefined = undefined;
 export let width: number = 0;
 export let height: number = 0;
