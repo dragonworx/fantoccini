@@ -609,6 +609,7 @@ const onOpenDialog = () => {
             y="{window.innerHeight / 2 - window.innerHeight / 4}"
             width="{window.innerWidth / 2}"
             height="{window.innerHeight / 2}"
+            isResizable="{true}"
             on:minimise="{(e) => {
               dialog.toggleMinimise();
               log('Window', 'minimise');

@@ -1,5 +1,8 @@
 <style lang="scss">
 @import "../theme";
+$resize: 3px;
+$resizeLarge: $resize * 2;
+
 .window {
   width: 100%;
   height: 100%;
@@ -37,9 +40,100 @@
     background-color: #505050;
     transition: top 0.15s ease-out, left 0.15s ease-out, width 0.15s ease-out,
       height 0.15s ease-out;
+    overflow: hidden;
 
     &.dragging {
       transition: none;
+    }
+
+    .resize {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      position: relative;
+    }
+
+    &.resizable {
+      .resize {
+        border: 3px ridge #767676;
+
+        .resize-border {
+          position: absolute;
+        }
+
+        .resize-left {
+          top: 0;
+          left: -($resize + 1px);
+          height: 100%;
+          width: $resize;
+          background-color: blue;
+          cursor: ew-resize;
+        }
+
+        .resize-right {
+          top: 0;
+          right: -($resize + 1px);
+          height: 100%;
+          width: $resize;
+          background-color: red;
+          cursor: ew-resize;
+        }
+
+        .resize-top {
+          top: -($resize + 1px);
+          left: 0;
+          width: 100%;
+          height: $resize;
+          background-color: green;
+          cursor: ns-resize;
+        }
+
+        .resize-bottom {
+          bottom: -($resize + 1px);
+          left: 0;
+          width: 100%;
+          height: $resize;
+          background-color: pink;
+          cursor: ns-resize;
+        }
+
+        .resize-topleft {
+          top: -($resize + 1px);
+          left: -($resize + 1px);
+          height: $resizeLarge;
+          width: $resizeLarge;
+          background-color: yellow;
+          cursor: nw-resize;
+        }
+
+        .resize-topright {
+          top: -($resize + 1px);
+          right: -($resize + 1px);
+          height: $resizeLarge;
+          width: $resizeLarge;
+          background-color: yellow;
+          cursor: ne-resize;
+        }
+
+        .resize-bottomleft {
+          bottom: -($resize + 1px);
+          left: -($resize + 1px);
+          height: $resizeLarge;
+          width: $resizeLarge;
+          background-color: yellow;
+          cursor: sw-resize;
+        }
+
+        .resize-bottomright {
+          bottom: -($resize + 1px);
+          right: -($resize + 1px);
+          height: $resizeLarge;
+          width: $resizeLarge;
+          background-color: yellow;
+          cursor: se-resize;
+        }
+      }
     }
 
     &.minimised {
@@ -55,6 +149,7 @@
       height: 30px;
       display: flex;
       align-items: center;
+      overflow: hidden;
 
       .iconTitleGroup {
         flex-grow: 1;
@@ -115,6 +210,7 @@
     .content {
       display: flex;
       flex-grow: 1;
+      overflow: hidden;
     }
 
     &.fill {
@@ -167,18 +263,21 @@ export let y: number = 0;
 export let canMinimise: boolean = true;
 export let canMaximise: boolean = true;
 export let canClose: boolean = true;
+export let isResizable: boolean = false;
 
 const dispatch = createEventDispatcher();
-const dragger = new Dragger<{ x: number; y: number }>();
 
-dragger
+const minWidth = 140;
+const minHeight = 140;
+
+const titleDragger = new Dragger<{ x: number; y: number }>()
   .on("dragstart", (setStartValue) => {
     isDragging = true;
     setStartValue({ x, y });
   })
   .on("dragmove", (deltaX: number, deltaY: number) => {
-    x = dragger.startValue.x + deltaX;
-    y = dragger.startValue.y + deltaY;
+    x = titleDragger.startValue.x + deltaX;
+    y = titleDragger.startValue.y + deltaY;
     x = Math.min(Math.max(0, x), document.documentElement.clientWidth - width);
     y = Math.min(
       Math.max(0, y),
@@ -186,6 +285,32 @@ dragger
     );
   })
   .on("dragcomplete", () => (isDragging = false));
+
+const rightDragger = new Dragger<number>()
+  .on("dragstart", (setStartValue) => {
+    isDragging = true;
+    setStartValue(width);
+  })
+  .on("dragmove", (deltaX: number) => {
+    width = rightDragger.startValue + deltaX;
+    width = Math.min(
+      Math.max(minWidth, width),
+      document.documentElement.clientWidth - x
+    );
+  });
+
+const leftDragger = new Dragger<{ x: number; width: number }>()
+  .on("dragstart", (setStartValue) => {
+    isDragging = true;
+    setStartValue({ x, width });
+  })
+  .on("dragmove", (deltaX: number) => {
+    x = leftDragger.startValue.x + deltaX;
+    width = leftDragger.startValue.width + leftDragger.startValue.x - x;
+    if (width < minWidth) {
+      const offset = minWidth - width;
+    }
+  });
 
 let restore: {
   x: number;
@@ -268,7 +393,7 @@ const onCloseClick = () => {
 };
 
 const onTitleMouseDown = (e: MouseEvent) => {
-  dragger.onStartDrag(e);
+  titleDragger.onStartDrag(e);
 };
 </script>
 
@@ -283,42 +408,59 @@ const onTitleMouseDown = (e: MouseEvent) => {
       class:fill="{x === 0 && y === 0 && width === 0 && height === 0}"
       class:minimised="{isMinimised}"
       class:dragging="{isDragging}"
+      class:resizable="{isResizable}"
       style="{isPositioned ? style : undefined}"
       data-component="window">
-      <div class="titleBar" class:isTool>
-        <div class="iconTitleGroup" class:hasIcon="{!!icon}">
-          {#if icon}
-            <Icon src="{icon}" size="{isTool ? 14 : 20}" />
-          {/if}
-          {#if title}
-            <div class="title" on:mousedown="{onTitleMouseDown}">{title}</div>
-          {/if}
+      <div class="resize">
+        <div
+          class="resize-left resize-border"
+          on:mousedown="{leftDragger.onStartDrag}">
         </div>
-        <div class="buttonGroup">
-          {#if canMinimise && !isTool}
-            <PushButton
-              iconSrc="{'img/icons/minimise.svg'}"
-              padding="{2}"
-              iconSize="{buttonIconSize}"
-              on:click="{onMinimiseClick}" />
-          {/if}
-          {#if canMaximise && !isTool}
-            <PushButton
-              iconSrc="{'img/icons/maximise.svg'}"
-              padding="{2}"
-              iconSize="{buttonIconSize}"
-              on:click="{onMaximiseClick}" />
-          {/if}
-          {#if canClose}
-            <PushButton
-              iconSrc="{'img/icons/cross.svg'}"
-              padding="{2}"
-              iconSize="{buttonIconSize}"
-              on:click="{onCloseClick}" />
-          {/if}
+        <div class="resize-top resize-border"></div>
+        <div class="resize-bottom resize-border"></div>
+        <div
+          class="resize-right resize-border"
+          on:mousedown="{rightDragger.onStartDrag}">
         </div>
+        <div class="resize-topleft resize-border"></div>
+        <div class="resize-topright resize-border"></div>
+        <div class="resize-bottomleft resize-border"></div>
+        <div class="resize-bottomright resize-border"></div>
+        <div class="titleBar" class:isTool>
+          <div class="iconTitleGroup" class:hasIcon="{!!icon}">
+            {#if icon}
+              <Icon src="{icon}" size="{isTool ? 14 : 20}" />
+            {/if}
+            {#if title}
+              <div class="title" on:mousedown="{onTitleMouseDown}">{title}</div>
+            {/if}
+          </div>
+          <div class="buttonGroup">
+            {#if canMinimise && !isTool}
+              <PushButton
+                iconSrc="{'img/icons/minimise.svg'}"
+                padding="{2}"
+                iconSize="{buttonIconSize}"
+                on:click="{onMinimiseClick}" />
+            {/if}
+            {#if canMaximise && !isTool}
+              <PushButton
+                iconSrc="{'img/icons/maximise.svg'}"
+                padding="{2}"
+                iconSize="{buttonIconSize}"
+                on:click="{onMaximiseClick}" />
+            {/if}
+            {#if canClose}
+              <PushButton
+                iconSrc="{'img/icons/cross.svg'}"
+                padding="{2}"
+                iconSize="{buttonIconSize}"
+                on:click="{onCloseClick}" />
+            {/if}
+          </div>
+        </div>
+        <div class="content"><Panel menuBar="{menuBar}"><slot /></Panel></div>
       </div>
-      <div class="content"><Panel menuBar="{menuBar}"><slot /></Panel></div>
     </div>
   </div>
 {/if}
