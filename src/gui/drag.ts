@@ -1,35 +1,32 @@
-export function drag(
-  onDragMove: (deltaX: number, deltaY: number) => void,
-  onDragDone: () => void
-) {
-  let dragInfo: {
-    isDragging: boolean;
-    startX: number;
-    startY: number;
-  } = { isDragging: false, startX: 0, startY: 0 };
+import EventEmitter from "eventemitter3";
 
-  const onStartDrag = (e: MouseEvent) => {
-    dragInfo.isDragging = true;
-    dragInfo.startX = e.clientX;
-    dragInfo.startY = e.clientY;
+export class Dragger<T> extends EventEmitter {
+  isDragging: boolean = false;
+  startX: number = 0;
+  startY: number = 0;
+  startValue: T;
+
+  onStartDrag = (e: MouseEvent) => {
+    this.isDragging = true;
+    this.startX = e.clientX;
+    this.startY = e.clientY;
 
     const onMouseMove = (e: MouseEvent) => {
-      const deltaX = e.clientX - dragInfo.startX;
-      const deltaY = e.clientY - dragInfo.startY;
-      onDragMove(deltaX, deltaY);
+      const deltaX = e.clientX - this.startX;
+      const deltaY = e.clientY - this.startY;
+      this.emit("dragmove", deltaX, deltaY, e.clientX, e.clientY);
     };
 
     const onMouseUp = () => {
       window.removeEventListener("mouseup", onMouseUp);
       window.removeEventListener("mousemove", onMouseMove);
-      onDragDone();
+      this.emit("dragcomplete");
     };
 
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseup", onMouseUp);
-  };
 
-  return {
-    onStartDrag,
+    const setStartValue = (value: T) => (this.startValue = value);
+    this.emit("dragstart", setStartValue);
   };
 }

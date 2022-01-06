@@ -88,7 +88,7 @@ $thumbSize: 20px;
 
 <script lang="ts">
 import { onMount } from "svelte";
-import { Direction, getLocalStorage, setLocalStorage } from "../";
+import { Direction, getLocalStorage, setLocalStorage, Dragger } from "../";
 import Icon from "./Icon.svelte";
 
 export let direction: Direction = "horizontal";
@@ -96,18 +96,13 @@ export let value: number = 0.5;
 export let storageKey: string = "";
 
 const separatorSize = 5;
+const dragger = new Dragger<number>();
 
 let elementWidth: number;
 let elementHeight: number;
 let panel1: HTMLDivElement;
 let panel2: HTMLDivElement;
 let separator: HTMLDivElement;
-let dragInfo: {
-  isDragging: boolean;
-  startX: number;
-  startY: number;
-  startValue: number;
-} = { isDragging: false, startX: 0, startY: 0, startValue: 0 };
 
 function getLayout() {
   const panel1Size =
@@ -152,38 +147,25 @@ onMount(() => {
   setLayout();
 });
 
-const onStartDrag = (e: MouseEvent) => {
-  dragInfo.isDragging = true;
-  dragInfo.startX = e.clientX;
-  dragInfo.startY = e.clientY;
-  dragInfo.startValue = value;
-  let limit = separatorSize / 2 / elementWidth;
-
-  const onMouseMove = (e: MouseEvent) => {
+dragger
+  .on("dragstart", (setSartValue) => setSartValue(value))
+  .on("dragmove", (deltaX: number, deltaY: number) => {
+    let limit = separatorSize / 2 / elementWidth;
     let newValue: number;
     if (direction === "horizontal") {
-      const delta = e.clientX - dragInfo.startX;
-      newValue = (elementWidth * dragInfo.startValue + delta) / elementWidth;
+      newValue = (elementWidth * dragger.startValue + deltaX) / elementWidth;
     } else if (direction === "vertical") {
-      const delta = e.clientY - dragInfo.startY;
-      newValue = (elementHeight * dragInfo.startValue + delta) / elementHeight;
+      newValue = (elementHeight * dragger.startValue + deltaY) / elementHeight;
       limit = separatorSize / elementWidth;
     }
     value = Math.min(Math.max(limit, newValue), 1 - limit);
     setLayout();
-  };
-
-  const onMouseUp = () => {
+  })
+  .on("dragcomplete", () => {
     if (storageKey) {
       setLocalStorage(storageKey, value);
     }
-    window.removeEventListener("mouseup", onMouseUp);
-    window.removeEventListener("mousemove", onMouseMove);
-  };
-
-  window.addEventListener("mousemove", onMouseMove);
-  window.addEventListener("mouseup", onMouseUp);
-};
+  });
 
 $: {
   if (elementWidth > 0) {
@@ -201,7 +183,7 @@ $: {
   data-component="splitter">
   <div bind:this="{panel1}" class="panel1"><slot name="panel1" /></div>
   <div bind:this="{separator}" class="separator">
-    <div class="thumb" on:mousedown="{onStartDrag}">
+    <div class="thumb" on:mousedown="{dragger.onStartDrag}">
       <Icon src="img/icons/splitter.svg" size="{16}" />
     </div>
   </div>

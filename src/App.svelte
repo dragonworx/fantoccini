@@ -598,28 +598,27 @@ const onOpenDialog = () => {
           on:close="{(e) => log('Window', 'close')}">
           <Label text="Content..." />
           <PushButton label="Open Dialog" on:click="{onOpenDialog}" />
-          {#if isDialogOpen}
-            <Window
-              bind:this="{dialog}"
-              modal="{true}"
-              icon="img/test-small.png"
-              title="Window with really really really really really long title.txt"
-              menuBar="{simpleMenuBar}"
-              x="{window.innerWidth / 2 - window.innerWidth / 4}"
-              y="{window.innerHeight / 2 - window.innerHeight / 4}"
-              width="{window.innerWidth / 2}"
-              height="{window.innerHeight / 2}"
-              on:minimise="{(e) => {
-                dialog.toggleMinimise();
-                log('Window', 'minimise');
-              }}"
-              on:maximise="{(e) => {
-                dialog.maximise();
-              }}"
-              on:close="{(e) => (isDialogOpen = false)}">
-              <Label text="Content..." />
-            </Window>
-          {/if}
+          <Window
+            bind:this="{dialog}"
+            isOpen="{isDialogOpen}"
+            modal="{true}"
+            icon="img/test-small.png"
+            title="Window with really really really really really long title.txt"
+            menuBar="{simpleMenuBar}"
+            x="{window.innerWidth / 2 - window.innerWidth / 4}"
+            y="{window.innerHeight / 2 - window.innerHeight / 4}"
+            width="{window.innerWidth / 2}"
+            height="{window.innerHeight / 2}"
+            on:minimise="{(e) => {
+              dialog.toggleMinimise();
+              log('Window', 'minimise');
+            }}"
+            on:maximise="{(e) => {
+              dialog.maximise();
+            }}"
+            on:close="{(e) => (isDialogOpen = false)}">
+            <Label text="Content..." />
+          </Window>
         </Window>
       </Events>
     </Area>

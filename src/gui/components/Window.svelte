@@ -38,6 +38,10 @@
     transition: top 0.15s ease-out, left 0.15s ease-out, width 0.15s ease-out,
       height 0.15s ease-out;
 
+    &.dragging {
+      transition: none;
+    }
+
     &.minimised {
       top: calc(100% - 30px) !important;
       left: 0 !important;
@@ -122,10 +126,30 @@
 }
 </style>
 
+<script lang="ts" context="module">
+let _isModalOpen = false;
+
+export function openModal() {
+  if (!_isModalOpen) {
+    _isModalOpen = true;
+  }
+}
+
+export function closeModal() {
+  if (_isModalOpen) {
+    _isModalOpen = false;
+  }
+}
+
+export function isModalOpen() {
+  return _isModalOpen;
+}
+</script>
+
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import { fade } from "svelte/transition";
-import { MenuBarItem } from "../";
+import { MenuBarItem, Dragger } from "../";
 import PushButton from "./PushButton.svelte";
 import Icon from "./Icon.svelte";
 import Panel from "./Panel.svelte";
@@ -145,6 +169,23 @@ export let canMaximise: boolean = true;
 export let canClose: boolean = true;
 
 const dispatch = createEventDispatcher();
+const dragger = new Dragger<{ x: number; y: number }>();
+
+dragger
+  .on("dragstart", (setStartValue) => {
+    isDragging = true;
+    setStartValue({ x, y });
+  })
+  .on("dragmove", (deltaX: number, deltaY: number) => {
+    x = dragger.startValue.x + deltaX;
+    y = dragger.startValue.y + deltaY;
+    x = Math.min(Math.max(0, x), document.documentElement.clientWidth - width);
+    y = Math.min(
+      Math.max(0, y),
+      document.documentElement.clientHeight - height
+    );
+  })
+  .on("dragcomplete", () => (isDragging = false));
 
 let restore: {
   x: number;
@@ -159,10 +200,19 @@ let restore: {
 };
 
 $: isMinimised = false;
+$: isDragging = false;
 $: isTool = appearance === "tool";
 $: isPositioned = x !== 0 || y !== 0 || width !== 0 || height !== 0;
 $: buttonIconSize = isTool ? 10 : 16;
 $: style = "";
+$: {
+  if (isOpen && modal) {
+    openModal();
+  }
+  if (!isOpen && modal) {
+    closeModal();
+  }
+}
 
 $: {
   if (isPositioned) {
@@ -216,6 +266,10 @@ const onMaximiseClick = () => {
 const onCloseClick = () => {
   dispatch("close");
 };
+
+const onTitleMouseDown = (e: MouseEvent) => {
+  dragger.onStartDrag(e);
+};
 </script>
 
 {#if isOpen}
@@ -224,10 +278,11 @@ const onCloseClick = () => {
       <div class="overlay"></div>
     {/if}
     <div
-      class="frame"
       transition:fade="{{ duration: 100 }}"
+      class="frame"
       class:fill="{x === 0 && y === 0 && width === 0 && height === 0}"
       class:minimised="{isMinimised}"
+      class:dragging="{isDragging}"
       style="{isPositioned ? style : undefined}"
       data-component="window">
       <div class="titleBar" class:isTool>
@@ -236,7 +291,7 @@ const onCloseClick = () => {
             <Icon src="{icon}" size="{isTool ? 14 : 20}" />
           {/if}
           {#if title}
-            <div class="title">{title}</div>
+            <div class="title" on:mousedown="{onTitleMouseDown}">{title}</div>
           {/if}
         </div>
         <div class="buttonGroup">
