@@ -130,6 +130,7 @@ const simpleMenuBar: MenuBarItem[] = [
 
 let simpleTabs = ["Tool A", "Tool B", "Tool C", "Tool D"];
 let isDialogOpen = false;
+let dialog: Window;
 
 function log(component: string, event: string, detail?: any) {
   if (detail instanceof MenuItem) {
@@ -592,13 +593,15 @@ const onOpenDialog = () => {
           icon="img/test-small.png"
           title="Window with really really really really really long title.txt"
           menuBar="{simpleMenuBar}"
-          on:minimise="{(e) => log('Window', 'minimise', e.detail)}"
+          on:minimise="{(e) => log('Window', 'minimise')}"
           on:maximise="{(e) => log('Window', 'maximise')}"
           on:close="{(e) => log('Window', 'close')}">
           <Label text="Content..." />
           <PushButton label="Open Dialog" on:click="{onOpenDialog}" />
           {#if isDialogOpen}
             <Window
+              bind:this="{dialog}"
+              modal="{true}"
               icon="img/test-small.png"
               title="Window with really really really really really long title.txt"
               menuBar="{simpleMenuBar}"
@@ -606,9 +609,14 @@ const onOpenDialog = () => {
               y="{window.innerHeight / 2 - window.innerHeight / 4}"
               width="{window.innerWidth / 2}"
               height="{window.innerHeight / 2}"
-              on:minimise="{(e) => log('Window', 'minimise', e.detail)}"
-              on:maximise="{(e) => log('Window', 'maximise')}"
-              on:close="{(e) => log('Window', 'close')}">
+              on:minimise="{(e) => {
+                dialog.toggleMinimise();
+                log('Window', 'minimise');
+              }}"
+              on:maximise="{(e) => {
+                dialog.maximise();
+              }}"
+              on:close="{(e) => (isDialogOpen = false)}">
               <Label text="Content..." />
             </Window>
           {/if}

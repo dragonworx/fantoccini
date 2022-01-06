@@ -9,6 +9,7 @@
   flex-direction: row;
   align-items: start;
   justify-content: space-around;
+  box-sizing: border-box;
 
   &.vertical {
     flex-direction: column;
