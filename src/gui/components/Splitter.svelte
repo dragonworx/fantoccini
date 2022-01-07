@@ -149,7 +149,7 @@ onMount(() => {
 
 dragger
   .on("dragstart", (setSartValue) => setSartValue(value))
-  .on("dragmove", (deltaX: number, deltaY: number) => {
+  .on("dragmove", ({ deltaX, deltaY }) => {
     let limit = separatorSize / 2 / elementWidth;
     let newValue: number;
     if (direction === "horizontal") {

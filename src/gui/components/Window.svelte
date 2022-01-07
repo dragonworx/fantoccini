@@ -67,7 +67,6 @@ $resizeLarge: $resize * 2;
           left: -($resize + 1px);
           height: 100%;
           width: $resize;
-          background-color: blue;
           cursor: ew-resize;
         }
 
@@ -76,7 +75,6 @@ $resizeLarge: $resize * 2;
           right: -($resize + 1px);
           height: 100%;
           width: $resize;
-          background-color: red;
           cursor: ew-resize;
         }
 
@@ -85,7 +83,6 @@ $resizeLarge: $resize * 2;
           left: 0;
           width: 100%;
           height: $resize;
-          background-color: green;
           cursor: ns-resize;
         }
 
@@ -94,7 +91,6 @@ $resizeLarge: $resize * 2;
           left: 0;
           width: 100%;
           height: $resize;
-          background-color: pink;
           cursor: ns-resize;
         }
 
@@ -103,7 +99,6 @@ $resizeLarge: $resize * 2;
           left: -($resize + 1px);
           height: $resizeLarge;
           width: $resizeLarge;
-          background-color: yellow;
           cursor: nw-resize;
         }
 
@@ -112,7 +107,6 @@ $resizeLarge: $resize * 2;
           right: -($resize + 1px);
           height: $resizeLarge;
           width: $resizeLarge;
-          background-color: yellow;
           cursor: ne-resize;
         }
 
@@ -121,7 +115,6 @@ $resizeLarge: $resize * 2;
           left: -($resize + 1px);
           height: $resizeLarge;
           width: $resizeLarge;
-          background-color: yellow;
           cursor: sw-resize;
         }
 
@@ -130,7 +123,6 @@ $resizeLarge: $resize * 2;
           right: -($resize + 1px);
           height: $resizeLarge;
           width: $resizeLarge;
-          background-color: yellow;
           cursor: se-resize;
         }
       }
@@ -224,6 +216,7 @@ $resizeLarge: $resize * 2;
 
 <script lang="ts" context="module">
 let _isModalOpen = false;
+const windows: Map<string, WindowAPI> = new Map();
 
 export function openModal() {
   if (!_isModalOpen) {
@@ -240,16 +233,33 @@ export function closeModal() {
 export function isModalOpen() {
   return _isModalOpen;
 }
+
+export function getWindow(id: string) {
+  return windows.get(id);
+}
+
+export type WindowAPI = {
+  toggleMinimise: () => void;
+  getIsMinimised: () => void;
+  setIsMinimised: (value: boolean) => void;
+  maximise: () => void;
+  open: () => void;
+  close: () => void;
+  setTitle: (value: string) => void;
+  getTitle: () => string;
+};
 </script>
 
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
+import { createEventDispatcher, onMount } from "svelte";
 import { fade } from "svelte/transition";
 import { MenuBarItem, Dragger } from "../";
 import PushButton from "./PushButton.svelte";
 import Icon from "./Icon.svelte";
 import Panel from "./Panel.svelte";
+import { getLocalStorage, setLocalStorage } from "../storage";
 
+export let id: string;
 export let isOpen: boolean = true;
 export let title: string = "";
 export let icon: string | undefined = undefined;
@@ -264,86 +274,6 @@ export let canMinimise: boolean = true;
 export let canMaximise: boolean = true;
 export let canClose: boolean = true;
 export let isResizable: boolean = false;
-
-const dispatch = createEventDispatcher();
-
-const minWidth = 140;
-const minHeight = 140;
-
-const titleDragger = new Dragger<{ x: number; y: number }>()
-  .on("dragstart", (setStartValue) => {
-    isDragging = true;
-    setStartValue({ x, y });
-  })
-  .on("dragmove", (deltaX: number, deltaY: number) => {
-    x = titleDragger.startValue.x + deltaX;
-    y = titleDragger.startValue.y + deltaY;
-    x = Math.min(Math.max(0, x), document.documentElement.clientWidth - width);
-    y = Math.min(
-      Math.max(0, y),
-      document.documentElement.clientHeight - height
-    );
-  })
-  .on("dragcomplete", () => (isDragging = false));
-
-const rightDragger = new Dragger<number>()
-  .on("dragstart", (setStartValue) => {
-    isDragging = true;
-    setStartValue(width);
-  })
-  .on("dragmove", (deltaX: number) => {
-    width = rightDragger.startValue + deltaX;
-    width = Math.min(
-      Math.max(minWidth, width),
-      document.documentElement.clientWidth - x
-    );
-  });
-
-const leftDragger = new Dragger<{ x: number; width: number }>()
-  .on("dragstart", (setStartValue) => {
-    isDragging = true;
-    setStartValue({ x, width });
-  })
-  .on("dragmove", (deltaX: number) => {
-    x = leftDragger.startValue.x + deltaX;
-    width = leftDragger.startValue.width + leftDragger.startValue.x - x;
-    if (width < minWidth) {
-      const offset = minWidth - width;
-    }
-  });
-
-let restore: {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-} = {
-  x,
-  y,
-  width,
-  height,
-};
-
-$: isMinimised = false;
-$: isDragging = false;
-$: isTool = appearance === "tool";
-$: isPositioned = x !== 0 || y !== 0 || width !== 0 || height !== 0;
-$: buttonIconSize = isTool ? 10 : 16;
-$: style = "";
-$: {
-  if (isOpen && modal) {
-    openModal();
-  }
-  if (!isOpen && modal) {
-    closeModal();
-  }
-}
-
-$: {
-  if (isPositioned) {
-    style = `left:${x}px;top:${y}px;width:${width}px;height:${height}px;`;
-  }
-}
 
 export function toggleMinimise() {
   isMinimised = !isMinimised;
@@ -380,6 +310,242 @@ export function maximise() {
   height = clientHeight;
 }
 
+export function open() {
+  isOpen = true;
+}
+
+export function close() {
+  isOpen = false;
+}
+
+export function setTitle(value: string) {
+  title = value;
+}
+
+export function getTitle() {
+  return title;
+}
+
+if (windows.has(id)) {
+  throw new Error(`Window with id "${id}" already exists`);
+}
+
+windows.set(id, {
+  toggleMinimise,
+  getIsMinimised,
+  setIsMinimised,
+  maximise,
+  open,
+  close,
+  setTitle,
+  getTitle,
+});
+
+const dispatch = createEventDispatcher();
+
+const minWidth = 140;
+const minHeight = 140;
+
+type DragEdge<T> = {
+  onDragStart: (setStartValue: (value: T) => T) => void;
+  onDragMove: (props: {
+    dragger: Dragger<T>;
+    deltaX: number;
+    deltaY: number;
+    clientX: number;
+    clientY: number;
+  }) => void;
+  dragger: Dragger<T>;
+};
+
+function dragEdge<T>(
+  onDragStart: (setStartValue: (value: T) => T) => void,
+  onDragMove: (props: {
+    dragger: Dragger<T>;
+    deltaX: number;
+    deltaY: number;
+    clientX: number;
+    clientY: number;
+  }) => void
+): DragEdge<T> {
+  const dragger = new Dragger<T>();
+  dragger.on("dragstart", onDragStart);
+  dragger.on("dragmove", onDragMove);
+  dragger.on("dragcomplete", () =>
+    setLocalStorage(storageKey, { x, y, width, height })
+  );
+  return {
+    onDragStart,
+    onDragMove,
+    dragger,
+  };
+}
+
+function dragCorner(
+  onDragMove: (props: {
+    dragger: Dragger<{ x: number; y: number; width: number; height: number }>;
+    deltaX: number;
+    deltaY: number;
+    clientX: number;
+    clientY: number;
+  }) => void
+) {
+  return dragEdge<{ x: number; y: number; width: number; height: number }>(
+    (setStartValue) => {
+      isDragging = true;
+      setStartValue({ x, y, width, height });
+    },
+    onDragMove
+  );
+}
+
+let restore: {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+} = {
+  x,
+  y,
+  width,
+  height,
+};
+
+const titleDragger = new Dragger<{ x: number; y: number }>()
+  .on("dragstart", (setStartValue) => {
+    isDragging = true;
+    setStartValue({ x, y });
+  })
+  .on("dragmove", ({ dragger, deltaX, deltaY }) => {
+    x = dragger.startValue.x + deltaX;
+    y = dragger.startValue.y + deltaY;
+    x = Math.min(Math.max(0, x), document.documentElement.clientWidth - width);
+    y = Math.min(
+      Math.max(0, y),
+      document.documentElement.clientHeight - height
+    );
+  })
+  .on("dragcomplete", () => {
+    isDragging = false;
+    setLocalStorage(storageKey, { x, y, width, height });
+  });
+
+const top = dragEdge<{ y: number; height: number }>(
+  (setStartValue) => {
+    isDragging = true;
+    setStartValue({ y, height });
+  },
+  ({ dragger, deltaY }) => {
+    y = Math.max(0, dragger.startValue.y + deltaY);
+    height = dragger.startValue.height + dragger.startValue.y - y;
+    if (height < minHeight) {
+      y = y - (minHeight - height);
+      height = minHeight;
+    }
+  }
+);
+
+const left = dragEdge<{ x: number; width: number }>(
+  (setStartValue) => {
+    isDragging = true;
+    setStartValue({ x, width });
+  },
+  ({ dragger, deltaX }) => {
+    x = dragger.startValue.x + deltaX;
+    width = dragger.startValue.width + dragger.startValue.x - x;
+    if (width < minWidth) {
+      x = x - (minWidth - width);
+      width = minWidth;
+    }
+  }
+);
+
+const right = dragEdge<{ width: number }>(
+  (setStartValue) => {
+    isDragging = true;
+    setStartValue({ width });
+  },
+  ({ dragger, deltaX }) => {
+    width = dragger.startValue.width + deltaX;
+    width = Math.min(
+      Math.max(minWidth, width),
+      document.documentElement.clientWidth - x
+    );
+  }
+);
+
+const bottom = dragEdge<{ height: number }>(
+  (setStartValue) => {
+    isDragging = true;
+    setStartValue({ height });
+  },
+  ({ dragger, deltaY }) => {
+    height = dragger.startValue.height + deltaY;
+    height = Math.min(
+      Math.max(minHeight, height),
+      document.documentElement.clientHeight - y
+    );
+  }
+);
+
+const topLeft = dragCorner((values) => {
+  top.onDragMove(values);
+  left.onDragMove(values);
+});
+
+const topRight = dragCorner((values) => {
+  top.onDragMove(values);
+  right.onDragMove(values);
+});
+
+const bottomLeft = dragCorner((values) => {
+  bottom.onDragMove(values);
+  left.onDragMove(values);
+});
+
+const bottomRight = dragCorner((values) => {
+  bottom.onDragMove(values);
+  right.onDragMove(values);
+});
+
+onMount(() => {
+  const savedValues = getLocalStorage(storageKey);
+  if (savedValues !== null) {
+    const {
+      x: savedX,
+      y: savedY,
+      width: savedWidth,
+      height: savedHeight,
+    } = savedValues;
+    x = savedX;
+    y = savedY;
+    width = savedWidth;
+    height = savedHeight;
+  }
+});
+
+$: storageKey = `window-${id}`;
+$: isMinimised = false;
+$: isDragging = false;
+$: isTool = appearance === "tool";
+$: isPositioned = x !== 0 || y !== 0 || width !== 0 || height !== 0;
+$: buttonIconSize = isTool ? 10 : 16;
+$: style = "";
+$: {
+  if (isOpen && modal) {
+    openModal();
+  }
+  if (!isOpen && modal) {
+    closeModal();
+  }
+}
+
+$: {
+  if (isPositioned) {
+    style = `left:${x}px;top:${y}px;width:${width}px;height:${height}px;`;
+  }
+}
+
 const onMinimiseClick = () => {
   dispatch("minimise");
 };
@@ -393,7 +559,9 @@ const onCloseClick = () => {
 };
 
 const onTitleMouseDown = (e: MouseEvent) => {
-  titleDragger.onStartDrag(e);
+  if (isPositioned) {
+    titleDragger.onStartDrag(e);
+  }
 };
 </script>
 
@@ -414,18 +582,36 @@ const onTitleMouseDown = (e: MouseEvent) => {
       <div class="resize">
         <div
           class="resize-left resize-border"
-          on:mousedown="{leftDragger.onStartDrag}">
+          on:mousedown="{left.dragger.onStartDrag}">
         </div>
-        <div class="resize-top resize-border"></div>
-        <div class="resize-bottom resize-border"></div>
+        <div
+          class="resize-top resize-border"
+          on:mousedown="{top.dragger.onStartDrag}">
+        </div>
+        <div
+          class="resize-bottom resize-border"
+          on:mousedown="{bottom.dragger.onStartDrag}">
+        </div>
         <div
           class="resize-right resize-border"
-          on:mousedown="{rightDragger.onStartDrag}">
+          on:mousedown="{right.dragger.onStartDrag}">
         </div>
-        <div class="resize-topleft resize-border"></div>
-        <div class="resize-topright resize-border"></div>
-        <div class="resize-bottomleft resize-border"></div>
-        <div class="resize-bottomright resize-border"></div>
+        <div
+          class="resize-topleft resize-border"
+          on:mousedown="{topLeft.dragger.onStartDrag}">
+        </div>
+        <div
+          class="resize-topright resize-border"
+          on:mousedown="{topRight.dragger.onStartDrag}">
+        </div>
+        <div
+          class="resize-bottomleft resize-border"
+          on:mousedown="{bottomLeft.dragger.onStartDrag}">
+        </div>
+        <div
+          class="resize-bottomright resize-border"
+          on:mousedown="{bottomRight.dragger.onStartDrag}">
+        </div>
         <div class="titleBar" class:isTool>
           <div class="iconTitleGroup" class:hasIcon="{!!icon}">
             {#if icon}

@@ -14,7 +14,13 @@ export class Dragger<T> extends EventEmitter {
     const onMouseMove = (e: MouseEvent) => {
       const deltaX = e.clientX - this.startX;
       const deltaY = e.clientY - this.startY;
-      this.emit("dragmove", deltaX, deltaY, e.clientX, e.clientY);
+      this.emit("dragmove", {
+        dragger: this,
+        deltaX,
+        deltaY,
+        clientX: e.clientX,
+        clientY: e.clientY,
+      });
     };
 
     const onMouseUp = () => {

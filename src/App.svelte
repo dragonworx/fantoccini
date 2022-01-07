@@ -48,7 +48,7 @@ import Panel from "./gui/components/Panel.svelte";
 import TabView from "./gui/components/TabView.svelte";
 import TabDoc from "./gui/components/TabDoc.svelte";
 import Splitter from "./gui/components/Splitter.svelte";
-import Window from "./gui/components/Window.svelte";
+import Window, { getWindow } from "./gui/components/Window.svelte";
 
 const radioOptions: RadioGroupOption[] = [
   { label: "Option 1", value: "a" },
@@ -590,6 +590,7 @@ const onOpenDialog = () => {
     <Area height="{200}">
       <Events fill="{true}">
         <Window
+          id="fixed1"
           icon="img/test-small.png"
           title="Window with really really really really really long title.txt"
           menuBar="{simpleMenuBar}"
@@ -600,6 +601,7 @@ const onOpenDialog = () => {
           <PushButton label="Open Dialog" on:click="{onOpenDialog}" />
           <Window
             bind:this="{dialog}"
+            id="dialog1"
             isOpen="{isDialogOpen}"
             modal="{true}"
             icon="img/test-small.png"
@@ -619,12 +621,16 @@ const onOpenDialog = () => {
             }}"
             on:close="{(e) => (isDialogOpen = false)}">
             <Label text="Content..." />
+            <PushButton
+              label="Close"
+              on:click="{() => getWindow('dialog1').close()}" />
           </Window>
         </Window>
       </Events>
     </Area>
     <Area>
       <Window
+        id="tool1"
         appearance="tool"
         icon="img/test-small.png"
         title="Window Tool"
