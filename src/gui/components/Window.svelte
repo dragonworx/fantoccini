@@ -243,7 +243,6 @@ export type WindowAPI = {
   getIsMinimised: () => void;
   setIsMinimised: (value: boolean) => void;
   maximise: () => void;
-  open: () => void;
   close: () => void;
   setTitle: (value: string) => void;
   getTitle: () => string;
@@ -310,12 +309,9 @@ export function maximise() {
   height = clientHeight;
 }
 
-export function open() {
-  isOpen = true;
-}
-
 export function close() {
   isOpen = false;
+  onCloseClick();
 }
 
 export function setTitle(value: string) {
@@ -335,7 +331,6 @@ windows.set(id, {
   getIsMinimised,
   setIsMinimised,
   maximise,
-  open,
   close,
   setTitle,
   getTitle,
