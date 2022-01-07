@@ -42,7 +42,7 @@
     li.selected {
       @include linear_gradient(#505050, #6e6f70);
       height: calc(100% + 5px);
-      top: -3px;
+      top: -2px;
     }
 
     li.tabview-tab.selected:hover {
