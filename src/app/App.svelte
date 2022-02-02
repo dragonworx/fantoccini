@@ -25,6 +25,28 @@ main {
 import { menuBar } from "./application";
 import Panel from "../gui/components/Panel.svelte";
 import NewProjectWindow from "./dialogs/NewProject.svelte";
+import db from "./db";
+
+let isLoading = true;
+db.application.toArray().then((result) => {
+  if (result.length === 0) {
+    db.application
+      .add({
+        currentProject: null,
+      })
+      .then((id) => {
+        console.log(`Application id ${id}`);
+        isLoading = false;
+      });
+  } else {
+    const application = result[0];
+    if (application.currentProject) {
+      // fire event, open project...
+    }
+  }
+});
+
+db.application.toArray().then((result) => console.log(result));
 </script>
 
 <main>

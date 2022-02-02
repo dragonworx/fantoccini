@@ -3,14 +3,24 @@ import { Project } from "../core/project";
 import { Action } from "../gui/action";
 import { MenuBarItem, MenuItem, separator } from "../gui/menu";
 import { events, AppEvent } from "./events";
+import db from "./db";
 
 export class Application extends EventEmitter {
   project: Project;
 
   constructor() {
     super();
+
     events.on(AppEvent.CreateNewProject, (opts) => {
       this.project = new Project(opts);
+      db.projects
+        .add({
+          title: this.project.title,
+          fps: this.project.fps,
+        })
+        .then((id) => {
+          console.log(`Project id ${id}`);
+        });
     });
   }
 

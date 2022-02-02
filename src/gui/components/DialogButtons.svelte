@@ -1,30 +1,37 @@
 <style lang="scss">
-  @import "../theme";
-  .dialogButtons {
-    display: flex;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-  }
+@import "../theme";
+.dialogButtons {
+  display: flex;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 
-  :global([data-component="dialog-buttons"] > *) {
-    margin-left: 10px;
+  &.isMac {
+    flex-direction: row-reverse;
   }
+}
+
+:global([data-component="dialog-buttons"] > *) {
+  margin-left: 10px;
+}
 </style>
 
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  import PushButton from "./PushButton.svelte";
+import { createEventDispatcher } from "svelte";
+import PushButton from "./PushButton.svelte";
 
-  export let acceptText: string = "Ok";
+export let acceptText: string = "Ok";
 
-  const dispatch = createEventDispatcher();
+const dispatch = createEventDispatcher();
 </script>
 
-<div class="dialogButtons" data-component="dialog-buttons">
+<div
+  class="dialogButtons"
+  data-component="dialog-buttons"
+  class:isMac="{window.navigator.platform.toLowerCase().indexOf('mac') === 0}">
   <PushButton
-    label={acceptText}
-    on:click={() => dispatch("accept")} /><PushButton
+    label="{acceptText}"
+    on:click="{() => dispatch('accept')}" /><PushButton
     label="Cancel"
-    on:click={() => dispatch("cancel")} />
+    on:click="{() => dispatch('cancel')}" />
 </div>

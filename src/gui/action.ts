@@ -31,6 +31,7 @@ export class Action extends EventEmitter {
       hotkeys(this.hotkey, (event, _handler) => {
         event.preventDefault();
         this.execute();
+        return false;
       });
     }
   }

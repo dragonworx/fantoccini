@@ -101,45 +101,43 @@ import PushButton from "./PushButton.svelte";
 export let isEnabled: boolean = true;
 export let autofocus: boolean = false;
 export let digitCount: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 = 6;
+export let value: number = 0;
 
 const dispatch = createEventDispatcher();
 
-let value: string = "0";
+let val: string = String(value);
 let incTimeout;
 
 function inc(amount: number) {
-  value = String((parseFloat(value) + amount).toFixed(2)).replace(
-    /\.00$|0+$/,
-    ""
-  );
-  dispatch("change", parseFloat(value));
+  val = String((parseFloat(val) + amount).toFixed(2)).replace(/\.00$|0+$/, "");
+  dispatch("change", parseFloat(val));
 }
 
 function filter(key: string) {
   if (key === "-") {
-    if (value === "0") {
-      value = "-";
+    if (val === "0") {
+      val = "-";
     } else {
-      const num = parseFloat(value) * -1;
-      value = String(num);
+      const num = parseFloat(val) * -1;
+      val = String(num);
     }
     return false;
   }
   if (!isNumericInput(key) && !isDeleteKey(key)) {
     return false;
   }
-  if (value === "0" && key !== "." && !isDeleteKey(key)) {
-    value = key;
+  if (val === "0" && key !== "." && !isDeleteKey(key)) {
+    val = key;
     return false;
   }
   return true;
 }
 
 function onBlur() {
-  if (isNaN(parseFloat(value))) {
-    value = "0";
+  if (isNaN(parseFloat(val))) {
+    val = "0";
   }
-  value = value.replace(/\.$/, "");
+  val = val.replace(/\.$/, "");
 }
 
 function onKeyDown(e: KeyboardEvent) {
@@ -194,8 +192,8 @@ function onIncKeydown(e: KeyboardEvent) {
 }
 
 function onTextChange() {
-  const num = parseFloat(value);
-  !isNaN(num) && dispatch("change", parseFloat(value));
+  const num = parseFloat(val);
+  !isNaN(num) && dispatch("change", parseFloat(val));
 }
 </script>
 
@@ -213,7 +211,7 @@ function onTextChange() {
   class:digitCount9="{digitCount === 9}"
   class:digitCount10="{digitCount === 10}">
   <TextField
-    bind:value
+    bind:value="{val}"
     isEnabled="{isEnabled}"
     filter="{filter}"
     autofocus="{autofocus}"

@@ -33,6 +33,10 @@ export class Project {
     this.currentScene = new Property(defaultScene);
   }
 
+  get fps() {
+    return this.ticker.frameRate;
+  }
+
   onTick = (frameIndex: number) => {
     // this.currentScene.get(frameIndex).tick(frameIndex);
   };
