@@ -40,7 +40,7 @@ export let menuBar: MenuBarItem[] | undefined = undefined;
   }
 
   .panel-title {
-    @include linear_gradient(#49596d, #2c3038);
+    @include linear_gradient(#3b4046, #2c3038);
     box-sizing: border-box;
     padding: $spacing_small;
     /* border-radius: $border_radius_small;

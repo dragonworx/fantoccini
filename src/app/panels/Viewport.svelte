@@ -1,10 +1,12 @@
 <script lang="ts">
-import Panel from "../../gui/components/Panel.svelte";
+import ScrollView from "../../gui/components/ScrollView.svelte";
 </script>
 
-<div id="viewport">ViewPort</div>
+<div id="viewport"><ScrollView /></div>
 
 <style lang="scss">
 #viewport {
+  width: 100%;
+  height: 100%;
 }
 </style>

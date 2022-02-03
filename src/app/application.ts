@@ -11,8 +11,9 @@ export class Application extends EventEmitter {
   constructor() {
     super();
 
-    Hub.on(Event.Project_New, (opts) => {
+    Hub.on(Event.Project_Create, (opts) => {
       this.project = new Project(opts);
+      Hub.emit(Event.Project_Init);
     });
   }
 }

@@ -5,11 +5,15 @@ import { Property } from "./property";
 export interface ProjectOptions {
   title: string;
   fps: number;
+  width: number;
+  height: number;
 }
 
 export const defaultProjectOptions: ProjectOptions = {
   title: "Untitled",
   fps: 24,
+  width: 640,
+  height: 480,
 };
 
 export class Project {

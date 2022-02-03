@@ -1,17 +1,3 @@
-<script lang="ts">
-import menubar from "./menubar";
-import Panel from "../gui/components/Panel.svelte";
-import Splitter from "../gui/components/Splitter.svelte";
-import TabView from "../gui/components/TabView.svelte";
-import TabDoc from "../gui/components/TabDoc.svelte";
-import NewProjectWindow from "./dialogs/NewProject.svelte";
-import Timeline from "./panels/Timeline.svelte";
-import Assets from "./panels/Assets.svelte";
-import Explorer from "./panels/Explorer.svelte";
-import Properties from "./panels/Properties.svelte";
-import Viewport from "./panels/Viewport.svelte";
-</script>
-
 <main>
   <Panel menuBar="{menubar}">
     <Splitter direction="vertical" storageKey="multi_timeline" value="{0.7}">
@@ -33,7 +19,7 @@ import Viewport from "./panels/Viewport.svelte";
                     ><Explorer /></TabDoc>
                 </TabView>
               </Panel>
-              <Panel slot="panel2" title="Properties"><Viewport /></Panel>
+              <Panel slot="panel2" title="Viewport"><Viewport /></Panel>
             </Splitter>
           </Panel>
           <Panel slot="panel2" title="Properties"><Properties /></Panel>
@@ -42,9 +28,22 @@ import Viewport from "./panels/Viewport.svelte";
       <Panel slot="panel2" title="Timeline"><Timeline /></Panel>
     </Splitter>
   </Panel>
-  <NewProjectWindow />
-  <div id="debug">{Date.now()}</div>
+  <NewProjectDialog />
 </main>
+
+<script lang="ts">
+import menubar from "./menubar";
+import Panel from "../gui/components/Panel.svelte";
+import Splitter from "../gui/components/Splitter.svelte";
+import TabView from "../gui/components/TabView.svelte";
+import TabDoc from "../gui/components/TabDoc.svelte";
+import NewProjectDialog from "./dialogs/NewProject.svelte";
+import Timeline from "./panels/Timeline.svelte";
+import Assets from "./panels/Assets.svelte";
+import Explorer from "./panels/Explorer.svelte";
+import Properties from "./panels/Properties.svelte";
+import Viewport from "./panels/Viewport.svelte";
+</script>
 
 <style lang="scss">
 main {
@@ -58,13 +57,5 @@ main {
   main {
     max-width: none;
   }
-}
-
-#debug {
-  position: fixed;
-  right: 5px;
-  bottom: 5px;
-  font-size: 10px;
-  color: white;
 }
 </style>

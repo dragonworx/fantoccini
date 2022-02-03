@@ -1,12 +1,3 @@
-<style lang="scss">
-.layout {
-  display: flex;
-  justify-content: center;
-  flex-grow: 1;
-  margin-top: 10px;
-}
-</style>
-
 <script lang="ts">
 import { Hub, Event } from "../eventHub";
 import Label from "../../gui/components/Label.svelte";
@@ -15,19 +6,17 @@ import TextField from "../../gui/components/TextField.svelte";
 import Spinner from "../../gui/components/Spinner.svelte";
 import Window from "../../gui/components/Window.svelte";
 import DialogButtons from "../../gui/components/DialogButtons.svelte";
-import app, { screenWidth, screenHeight } from "../application";
+import { screenWidth, screenHeight } from "../application";
+import { defaultProjectOptions } from "../../core/project";
 
 let isOpen: boolean = false;
 
 Hub.on(Event.Dialog_Show_New, () => (isOpen = true));
 
-$: state = {
-  title: "Untitled",
-  fps: 24,
-};
+$: projectOptions = { ...defaultProjectOptions };
 
 $: windowWidth = 300;
-$: windowHeight = 160;
+$: windowHeight = 200;
 
 const onClose = () => {
   isOpen = false;
@@ -35,7 +24,7 @@ const onClose = () => {
 
 const onAccept = () => {
   isOpen = false;
-  Hub.emit(Event.Project_New, state);
+  Hub.emit(Event.Project_Create, projectOptions);
 };
 </script>
 
@@ -53,10 +42,20 @@ const onAccept = () => {
     on:close="{onClose}">
     <div class="layout">
       <Form labelSize="{50}">
-        <Label text="Title:" /><TextField bind:value="{state.title}" />
+        <Label text="Title:" /><TextField bind:value="{projectOptions.title}" />
         <Label text="FPS:" /><Spinner
-          value="{state.fps}"
-          on:change="{(e) => (state.fps = e.detail)}" />
+          value="{projectOptions.fps}"
+          on:change="{(e) => (projectOptions.fps = e.detail)}" />
+        <Label text="Dimension:" />
+        <div class="dimension">
+          <Spinner
+            value="{projectOptions.width}"
+            on:change="{(e) => (projectOptions.width = e.detail)}" />
+          <Label text="x" />
+          <Spinner
+            value="{projectOptions.height}"
+            on:change="{(e) => (projectOptions.height = e.detail)}" />
+        </div>
       </Form>
       <DialogButtons
         acceptText="Create Project"
@@ -65,3 +64,19 @@ const onAccept = () => {
     </div>
   </Window>
 </main>
+
+<style lang="scss">
+.layout {
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+  margin-top: 10px;
+
+  .dimension {
+    display: flex;
+    width: 140px;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+</style>

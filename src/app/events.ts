@@ -1,6 +1,7 @@
 enum Event {
   Dialog_Show_New = "dialogShowNew",
-  Project_New = "projectNew",
+  Project_Create = "projectCreate",
+  Project_Init = "projectInit",
 }
 
 export default Event;
