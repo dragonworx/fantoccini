@@ -1,51 +1,3 @@
-<style lang="scss">
-@import "../theme";
-.textfield {
-  box-sizing: border-box;
-  flex-grow: 1;
-  display: flex;
-  border-radius: $border_radius_small;
-  min-height: 27px;
-
-  &.enabled {
-    @include textfield_enabled;
-  }
-
-  &.disabled {
-    @include textfield_disabled;
-
-    input[type="text"] {
-      color: #7e7e7e;
-    }
-  }
-
-  input[type="text"] {
-    box-sizing: border-box;
-    flex-grow: 1;
-    background-color: transparent;
-    border-radius: 5px;
-    color: $color_textfield_enabled;
-    font-size: 12px;
-    padding: 5px;
-    border: none;
-    min-width: 0;
-
-    &::selection {
-      background-color: $color_focus;
-      color: white;
-    }
-
-    &:focus {
-      @include focus;
-    }
-
-    &.withSlot {
-      margin-right: 1px;
-    }
-  }
-}
-</style>
-
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import { isGeneralInputKey } from "../";
@@ -143,3 +95,51 @@ function onPaste(e: ClipboardEvent) {
     <div class="content"><slot /></div>
   {/if}
 </div>
+
+<style lang="scss">
+@import "../theme";
+.textfield {
+  box-sizing: border-box;
+  flex-grow: 1;
+  display: flex;
+  border-radius: $border_radius_small;
+  min-height: 27px;
+
+  &.enabled {
+    @include textfield_enabled;
+  }
+
+  &.disabled {
+    @include textfield_disabled;
+
+    input[type="text"] {
+      color: #7e7e7e;
+    }
+  }
+
+  input[type="text"] {
+    box-sizing: border-box;
+    flex-grow: 1;
+    background-color: transparent;
+    border-radius: 5px;
+    color: $color_textfield_enabled;
+    font-size: 12px;
+    padding: 5px;
+    border: none;
+    min-width: 0;
+
+    &::selection {
+      background-color: $color_focus;
+      color: white;
+    }
+
+    &:focus {
+      @include focus;
+    }
+
+    &.withSlot {
+      margin-right: 1px;
+    }
+  }
+}
+</style>

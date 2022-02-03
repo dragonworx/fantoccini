@@ -1,15 +1,16 @@
-import { Ticker, TickerEvent } from "./ticker";
-import { Scene } from "./scene";
-import { Property } from "./property";
+import { Ticker } from "src/core/ticker";
+import { Scene } from "src/core/scene";
+import { Hub } from "src/app/eventHub";
+import Renderer from "src/core/renderer";
 
-export interface ProjectOptions {
+export interface ProjectSettings {
   title: string;
   fps: number;
   width: number;
   height: number;
 }
 
-export const defaultProjectOptions: ProjectOptions = {
+export const defaultProjectSettings: ProjectSettings = {
   title: "Untitled",
   fps: 24,
   width: 640,
@@ -17,31 +18,26 @@ export const defaultProjectOptions: ProjectOptions = {
 };
 
 export class Project {
-  title: string;
+  settings: ProjectSettings;
   ticker: Ticker;
   scenes: Scene[];
-  currentScene: Property<Scene>;
+  currentScene: Scene;
+  renderer: Renderer;
 
-  constructor(opts: ProjectOptions) {
-    this.title = opts.title || defaultProjectOptions.title;
+  constructor(settings: ProjectSettings) {
+    this.settings = settings;
 
-    const ticker = (this.ticker = new Ticker(
-      opts.fps || defaultProjectOptions.fps
-    ));
+    const ticker = (this.ticker = new Ticker(settings.fps));
 
-    ticker.on(TickerEvent.Tick, this.onTick);
-
-    const defaultScene = new Scene();
+    const defaultScene = new Scene(this);
     this.scenes = [defaultScene];
 
-    this.currentScene = new Property(defaultScene);
+    this.currentScene = defaultScene;
+
+    this.renderer = new Renderer(this);
   }
 
   get fps() {
     return this.ticker.frameRate;
   }
-
-  onTick = (frameIndex: number) => {
-    // this.currentScene.get(frameIndex).tick(frameIndex);
-  };
 }

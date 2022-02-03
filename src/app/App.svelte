@@ -1,3 +1,17 @@
+<script lang="ts">
+import menubar from "./menubar";
+import Panel from "../gui/components/Panel.svelte";
+import Splitter from "../gui/components/Splitter.svelte";
+import TabView from "../gui/components/TabView.svelte";
+import TabDoc from "../gui/components/TabDoc.svelte";
+import NewProjectDialog from "./dialogs/NewProject.svelte";
+import Timeline from "./panels/Timeline.svelte";
+import Assets from "./panels/Assets.svelte";
+import Explorer from "./panels/Explorer.svelte";
+import Properties from "./panels/Properties.svelte";
+import Viewport from "./panels/Viewport.svelte";
+</script>
+
 <main>
   <Panel menuBar="{menubar}">
     <Splitter direction="vertical" storageKey="multi_timeline" value="{0.7}">
@@ -30,20 +44,6 @@
   </Panel>
   <NewProjectDialog />
 </main>
-
-<script lang="ts">
-import menubar from "./menubar";
-import Panel from "../gui/components/Panel.svelte";
-import Splitter from "../gui/components/Splitter.svelte";
-import TabView from "../gui/components/TabView.svelte";
-import TabDoc from "../gui/components/TabDoc.svelte";
-import NewProjectDialog from "./dialogs/NewProject.svelte";
-import Timeline from "./panels/Timeline.svelte";
-import Assets from "./panels/Assets.svelte";
-import Explorer from "./panels/Explorer.svelte";
-import Properties from "./panels/Properties.svelte";
-import Viewport from "./panels/Viewport.svelte";
-</script>
 
 <style lang="scss">
 main {

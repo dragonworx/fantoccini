@@ -1,10 +1,6 @@
-import { EventEmitter } from "eventemitter3";
+import { Hub, Event } from "src/app/eventHub";
 
-export enum TickerEvent {
-  Tick = "tick",
-}
-
-export class Ticker extends EventEmitter {
+export class Ticker {
   private fps: number;
   private frameIndex: number = 0;
   private startTime: number = -1;
@@ -14,7 +10,6 @@ export class Ticker extends EventEmitter {
   private lastDelta: number = 0;
 
   constructor(fps: number = 24) {
-    super();
     this.fps = fps;
   }
 
@@ -36,7 +31,7 @@ export class Ticker extends EventEmitter {
     const { expectedNextFrameTime, frameIndex: _frameIndex, msPerFrame } = this;
     const now = Date.now();
     const delta = (this.lastDelta = now - expectedNextFrameTime);
-    this.emit(TickerEvent.Tick, _frameIndex + 1);
+    Hub.emit(Event.Transport_Tick, _frameIndex + 1);
     this.frameIndex++;
     const adjustedMsPerFrame = msPerFrame - delta;
     this.expectedNextFrameTime = now + adjustedMsPerFrame;

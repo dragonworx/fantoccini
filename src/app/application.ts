@@ -1,18 +1,12 @@
-import { EventEmitter } from "eventemitter3";
 import { Project } from "../core/project";
 import { Hub, Event } from "./eventHub";
 
-export const screenWidth = document.documentElement.clientWidth;
-export const screenHeight = document.documentElement.clientHeight;
-
-export class Application extends EventEmitter {
+export class Application {
   project: Project;
 
   constructor() {
-    super();
-
-    Hub.on(Event.Project_Create, (opts) => {
-      this.project = new Project(opts);
+    Hub.on(Event.Project_Create, (settings) => {
+      this.project = new Project(settings);
       Hub.emit(Event.Project_Init);
     });
   }

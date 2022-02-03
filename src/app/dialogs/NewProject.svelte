@@ -6,14 +6,14 @@ import TextField from "../../gui/components/TextField.svelte";
 import Spinner from "../../gui/components/Spinner.svelte";
 import Window from "../../gui/components/Window.svelte";
 import DialogButtons from "../../gui/components/DialogButtons.svelte";
-import { screenWidth, screenHeight } from "../application";
-import { defaultProjectOptions } from "../../core/project";
+import { screenWidth, screenHeight } from "../screen";
+import { defaultProjectSettings } from "../../core/project";
 
 let isOpen: boolean = false;
 
 Hub.on(Event.Dialog_Show_New, () => (isOpen = true));
 
-$: projectOptions = { ...defaultProjectOptions };
+$: projectOptions = { ...defaultProjectSettings };
 
 $: windowWidth = 300;
 $: windowHeight = 200;
@@ -42,7 +42,9 @@ const onAccept = () => {
     on:close="{onClose}">
     <div class="layout">
       <Form labelSize="{50}">
-        <Label text="Title:" /><TextField bind:value="{projectOptions.title}" />
+        <Label text="Title:" /><TextField
+          bind:value="{projectOptions.title}"
+          autofocus />
         <Label text="FPS:" /><Spinner
           value="{projectOptions.fps}"
           on:change="{(e) => (projectOptions.fps = e.detail)}" />

@@ -1,17 +1,9 @@
-import { Sprite } from './sprite';
+import { Project } from "./project";
 
 export class Scene {
-  sprites: Sprite[];
+  project: Project;
 
-  constructor() {
-    this.sprites = [];
-  }
-
-  tick(frameIndex: number) {
-    const { sprites } = this;
-    const l = sprites.length;
-    for (let i = 0; i < l; i++) {
-      sprites[i].tick(frameIndex);
-    }
+  constructor(project: Project) {
+    this.project = project;
   }
 }
