@@ -3,6 +3,16 @@ import { MenuBarItem, MenuItem, separator } from "../gui/menu";
 import app from "./application";
 import { Hub, Event } from "./eventHub";
 
+const save = new MenuItem({
+  label: "Save",
+  isEnabled: false,
+  action: new Action(() => {}, "Ctrl+S"),
+});
+
+Hub.on(Event.Project_Init, () => {
+  save.isEnabled = true;
+});
+
 const fileMenu: MenuItem[] = [
   new MenuItem({
     label: "New Project",
@@ -13,19 +23,12 @@ const fileMenu: MenuItem[] = [
   separator,
   new MenuItem({
     label: "Open Project",
-    action: new Action(() => {}, "Ctrl+O"),
+    action: new Action(() => {
+      app.saveProject();
+    }, "Ctrl+O"),
   }),
   separator,
-  new MenuItem({
-    label: "Save",
-    isEnabled: false,
-    action: new Action(() => {}, "Ctrl+S"),
-  }),
-  new MenuItem({
-    label: "Save As...",
-    isEnabled: false,
-    action: new Action(() => {}, "Ctrl+Shift+S"),
-  }),
+  save,
 ];
 
 const menubar: MenuBarItem[] = [{ label: "File", items: fileMenu }];

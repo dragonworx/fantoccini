@@ -3,6 +3,7 @@ import { createEventDispatcher } from "svelte";
 import { Direction } from "../";
 import ScrollBar, { scrollSize } from "./ScrollBar.svelte";
 
+export let isEnabled: boolean = true;
 export let scroll: Direction | "both" = "both";
 export let width: number = -1;
 export let height: number = -1;
@@ -33,8 +34,8 @@ $: heightStyle =
     : ``;
 $: style = `${widthStyle}${heightStyle}`;
 
-$: isHScrollEnabled = viewWidth < contentWidth;
-$: isVScrollEnabled = viewHeight < contentHeight;
+$: isHScrollEnabled = isEnabled ? viewWidth < contentWidth : false;
+$: isVScrollEnabled = isEnabled ? viewHeight < contentHeight : false;
 $: hasDimensions = viewWidth > -1;
 $: hOffset =
   hasDimensions && isHScrollEnabled

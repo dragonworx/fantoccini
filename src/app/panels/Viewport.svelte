@@ -16,7 +16,7 @@ Hub.on(Event.Project_Init, () => {
 </script>
 
 <div id="viewport">
-  <ScrollView align="center">
+  <ScrollView isEnabled="{hasProject}" align="center">
     <div
       class="renderer"
       bind:this="{renderer}"

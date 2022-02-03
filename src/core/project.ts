@@ -2,6 +2,7 @@ import { Ticker } from "src/core/ticker";
 import { Scene } from "src/core/scene";
 import { Hub } from "src/app/eventHub";
 import Renderer from "src/core/renderer";
+import { Serialisable } from "./serialise";
 
 export interface ProjectSettings {
   title: string;
@@ -17,7 +18,7 @@ export const defaultProjectSettings: ProjectSettings = {
   height: 480,
 };
 
-export class Project {
+export class Project implements Serialisable {
   settings: ProjectSettings;
   ticker: Ticker;
   scenes: Scene[];
@@ -40,4 +41,12 @@ export class Project {
   get fps() {
     return this.ticker.frameRate;
   }
+
+  async serialise(): Promise<string> {
+    return JSON.stringify({
+      ...this.settings,
+    });
+  }
+
+  async deserialise(data: string): Promise<void> {}
 }

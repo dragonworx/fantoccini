@@ -133,6 +133,8 @@ $thumbSize: 20px;
       width: $separatorSize;
       height: $separatorSize;
       z-index: 1;
+      pointer-events: none;
+      user-select: none;
 
       &:active {
         background-color: #424242;
