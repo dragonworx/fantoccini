@@ -1,10 +1,6 @@
-import EventEmitter from "eventemitter3";
-
-const events = new EventEmitter();
-
-export enum AppEvent {
-  ShowNewDialog = "showNewDialog",
-  CreateNewProject = "createNewProject",
+enum Event {
+  Dialog_Show_New = "dialogShowNew",
+  Project_New = "projectNew",
 }
 
-export { events };
+export default Event;

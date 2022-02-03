@@ -508,11 +508,6 @@ detect-indent@^6.0.0:
   resolved "https://registry.yarnpkg.com/detect-indent/-/detect-indent-6.1.0.tgz#592485ebbbf6b3b1ab2be175c8393d04ca0d57e6"
   integrity sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==
 
-dexie@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.2.0.tgz#a1b0267b111f9422c4126da90d6b121b1deabeab"
-  integrity sha512-OpS8ss1CLHYAhxRu6hT+/Gt1uLhKCf0O18xHBdRGlemOWXXRiiOZ0ty1/bACIJzGt1DGmvarzrPwYYt9EkRZfw==
-
 ecc-jsbn@~0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/ecc-jsbn/-/ecc-jsbn-0.1.2.tgz#3a83a904e54353287874c564b7549386849a98c9"

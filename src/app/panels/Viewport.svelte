@@ -2,9 +2,9 @@
 import Panel from "../../gui/components/Panel.svelte";
 </script>
 
-<div id="properties">Properties</div>
+<div id="viewport">ViewPort</div>
 
 <style lang="scss">
-#properties {
+#viewport {
 }
 </style>

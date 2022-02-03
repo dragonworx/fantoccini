@@ -1,3 +1,51 @@
+<script lang="ts">
+import menubar from "./menubar";
+import Panel from "../gui/components/Panel.svelte";
+import Splitter from "../gui/components/Splitter.svelte";
+import TabView from "../gui/components/TabView.svelte";
+import TabDoc from "../gui/components/TabDoc.svelte";
+import NewProjectWindow from "./dialogs/NewProject.svelte";
+import Timeline from "./panels/Timeline.svelte";
+import Assets from "./panels/Assets.svelte";
+import Explorer from "./panels/Explorer.svelte";
+import Properties from "./panels/Properties.svelte";
+import Viewport from "./panels/Viewport.svelte";
+</script>
+
+<main>
+  <Panel menuBar="{menubar}">
+    <Splitter direction="vertical" storageKey="multi_timeline" value="{0.7}">
+      <Panel slot="panel1">
+        <Splitter
+          direction="horizontal"
+          storageKey="multi_properties"
+          value="{0.7}">
+          <Panel slot="panel1">
+            <Splitter
+              direction="horizontal"
+              storageKey="multi_viewport"
+              value="{0.3}">
+              <Panel slot="panel1">
+                <TabView on:change="{(e) => {}}" on:closing="{(e) => {}}">
+                  <TabDoc title="Assets" isClosable="{false}"
+                    ><Assets /></TabDoc>
+                  <TabDoc title="Explorer" isClosable="{false}"
+                    ><Explorer /></TabDoc>
+                </TabView>
+              </Panel>
+              <Panel slot="panel2" title="Properties"><Viewport /></Panel>
+            </Splitter>
+          </Panel>
+          <Panel slot="panel2" title="Properties"><Properties /></Panel>
+        </Splitter>
+      </Panel>
+      <Panel slot="panel2" title="Timeline"><Timeline /></Panel>
+    </Splitter>
+  </Panel>
+  <NewProjectWindow />
+  <div id="debug">{Date.now()}</div>
+</main>
+
 <style lang="scss">
 main {
   box-sizing: border-box;
@@ -20,37 +68,3 @@ main {
   color: white;
 }
 </style>
-
-<script lang="ts">
-import { menuBar } from "./application";
-import Panel from "../gui/components/Panel.svelte";
-import NewProjectWindow from "./dialogs/NewProject.svelte";
-import db from "./db";
-
-let isLoading = true;
-db.application.toArray().then((result) => {
-  if (result.length === 0) {
-    db.application
-      .add({
-        currentProject: null,
-      })
-      .then((id) => {
-        console.log(`Application id ${id}`);
-        isLoading = false;
-      });
-  } else {
-    const application = result[0];
-    if (application.currentProject) {
-      // fire event, open project...
-    }
-  }
-});
-
-db.application.toArray().then((result) => console.log(result));
-</script>
-
-<main>
-  <Panel menuBar="{menuBar}" />
-  <NewProjectWindow />
-  <div id="debug">{Date.now()}</div>
-</main>

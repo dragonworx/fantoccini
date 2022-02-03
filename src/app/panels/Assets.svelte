@@ -2,9 +2,9 @@
 import Panel from "../../gui/components/Panel.svelte";
 </script>
 
-<div id="properties">Properties</div>
+<div id="assets">Assets</div>
 
 <style lang="scss">
-#properties {
+#assets {
 }
 </style>

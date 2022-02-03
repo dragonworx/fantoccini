@@ -3,6 +3,9 @@ import EventEmitter from "eventemitter3";
 
 export type ActionHandler = () => void;
 
+export const isMac = () =>
+  window.navigator.platform.toLowerCase().indexOf("mac") === 0;
+
 export class Action extends EventEmitter {
   isEnabled: boolean = true;
   isChecked: boolean = false;

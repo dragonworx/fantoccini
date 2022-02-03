@@ -1,91 +1,3 @@
-<style lang="scss">
-@import "../theme";
-$separatorSize: 5px;
-$thumbSize: 20px;
-
-.splitter {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  flex-grow: 1;
-
-  .separator {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .thumb {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #525252;
-      border: 1px outset #919191;
-      width: $separatorSize;
-      height: $separatorSize;
-      z-index: 1;
-
-      &:active {
-        background-color: #424242;
-      }
-
-      :global([data-component="icon"]) {
-        opacity: 0.5;
-      }
-    }
-  }
-
-  &.horizontal {
-    flex-direction: row;
-
-    .separator {
-      @include linear_gradient(#494d52, #383c42, 90deg);
-      width: $separatorSize;
-      border-left: 1px solid #343333;
-      border-right: 1px solid#646262;
-
-      .thumb {
-        height: $thumbSize;
-        cursor: ew-resize;
-      }
-    }
-  }
-
-  &.vertical {
-    flex-direction: column;
-
-    .separator {
-      @include linear_gradient(#494d52, #383c42, 180deg);
-      height: $separatorSize;
-      border-top: 1px solid #343333;
-      border-bottom: 1px solid#646262;
-
-      .thumb {
-        width: $thumbSize;
-        cursor: ns-resize;
-
-        :global([data-component="icon"]) {
-          transform: rotate(90deg);
-        }
-      }
-    }
-  }
-}
-
-.panel1,
-.panel2 {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  overflow: hidden;
-}
-</style>
-
 <script lang="ts">
 import { onMount } from "svelte";
 import { Direction, getLocalStorage, setLocalStorage, Dragger } from "../";
@@ -182,10 +94,101 @@ $: {
   class:vertical="{direction === 'vertical'}"
   data-component="splitter">
   <div bind:this="{panel1}" class="panel1"><slot name="panel1" /></div>
-  <div bind:this="{separator}" class="separator">
-    <div class="thumb" on:mousedown="{dragger.onStartDrag}">
+  <div
+    bind:this="{separator}"
+    class="separator"
+    on:mousedown="{dragger.onStartDrag}">
+    <div class="thumb">
       <Icon src="img/icons/splitter.svg" size="{16}" />
     </div>
   </div>
   <div bind:this="{panel2}" class="panel2"><slot name="panel2" /></div>
 </div>
+
+<style lang="scss">
+@import "../theme";
+$separatorSize: 5px;
+$thumbSize: 20px;
+
+.splitter {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex-grow: 1;
+
+  .separator {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .thumb {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #525252;
+      border: 1px outset #919191;
+      width: $separatorSize;
+      height: $separatorSize;
+      z-index: 1;
+
+      &:active {
+        background-color: #424242;
+      }
+
+      :global([data-component="icon"]) {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  &.horizontal {
+    flex-direction: row;
+
+    > .separator {
+      @include linear_gradient(#494d52, #383c42, 90deg);
+      width: $separatorSize;
+      border-left: 1px solid #343333;
+      border-right: 1px solid#646262;
+      cursor: ew-resize;
+
+      > .thumb {
+        height: $thumbSize;
+      }
+    }
+  }
+
+  &.vertical {
+    flex-direction: column;
+
+    > .separator {
+      @include linear_gradient(#494d52, #383c42, 180deg);
+      height: $separatorSize;
+      border-top: 1px solid #343333;
+      border-bottom: 1px solid#646262;
+      cursor: ns-resize;
+
+      > .thumb {
+        width: $thumbSize;
+      }
+    }
+  }
+
+  &.vertical > .separator > .thumb > :global(.icon) {
+    transform: rotate(90deg);
+  }
+}
+
+.panel1,
+.panel2 {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+</style>
