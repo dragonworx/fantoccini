@@ -1,9 +1,5 @@
-import { Project } from "./project";
+import { SerialisableObject, DataDescriptor } from "src/core/serialise";
 
-export class Scene {
-  project: Project;
+export interface SceneDescriptor extends DataDescriptor {}
 
-  constructor(project: Project) {
-    this.project = project;
-  }
-}
+export class Scene extends SerialisableObject<SceneDescriptor> {}

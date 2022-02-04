@@ -9,8 +9,8 @@ export default class Renderer {
     this.project = project;
 
     this.pixi = new PIXI.Application({
-      width: project.settings.width,
-      height: project.settings.height,
+      width: project.width,
+      height: project.height,
       backgroundColor: 0x000000,
     });
   }

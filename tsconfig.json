@@ -5,7 +5,7 @@
   "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
   "compilerOptions": {
     "importsNotUsedAsValues": "preserve",
-
+    // "experimentalDecorators": true,
     "baseUrl": "."
   }
 }

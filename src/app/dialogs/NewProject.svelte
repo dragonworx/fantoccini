@@ -7,13 +7,13 @@ import Spinner from "../../gui/components/Spinner.svelte";
 import Window from "../../gui/components/Window.svelte";
 import DialogButtons from "../../gui/components/DialogButtons.svelte";
 import { screenWidth, screenHeight } from "../screen";
-import { defaultProjectSettings } from "../../core/project";
+import { Project } from "src/core/project";
 
 let isOpen: boolean = false;
 
-Hub.on(Event.Dialog_Show_New, () => (isOpen = true));
+Hub.on(Event.Project_New, () => (isOpen = true));
 
-$: projectOptions = { ...defaultProjectSettings };
+$: descriptor = { ...Project.defaults };
 
 $: windowWidth = 300;
 $: windowHeight = 200;
@@ -24,7 +24,7 @@ const onClose = () => {
 
 const onAccept = () => {
   isOpen = false;
-  Hub.emit(Event.Project_Create, projectOptions);
+  Hub.emit(Event.Project_Create, descriptor);
 };
 </script>
 
@@ -43,20 +43,20 @@ const onAccept = () => {
     <div class="layout">
       <Form labelSize="{50}">
         <Label text="Title:" /><TextField
-          bind:value="{projectOptions.title}"
+          bind:value="{descriptor.title}"
           autofocus />
         <Label text="FPS:" /><Spinner
-          value="{projectOptions.fps}"
-          on:change="{(e) => (projectOptions.fps = e.detail)}" />
+          value="{descriptor.fps}"
+          on:change="{e => (descriptor.fps = e.detail)}" />
         <Label text="Dimension:" />
         <div class="dimension">
           <Spinner
-            value="{projectOptions.width}"
-            on:change="{(e) => (projectOptions.width = e.detail)}" />
+            value="{descriptor.width}"
+            on:change="{e => (descriptor.width = e.detail)}" />
           <Label text="x" />
           <Spinner
-            value="{projectOptions.height}"
-            on:change="{(e) => (projectOptions.height = e.detail)}" />
+            value="{descriptor.height}"
+            on:change="{e => (descriptor.height = e.detail)}" />
         </div>
       </Form>
       <DialogButtons

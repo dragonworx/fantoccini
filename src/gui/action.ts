@@ -1,22 +1,22 @@
 import hotkeys from "hotkeys-js";
 import EventEmitter from "eventemitter3";
+import { Hub, Event } from "src/app/eventHub";
 
 export type ActionHandler = () => void;
 
 export const isMac = () =>
   window.navigator.platform.toLowerCase().indexOf("mac") === 0;
 
-export class Action extends EventEmitter {
+export class Action {
   isEnabled: boolean = true;
   isChecked: boolean = false;
   canToggle: boolean = false;
   hotkey?: string;
-  handler: ActionHandler;
+  handler: ActionHandler | Event;
 
   static notifications = new EventEmitter();
 
-  constructor(handler: ActionHandler, shortcut?: string) {
-    super();
+  constructor(handler: ActionHandler | Event, shortcut?: string) {
     this.handler = handler;
     this.hotkey = shortcut;
     this.register();
@@ -50,14 +50,18 @@ export class Action extends EventEmitter {
       if (this.canToggle) {
         this.isChecked = !this.isChecked;
       }
-      this.handler();
+      if (typeof this.handler === "function") {
+        this.handler();
+      } else {
+        Hub.emit(this.handler);
+      }
       Action.notifications.emit("execute", this);
     }
   }
 }
 
 export function action(
-  handler: ActionHandler,
+  handler: ActionHandler | Event,
   hotkey: string,
   opts: { isEnabled?: boolean; isChecked?: boolean; canToggle?: boolean } = {}
 ) {
