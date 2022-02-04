@@ -4,5 +4,6 @@
   "svelteBracketNewLine": false,
   "svelteAllowShorthand": false,
   "svelteIndentScriptAndStyle": false,
+  "singleQuote": true,
   "arrowParens": "avoid"
 }
