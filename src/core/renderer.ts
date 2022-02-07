@@ -1,7 +1,7 @@
-import * as PIXI from "pixi.js";
-import { Project } from "./project";
+import * as PIXI from 'pixi.js';
+import { Project } from './project';
 
-export default class Renderer {
+export class Renderer {
   project: Project;
   pixi: PIXI.Application;
 

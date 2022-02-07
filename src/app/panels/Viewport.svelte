@@ -1,15 +1,15 @@
 <script lang="ts">
-import ScrollView from "../../gui/components/ScrollView.svelte";
-import { Hub, Event } from "src/app/eventHub";
-import app from "src/app/application";
-import { Project } from "src/core/project";
+import ScrollView from '../../gui/components/ScrollView.svelte';
+import { Hub, Event } from 'src/app/eventHub';
+import { Application } from 'src/app/application';
+import { Project } from 'src/core/project';
 
 let renderer: HTMLDivElement;
 
 let hasProject: boolean = false;
 
 Hub.on(Event.Project_Init, () => {
-  renderer.appendChild(app.project.renderer.view);
+  renderer.appendChild(Application.instance.project.renderer.view);
   hasProject = true;
 });
 </script>
@@ -20,9 +20,11 @@ Hub.on(Event.Project_Init, () => {
       class="renderer"
       bind:this="{renderer}"
       style="{`width:${
-        hasProject ? app.project.width : Project.defaults.width
+        hasProject ? Application.instance.project.width : Project.defaults.width
       }px;height:${
-        hasProject ? app.project.height : Project.defaults.height
+        hasProject
+          ? Application.instance.project.height
+          : Project.defaults.height
       }px;background-color:${hasProject ? 'transparent' : '#2c2f34'}`}">
     </div>
   </ScrollView>

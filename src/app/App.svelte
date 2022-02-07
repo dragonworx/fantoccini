@@ -1,15 +1,15 @@
 <script lang="ts">
-import menubar from "./menubar";
-import Panel from "../gui/components/Panel.svelte";
-import Splitter from "../gui/components/Splitter.svelte";
-import TabView from "../gui/components/TabView.svelte";
-import TabDoc from "../gui/components/TabDoc.svelte";
-import NewProjectDialog from "./dialogs/NewProject.svelte";
-import Timeline from "./panels/Timeline.svelte";
-import Assets from "./panels/Assets.svelte";
-import Explorer from "./panels/Explorer.svelte";
-import Properties from "./panels/Properties.svelte";
-import Viewport from "./panels/Viewport.svelte";
+import menubar from './menubar';
+import Panel from '../gui/components/Panel.svelte';
+import Splitter from '../gui/components/Splitter.svelte';
+import TabView from '../gui/components/TabView.svelte';
+import TabDoc from '../gui/components/TabDoc.svelte';
+import NewProjectDialog from './dialogs/NewProject.svelte';
+import Timeline from './panels/Timeline.svelte';
+import Assets from './panels/Assets.svelte';
+import Explorer from './panels/Explorer.svelte';
+import Properties from './panels/Properties.svelte';
+import Viewport from './panels/Viewport.svelte';
 </script>
 
 <main>
@@ -26,7 +26,7 @@ import Viewport from "./panels/Viewport.svelte";
               storageKey="multi_viewport"
               value="{0.3}">
               <Panel slot="panel1">
-                <TabView on:change="{(e) => {}}" on:closing="{(e) => {}}">
+                <TabView on:change="{e => {}}" on:closing="{e => {}}">
                   <TabDoc title="Assets" isClosable="{false}"
                     ><Assets /></TabDoc>
                   <TabDoc title="Explorer" isClosable="{false}"

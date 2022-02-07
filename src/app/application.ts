@@ -1,12 +1,15 @@
-import { Project, ProjectDescriptor } from "../core/project";
-import { Hub, Event } from "./eventHub";
+import { Project, ProjectDescriptor } from '../core/project';
+import { Hub, Event } from './eventHub';
 
-const projectStorageKey = "fantoccini.project";
+const projectStorageKey = 'fantoccini.project';
 
 export class Application {
   project: Project;
 
+  static instance: Application;
+
   constructor() {
+    Application.instance = this;
     this.initEvents();
     this.autoLoadProject();
   }
@@ -16,7 +19,7 @@ export class Application {
       const project = (this.project = new Project());
       project.fromDescriptor(descriptor);
       Hub.emit(Event.Project_Init);
-      console.log("project created", this.project);
+      console.log('project created', this.project);
     }).on(Event.Project_Save, () => {
       this.saveProject();
     });
@@ -29,7 +32,7 @@ export class Application {
     const data = JSON.stringify(descriptor, null, 4);
 
     localStorage.setItem(projectStorageKey, data);
-    console.log("project saved", data);
+    console.log('project saved', data);
 
     Hub.emit(Event.Project_Save_Complete);
   }
@@ -50,7 +53,3 @@ export class Application {
     Hub.emit(Event.Project_Open_Complete);
   }
 }
-
-const app = new Application();
-
-export default app;

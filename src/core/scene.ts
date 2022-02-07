@@ -1,4 +1,4 @@
-import { SerialisableObject, DataDescriptor } from "src/core/serialise";
+import { SerialisableObject, DataDescriptor } from 'src/core/serialise';
 
 export interface SceneDescriptor extends DataDescriptor {}
 

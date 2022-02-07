@@ -1,7 +1,9 @@
-import { Ticker } from "src/core/ticker";
-import { Scene, SceneDescriptor } from "src/core/scene";
-import Renderer from "src/core/renderer";
-import { SerialisableObject, DataDescriptor } from "src/core/serialise";
+import { Ticker } from 'src/core/animation/ticker';
+import { Timeline } from 'src/core/animation/timeline';
+import { Scene, SceneDescriptor } from 'src/core/scene';
+import { Renderer } from 'src/core/renderer';
+import { SerialisableObject, DataDescriptor } from 'src/core/serialise';
+import { Hub, Event } from 'src/app/eventHub';
 
 export interface ProjectDescriptor extends DataDescriptor {
   title: string;
@@ -21,9 +23,10 @@ export class Project extends SerialisableObject<ProjectDescriptor> {
   currentScene: Scene;
   ticker: Ticker;
   renderer: Renderer;
+  timeline: Timeline;
 
   static readonly defaults: Partial<ProjectDescriptor> = {
-    title: "Untitled",
+    title: 'Untitled',
     fps: 24,
     width: 640,
     height: 480,
@@ -37,6 +40,7 @@ export class Project extends SerialisableObject<ProjectDescriptor> {
     this.currentScene = defaultScene;
     this.ticker = new Ticker(this.fps);
     this.renderer = new Renderer(this);
+    this.timeline = new Timeline(this);
   }
 
   toDescriptor(): ProjectDescriptor {
