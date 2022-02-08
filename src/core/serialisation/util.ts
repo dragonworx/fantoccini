@@ -43,3 +43,16 @@ export const base64ToBlob = (
   const blob = new Blob(byteArrays, { type: contentType });
   return blob;
 };
+
+export function downloadBlob(blob: Blob, filename: string) {
+  const blobUrl = URL.createObjectURL(blob);
+  var link = document.createElement('a');
+  link.href = blobUrl;
+  link.download = filename;
+  link.innerHTML = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(blobUrl);
+  return link;
+}

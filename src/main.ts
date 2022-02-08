@@ -10,7 +10,12 @@ new Application();
 
 export default app;
 
-import { BinaryWriter, BinaryReader, base64ToBlob } from './core/serialisation';
+import {
+  BinaryWriter,
+  BinaryReader,
+  base64ToBlob,
+  downloadBlob,
+} from './core/serialisation';
 
 function blobToImg(blob: Blob, x: number, y: number) {
   const url = URL.createObjectURL(blob);
@@ -72,4 +77,8 @@ writer.toBase64().then(base64 => {
     console.log(reader.readNumber());
     console.log(reader.readString());
   });
+});
+
+writer.toBlob().then(() => {
+  downloadBlob(blob, 'test.dat');
 });
