@@ -1,30 +1,18 @@
-export type TypedArray =
-  | Int8Array
-  | Uint8Array
-  | Uint8ClampedArray
-  | Int16Array
-  | Uint16Array
-  | Int32Array
-  | Uint32Array
-  | Float32Array
-  | Float64Array
-  | BigInt64Array
-  | BigUint64Array;
+export type SupportedType = number | string | boolean | Blob | ArrayBuffer;
 
-export type ArrayType =
-  | 'Int8Array'
-  | 'Uint8Array'
-  | 'Uint8ClampedArray'
-  | 'Int16Array'
-  | 'Uint16Array'
-  | 'Int32Array'
-  | 'Uint32Array'
-  | 'Float32Array'
-  | 'Float64Array'
-  | 'BigInt64Array'
-  | 'BigUint64Array';
+export enum BinaryType {
+  Number = 1,
+  String = 2,
+  Boolean = 3,
+  Blob = 4,
+  ArrayBuffer = 5,
+}
 
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays
+export type BinaryItem = {
+  type: BinaryType;
+  buffer: ArrayBuffer;
+  blob?: Blob;
+};
 
 export function blobToBase64(blob): Promise<string> {
   return new Promise((resolve, _) => {
@@ -35,9 +23,9 @@ export function blobToBase64(blob): Promise<string> {
 }
 
 export const base64ToBlob = (
-  b64Data,
-  contentType = 'application/octet-stream',
-  sliceSize = 512
+  b64Data: string,
+  contentType: string = 'application/octet-stream',
+  sliceSize: number = 512
 ) => {
   const byteCharacters = atob(b64Data);
   const byteArrays = [];
