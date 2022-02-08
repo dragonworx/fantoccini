@@ -43,6 +43,9 @@ writer.writeBoolean(false);
 writer.writeBlob(blob);
 writer.writeArrayBuffer(arrayBuffer);
 writer.writeNumber(123.456);
+writer.writeBoolean(true);
+writer.writeNumber(-1);
+writer.writeString('foobar2');
 
 writer.toBase64().then(base64 => {
   console.log('base64!', base64);
@@ -65,5 +68,8 @@ writer.toBase64().then(base64 => {
       view.getUint8(3)
     );
     console.log(reader.readNumber(2));
+    console.log(reader.readBoolean());
+    console.log(reader.readNumber());
+    console.log(reader.readString());
   });
 });
