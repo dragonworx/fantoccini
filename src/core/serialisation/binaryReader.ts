@@ -1,4 +1,4 @@
-import { SupportedType, BinaryType, base64ToBlob } from './util';
+import { base64ToBlob } from './util';
 
 export class BinaryReader {
   buffer: ArrayBuffer;

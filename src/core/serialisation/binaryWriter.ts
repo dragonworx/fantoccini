@@ -1,4 +1,4 @@
-import { SupportedType, BinaryType, BinaryItem, blobToBase64 } from './util';
+import { BinaryType, BinaryItem, blobToBase64 } from './util';
 
 export class BinaryWriter {
   buffer: BinaryItem[];
