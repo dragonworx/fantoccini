@@ -1,11 +1,11 @@
 <script lang="ts">
-import { onMount } from "svelte";
-import { Direction, getLocalStorage, setLocalStorage, Dragger } from "../";
-import Icon from "./Icon.svelte";
+import { onMount } from 'svelte';
+import { Direction, getLocalStorage, setLocalStorage, Dragger } from '../';
+import Icon from './Icon.svelte';
 
-export let direction: Direction = "horizontal";
+export let direction: Direction = 'horizontal';
 export let value: number = 0.5;
-export let storageKey: string = "";
+export let storageKey: string = '';
 
 const separatorSize = 5;
 const dragger = new Dragger<number>();
@@ -18,10 +18,10 @@ let separator: HTMLDivElement;
 
 function getLayout() {
   const panel1Size =
-    (direction === "horizontal" ? elementWidth : elementHeight) * value -
+    (direction === 'horizontal' ? elementWidth : elementHeight) * value -
     separatorSize / 2;
   const panel2Size =
-    (direction === "horizontal" ? elementWidth : elementHeight) *
+    (direction === 'horizontal' ? elementWidth : elementHeight) *
       (1.0 - value) -
     separatorSize / 2;
   return {
@@ -34,12 +34,12 @@ function getLayout() {
 
 function setLayout() {
   const { panel1Size, separatorPos, panel2Size, panel2Pos } = getLayout();
-  if (direction === "horizontal") {
+  if (direction === 'horizontal') {
     panel1.style.width = `${panel1Size}px`;
     separator.style.left = `${separatorPos}px`;
     panel2.style.left = `${panel2Pos}px`;
     panel2.style.width = `${panel2Size}px`;
-  } else if (direction === "vertical") {
+  } else if (direction === 'vertical') {
     panel1.style.height = `${panel1Size}px`;
     separator.style.top = `${separatorPos}px`;
     panel2.style.top = `${panel2Pos}px`;
@@ -60,20 +60,20 @@ onMount(() => {
 });
 
 dragger
-  .on("dragstart", (setSartValue) => setSartValue(value))
-  .on("dragmove", ({ deltaX, deltaY }) => {
+  .on('dragstart', setSartValue => setSartValue(value))
+  .on('dragmove', ({ deltaX, deltaY }) => {
     let limit = separatorSize / 2 / elementWidth;
     let newValue: number;
-    if (direction === "horizontal") {
+    if (direction === 'horizontal') {
       newValue = (elementWidth * dragger.startValue + deltaX) / elementWidth;
-    } else if (direction === "vertical") {
+    } else if (direction === 'vertical') {
       newValue = (elementHeight * dragger.startValue + deltaY) / elementHeight;
       limit = separatorSize / elementWidth;
     }
     value = Math.min(Math.max(limit, newValue), 1 - limit);
     setLayout();
   })
-  .on("dragcomplete", () => {
+  .on('dragcomplete', () => {
     if (storageKey) {
       setLocalStorage(storageKey, value);
     }
@@ -106,7 +106,7 @@ $: {
 </div>
 
 <style lang="scss">
-@import "../theme";
+@import '../theme';
 $separatorSize: 5px;
 $thumbSize: 20px;
 
@@ -115,6 +115,7 @@ $thumbSize: 20px;
   width: 100%;
   height: 100%;
   flex-grow: 1;
+  box-sizing: border-box;
 
   .separator {
     position: absolute;
@@ -123,6 +124,7 @@ $thumbSize: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
 
     .thumb {
       display: flex;
@@ -132,7 +134,6 @@ $thumbSize: 20px;
       border: 1px outset #919191;
       width: $separatorSize;
       height: $separatorSize;
-      z-index: 1;
       pointer-events: none;
       user-select: none;
 
@@ -140,7 +141,7 @@ $thumbSize: 20px;
         background-color: #424242;
       }
 
-      :global([data-component="icon"]) {
+      :global([data-component='icon']) {
         opacity: 0.5;
       }
     }
