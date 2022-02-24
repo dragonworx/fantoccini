@@ -7,7 +7,7 @@ import {
   downloadBlob,
 } from './core/serialisation';
 
-function blobToImg(blob: Blob, x: number, y: number) {
+export function blobToImg(blob: Blob, x: number, y: number) {
   const url = URL.createObjectURL(blob);
   const img = new Image();
   img.style.cssText = `position:absolute;top:${y}px;left:${x}px;`;

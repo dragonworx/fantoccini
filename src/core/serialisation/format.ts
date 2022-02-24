@@ -45,3 +45,15 @@ const format: Format = {
     },
   },
 };
+
+// or just use custom interface and serialise given json object, then deserialise as return type
+// -> better!
+
+interface MyFileFormat {
+  title: string;
+  projects: Array<{
+    title: string;
+    fps: number;
+  }>;
+  assets: Record<string, { name: string; type: string }>;
+}
