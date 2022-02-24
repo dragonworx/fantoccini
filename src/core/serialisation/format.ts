@@ -40,5 +40,8 @@ const format: Format = {
         ],
       },
     ],
+    section: {
+      foo: FormatType.ArrayBuffer,
+    },
   },
 };
