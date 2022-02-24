@@ -6,17 +6,16 @@
     "build": "rollup -c",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "dev": "rollup -c -w",
-    "start": "sirv public --no-clear"
+    "start": "sirv public --no-clear --port 5000"
   },
   "dependencies": {
     "@types/uuid": "^8.3.4",
     "eventemitter3": "^4.0.7",
     "hotkeys-js": "^3.8.7",
-    "js-yaml": "^4.1.0",
     "node-sass": "^6.0.1",
     "pixi.js": "^6.2.2",
     "sass": "^1.44.0",
-    "sirv-cli": "^1.0.0",
+    "sirv-cli": "^2.0.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
@@ -29,7 +28,6 @@
     "rollup": "^2.3.4",
     "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-livereload": "^2.0.0",
-    "rollup-plugin-string": "^3.0.0",
     "rollup-plugin-svelte": "^7.0.0",
     "rollup-plugin-terser": "^7.0.0",
     "svelte": "^3.0.0",

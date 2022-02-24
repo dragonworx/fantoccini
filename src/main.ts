@@ -10,9 +10,4 @@ new Application();
 
 export default app;
 
-import yaml from 'js-yaml';
-// @ts-ignore
-import fileFormat from './format.yaml';
-
-const format = yaml.load(fileFormat);
-console.log(format);
+import './test-serialisation';
