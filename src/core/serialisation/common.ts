@@ -1,7 +1,6 @@
 export type DataTypeName =
   | 'Int8'
   | 'Uint8'
-  | 'Uint8Clamped'
   | 'Int16'
   | 'Uint16'
   | 'Int32'
@@ -14,7 +13,6 @@ export type DataTypeName =
 export const DataTypeNames: Array<DataTypeName> = [
   'Int8',
   'Uint8',
-  'Uint8Clamped',
   'Int16',
   'Uint16',
   'Int32',
@@ -25,18 +23,9 @@ export const DataTypeNames: Array<DataTypeName> = [
   'BigUint64',
 ];
 
-export type FormatTypeName =
-  | DataTypeName
-  | 'String'
-  | 'Number'
-  | 'Boolean'
-  | 'ArrayBuffer'
-  | 'Blob';
-
 export const ByteSize = {
   Int8: 1,
   Uint8: 1,
-  Uint8Clamped: 1,
   Int16: 2,
   Uint16: 2,
   Int32: 4,
@@ -47,32 +36,9 @@ export const ByteSize = {
   BigUint64: 8,
 };
 
-export const Header = {
-  Int8: 1,
-  Uint8: 2,
-  Uint8Clamped: 3,
-  Int16: 4,
-  Uint16: 5,
-  Int32: 6,
-  Uint32: 7,
-  Float32: 8,
-  Float64: 9,
-  BigInt64: 10,
-  BigUint64: 11,
-  String: 12,
-  Number: 13,
-  Boolean: 14,
-  ArrayBuffer: 15,
-  Blob: 16,
-  '[]': 17,
-  '{}': 18,
-  pop: 19,
-};
-
 export const TypeRange = {
   Int8: [-128, 127],
   Uint8: [0, 255],
-  Uint8Clamped: [0, 255],
   Int16: [-32768, 32767],
   Uint16: [0, 65535],
   Int32: [-2147483648, 2147483647],
@@ -82,6 +48,66 @@ export const TypeRange = {
   BigInt64: [-2 ^ 63, 2 ^ (63 - 1)],
   BigUint64: [0, 2 ^ (64 - 1)],
 };
+
+export const GetTypeMethods = {
+  Int8: 'getInt8',
+  Uint8: 'getUint8',
+  Int16: 'getInt16',
+  Uint16: 'getUint16',
+  Int32: 'getInt32',
+  Uint32: 'getUint32',
+  Float32: 'getFloat32',
+  Float64: 'getFloat64',
+  BigInt64: 'getBigInt64',
+  BigUint64: 'getBigUint64',
+};
+
+export const SetTypeMethods = {
+  Int8: 'setInt8',
+  Uint8: 'setUint8',
+  Int16: 'setInt16',
+  Uint16: 'setUint16',
+  Int32: 'setInt32',
+  Uint32: 'setUint32',
+  Float32: 'setFloat32',
+  Float64: 'setFloat64',
+  BigInt64: 'setBigInt64',
+  BigUint64: 'setBigUint64',
+};
+
+export type FormatTypeName =
+  | DataTypeName
+  | 'String'
+  | 'Number'
+  | 'Boolean'
+  | 'ArrayBuffer'
+  | 'Blob';
+
+export const Header = [
+  'Int8',
+  'Uint8',
+  'Int16',
+  'Uint16',
+  'Int32',
+  'Uint32',
+  'Float32',
+  'Float64',
+  'BigInt64',
+  'BigUint64',
+  'String',
+  'Boolean',
+  'ArrayBuffer',
+  'Blob',
+  '[]',
+  '{}',
+  'pop',
+];
+
+export const isHeaderNumeric = (headerType: number) =>
+  headerType <= Header.indexOf('BigUint64');
+
+export const headerDataTypeName = (headerType: number) =>
+  DataTypeNames[headerType];
 
 export const isNumericRangeValid = (value: number, type: DataTypeName) => {
   const [min, max] = TypeRange[type];

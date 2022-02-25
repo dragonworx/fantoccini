@@ -1,4 +1,10 @@
-import { ByteSize, FormatTypeName, getNumericType, Header } from './common';
+import {
+  ByteSize,
+  DataTypeName,
+  FormatTypeName,
+  getNumericType,
+  Header,
+} from './common';
 
 type Element = {
   key: string;
@@ -7,23 +13,76 @@ type Element = {
   size?: number;
 };
 
-export class Writer<T extends Record<string, any>> {
+export class Writer {
   depth: number = 0;
-  stack: Element[];
+  stack: Element[] = [];
   byteOffset: number = 0;
-  buffer: ArrayBuffer;
-  view: DataView;
+  buffer: ArrayBuffer = new ArrayBuffer(0);
+  view: DataView = new DataView(this.buffer);
   littleEndian: boolean = true;
+  log: {} = {};
 
-  constructor(readonly doc: T) {
-    this.stack = [];
+  private debug(value: string) {
+    this.log[this.byteOffset] = value;
   }
 
-  async parse() {
-    for (let [key, value] of Object.entries(this.doc)) {
-      await this.writeNode(key, value);
+  private reset() {
+    this.stack.length = 0;
+    this.depth = 0;
+    this.byteOffset = 0;
+    this.buffer = new ArrayBuffer(0);
+    this.view = new DataView(this.buffer);
+    this.log = {};
+  }
+
+  private getElementByteSize({ key, size }: Element) {
+    // headerByte + strLen + key + valueSize
+    return 1 + 2 + key.length * 2 + (size || 0);
+  }
+
+  private advanceByteOffset(type: FormatTypeName) {
+    const byteSize = ByteSize[type];
+    this.byteOffset += byteSize;
+  }
+
+  private writeString(value: string) {
+    const l = value.length;
+    this.debug(`string{${l}}`);
+    this.view.setInt16(this.byteOffset, l, this.littleEndian);
+    this.byteOffset += 2;
+    for (var i = 0; i < l; i++) {
+      this.debug(`string[${i}]: ${value.charCodeAt(i)}`);
+      this.view.setUint16(
+        this.byteOffset + i * 2,
+        value.charCodeAt(i),
+        this.littleEndian
+      );
     }
-    console.log(this.stack);
+    this.byteOffset += l * 2;
+  }
+
+  private writeNumericType(
+    value: number,
+    dataViewMethod: (
+      byteOffset: number,
+      value: number,
+      littleEndian?: boolean
+    ) => void,
+    type: DataTypeName
+  ) {
+    this.debug(`${type} = ${value}`);
+    dataViewMethod.call(this.view, this.byteOffset, value, this.littleEndian);
+    this.advanceByteOffset(type);
+  }
+
+  private writeInt8 = (value: number) =>
+    this.writeNumericType(value, this.view.setInt8, 'Int8');
+  private writeInt16 = (value: number) =>
+    this.writeNumericType(value, this.view.setInt16, 'Int16');
+
+  private writeArrayBuffer(value: ArrayBuffer) {
+    new Uint8Array(this.buffer, this.byteOffset).set(new Uint8Array(value));
+    this.byteOffset += value.byteLength;
   }
 
   private async writeNode(key: string, value: any) {
@@ -31,8 +90,8 @@ export class Writer<T extends Record<string, any>> {
 
     if (value instanceof Blob) {
       // Blob
-      console.log('.'.padStart(this.depth, '.') + key + ': <BLOB>');
       const buffer = await new Response(value).arrayBuffer();
+
       this.stack.push({
         key,
         type: 'Blob',
@@ -41,7 +100,7 @@ export class Writer<T extends Record<string, any>> {
       });
     } else if (value instanceof ArrayBuffer) {
       // ArrayBuffer
-      console.log('.'.padStart(this.depth, '.') + key + ': <ARRAY_BUFFER>');
+
       this.stack.push({
         key,
         type: 'ArrayBuffer',
@@ -51,7 +110,6 @@ export class Writer<T extends Record<string, any>> {
     } else if (typeof value === 'object' && value !== null) {
       if (Array.isArray(value)) {
         // Array
-        console.log('.'.padStart(this.depth, '.') + key + '[]');
         this.stack.push({ key, type: '[]', size: value.length });
         for (const [index, item] of value.entries()) {
           await this.writeNode(`${index}`, item);
@@ -60,7 +118,6 @@ export class Writer<T extends Record<string, any>> {
       } else {
         // Object
         const entries = Object.entries(value);
-        console.log('.'.padStart(this.depth, '.') + key + '{}');
         this.stack.push({ key, type: '{}', size: entries.length });
         for (let [subkey, subvalue] of entries) {
           await this.writeNode(subkey, subvalue);
@@ -69,7 +126,6 @@ export class Writer<T extends Record<string, any>> {
       }
     } else {
       // Value
-      console.log('.'.padStart(this.depth, '.') + key + ':', value);
       if (typeof value === 'number') {
         // Number
         const type = getNumericType(value);
@@ -93,60 +149,34 @@ export class Writer<T extends Record<string, any>> {
   }
 
   get bufferSize() {
-    return this.stack.reduce(
-      (prev, curr) => prev + this.getElementByteSize(curr),
-      0
+    // 2 (count) + each element byte size
+    return (
+      this.stack.reduce(
+        (prev, curr) => prev + this.getElementByteSize(curr),
+        0
+      ) + 2
     );
   }
 
-  getElementByteSize({ key, size }: Element) {
-    // headerByte + strLen + key + valueSize
-    return 1 + 2 + key.length * 2 + (size || 0);
-  }
-
-  advanceByteOffset(type: FormatTypeName) {
-    const byteSize = ByteSize[type];
-    this.byteOffset += byteSize;
-  }
-
-  writeString(value: string) {
-    const l = value.length;
-    this.view.setInt16(this.byteOffset, l);
-    this.byteOffset += 2;
-    for (var i = 0; i < l; i++) {
-      this.view.setUint16(
-        this.byteOffset + i * 2,
-        value.charCodeAt(i),
-        this.littleEndian
-      );
+  async parse(doc: Record<string, any>) {
+    this.reset();
+    for (let [key, value] of Object.entries(doc)) {
+      await this.writeNode(key, value);
     }
-    this.byteOffset += value.length * 2;
-  }
-
-  writeInt8(value: number) {
-    this.view.setInt8(this.byteOffset, value);
-    this.advanceByteOffset('Int8');
-  }
-
-  writeInt16(value: number) {
-    this.view.setInt16(this.byteOffset, value);
-    this.advanceByteOffset('Int16');
-  }
-
-  writeArrayBuffer(value: ArrayBuffer) {
-    new Uint8Array(this.buffer, this.byteOffset).set(new Uint8Array(value));
-    this.byteOffset += value.byteLength;
   }
 
   toArrayBuffer() {
     const size = this.bufferSize;
-    console.log('Creating array buffer size ', size);
+
     this.buffer = new ArrayBuffer(size);
     this.view = new DataView(this.buffer);
 
+    // write element size
+    this.writeInt16(this.stack.length);
+
     this.stack.forEach(({ key, type, size, value }) => {
       // write header..
-      const headerByte = Header[type];
+      const headerByte = Header.indexOf(type);
       this.writeInt8(headerByte);
 
       // write key
@@ -156,6 +186,7 @@ export class Writer<T extends Record<string, any>> {
       if (type === 'String') {
         this.writeString(value);
       } else if (type === 'Int8') {
+        // TODO all numeric types
         this.writeInt8(value);
       } else if (type === 'Int16') {
         this.writeInt16(value);
@@ -169,7 +200,8 @@ export class Writer<T extends Record<string, any>> {
       }
     });
 
-    console.log(this.buffer);
+    console.table(this.log);
+
     return this.buffer;
   }
 

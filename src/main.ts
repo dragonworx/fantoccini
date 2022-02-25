@@ -34,6 +34,7 @@ export function blobToImg(blob: Blob, x: number, y: number) {
 
 import { base64Img } from './test-image';
 import { Writer } from './core/serialisation/writer';
+import { Reader } from './core/serialisation/reader';
 import { base64ToBlob, downloadBlob } from './core/serialisation';
 
 const blob = base64ToBlob(base64Img, 'image/gif');
@@ -48,19 +49,23 @@ view.setUint8(3, 4);
 
 const doc = {
   x: 1,
-  y: ['a', 'b', { c: false, blob }],
-  z: {
-    b: {
-      a: true,
-    },
-  },
-  k: arrayBuffer,
-  w: 1000,
+  // y: ['a', 'b', { c: false, blob }],
+  // z: {
+  //   b: {
+  //     a: true,
+  //   },
+  // },
+  // k: arrayBuffer,
+  // w: 1000,
 };
 
-const writer = new Writer(doc);
-writer.parse().then(() => {
+const writer = new Writer();
+console.log('---------------- WRITE');
+writer.parse(doc).then(() => {
   // writer.toArrayBuffer();
   const blob = writer.toBlob();
-  downloadBlob(blob, 'test.dat');
+  const reader = new Reader();
+  console.log('---------------- READ');
+  reader.parse(blob).then(parsedDoc => {});
+  // downloadBlob(blob, 'test.dat');
 });

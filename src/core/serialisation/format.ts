@@ -20,6 +20,8 @@ type Format = {
   body: Array<Record<string, Descriptor>> | Record<string, Descriptor>;
 };
 
+export type Document = Record<string, Descriptor>;
+
 const format: Format = {
   header: {
     name: 'foo',
