@@ -94,20 +94,38 @@ export const Header = [
   'Float64',
   'BigInt64',
   'BigUint64',
-  'String',
+  'String', // 10
   'Boolean',
   'ArrayBuffer',
   'Blob',
-  '[]',
+  '[]', // 14
   '{}',
   'pop',
 ];
 
+export type HeaderName =
+  | 'Int8'
+  | 'Uint8'
+  | 'Int16'
+  | 'Uint16'
+  | 'Int32'
+  | 'Uint32'
+  | 'Float32'
+  | 'Float64'
+  | 'BigInt64'
+  | 'BigUint64'
+  | 'String'
+  | 'Boolean'
+  | 'ArrayBuffer'
+  | 'Blob'
+  | '[]'
+  | '{}'
+  | 'pop';
+
 export const isHeaderNumeric = (headerType: number) =>
   headerType <= Header.indexOf('BigUint64');
 
-export const headerDataTypeName = (headerType: number) =>
-  DataTypeNames[headerType];
+export const headerDataTypeName = (headerType: number) => Header[headerType];
 
 export const isNumericRangeValid = (value: number, type: DataTypeName) => {
   const [min, max] = TypeRange[type];

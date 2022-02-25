@@ -6,7 +6,13 @@ import {
   GetTypeMethods,
   isHeaderNumeric,
   headerDataTypeName,
+  Header,
 } from './common';
+
+type Token = {
+  type: number;
+  value: any;
+};
 
 export class Reader {
   depth: number = 0;
@@ -15,11 +21,11 @@ export class Reader {
   byteOffset: number = 0;
   littleEndian: boolean = true;
   log: {} = {};
-  doc: {} = {};
-  docStack: {}[] = [];
+  stack: Token[];
 
   private debug(value: string, byteOffset: number = this.byteOffset) {
     this.log[byteOffset] = value;
+    console.log([this.byteOffset, value]);
   }
 
   private reset() {
@@ -28,8 +34,7 @@ export class Reader {
     this.buffer = new ArrayBuffer(0);
     this.view = new DataView(this.buffer);
     this.log = {};
-    this.doc = {};
-    this.docStack = [this.doc];
+    this.stack = [];
   }
 
   private advanceByteOffset(type: FormatTypeName) {
@@ -48,7 +53,10 @@ export class Reader {
         this.byteOffset + i * 2,
         this.littleEndian
       );
-      this.debug(`string[${i}]: ${charCode}`, byteOffset);
+      this.debug(
+        `string[${i}]: ${charCode} "${String.fromCharCode(charCode)}"`,
+        byteOffset
+      );
       str += String.fromCharCode(charCode);
     }
     this.byteOffset += size * 2;
@@ -72,10 +80,6 @@ export class Reader {
   private readInt8 = () => this.readNumericType(this.view.getInt8, 'Int8');
   private readInt16 = () => this.readNumericType(this.view.getInt16, 'Int16');
 
-  private get peek() {
-    return this.docStack[this.docStack.length - 1];
-  }
-
   async parse(blobOrBase64: Blob | string) {
     this.reset();
 
@@ -88,21 +92,34 @@ export class Reader {
 
     this.view = new DataView(this.buffer);
 
-    const size = this.readInt16();
+    for (let i = 0; i < 3; i++) {
+      this.debug(`---- BEGIN: ${i} ----`);
 
-    for (let i = 0; i < size; i++) {
-      const headerType = this.readInt8();
-      const key = this.readString();
-      const type = headerDataTypeName(headerType);
+      const headerTypeIndex = this.readInt8();
+      const headerTypeName = headerDataTypeName(headerTypeIndex);
 
-      if (isHeaderNumeric(headerType)) {
-        const method = GetTypeMethods[type];
-        const value = this.readNumericType(this.view[method], type);
-        this.peek[key] = value;
+      const token: Token = {
+        type: headerTypeIndex,
+        value: null,
+      };
+
+      if (isHeaderNumeric(headerTypeIndex)) {
+        const method = GetTypeMethods[headerTypeName];
+        token.value = this.readNumericType(
+          this.view[method],
+          headerTypeName as DataTypeName
+        );
+      } else if (headerTypeName === 'String') {
+        token.value = this.readString();
       }
+
+      this.stack.push(token);
     }
 
-    console.log(this.doc);
+    console.log(
+      'STACK:',
+      this.stack.map(token => ((token as any).type = Header[token.type]))
+    );
 
     console.table(this.log);
   }

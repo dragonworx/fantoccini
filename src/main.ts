@@ -49,6 +49,7 @@ view.setUint8(3, 4);
 
 const doc = {
   x: 1,
+  // foo: ['bar'],
   // y: ['a', 'b', { c: false, blob }],
   // z: {
   //   b: {
@@ -62,7 +63,6 @@ const doc = {
 const writer = new Writer();
 console.log('---------------- WRITE');
 writer.parse(doc).then(() => {
-  // writer.toArrayBuffer();
   const blob = writer.toBlob();
   const reader = new Reader();
   console.log('---------------- READ');

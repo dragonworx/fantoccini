@@ -6,8 +6,8 @@ import {
   Header,
 } from './common';
 
-type Element = {
-  key: string;
+type Token = {
+  key: string | null;
   type: FormatTypeName | '{}' | '[]' | 'pop';
   value?: any;
   size?: number;
@@ -15,7 +15,7 @@ type Element = {
 
 export class Writer {
   depth: number = 0;
-  stack: Element[] = [];
+  stack: Token[] = [];
   byteOffset: number = 0;
   buffer: ArrayBuffer = new ArrayBuffer(0);
   view: DataView = new DataView(this.buffer);
@@ -24,6 +24,7 @@ export class Writer {
 
   private debug(value: string) {
     this.log[this.byteOffset] = value;
+    console.log([this.byteOffset, value]);
   }
 
   private reset() {
@@ -33,11 +34,6 @@ export class Writer {
     this.buffer = new ArrayBuffer(0);
     this.view = new DataView(this.buffer);
     this.log = {};
-  }
-
-  private getElementByteSize({ key, size }: Element) {
-    // headerByte + strLen + key + valueSize
-    return 1 + 2 + key.length * 2 + (size || 0);
   }
 
   private advanceByteOffset(type: FormatTypeName) {
@@ -51,7 +47,7 @@ export class Writer {
     this.view.setInt16(this.byteOffset, l, this.littleEndian);
     this.byteOffset += 2;
     for (var i = 0; i < l; i++) {
-      this.debug(`string[${i}]: ${value.charCodeAt(i)}`);
+      this.debug(`char[${i}]: ${value.charCodeAt(i)} "${value[i]}"`);
       this.view.setUint16(
         this.byteOffset + i * 2,
         value.charCodeAt(i),
@@ -110,19 +106,23 @@ export class Writer {
     } else if (typeof value === 'object' && value !== null) {
       if (Array.isArray(value)) {
         // Array
-        this.stack.push({ key, type: '[]', size: value.length });
+        this.stack.push({ key, type: '[]', size: 0 });
+
         for (const [index, item] of value.entries()) {
-          await this.writeNode(`${index}`, item);
+          await this.writeNode(null, item);
         }
-        this.stack.push({ key, type: 'pop' });
+
+        this.stack.push({ key: null, type: 'pop' });
       } else {
         // Object
         const entries = Object.entries(value);
-        this.stack.push({ key, type: '{}', size: entries.length });
+        this.stack.push({ key, type: '{}', size: 0 });
+
         for (let [subkey, subvalue] of entries) {
           await this.writeNode(subkey, subvalue);
         }
-        this.stack.push({ key, type: 'pop' });
+
+        this.stack.push({ key: null, type: 'pop' });
       }
     } else {
       // Value
@@ -137,7 +137,7 @@ export class Writer {
           key,
           type: 'String',
           value,
-          size: value.length * 2,
+          size: 2 + value.length * 2, // size(uint16) + chars
         });
       } else if (typeof value === 'boolean') {
         // Boolean
@@ -148,13 +148,16 @@ export class Writer {
     this.depth--;
   }
 
-  get bufferSize() {
-    // 2 (count) + each element byte size
-    return (
-      this.stack.reduce(
-        (prev, curr) => prev + this.getElementByteSize(curr),
-        0
-      ) + 2
+  private getElementByteSize({ key, size }: Token) {
+    // headerByte + strLen + key + valueSize
+    return 1 + (typeof key === 'string' ? 2 + key.length * 2 : 0) + (size || 0);
+  }
+
+  private get bufferSize() {
+    // each element byte size
+    return this.stack.reduce(
+      (prev, curr) => prev + this.getElementByteSize(curr),
+      0
     );
   }
 
@@ -171,16 +174,20 @@ export class Writer {
     this.buffer = new ArrayBuffer(size);
     this.view = new DataView(this.buffer);
 
-    // write element size
-    this.writeInt16(this.stack.length);
+    console.log('STACK:', this.stack, size);
 
-    this.stack.forEach(({ key, type, size, value }) => {
+    this.stack.forEach((element, i) => {
+      const { key, type, value } = element;
+      this.debug(`---- BEGIN: ${i} "${key}" ----`);
+
       // write header..
       const headerByte = Header.indexOf(type);
       this.writeInt8(headerByte);
 
-      // write key
-      this.writeString(key);
+      if (typeof key === 'string') {
+        // write key
+        this.writeString(key);
+      }
 
       // write value
       if (type === 'String') {
