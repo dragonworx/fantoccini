@@ -48,7 +48,7 @@ view.setUint8(2, 3);
 view.setUint8(3, 4);
 
 const doc = {
-  // x: 123,
+  x: 123,
   foo: ['bar'],
   // y: ['a', 'b', { c: false, blob }],
   // z: {

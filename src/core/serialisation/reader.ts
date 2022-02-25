@@ -1,6 +1,6 @@
 import { base64ToBlob } from '.';
 import { ReadBuffer } from './buffer';
-import { log, Token, tokenValue } from './common';
+import { isTokenNumeric, log, Token, tokenValue } from './common';
 
 type ReadToken = {
   type: Token;
@@ -23,22 +23,32 @@ export class Reader {
 
     log(`Reading tokens from ${buffer.length} bytes total size`);
     let c = 0;
+
     while (!buffer.isEOF) {
       c++;
+
       try {
-        const type = tokenValue(buffer.readUint8());
-        const token: ReadToken = {
-          type,
+        const token = tokenValue(buffer.readUint8());
+        const readToken: ReadToken = {
+          type: token,
         };
-        this.tokens.push(token);
+        this.tokens.push(readToken);
 
-        if (type === '_key') {
-          token.value = buffer.readString();
+        if (token === '_key') {
+          readToken.value = buffer.readString();
+        } else if (token === 'String') {
+          readToken.value = buffer.readString();
+        } else if (token === 'Int8') {
+          readToken.value = buffer.readInt8();
+        } else if (token === 'Uint8') {
+          readToken.value = buffer.readUint8();
+        } else if (token === 'Int16') {
+          readToken.value = buffer.readInt16();
         }
 
-        if (c >= 2) {
-          break;
-        }
+        // if (c >= 10) {
+        //   break;
+        // }
       } catch (e) {
         console.log(e);
         break;

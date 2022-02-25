@@ -136,7 +136,7 @@ export class Writer {
         } else if (type === 'String') {
           buffer.writeString(value);
         } else if (type === 'Int8') {
-          buffer.writeInt8(value); // TODO: all numeric data types...
+          buffer.writeInt8(value);
         } else if (type === 'Uint8') {
           buffer.writeUint8(value);
         } else if (type === 'Int16') {

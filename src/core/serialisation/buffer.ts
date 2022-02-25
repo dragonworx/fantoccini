@@ -1,4 +1,9 @@
-import { Token, byteSize } from './common';
+import {
+  Token,
+  byteSize,
+  getDataTypeMethods,
+  setDataTypeMethods,
+} from './common';
 
 export interface LogItem {
   operation: 'read' | 'write';
@@ -87,29 +92,24 @@ export class WriteBuffer extends Buffer {
     }
   }
 
-  writeNumericType(
-    value: number,
-    dataViewMethod: (
-      byteOffset: number,
-      value: number,
-      littleEndian?: boolean
-    ) => void,
-    token: Token
-  ) {
+  writeNumericType(token: Token, value: number) {
     this.writeLog(token, value);
+    const dataViewMethod = this.view[setDataTypeMethods[token]];
     dataViewMethod.call(this.view, this.byteOffset, value, this.littleEndian);
 
     this.moveByteOffset(token);
   }
 
-  writeInt8 = (value: number) =>
-    this.writeNumericType(value, this.view.setInt8, 'Int8');
-
-  writeUint8 = (value: number) =>
-    this.writeNumericType(value, this.view.setUint8, 'Uint8');
-
-  writeInt16 = (value: number) =>
-    this.writeNumericType(value, this.view.setInt16, 'Int16');
+  writeInt8 = (value: number) => this.writeNumericType('Int8', value);
+  writeUint8 = (value: number) => this.writeNumericType('Uint8', value);
+  writeInt16 = (value: number) => this.writeNumericType('Int16', value);
+  writeUint16 = (value: number) => this.writeNumericType('Uint16', value);
+  writeInt32 = (value: number) => this.writeNumericType('Int32', value);
+  writeUint32 = (value: number) => this.writeNumericType('Uint32', value);
+  writeFloat32 = (value: number) => this.writeNumericType('Float32', value);
+  writeFloat64 = (value: number) => this.writeNumericType('Float64', value);
+  writeBigInt64 = (value: number) => this.writeNumericType('BigInt64', value);
+  writeBigUint64 = (value: number) => this.writeNumericType('BigUint64', value);
 
   writeArrayBuffer(value: ArrayBuffer) {
     this.writeInt16(value.byteLength);
@@ -121,7 +121,7 @@ export class WriteBuffer extends Buffer {
 export class ReadBuffer extends Buffer {
   readString() {
     const size = this.readInt16();
-    this.readLog('Uint16', `strLen = ${size}`, this.byteOffset - 2);
+    // this.readLog('Uint16', `strLen = ${size}`, this.byteOffset - 2);
 
     let str = '';
     const startByteOffset = this.byteOffset;
@@ -142,10 +142,8 @@ export class ReadBuffer extends Buffer {
     return str;
   }
 
-  readNumericType(
-    dataViewMethod: (byteOffset: number, littleEndian?: boolean) => number,
-    token: Token
-  ) {
+  readNumericType(token: Token) {
+    const dataViewMethod = this.view[getDataTypeMethods[token]];
     const value = dataViewMethod.call(
       this.view,
       this.byteOffset,
@@ -158,11 +156,24 @@ export class ReadBuffer extends Buffer {
     return value;
   }
 
-  readInt8 = () => this.readNumericType(this.view.getInt8, 'Int8');
+  readInt8 = () => this.readNumericType('Int8');
+  readUint8 = () => this.readNumericType('Uint8');
+  readInt16 = () => this.readNumericType('Int16');
+  readUint16 = () => this.readNumericType('Uint16');
+  readInt32 = () => this.readNumericType('Int32');
+  readUint32 = () => this.readNumericType('Uint32');
+  readFloat32 = () => this.readNumericType('Float32');
+  readFloat64 = () => this.readNumericType('Float64');
+  readBigInt64 = () => this.readNumericType('BigInt64');
+  readBigUint64 = () => this.readNumericType('BigUint64');
 
-  readUint8 = () => this.readNumericType(this.view.getUint8, 'Uint8');
-
-  readInt16 = () => this.readNumericType(this.view.getInt16, 'Int16');
-
-  // TODO: read array buffer, with length uint16 first 2 bytes
+  readArrayBuffer() {
+    const byteLength = this.readInt16();
+    const buffer = this.buffer.slice(
+      this.byteOffset,
+      this.byteOffset + byteLength
+    );
+    this.byteOffset += byteLength;
+    return buffer;
+  }
 }
