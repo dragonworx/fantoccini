@@ -9,7 +9,7 @@ type ReadToken = {
 
 export class Reader {
   tokens: ReadToken[] = [];
-  stack: [] = [];
+  stack: any[] = [];
 
   async deserialise(blobOrBase64: Blob | string) {
     let buffer: ReadBuffer;
@@ -34,6 +34,12 @@ export class Reader {
 
         if (token === '_key') {
           readToken.value = buffer.readString(false);
+        } else if (token === '_pushObj') {
+          readToken.value = {};
+        } else if (token === '_pushArr') {
+          readToken.value = [];
+        } else if (token === 'null') {
+          readToken.value = null;
         } else if (token === 'Char') {
           readToken.value = buffer.readChar();
         } else if (token === 'String') {
@@ -42,8 +48,13 @@ export class Reader {
           readToken.value = buffer.readNumericType(token);
         } else if (token === 'Boolean') {
           readToken.value = buffer.readBoolean();
-        } else if (token === 'ArrayBuffer' || token === 'Blob') {
+        } else if (token === 'ArrayBuffer') {
           readToken.value = buffer.readArrayBuffer();
+        } else if (token === 'Blob') {
+          const type = buffer.readString(false);
+          readToken.value = new Blob([buffer.readArrayBuffer()], {
+            type,
+          });
         } else if (token === '_eof') {
           break;
         }
@@ -61,10 +72,63 @@ export class Reader {
     return this.parse();
   }
 
+  get peek() {
+    return this.stack[this.stack.length - 1];
+  }
+
+  get isRoot() {
+    return this.stack.length === 0;
+  }
+
+  get isObject() {
+    const peek = this.peek;
+    return typeof peek === 'object' && !Array.isArray(peek);
+  }
+
+  get isArray() {
+    return Array.isArray(this.peek);
+  }
+
   parse() {
-    this.tokens.forEach(({ type, value }) => {
+    const { stack, tokens } = this;
+
+    let i = 0;
+
+    const activeKey = () =>
+      i > 0
+        ? tokens[i - 1].type === '_key'
+          ? tokens[i - 1].value
+          : null
+        : null;
+
+    while (i < tokens.length) {
+      const { type, value } = tokens[i];
+
       if (type === '_key') {
+      } else if (type === '_pushObj' || type === '_pushArr') {
+        if (this.isArray) {
+          this.peek.push(value);
+        } else if (this.isObject) {
+          const key = activeKey();
+          this.peek[key] = value;
+        }
+        stack.push(value);
+      } else if (type === '_pop') {
+        if (stack.length > 1) {
+          stack.pop();
+        }
+      } else if (value !== undefined) {
+        if (this.isArray) {
+          this.peek.push(value);
+        } else if (this.isObject) {
+          const key = activeKey();
+          this.peek[key] = value;
+        }
       }
-    });
+
+      i++;
+    }
+
+    return this.stack[0];
   }
 }

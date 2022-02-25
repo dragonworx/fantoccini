@@ -7,6 +7,7 @@ import {
   log,
   isTokenNumeric,
   LONG_SIZE_BYTES,
+  SHORT_SIZE_BYTES,
 } from './common';
 import { WriteBuffer } from './buffer';
 
@@ -57,14 +58,21 @@ export class Writer {
   }
 
   async write(value: any) {
-    if (value instanceof Blob) {
+    if (value === null) {
+      this.tokens.push({
+        type: 'null',
+      });
+    } else if (value instanceof Blob) {
       /** Blob */
-      const buffer = await new Response(value).arrayBuffer();
+      const arrayBuffer = await new Response(value).arrayBuffer();
 
       this.tokens.push({
         type: 'Blob',
-        value: buffer,
-        size: buffer.byteLength + LONG_SIZE_BYTES,
+        value: { arrayBuffer, blob: value },
+        size:
+          shortStringByteLength(value.type) +
+          LONG_SIZE_BYTES +
+          arrayBuffer.byteLength,
       });
     } else if (value instanceof ArrayBuffer) {
       /** ArrayBuffer */
@@ -72,7 +80,7 @@ export class Writer {
       this.tokens.push({
         type: 'ArrayBuffer',
         value,
-        size: value.byteLength + LONG_SIZE_BYTES,
+        size: LONG_SIZE_BYTES + value.byteLength,
       });
     } else if (typeof value === 'object' && value !== null) {
       if (Array.isArray(value)) {
@@ -146,6 +154,7 @@ export class Writer {
 
         if (type === '_key') {
           buffer.writeString(value, false);
+        } else if (type === 'null') {
         } else if (type === 'Char') {
           buffer.writeChar(value);
         } else if (type === 'String') {
@@ -154,8 +163,12 @@ export class Writer {
           buffer.writeNumericType(type, value);
         } else if (type === 'Boolean') {
           buffer.writeBoolean(value);
-        } else if (type === 'ArrayBuffer' || type === 'Blob') {
+        } else if (type === 'ArrayBuffer') {
           buffer.writeArrayBuffer(value);
+        } else if (type === 'Blob') {
+          const { arrayBuffer, blob } = value;
+          buffer.writeString((blob as Blob).type, false);
+          buffer.writeArrayBuffer(arrayBuffer);
         }
       } catch (e) {
         console.error(e);

@@ -38,12 +38,13 @@ view.setUint8(2, 3);
 view.setUint8(3, 4);
 
 const doc = {
+  n: null,
   a: 'x',
   x: 123,
-  foo: ['bar'],
+  foo: [null, 'bar'],
   y: true,
   z: false,
-  w: ['a', 'b', { c: false }],
+  w: ['a', 'b', { c: false, d: [1, 2, [3, null]] }],
   p: blob,
   d: {
     b: {
@@ -60,6 +61,9 @@ const writer = new Writer();
 writer.serialise(doc).then(() => {
   const blob = writer.toBlob();
   const reader = new Reader();
-  reader.deserialise(blob).then(parsedDoc => {});
+  reader.deserialise(blob).then(obj => {
+    console.log(obj);
+    blobToImg(obj.p, 0, 300);
+  });
   // downloadBlob(blob, 'test.dat');
 });
