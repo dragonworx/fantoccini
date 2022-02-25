@@ -55,14 +55,14 @@ export class WriteBuffer extends Buffer {
   writeString(value: string) {
     // write string length as uint16
     const l = value.length;
-    this.writeLog('Uint16', `strLen ${l}`);
+    this.writeLog('Uint16', `strLen = ${l} "${value}"`);
     this.view.setInt16(this.byteOffset, l, this.littleEndian);
     this.byteOffset += 2;
 
     // write each char as uint16
     for (var i = 0; i < l; i++) {
       const charCode = value.charCodeAt(i);
-      this.writeLog('Uint16', `strChar ${l}`);
+      this.writeLog('Uint16', `strChar[${i}] = ${charCode} "${value[i]}"`);
       this.view.setUint16(this.byteOffset + i * 2, charCode, this.littleEndian);
     }
 

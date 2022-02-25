@@ -20,14 +20,15 @@ export class Writer {
   writeKey(key: string) {
     this.tokens.push({
       type: '_key',
-      size: 1,
-    });
-
-    this.tokens.push({
-      type: 'String',
       value: key,
       size: stringByteLength(key),
     });
+
+    // this.tokens.push({
+    //   type: 'String',
+    //   value: key,
+    //   size: stringByteLength(key),
+    // });
   }
 
   async parse(obj: Record<string, any> | Array<any>) {
@@ -36,12 +37,10 @@ export class Writer {
     if (isArray) {
       this.tokens.push({
         type: '_pushArr',
-        size: 1,
       });
     } else {
       this.tokens.push({
         type: '_pushObj',
-        size: 1,
       });
     }
 
@@ -54,7 +53,6 @@ export class Writer {
 
     this.tokens.push({
       type: '_pop',
-      size: 1,
     });
   }
 
@@ -79,17 +77,17 @@ export class Writer {
     } else if (typeof value === 'object' && value !== null) {
       if (Array.isArray(value)) {
         /** Array */
-        this.tokens.push({ type: '_pushArr', size: 1 });
+        this.tokens.push({ type: '_pushArr' });
 
         for (const [, item] of value.entries()) {
           await this.writeNode(item);
         }
 
-        this.tokens.push({ type: '_pop', size: 1 });
+        this.tokens.push({ type: '_pop' });
       } else {
         /** Object */
         const entries = Object.entries(value);
-        this.tokens.push({ type: '_pushObj', size: 1 });
+        this.tokens.push({ type: '_pushObj' });
 
         for (let [subkey, subvalue] of entries) {
           this.writeKey(subkey);
@@ -97,7 +95,7 @@ export class Writer {
           await this.writeNode(subvalue);
         }
 
-        this.tokens.push({ type: '_pop', size: 1 });
+        this.tokens.push({ type: '_pop' });
       }
     } else {
       /** Primitive Values */
@@ -122,7 +120,7 @@ export class Writer {
 
   toArrayBuffer() {
     const byteLength = this.tokens.reduce(
-      (prev, curr) => prev + (curr.size || 0),
+      (prev, curr) => prev + (curr.size || 0) + 1,
       0
     );
 
@@ -140,7 +138,9 @@ export class Writer {
         const header = tokens.indexOf(type);
         buffer.writeUint8(header);
 
-        if (type === 'String') {
+        if (type === '_key') {
+          buffer.writeString(value);
+        } else if (type === 'String') {
           buffer.writeString(value);
         } else if (type === 'Int8') {
           buffer.writeInt8(value);
@@ -160,7 +160,7 @@ export class Writer {
       }
     });
 
-    log(`Write buffer log`);
+    log(`WriteBuffer log`);
     console.table(buffer.log);
 
     return buffer.buffer;

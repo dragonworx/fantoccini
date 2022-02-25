@@ -71,10 +71,10 @@ export const tokens = [
   'Boolean',
   'ArrayBuffer',
   'Blob',
-  '_key',
-  '_pushObj',
-  '_pushArr',
-  '_pop',
+  '_key', // 14
+  '_pushObj', // 15
+  '_pushArr', // 16
+  '_pop', // 17
 ] as const;
 
 export type Token = typeof tokens[number];
