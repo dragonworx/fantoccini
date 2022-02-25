@@ -75,12 +75,13 @@ export const tokens = [
   '_pushObj', // 15
   '_pushArr', // 16
   '_pop', // 17
+  '_eof', // 18
 ] as const;
 
 export type Token = typeof tokens[number];
 
-export const isTokenNumeric = (tokenIndex: number) =>
-  tokenIndex <= tokens.indexOf('BigUint64');
+export const isTokenNumeric = (token: Token) =>
+  tokens.indexOf(token) <= tokens.indexOf('BigUint64');
 
 export const tokenValue = (tokenIndex: number) => tokens[tokenIndex];
 
@@ -92,7 +93,10 @@ export const isNumericRangeValid = (value: number, type: DataType) => {
 export const getNumericType = (value: number) =>
   dataTypes.find(dataType => isNumericRangeValid(value, dataType));
 
-export const stringByteLength = (value: string) => 2 + value.length * 2;
+export const stringByteLength = (value: string) =>
+  SIZE_BYTES + value.length * 2;
 
 export const log = (text: string) =>
   console.log(`%c${text}`, 'font-weight:bold;color:cyan');
+
+export const SIZE_BYTES = 4;

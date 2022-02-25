@@ -22,11 +22,8 @@ export class Reader {
     }
 
     log(`Reading tokens from ${buffer.length} bytes total size`);
-    let c = 0;
 
-    while (!buffer.isEOF) {
-      c++;
-
+    while (true) {
       try {
         const token = tokenValue(buffer.readUint8());
         const readToken: ReadToken = {
@@ -38,17 +35,15 @@ export class Reader {
           readToken.value = buffer.readString();
         } else if (token === 'String') {
           readToken.value = buffer.readString();
-        } else if (token === 'Int8') {
-          readToken.value = buffer.readInt8();
-        } else if (token === 'Uint8') {
-          readToken.value = buffer.readUint8();
-        } else if (token === 'Int16') {
-          readToken.value = buffer.readInt16();
+        } else if (isTokenNumeric(token)) {
+          readToken.value = buffer.readNumericType(token);
+        } else if (token === 'Boolean') {
+          readToken.value = buffer.readBoolean();
+        } else if (token === 'ArrayBuffer' || token === 'Blob') {
+          readToken.value = buffer.readArrayBuffer();
+        } else if (token === '_eof') {
+          break;
         }
-
-        // if (c >= 10) {
-        //   break;
-        // }
       } catch (e) {
         console.log(e);
         break;
@@ -57,7 +52,7 @@ export class Reader {
 
     console.table(this.tokens);
 
-    log(`ReadBuffer log`);
+    log(`ReadBuffer log [${buffer.log.length}]`);
     console.table(buffer.log);
   }
 }

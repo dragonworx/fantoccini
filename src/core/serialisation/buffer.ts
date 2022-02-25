@@ -3,6 +3,7 @@ import {
   byteSize,
   getDataTypeMethods,
   setDataTypeMethods,
+  SIZE_BYTES,
 } from './common';
 
 export interface LogItem {
@@ -70,7 +71,7 @@ export abstract class Buffer {
   }
 
   get isEOF() {
-    return this.byteOffset >= this.length;
+    return this.byteOffset >= this.length - 1;
   }
 }
 
@@ -78,9 +79,9 @@ export class WriteBuffer extends Buffer {
   writeString(value: string) {
     // write string length as uint16
     const l = value.length;
-    this.writeLog('Uint16', `strLen = ${l} "${value}"`);
-    this.view.setInt16(this.byteOffset, l, this.littleEndian);
-    this.byteOffset += 2;
+    this.writeLog('Uint32', `strLen = ${l} "${value}"`);
+    this.view.setUint32(this.byteOffset, l, this.littleEndian);
+    this.byteOffset += SIZE_BYTES;
 
     // write each char as uint16
     const startByteOffset = this.byteOffset;
@@ -111,8 +112,12 @@ export class WriteBuffer extends Buffer {
   writeBigInt64 = (value: number) => this.writeNumericType('BigInt64', value);
   writeBigUint64 = (value: number) => this.writeNumericType('BigUint64', value);
 
+  writeBoolean(value: boolean) {
+    this.writeUint8(value ? 1 : 0);
+  }
+
   writeArrayBuffer(value: ArrayBuffer) {
-    this.writeInt16(value.byteLength);
+    this.writeUint32(value.byteLength);
     new Uint8Array(this.buffer, this.byteOffset).set(new Uint8Array(value));
     this.byteOffset += value.byteLength;
   }
@@ -120,8 +125,7 @@ export class WriteBuffer extends Buffer {
 
 export class ReadBuffer extends Buffer {
   readString() {
-    const size = this.readInt16();
-    // this.readLog('Uint16', `strLen = ${size}`, this.byteOffset - 2);
+    const size = this.readUint32();
 
     let str = '';
     const startByteOffset = this.byteOffset;
@@ -167,8 +171,12 @@ export class ReadBuffer extends Buffer {
   readBigInt64 = () => this.readNumericType('BigInt64');
   readBigUint64 = () => this.readNumericType('BigUint64');
 
+  readBoolean() {
+    return this.readUint8() === 1;
+  }
+
   readArrayBuffer() {
-    const byteLength = this.readInt16();
+    const byteLength = this.readUint32();
     const buffer = this.buffer.slice(
       this.byteOffset,
       this.byteOffset + byteLength
