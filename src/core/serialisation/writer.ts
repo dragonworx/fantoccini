@@ -1,215 +1,169 @@
 import {
-  ByteSize,
-  DataTypeName,
-  FormatTypeName,
   getNumericType,
-  Header,
+  Token,
+  byteSize,
+  stringByteLength,
+  tokens,
+  log,
 } from './common';
+import { WriteBuffer } from './buffer';
 
-type Token = {
-  key: string | null;
-  type: FormatTypeName | '{}' | '[]' | 'pop';
+type WriteToken = {
+  type: Token;
   value?: any;
   size?: number;
 };
 
 export class Writer {
-  depth: number = 0;
-  stack: Token[] = [];
-  byteOffset: number = 0;
-  buffer: ArrayBuffer = new ArrayBuffer(0);
-  view: DataView = new DataView(this.buffer);
-  littleEndian: boolean = true;
-  log: {} = {};
+  tokens: WriteToken[] = [];
 
-  private debug(value: string) {
-    this.log[this.byteOffset] = value;
-    console.log([this.byteOffset, value]);
+  writeKey(key: string) {
+    this.tokens.push({
+      type: '_key',
+      size: 1,
+    });
+
+    this.tokens.push({
+      type: 'String',
+      value: key,
+      size: stringByteLength(key),
+    });
   }
 
-  private reset() {
-    this.stack.length = 0;
-    this.depth = 0;
-    this.byteOffset = 0;
-    this.buffer = new ArrayBuffer(0);
-    this.view = new DataView(this.buffer);
-    this.log = {};
-  }
+  async parse(obj: Record<string, any> | Array<any>) {
+    const isArray = Array.isArray(obj);
 
-  private advanceByteOffset(type: FormatTypeName) {
-    const byteSize = ByteSize[type];
-    this.byteOffset += byteSize;
-  }
-
-  private writeString(value: string) {
-    const l = value.length;
-    this.debug(`string{${l}}`);
-    this.view.setInt16(this.byteOffset, l, this.littleEndian);
-    this.byteOffset += 2;
-    for (var i = 0; i < l; i++) {
-      this.debug(`char[${i}]: ${value.charCodeAt(i)} "${value[i]}"`);
-      this.view.setUint16(
-        this.byteOffset + i * 2,
-        value.charCodeAt(i),
-        this.littleEndian
-      );
+    if (isArray) {
+      this.tokens.push({
+        type: '_pushArr',
+        size: 1,
+      });
+    } else {
+      this.tokens.push({
+        type: '_pushObj',
+        size: 1,
+      });
     }
-    this.byteOffset += l * 2;
+
+    for (let [key, value] of Object.entries(obj)) {
+      if (!isArray) {
+        this.writeKey(key);
+      }
+      await this.writeNode(value);
+    }
+
+    this.tokens.push({
+      type: '_pop',
+      size: 1,
+    });
   }
 
-  private writeNumericType(
-    value: number,
-    dataViewMethod: (
-      byteOffset: number,
-      value: number,
-      littleEndian?: boolean
-    ) => void,
-    type: DataTypeName
-  ) {
-    this.debug(`${type} = ${value}`);
-    dataViewMethod.call(this.view, this.byteOffset, value, this.littleEndian);
-    this.advanceByteOffset(type);
-  }
-
-  private writeInt8 = (value: number) =>
-    this.writeNumericType(value, this.view.setInt8, 'Int8');
-  private writeInt16 = (value: number) =>
-    this.writeNumericType(value, this.view.setInt16, 'Int16');
-
-  private writeArrayBuffer(value: ArrayBuffer) {
-    new Uint8Array(this.buffer, this.byteOffset).set(new Uint8Array(value));
-    this.byteOffset += value.byteLength;
-  }
-
-  private async writeNode(key: string, value: any) {
-    this.depth++;
-
+  async writeNode(value: any) {
     if (value instanceof Blob) {
-      // Blob
+      /** Blob */
       const buffer = await new Response(value).arrayBuffer();
 
-      this.stack.push({
-        key,
+      this.tokens.push({
         type: 'Blob',
         value: buffer,
         size: buffer.byteLength,
       });
     } else if (value instanceof ArrayBuffer) {
-      // ArrayBuffer
+      /** ArrayBuffer */
 
-      this.stack.push({
-        key,
+      this.tokens.push({
         type: 'ArrayBuffer',
         value,
         size: value.byteLength,
       });
     } else if (typeof value === 'object' && value !== null) {
       if (Array.isArray(value)) {
-        // Array
-        this.stack.push({ key, type: '[]', size: 0 });
+        /** Array */
+        this.tokens.push({ type: '_pushArr', size: 1 });
 
-        for (const [index, item] of value.entries()) {
-          await this.writeNode(null, item);
+        for (const [, item] of value.entries()) {
+          await this.writeNode(item);
         }
 
-        this.stack.push({ key: null, type: 'pop' });
+        this.tokens.push({ type: '_pop', size: 1 });
       } else {
-        // Object
+        /** Object */
         const entries = Object.entries(value);
-        this.stack.push({ key, type: '{}', size: 0 });
+        this.tokens.push({ type: '_pushObj', size: 1 });
 
         for (let [subkey, subvalue] of entries) {
-          await this.writeNode(subkey, subvalue);
+          this.writeKey(subkey);
+
+          await this.writeNode(subvalue);
         }
 
-        this.stack.push({ key: null, type: 'pop' });
+        this.tokens.push({ type: '_pop', size: 1 });
       }
     } else {
-      // Value
+      /** Primitive Values */
       if (typeof value === 'number') {
-        // Number
+        /** Number */
         const type = getNumericType(value);
-        const byteSize = ByteSize[type];
-        this.stack.push({ key, type, value, size: byteSize });
+        const byteLength = byteSize[type];
+        this.tokens.push({ type, value, size: byteLength });
       } else if (typeof value === 'string') {
-        // String
-        this.stack.push({
-          key,
+        /** String */
+        this.tokens.push({
           type: 'String',
           value,
           size: 2 + value.length * 2, // size(uint16) + chars
         });
       } else if (typeof value === 'boolean') {
-        // Boolean
-        this.stack.push({ key, type: 'Boolean', value, size: 1 });
+        /** Boolean */
+        this.tokens.push({ type: 'Boolean', value, size: 1 });
       }
-    }
-
-    this.depth--;
-  }
-
-  private getElementByteSize({ key, size }: Token) {
-    // headerByte + strLen + key + valueSize
-    return 1 + (typeof key === 'string' ? 2 + key.length * 2 : 0) + (size || 0);
-  }
-
-  private get bufferSize() {
-    // each element byte size
-    return this.stack.reduce(
-      (prev, curr) => prev + this.getElementByteSize(curr),
-      0
-    );
-  }
-
-  async parse(doc: Record<string, any>) {
-    this.reset();
-    for (let [key, value] of Object.entries(doc)) {
-      await this.writeNode(key, value);
     }
   }
 
   toArrayBuffer() {
-    const size = this.bufferSize;
+    const byteLength = this.tokens.reduce(
+      (prev, curr) => prev + (curr.size || 0),
+      0
+    );
 
-    this.buffer = new ArrayBuffer(size);
-    this.view = new DataView(this.buffer);
+    log(`Writing tokens for ${byteLength} bytes total size`);
 
-    console.log('STACK:', this.stack, size);
+    console.table(this.tokens);
 
-    this.stack.forEach((element, i) => {
-      const { key, type, value } = element;
-      this.debug(`---- BEGIN: ${i} "${key}" ----`);
+    const buffer = new WriteBuffer(byteLength);
 
-      // write header..
-      const headerByte = Header.indexOf(type);
-      this.writeInt8(headerByte);
+    this.tokens.forEach(token => {
+      const { type, value } = token;
 
-      if (typeof key === 'string') {
-        // write key
-        this.writeString(key);
-      }
+      try {
+        // write token header..
+        const header = tokens.indexOf(type);
+        buffer.writeUint8(header);
 
-      // write value
-      if (type === 'String') {
-        this.writeString(value);
-      } else if (type === 'Int8') {
-        // TODO all numeric types
-        this.writeInt8(value);
-      } else if (type === 'Int16') {
-        this.writeInt16(value);
-      } else if (type === '[]' || type === '{}' || type === 'pop') {
-      } else if (type === 'Boolean') {
-        this.writeInt8(value ? 1 : 0);
-      } else if (type === 'ArrayBuffer') {
-        this.writeArrayBuffer(value);
-      } else if (type === 'Blob') {
-        this.writeArrayBuffer(value);
+        if (type === 'String') {
+          buffer.writeString(value);
+        } else if (type === 'Int8') {
+          buffer.writeInt8(value);
+        } else if (type === 'Uint8') {
+          buffer.writeUint8(value);
+        } else if (type === 'Int16') {
+          buffer.writeInt16(value);
+        } else if (type === 'Boolean') {
+          buffer.writeInt8(value ? 1 : 0);
+        } else if (type === 'ArrayBuffer') {
+          buffer.writeArrayBuffer(value);
+        } else if (type === 'Blob') {
+          buffer.writeArrayBuffer(value);
+        }
+      } catch (e) {
+        console.error(e);
       }
     });
 
-    console.table(this.log);
+    log(`Write buffer log`);
+    console.table(buffer.log);
 
-    return this.buffer;
+    return buffer.buffer;
   }
 
   toBlob(type: string = 'application/octet-stream') {

@@ -1,29 +1,4 @@
-export type DataTypeName =
-  | 'Int8'
-  | 'Uint8'
-  | 'Int16'
-  | 'Uint16'
-  | 'Int32'
-  | 'Uint32'
-  | 'Float32'
-  | 'Float64'
-  | 'BigInt64'
-  | 'BigUint64';
-
-export const DataTypeNames: Array<DataTypeName> = [
-  'Int8',
-  'Uint8',
-  'Int16',
-  'Uint16',
-  'Int32',
-  'Uint32',
-  'Float32',
-  'Float64',
-  'BigInt64',
-  'BigUint64',
-];
-
-export const ByteSize = {
+export const byteSize = {
   Int8: 1,
   Uint8: 1,
   Int16: 2,
@@ -36,7 +11,7 @@ export const ByteSize = {
   BigUint64: 8,
 };
 
-export const TypeRange = {
+export const typeRange = {
   Int8: [-128, 127],
   Uint8: [0, 255],
   Int16: [-32768, 32767],
@@ -49,7 +24,22 @@ export const TypeRange = {
   BigUint64: [0, 2 ^ (64 - 1)],
 };
 
-export const GetTypeMethods = {
+export const dataTypes = [
+  'Int8',
+  'Uint8',
+  'Int16',
+  'Uint16',
+  'Int32',
+  'Uint32',
+  'Float32',
+  'Float64',
+  'BigInt64',
+  'BigUint64',
+] as const;
+
+export type DataType = typeof dataTypes[number];
+
+export const getDataTypeMethods = {
   Int8: 'getInt8',
   Uint8: 'getUint8',
   Int16: 'getInt16',
@@ -62,7 +52,7 @@ export const GetTypeMethods = {
   BigUint64: 'getBigUint64',
 };
 
-export const SetTypeMethods = {
+export const setDataTypeMethods = {
   Int8: 'setInt8',
   Uint8: 'setUint8',
   Int16: 'setInt16',
@@ -75,62 +65,34 @@ export const SetTypeMethods = {
   BigUint64: 'setBigUint64',
 };
 
-export type FormatTypeName =
-  | DataTypeName
-  | 'String'
-  | 'Number'
-  | 'Boolean'
-  | 'ArrayBuffer'
-  | 'Blob';
-
-export const Header = [
-  'Int8',
-  'Uint8',
-  'Int16',
-  'Uint16',
-  'Int32',
-  'Uint32',
-  'Float32',
-  'Float64',
-  'BigInt64',
-  'BigUint64',
-  'String', // 10
+export const tokens = [
+  ...dataTypes,
+  'String',
   'Boolean',
   'ArrayBuffer',
   'Blob',
-  '[]', // 14
-  '{}',
-  'pop',
-];
+  '_key',
+  '_pushObj',
+  '_pushArr',
+  '_pop',
+] as const;
 
-export type HeaderName =
-  | 'Int8'
-  | 'Uint8'
-  | 'Int16'
-  | 'Uint16'
-  | 'Int32'
-  | 'Uint32'
-  | 'Float32'
-  | 'Float64'
-  | 'BigInt64'
-  | 'BigUint64'
-  | 'String'
-  | 'Boolean'
-  | 'ArrayBuffer'
-  | 'Blob'
-  | '[]'
-  | '{}'
-  | 'pop';
+export type Token = typeof tokens[number];
 
-export const isHeaderNumeric = (headerType: number) =>
-  headerType <= Header.indexOf('BigUint64');
+export const isTokenNumeric = (tokenIndex: number) =>
+  tokenIndex <= tokens.indexOf('BigUint64');
 
-export const headerDataTypeName = (headerType: number) => Header[headerType];
+export const tokenValue = (tokenIndex: number) => tokens[tokenIndex];
 
-export const isNumericRangeValid = (value: number, type: DataTypeName) => {
-  const [min, max] = TypeRange[type];
+export const isNumericRangeValid = (value: number, type: DataType) => {
+  const [min, max] = typeRange[type];
   return value >= min && value <= max;
 };
 
 export const getNumericType = (value: number) =>
-  DataTypeNames.find(dataType => isNumericRangeValid(value, dataType));
+  dataTypes.find(dataType => isNumericRangeValid(value, dataType));
+
+export const stringByteLength = (value: string) => 2 + value.length * 2;
+
+export const log = (text: string) =>
+  console.log(`%c${text}`, 'font-weight:bold;color:cyan');
