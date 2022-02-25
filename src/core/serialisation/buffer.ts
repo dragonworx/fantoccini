@@ -3,7 +3,8 @@ import {
   byteSize,
   getDataTypeMethods,
   setDataTypeMethods,
-  SIZE_BYTES,
+  LONG_SIZE_BYTES,
+  SHORT_SIZE_BYTES,
 } from './common';
 
 export interface LogItem {
@@ -76,12 +77,25 @@ export abstract class Buffer {
 }
 
 export class WriteBuffer extends Buffer {
-  writeString(value: string) {
+  writeChar(value: string) {
+    const charCode = value.charCodeAt(0);
+    this.writeLog('Uint16', `char = ${charCode} "${value}"`);
+    this.view.setUint16(this.byteOffset, charCode, this.littleEndian);
+    this.byteOffset += 2;
+  }
+
+  writeString(value: string, isLong: boolean = true) {
     // write string length as uint16
     const l = value.length;
-    this.writeLog('Uint32', `strLen = ${l} "${value}"`);
-    this.view.setUint32(this.byteOffset, l, this.littleEndian);
-    this.byteOffset += SIZE_BYTES;
+    if (isLong) {
+      this.writeLog('Uint32', `strLen = ${l} "${value}"`);
+      this.view.setUint32(this.byteOffset, l, this.littleEndian);
+      this.byteOffset += LONG_SIZE_BYTES;
+    } else {
+      this.writeLog('Uint16', `strLen = ${l} "${value}"`);
+      this.view.setUint16(this.byteOffset, l, this.littleEndian);
+      this.byteOffset += SHORT_SIZE_BYTES;
+    }
 
     // write each char as uint16
     const startByteOffset = this.byteOffset;
@@ -124,8 +138,16 @@ export class WriteBuffer extends Buffer {
 }
 
 export class ReadBuffer extends Buffer {
-  readString() {
-    const size = this.readUint32();
+  readChar() {
+    const charCode = this.view.getUint16(this.byteOffset, this.littleEndian);
+    const char = String.fromCharCode(charCode);
+    this.readLog('Uint16', `char = ${charCode} "${char}"`, this.byteOffset - 2);
+    this.byteOffset += 2;
+    return char;
+  }
+
+  readString(isLong: boolean = true) {
+    const size = isLong ? this.readUint32() : this.readUint16();
 
     let str = '';
     const startByteOffset = this.byteOffset;

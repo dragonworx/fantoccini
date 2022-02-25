@@ -2,11 +2,11 @@ import {
   getNumericType,
   Token,
   byteSize,
-  stringByteLength,
+  shortStringByteLength,
   tokens,
   log,
   isTokenNumeric,
-  SIZE_BYTES,
+  LONG_SIZE_BYTES,
 } from './common';
 import { WriteBuffer } from './buffer';
 
@@ -23,11 +23,11 @@ export class Writer {
     this.tokens.push({
       type: '_key',
       value: key,
-      size: 1 + stringByteLength(key),
+      size: 1 + shortStringByteLength(key),
     });
   }
 
-  async parse(obj: Record<string, any> | Array<any>) {
+  async serialise(obj: { [k: string]: any } | Array<any>) {
     const isArray = Array.isArray(obj);
 
     if (isArray) {
@@ -44,7 +44,7 @@ export class Writer {
       if (!isArray) {
         this.writeKey(key);
       }
-      await this.writeNode(value);
+      await this.write(value);
     }
 
     this.tokens.push({
@@ -56,7 +56,7 @@ export class Writer {
     });
   }
 
-  async writeNode(value: any) {
+  async write(value: any) {
     if (value instanceof Blob) {
       /** Blob */
       const buffer = await new Response(value).arrayBuffer();
@@ -64,7 +64,7 @@ export class Writer {
       this.tokens.push({
         type: 'Blob',
         value: buffer,
-        size: buffer.byteLength + SIZE_BYTES,
+        size: buffer.byteLength + LONG_SIZE_BYTES,
       });
     } else if (value instanceof ArrayBuffer) {
       /** ArrayBuffer */
@@ -72,7 +72,7 @@ export class Writer {
       this.tokens.push({
         type: 'ArrayBuffer',
         value,
-        size: value.byteLength + SIZE_BYTES,
+        size: value.byteLength + LONG_SIZE_BYTES,
       });
     } else if (typeof value === 'object' && value !== null) {
       if (Array.isArray(value)) {
@@ -80,7 +80,7 @@ export class Writer {
         this.tokens.push({ type: '_pushArr' });
 
         for (const [, item] of value.entries()) {
-          await this.writeNode(item);
+          await this.write(item);
         }
 
         this.tokens.push({ type: '_pop' });
@@ -92,7 +92,7 @@ export class Writer {
         for (let [subkey, subvalue] of entries) {
           this.writeKey(subkey);
 
-          await this.writeNode(subvalue);
+          await this.write(subvalue);
         }
 
         this.tokens.push({ type: '_pop' });
@@ -105,12 +105,21 @@ export class Writer {
         const byteLength = byteSize[type];
         this.tokens.push({ type, value, size: byteLength });
       } else if (typeof value === 'string') {
-        /** String */
-        this.tokens.push({
-          type: 'String',
-          value,
-          size: SIZE_BYTES + value.length * 2,
-        });
+        if (value.length === 1) {
+          /** Char */
+          this.tokens.push({
+            type: 'Char',
+            value,
+            size: 2,
+          });
+        } else {
+          /** String */
+          this.tokens.push({
+            type: 'String',
+            value,
+            size: LONG_SIZE_BYTES + value.length * 2,
+          });
+        }
       } else if (typeof value === 'boolean') {
         /** Boolean */
         this.tokens.push({ type: 'Boolean', value, size: 1 });
@@ -121,7 +130,7 @@ export class Writer {
   toArrayBuffer() {
     const byteLength =
       this.tokens.reduce((prev, curr) => prev + (curr.size || 0) + 1, 0) +
-      SIZE_BYTES;
+      LONG_SIZE_BYTES;
 
     log(`Writing tokens for ${byteLength} bytes total size`);
     console.table(this.tokens);
@@ -136,7 +145,9 @@ export class Writer {
         buffer.writeUint8(header);
 
         if (type === '_key') {
-          buffer.writeString(value);
+          buffer.writeString(value, false);
+        } else if (type === 'Char') {
+          buffer.writeChar(value);
         } else if (type === 'String') {
           buffer.writeString(value);
         } else if (isTokenNumeric(type)) {

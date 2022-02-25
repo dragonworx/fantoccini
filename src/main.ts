@@ -14,16 +14,6 @@
 
 export const foo = 1;
 
-// const buffer = new ArrayBuffer(12);
-
-// const writer = new DataView(buffer);
-// writer.setInt8(0, 100);
-// writer.setFloat32(1, 1000);
-
-// const reader = new DataView(buffer);
-// console.log(reader.getInt8(0));
-// console.log(reader.getFloat32(1));
-
 export function blobToImg(blob: Blob, x: number, y: number) {
   const url = URL.createObjectURL(blob);
   const img = new Image();
@@ -48,12 +38,13 @@ view.setUint8(2, 3);
 view.setUint8(3, 4);
 
 const doc = {
-  // y: blob,
+  a: 'x',
   x: 123,
   foo: ['bar'],
   y: true,
   z: false,
   w: ['a', 'b', { c: false }],
+  p: blob,
   d: {
     b: {
       a: true,
@@ -66,9 +57,9 @@ const doc = {
 console.log(doc);
 
 const writer = new Writer();
-writer.parse(doc).then(() => {
+writer.serialise(doc).then(() => {
   const blob = writer.toBlob();
   const reader = new Reader();
-  reader.parse(blob).then(parsedDoc => {});
+  reader.deserialise(blob).then(parsedDoc => {});
   // downloadBlob(blob, 'test.dat');
 });

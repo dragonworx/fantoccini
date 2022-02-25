@@ -9,8 +9,9 @@ type ReadToken = {
 
 export class Reader {
   tokens: ReadToken[] = [];
+  stack: [] = [];
 
-  async parse(blobOrBase64: Blob | string) {
+  async deserialise(blobOrBase64: Blob | string) {
     let buffer: ReadBuffer;
 
     if (blobOrBase64 instanceof Blob) {
@@ -18,7 +19,7 @@ export class Reader {
       buffer = new ReadBuffer(arrayBuffer);
     } else {
       const blob = base64ToBlob(blobOrBase64);
-      return this.parse(blob);
+      return this.deserialise(blob);
     }
 
     log(`Reading tokens from ${buffer.length} bytes total size`);
@@ -32,7 +33,9 @@ export class Reader {
         this.tokens.push(readToken);
 
         if (token === '_key') {
-          readToken.value = buffer.readString();
+          readToken.value = buffer.readString(false);
+        } else if (token === 'Char') {
+          readToken.value = buffer.readChar();
         } else if (token === 'String') {
           readToken.value = buffer.readString();
         } else if (isTokenNumeric(token)) {
@@ -54,5 +57,14 @@ export class Reader {
 
     log(`ReadBuffer log [${buffer.log.length}]`);
     console.table(buffer.log);
+
+    return this.parse();
+  }
+
+  parse() {
+    this.tokens.forEach(({ type, value }) => {
+      if (type === '_key') {
+      }
+    });
   }
 }

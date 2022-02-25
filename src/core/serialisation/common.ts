@@ -67,15 +67,16 @@ export const setDataTypeMethods = {
 
 export const tokens = [
   ...dataTypes,
-  'String', // 10
-  'Boolean', // 11
-  'ArrayBuffer', // 12
-  'Blob', // 13
-  '_key', // 14
-  '_pushObj', // 15
-  '_pushArr', // 16
-  '_pop', // 17
-  '_eof', // 18
+  'Char', // 10
+  'String', // 11
+  'Boolean', // 12
+  'ArrayBuffer', // 13
+  'Blob', // 14
+  '_key', // 15
+  '_pushObj', // 16
+  '_pushArr', // 17
+  '_pop', // 18
+  '_eof', // 19
 ] as const;
 
 export type Token = typeof tokens[number];
@@ -93,10 +94,14 @@ export const isNumericRangeValid = (value: number, type: DataType) => {
 export const getNumericType = (value: number) =>
   dataTypes.find(dataType => isNumericRangeValid(value, dataType));
 
-export const stringByteLength = (value: string) =>
-  SIZE_BYTES + value.length * 2;
+export const longStringByteLength = (value: string) =>
+  LONG_SIZE_BYTES + value.length * 2;
+
+export const shortStringByteLength = (value: string) =>
+  SHORT_SIZE_BYTES + value.length * 2;
 
 export const log = (text: string) =>
   console.log(`%c${text}`, 'font-weight:bold;color:cyan');
 
-export const SIZE_BYTES = 4;
+export const LONG_SIZE_BYTES = 4;
+export const SHORT_SIZE_BYTES = 2;
