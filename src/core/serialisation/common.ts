@@ -53,24 +53,24 @@ export const getDataTypeMethods = {
 };
 
 export const setDataTypeMethods = {
-  Int8: 'setInt8',
-  Uint8: 'setUint8',
-  Int16: 'setInt16',
-  Uint16: 'setUint16',
-  Int32: 'setInt32',
-  Uint32: 'setUint32',
-  Float32: 'setFloat32',
-  Float64: 'setFloat64',
-  BigInt64: 'setBigInt64',
-  BigUint64: 'setBigUint64',
+  Int8: 'setInt8', // 0
+  Uint8: 'setUint8', // 1
+  Int16: 'setInt16', // 2
+  Uint16: 'setUint16', // 3
+  Int32: 'setInt32', // 4
+  Uint32: 'setUint32', // 5
+  Float32: 'setFloat32', // 6
+  Float64: 'setFloat64', // 7
+  BigInt64: 'setBigInt64', // 8
+  BigUint64: 'setBigUint64', // 9
 };
 
 export const tokens = [
   ...dataTypes,
-  'String',
-  'Boolean',
-  'ArrayBuffer',
-  'Blob',
+  'String', // 10
+  'Boolean', // 11
+  'ArrayBuffer', // 12
+  'Blob', // 13
   '_key', // 14
   '_pushObj', // 15
   '_pushArr', // 16

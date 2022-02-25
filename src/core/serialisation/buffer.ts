@@ -15,9 +15,15 @@ export abstract class Buffer {
 
   debug: LogItem[];
 
-  constructor(byteLength: number, littleEndian?: boolean) {
+  constructor(
+    bufferOrByteLength: ArrayBuffer | number,
+    littleEndian?: boolean
+  ) {
     this.byteOffset = 0;
-    this.buffer = new ArrayBuffer(byteLength);
+    this.buffer =
+      bufferOrByteLength instanceof ArrayBuffer
+        ? bufferOrByteLength
+        : new ArrayBuffer(bufferOrByteLength);
     this.view = new DataView(this.buffer);
 
     this.debug = [];
@@ -37,10 +43,10 @@ export abstract class Buffer {
     });
   }
 
-  protected readLog(token: Token, value?: any) {
+  protected readLog(token: Token, value?: any, byteOffset?: number) {
     this.debug.push({
       operation: 'read',
-      byteOffset: this.byteOffset,
+      byteOffset: byteOffset || this.byteOffset,
       token,
       value,
     });
@@ -48,6 +54,18 @@ export abstract class Buffer {
 
   get log() {
     return this.debug;
+  }
+
+  get length() {
+    return this.buffer.byteLength;
+  }
+
+  get array() {
+    return this.buffer;
+  }
+
+  get isEOF() {
+    return this.byteOffset >= this.length;
   }
 }
 
@@ -60,13 +78,13 @@ export class WriteBuffer extends Buffer {
     this.byteOffset += 2;
 
     // write each char as uint16
+    const startByteOffset = this.byteOffset;
     for (var i = 0; i < l; i++) {
       const charCode = value.charCodeAt(i);
       this.writeLog('Uint16', `strChar[${i}] = ${charCode} "${value[i]}"`);
-      this.view.setUint16(this.byteOffset + i * 2, charCode, this.littleEndian);
+      this.view.setUint16(startByteOffset + i * 2, charCode, this.littleEndian);
+      this.byteOffset += 2;
     }
-
-    this.byteOffset += l * 2;
   }
 
   writeNumericType(
@@ -94,7 +112,57 @@ export class WriteBuffer extends Buffer {
     this.writeNumericType(value, this.view.setInt16, 'Int16');
 
   writeArrayBuffer(value: ArrayBuffer) {
+    this.writeInt16(value.byteLength);
     new Uint8Array(this.buffer, this.byteOffset).set(new Uint8Array(value));
     this.byteOffset += value.byteLength;
   }
+}
+
+export class ReadBuffer extends Buffer {
+  readString() {
+    const size = this.readInt16();
+    this.readLog('Uint16', `strLen = ${size}`, this.byteOffset - 2);
+
+    let str = '';
+    const startByteOffset = this.byteOffset;
+    for (var i = 0; i < size; i++) {
+      const charCode = this.view.getUint16(
+        startByteOffset + i * 2,
+        this.littleEndian
+      );
+      const char = String.fromCharCode(charCode);
+      str += char;
+      this.byteOffset += 2;
+      this.readLog(
+        'Uint16',
+        `strChar[${i}] = ${charCode} "${char}"`,
+        this.byteOffset - 2
+      );
+    }
+    return str;
+  }
+
+  readNumericType(
+    dataViewMethod: (byteOffset: number, littleEndian?: boolean) => number,
+    token: Token
+  ) {
+    const value = dataViewMethod.call(
+      this.view,
+      this.byteOffset,
+      this.littleEndian
+    );
+
+    this.readLog(token, value);
+    this.moveByteOffset(token);
+
+    return value;
+  }
+
+  readInt8 = () => this.readNumericType(this.view.getInt8, 'Int8');
+
+  readUint8 = () => this.readNumericType(this.view.getUint8, 'Uint8');
+
+  readInt16 = () => this.readNumericType(this.view.getInt16, 'Int16');
+
+  // TODO: read array buffer, with length uint16 first 2 bytes
 }

@@ -1,127 +1,53 @@
-// import { base64ToBlob } from '.';
-// import {
-//   ByteSize,
-//   DataTypeName,
-//   GetTypeMethods,
-//   isHeaderNumeric,
-//   headerDataTypeName,
-//   Header,
-//   HeaderName,
-// } from './common';
+import { base64ToBlob } from '.';
+import { ReadBuffer } from './buffer';
+import { log, Token, tokenValue } from './common';
 
-// type Token = {
-//   type: number;
-//   value: any;
-// };
+type ReadToken = {
+  type: Token;
+  value?: any;
+};
 
-// export class Reader {
-//   depth: number = 0;
-//   buffer: ArrayBuffer = new ArrayBuffer(0);
-//   view: DataView = new DataView(this.buffer);
-//   byteOffset: number = 0;
-//   littleEndian: boolean = true;
-//   log: {} = {};
-//   stack: Token[];
+export class Reader {
+  tokens: ReadToken[] = [];
 
-//   private debug(value: string, byteOffset: number = this.byteOffset) {
-//     this.log[byteOffset] = value;
-//     console.log([this.byteOffset, value]);
-//   }
+  async parse(blobOrBase64: Blob | string) {
+    let buffer: ReadBuffer;
 
-//   private reset() {
-//     this.depth = 0;
-//     this.byteOffset = 0;
-//     this.buffer = new ArrayBuffer(0);
-//     this.view = new DataView(this.buffer);
-//     this.log = {};
-//     this.stack = [];
-//   }
+    if (blobOrBase64 instanceof Blob) {
+      const arrayBuffer = await new Response(blobOrBase64).arrayBuffer();
+      buffer = new ReadBuffer(arrayBuffer);
+    } else {
+      const blob = base64ToBlob(blobOrBase64);
+      return this.parse(blob);
+    }
 
-//   private advanceByteOffset(type: HeaderName) {
-//     const byteSize = ByteSize[type];
-//     this.byteOffset += byteSize;
-//   }
+    log(`Reading tokens from ${buffer.length} bytes total size`);
+    let c = 0;
+    while (!buffer.isEOF) {
+      c++;
+      try {
+        const type = tokenValue(buffer.readUint8());
+        const token: ReadToken = {
+          type,
+        };
+        this.tokens.push(token);
 
-//   private readString() {
-//     const byteOffset = this.byteOffset;
-//     const size = this.readInt16();
-//     this.debug(`string{${size}}`, byteOffset);
-//     let str = '';
-//     for (var i = 0; i < size; i++) {
-//       const byteOffset = this.byteOffset;
-//       const charCode = this.view.getUint16(
-//         this.byteOffset + i * 2,
-//         this.littleEndian
-//       );
-//       this.debug(
-//         `string[${i}]: ${charCode} "${String.fromCharCode(charCode)}"`,
-//         byteOffset
-//       );
-//       str += String.fromCharCode(charCode);
-//     }
-//     this.byteOffset += size * 2;
-//     return str;
-//   }
+        if (type === '_key') {
+          token.value = buffer.readString();
+        }
 
-//   private readNumericType(
-//     dataViewMethod: (byteOffset: number, littleEndian?: boolean) => number,
-//     type: DataTypeName
-//   ) {
-//     const value = dataViewMethod.call(
-//       this.view,
-//       this.byteOffset,
-//       this.littleEndian
-//     );
-//     this.debug(`${type} = ${value}`);
-//     this.advanceByteOffset(type);
-//     return value;
-//   }
+        if (c >= 2) {
+          break;
+        }
+      } catch (e) {
+        console.log(e);
+        break;
+      }
+    }
 
-//   private readInt8 = () => this.readNumericType(this.view.getInt8, 'Int8');
-//   private readInt16 = () => this.readNumericType(this.view.getInt16, 'Int16');
+    console.table(this.tokens);
 
-//   async parse(blobOrBase64: Blob | string) {
-//     this.reset();
-
-//     if (blobOrBase64 instanceof Blob) {
-//       this.buffer = await new Response(blobOrBase64).arrayBuffer();
-//     } else {
-//       const blob = base64ToBlob(blobOrBase64);
-//       return this.parse(blob);
-//     }
-
-//     this.view = new DataView(this.buffer);
-
-//     for (let i = 0; i < 3; i++) {
-//       this.debug(`---- BEGIN: ${i} ----`);
-
-//       const headerTypeIndex = this.readInt8();
-//       const headerTypeName = headerDataTypeName(headerTypeIndex);
-
-//       const token: Token = {
-//         type: headerTypeIndex,
-//         value: null,
-//       };
-
-//       if (isHeaderNumeric(headerTypeIndex)) {
-//         const method = GetTypeMethods[headerTypeName];
-//         token.value = this.readNumericType(
-//           this.view[method],
-//           headerTypeName as DataTypeName
-//         );
-//       } else if (headerTypeName === 'String') {
-//         token.value = this.readString();
-//       }
-
-//       this.stack.push(token);
-//     }
-
-//     console.log(
-//       'STACK:',
-//       this.stack.map(token => ((token as any).type = Header[token.type]))
-//     );
-
-//     console.table(this.log);
-//   }
-// }
-export default 1;
+    log(`ReadBuffer log`);
+    console.table(buffer.log);
+  }
+}

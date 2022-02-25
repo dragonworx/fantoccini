@@ -23,12 +23,6 @@ export class Writer {
       value: key,
       size: stringByteLength(key),
     });
-
-    // this.tokens.push({
-    //   type: 'String',
-    //   value: key,
-    //   size: stringByteLength(key),
-    // });
   }
 
   async parse(obj: Record<string, any> | Array<any>) {
@@ -125,7 +119,6 @@ export class Writer {
     );
 
     log(`Writing tokens for ${byteLength} bytes total size`);
-
     console.table(this.tokens);
 
     const buffer = new WriteBuffer(byteLength);
@@ -143,16 +136,14 @@ export class Writer {
         } else if (type === 'String') {
           buffer.writeString(value);
         } else if (type === 'Int8') {
-          buffer.writeInt8(value);
+          buffer.writeInt8(value); // TODO: all numeric data types...
         } else if (type === 'Uint8') {
           buffer.writeUint8(value);
         } else if (type === 'Int16') {
           buffer.writeInt16(value);
         } else if (type === 'Boolean') {
           buffer.writeInt8(value ? 1 : 0);
-        } else if (type === 'ArrayBuffer') {
-          buffer.writeArrayBuffer(value);
-        } else if (type === 'Blob') {
+        } else if (type === 'ArrayBuffer' || type === 'Blob') {
           buffer.writeArrayBuffer(value);
         }
       } catch (e) {
@@ -163,7 +154,7 @@ export class Writer {
     log(`WriteBuffer log`);
     console.table(buffer.log);
 
-    return buffer.buffer;
+    return buffer.array;
   }
 
   toBlob(type: string = 'application/octet-stream') {
