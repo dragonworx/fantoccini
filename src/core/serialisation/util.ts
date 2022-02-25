@@ -1,17 +1,3 @@
-export enum BinaryType {
-  Number = 1,
-  String = 2,
-  Boolean = 3,
-  Blob = 4,
-  ArrayBuffer = 5,
-}
-
-export type BinaryItem = {
-  type: BinaryType;
-  buffer: ArrayBuffer;
-  blob?: Blob;
-};
-
 export function blobToBase64(blob): Promise<string> {
   return new Promise((resolve, _) => {
     const reader = new FileReader();
@@ -55,4 +41,20 @@ export function downloadBlob(blob: Blob, filename: string) {
   document.body.removeChild(link);
   URL.revokeObjectURL(blobUrl);
   return link;
+}
+
+export function selectLocalFile() {
+  const div = document.createElement('div');
+  div.style.cssText = `position:absolute;z-index:1;overflow:hidden`;
+  div.innerHTML = `<button>Select File<input type="file" /></button>`;
+  const input = div.querySelector('input');
+  input.style.cssText = `position:absolute;left:-1000px`;
+  div.addEventListener('click', () => input.click());
+  document.body.appendChild(div);
+  return new Promise(resolve => {
+    input.addEventListener('input', e => {
+      const file = (e.currentTarget as HTMLInputElement).files[0];
+      resolve(file);
+    });
+  });
 }

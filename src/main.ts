@@ -25,7 +25,11 @@ export function blobToImg(blob: Blob, x: number, y: number) {
 import { base64Img } from './test-image';
 import { Writer } from './core/serialisation/writer';
 import { Reader } from './core/serialisation/reader';
-import { base64ToBlob, downloadBlob } from './core/serialisation';
+import {
+  base64ToBlob,
+  downloadBlob,
+  selectLocalFile,
+} from './core/serialisation';
 
 const blob = base64ToBlob(base64Img, 'image/gif');
 blobToImg(blob, 0, 0);
@@ -57,13 +61,21 @@ const doc = {
 
 console.log(doc);
 
-const writer = new Writer();
-writer.serialise(doc).then(() => {
-  const blob = writer.toBlob();
+selectLocalFile().then(file => {
   const reader = new Reader();
-  reader.deserialise(blob).then(obj => {
+  reader.deserialise(file as Blob).then(obj => {
     console.log(obj);
     blobToImg(obj.p, 0, 300);
   });
-  // downloadBlob(blob, 'test.dat');
 });
+
+// const writer = new Writer();
+// writer.serialise(doc).then(() => {
+//   const blob = writer.toBlob();
+//   const reader = new Reader();
+//   reader.deserialise(blob).then(obj => {
+//     console.log(obj);
+//     blobToImg(obj.p, 0, 300);
+//   });
+//   // downloadBlob(blob, 'test.dat');
+// });
