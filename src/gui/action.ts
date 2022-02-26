@@ -1,11 +1,11 @@
-import hotkeys from "hotkeys-js";
-import EventEmitter from "eventemitter3";
-import { Hub, Event } from "src/app/eventHub";
+import hotkeys from 'hotkeys-js';
+import EventEmitter from 'eventemitter3';
+import { Hub, Event } from 'src/editor/eventHub';
 
 export type ActionHandler = () => void;
 
 export const isMac = () =>
-  window.navigator.platform.toLowerCase().indexOf("mac") === 0;
+  window.navigator.platform.toLowerCase().indexOf('mac') === 0;
 
 export class Action {
   isEnabled: boolean = true;
@@ -24,9 +24,9 @@ export class Action {
 
   get printShortcut() {
     return this.hotkey
-      .split("+")
-      .map((part) => part[0].toUpperCase() + part.substring(1))
-      .join(" ");
+      .split('+')
+      .map(part => part[0].toUpperCase() + part.substring(1))
+      .join(' ');
   }
 
   register() {
@@ -50,12 +50,12 @@ export class Action {
       if (this.canToggle) {
         this.isChecked = !this.isChecked;
       }
-      if (typeof this.handler === "function") {
+      if (typeof this.handler === 'function') {
         this.handler();
       } else {
         Hub.emit(this.handler);
       }
-      Action.notifications.emit("execute", this);
+      Action.notifications.emit('execute', this);
     }
   }
 }
@@ -66,13 +66,13 @@ export function action(
   opts: { isEnabled?: boolean; isChecked?: boolean; canToggle?: boolean } = {}
 ) {
   const action = new Action(handler, hotkey);
-  typeof opts.isEnabled === "boolean"
+  typeof opts.isEnabled === 'boolean'
     ? (action.isEnabled = opts.isEnabled)
     : void 0;
-  typeof opts.isChecked === "boolean"
+  typeof opts.isChecked === 'boolean'
     ? (action.isChecked = opts.isChecked)
     : void 0;
-  typeof opts.canToggle === "boolean"
+  typeof opts.canToggle === 'boolean'
     ? (action.canToggle = opts.canToggle)
     : void 0;
   return action;

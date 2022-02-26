@@ -1,4 +1,4 @@
-import { Hub, Event } from 'src/app/eventHub';
+import { Hub, Event } from 'src/editor/eventHub';
 
 export class Ticker {
   private _isRunning: boolean = false;

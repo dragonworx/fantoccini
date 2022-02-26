@@ -1,6 +1,6 @@
 import { Property, PropertyType } from 'src/core/animation/property';
 import { Project } from 'src/core/project';
-import { Hub, Event } from 'src/app/eventHub';
+import { Hub, Event } from 'src/editor/eventHub';
 
 export class Timeline {
   project: Project;

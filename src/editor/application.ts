@@ -1,5 +1,5 @@
 import { Project } from 'src/core/project';
-import { Hub, Event } from 'src/app/eventHub';
+import { Hub, Event } from 'src/editor/eventHub';
 import {
   deserialiseProject,
   ProjectDescriptor,
@@ -31,12 +31,12 @@ export class Application {
     });
   }
 
-  saveProject() {
+  async saveProject() {
     Hub.emit(Event.Project_Save_Begin);
 
     const descriptor = serialiseProject(this.project);
     const writer = new DataWriter();
-    writer.serialise(descriptor);
+    await writer.serialise(descriptor);
     const base64 = writer.toBase64();
     localStorage.setItem(projectStorageKey, base64);
 
