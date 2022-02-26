@@ -7,11 +7,11 @@ type ReadToken = {
   value?: any;
 };
 
-export class Reader {
+export class DataReader {
   tokens: ReadToken[] = [];
   stack: any[] = [];
 
-  async deserialise(blobOrBase64: Blob | string) {
+  async deserialise<T>(blobOrBase64: Blob | string): Promise<T> {
     let buffer: ReadBuffer;
 
     if (blobOrBase64 instanceof Blob) {
@@ -69,7 +69,7 @@ export class Reader {
     log(`ReadBuffer log [${buffer.log.length}]`);
     console.table(buffer.log);
 
-    return this.parse();
+    return this.parse() as T;
   }
 
   get peek() {
@@ -89,7 +89,7 @@ export class Reader {
     return Array.isArray(this.peek);
   }
 
-  parse() {
+  private parse() {
     const { stack, tokens } = this;
 
     let i = 0;

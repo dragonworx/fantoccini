@@ -5,6 +5,7 @@ import {
   ProjectDescriptor,
   serialiseProject,
 } from 'src/core/format';
+import { DataWriter, DataReader } from 'src/core/serialisation';
 
 const projectStorageKey = 'fantoccini.project';
 
@@ -34,27 +35,29 @@ export class Application {
     Hub.emit(Event.Project_Save_Begin);
 
     const descriptor = serialiseProject(this.project);
-    const data = JSON.stringify(descriptor, null, 4);
+    const writer = new DataWriter();
+    writer.serialise(descriptor);
+    const base64 = writer.toBase64();
+    localStorage.setItem(projectStorageKey, base64);
 
-    localStorage.setItem(projectStorageKey, data);
-    console.log('project saved', data);
+    console.log('project saved', descriptor, base64);
 
     Hub.emit(Event.Project_Save_Complete);
   }
 
   autoLoadProject() {
-    const data = localStorage.getItem(projectStorageKey);
-    if (data !== null) {
-      this.loadProject(data);
+    const base64 = localStorage.getItem(projectStorageKey);
+    if (base64 !== null) {
+      const reader = new DataReader();
+      reader.deserialise<ProjectDescriptor>(base64).then(descriptor => {
+        this.loadProject(descriptor);
+      });
     }
   }
 
-  loadProject(data: string) {
+  loadProject(descriptor: ProjectDescriptor) {
     Hub.emit(Event.Project_Open_Begin);
-
-    const descriptor = JSON.parse(data) as ProjectDescriptor;
     Hub.emit(Event.Project_Create, descriptor);
-
     Hub.emit(Event.Project_Open_Complete);
   }
 }

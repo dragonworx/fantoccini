@@ -30,6 +30,16 @@ export const base64ToBlob = (
   return blob;
 };
 
+export function arrayBufferToBase64(buffer: ArrayBuffer) {
+  var binary = '';
+  var bytes = new Uint8Array(buffer);
+  var len = bytes.byteLength;
+  for (var i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return window.btoa(binary);
+}
+
 export function downloadBlob(blob: Blob, filename: string) {
   const blobUrl = URL.createObjectURL(blob);
   var link = document.createElement('a');

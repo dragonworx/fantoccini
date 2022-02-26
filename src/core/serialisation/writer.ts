@@ -10,6 +10,7 @@ import {
   SHORT_SIZE_BYTES,
 } from './common';
 import { WriteBuffer } from './buffer';
+import { arrayBufferToBase64 } from '.';
 
 type WriteToken = {
   type: Token;
@@ -17,7 +18,7 @@ type WriteToken = {
   size?: number;
 };
 
-export class Writer {
+export class DataWriter {
   tokens: WriteToken[] = [];
 
   writeKey(key: string) {
@@ -186,5 +187,9 @@ export class Writer {
     return new Blob([this.toArrayBuffer()], {
       type,
     });
+  }
+
+  toBase64() {
+    return arrayBufferToBase64(this.toArrayBuffer());
   }
 }

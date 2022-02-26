@@ -7,8 +7,8 @@ export function blobToImg(blob: Blob, x: number, y: number) {
 }
 
 import { base64Img } from './test-image';
-import { Writer } from './core/serialisation/writer';
-import { Reader } from './core/serialisation/reader';
+import { DataWriter } from './core/serialisation/writer';
+import { DataReader } from './core/serialisation/reader';
 import {
   base64ToBlob,
   downloadBlob,
@@ -46,7 +46,7 @@ const doc = {
 console.log(doc);
 
 selectLocalFile().then(file => {
-  const reader = new Reader();
+  const reader = new DataReader();
   reader.deserialise(file as Blob).then(obj => {
     console.log(obj);
     blobToImg(obj.p, 0, 300);
