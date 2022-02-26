@@ -1,5 +1,10 @@
-import { Project, ProjectDescriptor } from '../core/project';
-import { Hub, Event } from './eventHub';
+import { Project } from 'src/core/project';
+import { Hub, Event } from 'src/app/eventHub';
+import {
+  deserialiseProject,
+  ProjectDescriptor,
+  serialiseProject,
+} from 'src/core/format';
 
 const projectStorageKey = 'fantoccini.project';
 
@@ -16,9 +21,9 @@ export class Application {
 
   initEvents() {
     Hub.on(Event.Project_Create, descriptor => {
-      const project = (this.project = new Project());
-      project.fromDescriptor(descriptor);
-      Hub.emit(Event.Project_Init);
+      const project = deserialiseProject(descriptor);
+      this.project = project;
+      Hub.emit(Event.Project_Init, project);
       console.log('project created', this.project);
     }).on(Event.Project_Save, () => {
       this.saveProject();
@@ -28,7 +33,7 @@ export class Application {
   saveProject() {
     Hub.emit(Event.Project_Save_Begin);
 
-    const descriptor = this.project.toDescriptor();
+    const descriptor = serialiseProject(this.project);
     const data = JSON.stringify(descriptor, null, 4);
 
     localStorage.setItem(projectStorageKey, data);
@@ -47,7 +52,7 @@ export class Application {
   loadProject(data: string) {
     Hub.emit(Event.Project_Open_Begin);
 
-    const descriptor: ProjectDescriptor = JSON.parse(data) as ProjectDescriptor;
+    const descriptor = JSON.parse(data) as ProjectDescriptor;
     Hub.emit(Event.Project_Create, descriptor);
 
     Hub.emit(Event.Project_Open_Complete);

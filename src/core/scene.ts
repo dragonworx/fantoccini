@@ -1,5 +1,9 @@
-import { SerialisableObject, DataDescriptor } from 'src/core/serialise';
+import { ID, newID } from './util';
 
-export interface SceneDescriptor extends DataDescriptor {}
+export class Scene {
+  readonly id: ID;
 
-export class Scene extends SerialisableObject<SceneDescriptor> {}
+  constructor(id?: ID) {
+    this.id = id || newID();
+  }
+}

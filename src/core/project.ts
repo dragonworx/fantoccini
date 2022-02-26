@@ -1,83 +1,79 @@
 import { Ticker } from 'src/core/animation/ticker';
 import { Timeline } from 'src/core/animation/timeline';
-import { Scene, SceneDescriptor } from 'src/core/scene';
+import { Scene } from 'src/core/scene';
 import { Renderer } from 'src/core/renderer';
-import { SerialisableObject, DataDescriptor } from 'src/core/serialise';
-import { Hub, Event } from 'src/app/eventHub';
+import { ID } from 'src/core/util';
 
-export interface ProjectDescriptor extends DataDescriptor {
-  title: string;
-  fps: number;
-  width: number;
-  height: number;
-  scenes: SceneDescriptor[];
-  currentScene: string;
-}
+export const defaults = {
+  title: 'Untitled',
+  fps: 24,
+  width: 640,
+  height: 480,
+};
 
-export class Project extends SerialisableObject<ProjectDescriptor> {
-  title: string = Project.defaults.title;
-  fps: number = Project.defaults.fps;
-  width: number = Project.defaults.width;
-  height: number = Project.defaults.height;
-  scenes: Scene[];
-  currentScene: Scene;
-  ticker: Ticker;
-  renderer: Renderer;
-  timeline: Timeline;
+export class Project {
+  private _title: string;
+  private _fps: number;
+  private _width: number;
+  private _height: number;
+  private _currentScene: ID;
 
-  static readonly defaults: Partial<ProjectDescriptor> = {
-    title: 'Untitled',
-    fps: 24,
-    width: 640,
-    height: 480,
-  };
+  readonly ticker: Ticker;
+  readonly renderer: Renderer;
+  readonly timeline: Timeline;
+  readonly scenes: Map<ID, Scene>;
 
   constructor() {
-    super();
+    this._title = defaults.title;
+    this._fps = defaults.fps;
+    this._width = defaults.width;
+    this._height = defaults.height;
 
-    const defaultScene = new Scene();
-    this.scenes = [defaultScene];
-    this.currentScene = defaultScene;
-    this.ticker = new Ticker(this.fps);
+    this.ticker = new Ticker(this._fps);
     this.renderer = new Renderer(this);
     this.timeline = new Timeline(this);
+
+    this.scenes = new Map();
   }
 
-  toDescriptor(): ProjectDescriptor {
-    return {
-      ...super.toDescriptor(),
-      title: this.title,
-      fps: this.fps,
-      width: this.width,
-      height: this.height,
-      scenes: this.scenes.map(scene => scene.toDescriptor()),
-      currentScene: this.currentScene.id,
-    };
+  get title() {
+    return this._title;
   }
 
-  fromDescriptor(descriptor: ProjectDescriptor) {
-    const { title, fps, width, height } = descriptor;
+  set title(value: string) {
+    this._title = value;
+  }
 
-    super.fromDescriptor(descriptor);
+  get fps() {
+    return this._fps;
+  }
 
-    this.title = title;
-    this.fps = fps;
-    this.width = width;
-    this.height = height;
+  set fps(value: number) {
+    this._fps = value;
+    this.ticker.setFps(value);
+  }
 
-    if (descriptor.scenes && descriptor.currentScene) {
-      const [scenes, idMap] = this.deserialiseDescriptorArray<
-        SceneDescriptor,
-        Scene
-      >(descriptor.scenes, Scene);
-      const currentScene = idMap.get(descriptor.currentScene);
+  get width() {
+    return this._width;
+  }
 
-      if (scenes && currentScene) {
-        this.scenes = scenes;
-        this.currentScene = currentScene;
-      }
-    }
+  set width(value: number) {
+    this._width = value;
+  }
 
-    this.ticker.setFps(this.fps);
+  get height() {
+    return this._height;
+  }
+
+  set height(value: number) {
+    this._height = value;
+  }
+
+  get currentScene() {
+    return this._currentScene;
+  }
+
+  set currentScene(value: number) {
+    this._currentScene = value;
   }
 }

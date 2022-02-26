@@ -1,19 +1,19 @@
 <script lang="ts">
-import { Hub, Event } from "../eventHub";
-import Label from "../../gui/components/Label.svelte";
-import Form from "../../gui/components/Form.svelte";
-import TextField from "../../gui/components/TextField.svelte";
-import Spinner from "../../gui/components/Spinner.svelte";
-import Window from "../../gui/components/Window.svelte";
-import DialogButtons from "../../gui/components/DialogButtons.svelte";
-import { screenWidth, screenHeight } from "../screen";
-import { Project } from "src/core/project";
+import { Hub, Event } from '../eventHub';
+import Label from '../../gui/components/Label.svelte';
+import Form from '../../gui/components/Form.svelte';
+import TextField from '../../gui/components/TextField.svelte';
+import Spinner from '../../gui/components/Spinner.svelte';
+import Window from '../../gui/components/Window.svelte';
+import DialogButtons from '../../gui/components/DialogButtons.svelte';
+import { screenWidth, screenHeight } from '../screen';
+import { defaults } from 'src/core/project';
 
 let isOpen: boolean = false;
 
 Hub.on(Event.Project_New, () => (isOpen = true));
 
-$: descriptor = { ...Project.defaults };
+$: descriptor = { ...defaults };
 
 $: windowWidth = 300;
 $: windowHeight = 200;

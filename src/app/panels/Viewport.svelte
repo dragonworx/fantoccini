@@ -2,7 +2,7 @@
 import ScrollView from '../../gui/components/ScrollView.svelte';
 import { Hub, Event } from 'src/app/eventHub';
 import { Application } from 'src/app/application';
-import { Project } from 'src/core/project';
+import { defaults } from 'src/core/project';
 
 let renderer: HTMLDivElement;
 
@@ -20,11 +20,9 @@ Hub.on(Event.Project_Init, () => {
       class="renderer"
       bind:this="{renderer}"
       style="{`width:${
-        hasProject ? Application.instance.project.width : Project.defaults.width
+        hasProject ? Application.instance.project.width : defaults.width
       }px;height:${
-        hasProject
-          ? Application.instance.project.height
-          : Project.defaults.height
+        hasProject ? Application.instance.project.height : defaults.height
       }px;background-color:${hasProject ? 'transparent' : '#2c2f34'}`}">
     </div>
   </ScrollView>
