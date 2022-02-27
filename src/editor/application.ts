@@ -1,5 +1,4 @@
 import { Project } from 'src/core/project';
-import { Hub, Event } from 'src/editor/eventHub';
 import {
   deserialiseProject,
   ProjectDescriptor,
@@ -32,8 +31,6 @@ export class Application {
   }
 
   async saveProject() {
-    Hub.emit(Event.Project_Save_Begin);
-
     const descriptor = serialiseProject(this.project);
     const writer = new DataWriter();
     await writer.serialise(descriptor);
@@ -41,8 +38,6 @@ export class Application {
     localStorage.setItem(projectStorageKey, base64);
 
     console.log('project saved', descriptor, base64);
-
-    Hub.emit(Event.Project_Save_Complete);
   }
 
   autoLoadProject() {
@@ -56,8 +51,6 @@ export class Application {
   }
 
   loadProject(descriptor: ProjectDescriptor) {
-    Hub.emit(Event.Project_Open_Begin);
     Hub.emit(Event.Project_Create, descriptor);
-    Hub.emit(Event.Project_Open_Complete);
   }
 }

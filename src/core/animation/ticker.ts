@@ -1,4 +1,6 @@
-import { Hub, Event } from 'src/editor/eventHub';
+export interface ITick {
+  onTick: (frameIndex: number) => void;
+}
 
 export class Ticker {
   private _isRunning: boolean = false;
@@ -10,7 +12,7 @@ export class Ticker {
   private expectedNextFrameTime: number = 0;
   private lastDelta: number = 0;
 
-  constructor(fps: number = 24) {
+  constructor(readonly target: ITick, fps: number = 24) {
     this.fps = fps;
   }
 
@@ -38,7 +40,7 @@ export class Ticker {
     const delta = (this.lastDelta = now - expectedNextFrameTime);
     const adjustedMsPerFrame = msPerFrame - delta;
     this.expectedNextFrameTime = now + adjustedMsPerFrame;
-    Hub.emit(Event.Transport_Tick, frameIndex);
+    this.target.onTick(frameIndex);
     this.frameIndex++;
     this.timeoutId = window.setTimeout(this.tick, adjustedMsPerFrame);
   };
@@ -46,21 +48,18 @@ export class Ticker {
   setFps(fps: number) {
     this.fps = fps;
     this.msPerFrame = 1000 / this.fps;
-    Hub.emit(Event.Transport_FPS_Change, this.fps);
     this.clearTimeout();
   }
 
   start() {
     this.clearTimeout();
     this.frameIndex = 0;
-    Hub.emit(Event.Transport_Start);
     this.resume();
   }
 
   pause() {
     this.clearTimeout();
     this._isRunning = false;
-    Hub.emit(Event.Transport_Pause);
   }
 
   resume() {
@@ -68,7 +67,6 @@ export class Ticker {
     this.startTime = Date.now();
     this.msPerFrame = 1000 / this.fps;
     this.expectedNextFrameTime = this.startTime;
-    Hub.emit(Event.Transport_Resume);
     this.tick();
   }
 
@@ -76,6 +74,5 @@ export class Ticker {
     this.clearTimeout();
     this.frameIndex = 0;
     this._isRunning = false;
-    Hub.emit(Event.Transport_Stop);
   }
 }

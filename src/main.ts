@@ -1,4 +1,4 @@
-import App from './editor/App.svelte';
+import App from './editor/Editor.svelte';
 import { Application } from './editor/application';
 
 const app = new App({

@@ -1,17 +1,15 @@
 import { Property, PropertyType } from 'src/core/animation/property';
 import { Project } from 'src/core/project';
-import { Hub, Event } from 'src/editor/eventHub';
+import { ITick } from 'src/core/animation/ticker';
 
-export class Timeline {
+export class Timeline implements ITick {
   project: Project;
   properties: Property<PropertyType>[];
   frameCount: number;
 
   constructor(project: Project) {
     this.project = project;
-
-    Hub.on(Event.Transport_Tick, this.onTick);
   }
 
-  private onTick = (frameIndex: number) => {};
+  onTick = (frameIndex: number) => {};
 }
