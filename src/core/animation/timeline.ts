@@ -2,7 +2,7 @@
 import Timecode from 'timecode-boss';
 import { Ticker } from 'src/core/animation/ticker';
 import hub from 'src/core/hub';
-
+(window as any).Timecode = Timecode;
 export class Timeline {
   ticker: Ticker;
   timecode: Timecode;
@@ -45,8 +45,8 @@ export class Timeline {
   }
 
   onTick() {
-    const { ticker, timecode } = this;
-    this.timecode = timecode.add({ frames: 1 });
+    const { timecode } = this;
+    timecode.setFrames(1);
     const { hours, minutes, seconds, frames } = timecode;
     hub.emit('frame.tick', hours, minutes, seconds, frames);
   }

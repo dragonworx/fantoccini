@@ -10,11 +10,8 @@ import {
 } from 'src/gui';
 import { screenWidth, screenHeight } from '../screen';
 import { defaults } from 'src/core/project';
-import Timecode from 'timecode-boss';
 
 let isOpen: boolean = false;
-
-let timecode: Timecode = new Timecode(0, defaults.fps);
 
 hub.on('menu.file.new.project', () => (isOpen = true));
 
