@@ -14,6 +14,10 @@ export class DataReader {
   constructor(readonly config: Config = {}) {}
 
   async deserialise<T>(blobOrBase64: Blob | string): Promise<T> {
+    const {
+      config: { debug },
+    } = this;
+
     let buffer: ReadBuffer;
 
     if (blobOrBase64 instanceof Blob) {
@@ -24,7 +28,9 @@ export class DataReader {
       return this.deserialise(blob);
     }
 
-    log(`Reading tokens from ${buffer.length} bytes total size`);
+    if (debug) {
+      log(`Reading tokens from ${buffer.length} bytes total size`);
+    }
 
     while (true) {
       try {
@@ -66,7 +72,7 @@ export class DataReader {
       }
     }
 
-    if (this.config.debug) {
+    if (debug) {
       console.table(this.tokens);
 
       log(`ReadBuffer log [${buffer.log.length}]`);

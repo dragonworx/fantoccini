@@ -140,11 +140,15 @@ export class DataWriter {
   }
 
   toArrayBuffer() {
+    const {
+      config: { debug },
+    } = this;
+
     const byteLength =
       this.tokens.reduce((prev, curr) => prev + (curr.size || 0) + 1, 0) +
       LONG_SIZE_BYTES;
 
-    if (this.config.debug) {
+    if (debug) {
       log(`Writing tokens for ${byteLength} bytes total size`);
       console.table(this.tokens);
     }
@@ -182,7 +186,7 @@ export class DataWriter {
       }
     });
 
-    if (this.config.debug) {
+    if (debug) {
       log(`WriteBuffer log [${buffer.log.length}]`);
       console.table(buffer.log);
     }

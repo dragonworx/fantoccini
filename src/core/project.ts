@@ -1,4 +1,3 @@
-import { Ticker } from 'src/core/animation/ticker';
 import { Timeline } from 'src/core/animation/timeline';
 import { Scene } from 'src/core/scene';
 import { Renderer } from 'src/core/renderer';
@@ -19,7 +18,6 @@ export class Project {
   height: number;
   currentScene: ID;
 
-  readonly ticker: Ticker;
   readonly renderer: Renderer;
   readonly timeline: Timeline;
   readonly scenes: Map<ID, Scene>;
@@ -30,7 +28,6 @@ export class Project {
     this.width = defaults.width;
     this.height = defaults.height;
 
-    this.ticker = new Ticker(this.fps);
     this.timeline = new Timeline(this.fps);
     this.renderer = new Renderer(this.width, this.height);
 
@@ -39,8 +36,6 @@ export class Project {
 
   init() {
     hub.on('frame.tick', this.tick);
-
-    this.ticker.start();
   }
 
   tick = (deltaMs: number, frameIndex: number) => {
