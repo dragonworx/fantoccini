@@ -1,7 +1,7 @@
-import App from './editor/Editor.svelte';
-import { Application } from './editor/editor';
+import Editor from './editor/Editor.svelte';
+import { Application } from './editor/application';
 
-const app = new App({
+const app = new Editor({
   target: document.body,
   props: {},
 });
@@ -9,3 +9,7 @@ const app = new App({
 new Application();
 
 export default app;
+
+import Timecode from 'timecode-boss';
+const tc = new Timecode({ seconds: 2 }, 24);
+console.log(tc.toString());

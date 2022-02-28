@@ -8,6 +8,7 @@ import {
   isTokenNumeric,
   LONG_SIZE_BYTES,
   SHORT_SIZE_BYTES,
+  Config,
 } from './common';
 import { WriteBuffer } from './buffer';
 import { arrayBufferToBase64 } from '.';
@@ -20,6 +21,8 @@ type WriteToken = {
 
 export class DataWriter {
   tokens: WriteToken[] = [];
+
+  constructor(readonly config: Config = {}) {}
 
   writeKey(key: string) {
     this.tokens.push({
@@ -141,10 +144,12 @@ export class DataWriter {
       this.tokens.reduce((prev, curr) => prev + (curr.size || 0) + 1, 0) +
       LONG_SIZE_BYTES;
 
-    log(`Writing tokens for ${byteLength} bytes total size`);
-    console.table(this.tokens);
+    if (this.config.debug) {
+      log(`Writing tokens for ${byteLength} bytes total size`);
+      console.table(this.tokens);
+    }
 
-    const buffer = new WriteBuffer(byteLength);
+    const buffer = new WriteBuffer(byteLength, this.config.littleEndian);
 
     this.tokens.forEach(token => {
       const { type, value } = token;
@@ -177,8 +182,10 @@ export class DataWriter {
       }
     });
 
-    log(`WriteBuffer log [${buffer.log.length}]`);
-    console.table(buffer.log);
+    if (this.config.debug) {
+      log(`WriteBuffer log [${buffer.log.length}]`);
+      console.table(buffer.log);
+    }
 
     return buffer.array;
   }

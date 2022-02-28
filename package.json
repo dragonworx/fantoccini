@@ -16,6 +16,7 @@
     "pixi.js": "^6.2.2",
     "sass": "^1.44.0",
     "sirv-cli": "^2.0.2",
+    "timecode-boss": "^5.0.4",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

@@ -106,3 +106,8 @@ export const log = (text: string) =>
 
 export const LONG_SIZE_BYTES = 4;
 export const SHORT_SIZE_BYTES = 2;
+
+export interface Config {
+  littleEndian?: boolean;
+  debug?: boolean;
+}

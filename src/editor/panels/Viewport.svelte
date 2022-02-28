@@ -1,7 +1,7 @@
 <script lang="ts">
 import ScrollView from '../../gui/components/ScrollView.svelte';
 import hub from 'src/core/hub';
-import { Application } from 'src/editor/editor';
+import { Application } from 'src/editor/application';
 import { defaults } from 'src/core/project';
 
 let renderer: HTMLDivElement;

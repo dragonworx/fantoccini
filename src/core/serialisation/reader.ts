@@ -1,6 +1,6 @@
 import { base64ToBlob } from '.';
 import { ReadBuffer } from './buffer';
-import { isTokenNumeric, log, Token, tokenValue } from './common';
+import { isTokenNumeric, log, Token, tokenValue, Config } from './common';
 
 type ReadToken = {
   type: Token;
@@ -11,12 +11,14 @@ export class DataReader {
   tokens: ReadToken[] = [];
   stack: any[] = [];
 
+  constructor(readonly config: Config = {}) {}
+
   async deserialise<T>(blobOrBase64: Blob | string): Promise<T> {
     let buffer: ReadBuffer;
 
     if (blobOrBase64 instanceof Blob) {
       const arrayBuffer = await new Response(blobOrBase64).arrayBuffer();
-      buffer = new ReadBuffer(arrayBuffer);
+      buffer = new ReadBuffer(arrayBuffer, this.config.littleEndian);
     } else {
       const blob = base64ToBlob(blobOrBase64);
       return this.deserialise(blob);
@@ -64,10 +66,12 @@ export class DataReader {
       }
     }
 
-    console.table(this.tokens);
+    if (this.config.debug) {
+      console.table(this.tokens);
 
-    log(`ReadBuffer log [${buffer.log.length}]`);
-    console.table(buffer.log);
+      log(`ReadBuffer log [${buffer.log.length}]`);
+      console.table(buffer.log);
+    }
 
     return this.parse() as T;
   }

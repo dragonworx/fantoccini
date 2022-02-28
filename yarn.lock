@@ -2228,6 +2228,11 @@ terser@^5.0.0:
     source-map "~0.7.2"
     source-map-support "~0.5.20"
 
+timecode-boss@^5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/timecode-boss/-/timecode-boss-5.0.4.tgz#16a42cdb6a45165800e162e8205636a7337d37ca"
+  integrity sha512-hYPOQqbaYLIxFLwi2wJF9QalyxUDzp+ZNHp0RvAryFyAGSy6JO2QqsCQECW3hHvOgC/8+7YkvrADJOqaCT6siw==
+
 tinydate@^1.0.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/tinydate/-/tinydate-1.3.0.tgz#e6ca8e5a22b51bb4ea1c3a2a4fd1352dbd4c57fb"
