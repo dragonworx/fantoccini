@@ -4,9 +4,13 @@ import hub, { event } from 'src/core/hub';
 
 let smpte: string = '';
 
-hub.on('frame.tick', (hours, minutes, seconds, frames) => {
-  smpte = `${hours}:${minutes}:${seconds}:${frames}`;
-});
+hub
+  .on('frame.tick', (hours, minutes, seconds, frames) => {
+    smpte = `${hours}:${minutes}:${seconds}:${frames}`;
+  })
+  .on('transport.rewind', () => {
+    smpte = '0:0:0:0';
+  });
 </script>
 
 <div id="timeline">
