@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Hub, Event } from '../eventHub';
+import hub from 'src/core/hub';
 import Label from '../../gui/components/Label.svelte';
 import Form from '../../gui/components/Form.svelte';
 import TextField from '../../gui/components/TextField.svelte';
@@ -11,7 +11,7 @@ import { defaults } from 'src/core/project';
 
 let isOpen: boolean = false;
 
-Hub.on(Event.Project_New, () => (isOpen = true));
+hub.on('project.new', () => (isOpen = true));
 
 $: descriptor = { ...defaults };
 
@@ -24,7 +24,7 @@ const onClose = () => {
 
 const onAccept = () => {
   isOpen = false;
-  Hub.emit(Event.Project_Create, descriptor);
+  hub.emit('project.create', descriptor);
 };
 </script>
 

@@ -5,6 +5,7 @@ import {
   serialiseProject,
 } from 'src/core/format';
 import { DataWriter, DataReader } from 'src/core/serialisation';
+import hub from 'src/core/hub';
 
 const projectStorageKey = 'fantoccini.project';
 
@@ -20,14 +21,17 @@ export class Application {
   }
 
   initEvents() {
-    Hub.on(Event.Project_Create, descriptor => {
-      const project = deserialiseProject(descriptor);
-      this.project = project;
-      Hub.emit(Event.Project_Init, project);
-      console.log('project created', this.project);
-    }).on(Event.Project_Save, () => {
-      this.saveProject();
-    });
+    hub
+      .on('project.create', descriptor => {
+        const project = deserialiseProject(descriptor);
+        this.project = project;
+        project.init();
+        hub.emit('project.init', project);
+        console.log('project created', this.project);
+      })
+      .on('project.save', () => {
+        this.saveProject();
+      });
   }
 
   async saveProject() {
@@ -51,6 +55,6 @@ export class Application {
   }
 
   loadProject(descriptor: ProjectDescriptor) {
-    Hub.emit(Event.Project_Create, descriptor);
+    hub.emit('project.create', descriptor);
   }
 }

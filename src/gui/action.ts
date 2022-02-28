@@ -1,13 +1,13 @@
 import hotkeys from 'hotkeys-js';
 import EventEmitter from 'eventemitter3';
-import hub, { EditorEvent } from 'src/core/hub';
+import hub, { Event } from 'src/core/hub';
 
 export type ActionHandler = () => void;
 
 export const isMac = () =>
   window.navigator.platform.toLowerCase().indexOf('mac') === 0;
 
-export class Action<T extends string = undefined> {
+export class Action {
   isEnabled: boolean = true;
   isChecked: boolean = false;
   canToggle: boolean = false;
@@ -16,7 +16,7 @@ export class Action<T extends string = undefined> {
 
   static notifications = new EventEmitter();
 
-  constructor(handler: ActionHandler | T, shortcut?: string) {
+  constructor(handler: ActionHandler | Event, shortcut?: string) {
     this.handler = handler;
     this.hotkey = shortcut;
     this.register();

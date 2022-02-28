@@ -3,6 +3,7 @@ import { Timeline } from 'src/core/animation/timeline';
 import { Scene } from 'src/core/scene';
 import { Renderer } from 'src/core/renderer';
 import { ID } from 'src/core/util';
+import hub from 'src/core/hub';
 
 export const defaults = {
   title: 'Untitled',
@@ -30,8 +31,8 @@ export class Project {
     this._height = defaults.height;
 
     this.ticker = new Ticker(this._fps);
-    this.renderer = new Renderer(this);
-    this.timeline = new Timeline(this);
+    this.renderer = new Renderer(this._width, this._height);
+    this.timeline = new Timeline();
 
     this.scenes = new Map();
   }
@@ -76,4 +77,16 @@ export class Project {
   set currentScene(value: number) {
     this._currentScene = value;
   }
+
+  init() {
+    hub.on('frame.tick', this.tick);
+
+    this.ticker.start();
+  }
+
+  tick = (deltaMs: number, frameIndex: number) => {
+    // console.log(deltaMs, frameIndex);
+    this.timeline.tick(deltaMs, frameIndex);
+    this.renderer.render();
+  };
 }

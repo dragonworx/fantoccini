@@ -5,20 +5,20 @@ import hub from 'src/core/hub';
 const save = new MenuItem({
   label: 'Save',
   isEnabled: false,
-  action: new Action(Event.Project_Save, 'Ctrl+S'),
+  action: new Action('project.save', 'Ctrl+S'),
 });
 
-hub.editor.on('project.init', () => (save.isEnabled = true));
+hub.on('project.init', () => (save.isEnabled = true));
 
 const fileMenu: MenuItem[] = [
   new MenuItem({
     label: 'New Project',
-    action: new Action(Event.Project_New, 'Ctrl+N'),
+    action: new Action('project.new', 'Ctrl+N'),
   }),
   separator,
   new MenuItem({
     label: 'Open Project',
-    action: new Action(Event.Project_Open, 'Ctrl+O'),
+    action: new Action('project.open', 'Ctrl+O'),
   }),
   separator,
   save,

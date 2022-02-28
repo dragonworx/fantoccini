@@ -1,6 +1,4 @@
-export interface ITick {
-  onTick: (frameIndex: number) => void;
-}
+import hub from 'src/core/hub';
 
 export class Ticker {
   private _isRunning: boolean = false;
@@ -12,8 +10,9 @@ export class Ticker {
   private expectedNextFrameTime: number = 0;
   private lastDelta: number = 0;
 
-  constructor(readonly target: ITick, fps: number = 24) {
+  constructor(fps: number = 24) {
     this.fps = fps;
+    this.msPerFrame = 1000 / this.fps;
   }
 
   get frameRate() {
@@ -35,12 +34,12 @@ export class Ticker {
   }
 
   private tick = () => {
-    const { expectedNextFrameTime, frameIndex, msPerFrame } = this;
+    const { expectedNextFrameTime, startTime, frameIndex, msPerFrame } = this;
     const now = Date.now();
     const delta = (this.lastDelta = now - expectedNextFrameTime);
     const adjustedMsPerFrame = msPerFrame - delta;
     this.expectedNextFrameTime = now + adjustedMsPerFrame;
-    this.target.onTick(frameIndex);
+    hub.emit('frame.tick', now - startTime, frameIndex);
     this.frameIndex++;
     this.timeoutId = window.setTimeout(this.tick, adjustedMsPerFrame);
   };

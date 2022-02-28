@@ -1,14 +1,14 @@
 <script lang="ts">
 import ScrollView from '../../gui/components/ScrollView.svelte';
-import { Hub, Event } from 'src/editor/eventHub';
-import { Application } from 'src/editor/application';
+import hub from 'src/core/hub';
+import { Application } from 'src/editor/editor';
 import { defaults } from 'src/core/project';
 
 let renderer: HTMLDivElement;
 
 let hasProject: boolean = false;
 
-Hub.on(Event.Project_Init, () => {
+hub.on('project.init', () => {
   renderer.appendChild(Application.instance.project.renderer.view);
   hasProject = true;
 });

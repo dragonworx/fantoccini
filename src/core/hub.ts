@@ -1,32 +1,16 @@
 import EventEmitter from 'eventemitter3';
 
-const CoreEvents = [
-  'transport.tick',
-  'transport.start',
-  'transport.pause',
-  'transport.resume',
-  'transport.stop',
-  'transport.fps.change',
-] as const;
+export type CoreEvent = 'frame.tick';
 
-export type CoreEvent = typeof CoreEvents[number];
+export type EditorEvent =
+  | 'project.new'
+  | 'project.create'
+  | 'project.init'
+  | 'project.save'
+  | 'project.open';
 
-const EditorEvents = [
-  'project.new',
-  'project.create',
-  'project.init',
-  'project.save',
-  'project.open',
-];
+export type Event = CoreEvent | EditorEvent;
 
-export type EditorEvent = typeof EditorEvents[number];
-
-const core = new EventEmitter<CoreEvent>();
-const editor = new EventEmitter<EditorEvent>();
-
-const hub = {
-  core,
-  editor,
-};
+const hub = new EventEmitter<Event>();
 
 export default hub;
