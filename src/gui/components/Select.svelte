@@ -63,6 +63,8 @@ const onSelect = (e: CustomEvent) => {
 }
 
 .select {
+  max-width: 0;
+
   .select-content {
     display: flex;
     width: 100%;
