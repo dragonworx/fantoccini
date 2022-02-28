@@ -1,16 +1,23 @@
 <script lang="ts">
+import { onMount } from 'svelte';
 import { ScrollView } from 'src/gui';
-import hub from 'src/core/hub';
 import { Application } from 'src/editor/application';
-import { defaults } from 'src/core/project';
+import { defaults, Project } from 'src/core/project';
+import hub from 'src/core/hub';
 
 let renderer: HTMLDivElement;
-
 let hasProject: boolean = false;
 
-hub.on('project.init', () => {
-  renderer.appendChild(Application.instance.project.renderer.view);
-  hasProject = true;
+onMount(() => {
+  hub
+    .on('project.init', () => {
+      renderer.appendChild(Application.instance.project.renderer.view);
+      hasProject = true;
+    })
+    .on('project.close', (project: Project) => {
+      hasProject = false;
+      renderer.removeChild(project.renderer.view);
+    });
 });
 </script>
 

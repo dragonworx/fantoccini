@@ -5,7 +5,7 @@ import hub, { event } from 'src/core/hub';
 
 let smpte: string = '0:0:0:0';
 let hasProject: boolean = false;
-let selectedIndex: number = 3;
+let selectedIndex: number = 2;
 
 const reset = () => {
   smpte = '0:0:0:0';

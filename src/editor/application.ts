@@ -41,9 +41,10 @@ export class Application {
   }
 
   closeProject = () => {
-    this.project.close();
+    const project = this.project;
+    project.close();
     delete this.project;
-    hub.emit('project.close');
+    hub.emit('project.close', project);
   };
 
   async saveProject() {
