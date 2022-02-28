@@ -48,7 +48,13 @@ export class Project {
     hub.on('frame.tick', this.tick);
   }
 
-  tick = (deltaMs: number, frameIndex: number) => {
+  close() {
+    hub.off('frame.tick', this.tick);
+    this.timeline.stop();
+    this.timeline.close();
+  }
+
+  tick = () => {
     this.renderer.render();
   };
 }

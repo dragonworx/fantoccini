@@ -1,6 +1,6 @@
 import EventEmitter from 'eventemitter3';
 
-export type ProjectEvent = 'project.create' | 'project.init';
+export type ProjectEvent = 'project.create' | 'project.init' | 'project.close';
 export type TransportEvent =
   | 'transport.play'
   | 'transport.pause'
@@ -13,7 +13,8 @@ export type CoreEvent = ProjectEvent | TransportEvent | AnimationEvent;
 export type MenuBarEvent =
   | 'menu.file.new.project'
   | 'menu.file.open.project'
-  | 'menu.file.save';
+  | 'menu.file.save'
+  | 'menu.file.close.project';
 
 export type EditorEvent = MenuBarEvent;
 

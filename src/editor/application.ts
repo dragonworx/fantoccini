@@ -10,7 +10,7 @@ import hub from 'src/core/hub';
 const projectStorageKey = 'fantoccini.project';
 
 export class Application {
-  project: Project;
+  project?: Project;
 
   static instance: Application;
 
@@ -23,16 +23,28 @@ export class Application {
   initEvents() {
     hub
       .on('project.create', descriptor => {
-        const project = deserialiseProject(descriptor);
-        this.project = project;
-        project.init();
-        hub.emit('project.init', project);
-        console.log('project created', this.project);
+        if (this.project) {
+          this.closeProject();
+        }
+        setTimeout(() => {
+          const project = deserialiseProject(descriptor);
+          this.project = project;
+          project.init();
+          hub.emit('project.init', project);
+          console.log('project created', this.project);
+        }, 0);
       })
       .on('menu.file.save', () => {
         this.saveProject();
-      });
+      })
+      .on('menu.file.close.project', this.closeProject);
   }
+
+  closeProject = () => {
+    this.project.close();
+    delete this.project;
+    hub.emit('project.close');
+  };
 
   async saveProject() {
     const descriptor = serialiseProject(this.project);

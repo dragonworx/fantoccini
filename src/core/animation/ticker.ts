@@ -16,7 +16,6 @@ export class Ticker {
   }
 
   private tick = () => {
-    console.log(this.fps, this.msPerFrame);
     const { expectedNextFrameTime, msPerFrame } = this;
     const now = Date.now();
     const quantiseOffset = now - expectedNextFrameTime;

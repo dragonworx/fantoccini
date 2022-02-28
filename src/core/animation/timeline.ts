@@ -12,18 +12,31 @@ export class Timeline {
     this.timecode = new Timecode(0, fps);
 
     hub
-      .on('transport.play', () => ticker.start())
-      .on('transport.pause', () => {
-        if (ticker.isRunning) {
-          ticker.pause();
-        } else {
-          ticker.resume();
-        }
-      })
-      .on('transport.stop', () => {
-        ticker.stop();
-        this.timecode = new Timecode(0, this.ticker.fps);
-      });
+      .on('transport.play', this.onTransportPlay)
+      .on('transport.pause', this.onTransportPause)
+      .on('transport.stop', this.onTransportStop);
+  }
+
+  onTransportPlay = () => this.ticker.start();
+  onTransportPause = () => {
+    if (this.ticker.isRunning) {
+      this.ticker.pause();
+    } else {
+      this.ticker.resume();
+    }
+  };
+  onTransportStop = () => this.stop();
+
+  stop() {
+    this.ticker.stop();
+    this.timecode = new Timecode(0, this.ticker.fps);
+  }
+
+  close() {
+    hub
+      .off('transport.play', this.onTransportPlay)
+      .off('transport.pause', this.onTransportPause)
+      .off('transport.stop', this.onTransportStop);
   }
 
   setFps(fps: number) {

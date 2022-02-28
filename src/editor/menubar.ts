@@ -21,6 +21,10 @@ const fileMenu: MenuItem[] = [
     action: new Action('menu.file.open.project', 'Ctrl+O'),
   }),
   separator,
+  new MenuItem({
+    label: 'Close Project',
+    action: new Action('menu.file.close.project'),
+  }),
   save,
 ];
 
