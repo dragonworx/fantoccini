@@ -1,17 +1,19 @@
 <script lang="ts">
 import hub from 'src/core/hub';
-import Label from '../../gui/components/Label.svelte';
-import Form from '../../gui/components/Form.svelte';
-import TextField from '../../gui/components/TextField.svelte';
-import Spinner from '../../gui/components/Spinner.svelte';
-import Window from '../../gui/components/Window.svelte';
-import DialogButtons from '../../gui/components/DialogButtons.svelte';
+import {
+  Label,
+  Form,
+  TextField,
+  Spinner,
+  Window,
+  DialogButtons,
+} from 'src/gui';
 import { screenWidth, screenHeight } from '../screen';
 import { defaults } from 'src/core/project';
 
 let isOpen: boolean = false;
 
-hub.on('project.new', () => (isOpen = true));
+hub.on('menu.file.new.project', () => (isOpen = true));
 
 $: descriptor = { ...defaults };
 

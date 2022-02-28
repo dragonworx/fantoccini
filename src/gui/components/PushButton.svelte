@@ -1,12 +1,8 @@
-<style lang="scss">
-@import "../theme";
-</style>
-
 <script lang="ts">
-import Button from "./Button.svelte";
-import Label from "./Label.svelte";
-import Icon from "./Icon.svelte";
-import { Action } from "..";
+import Button from './Button.svelte';
+import Label from './Label.svelte';
+import Icon from './Icon.svelte';
+import { Action } from '../action';
 
 export let isEnabled: boolean = true;
 export let canToggle: boolean = false;
@@ -61,3 +57,7 @@ export let canFocus: boolean = true;
       height="{iconSize > -1 ? iconSize : iconHeight}" />
   {/if}
 </Button>
+
+<style lang="scss">
+@import '../theme';
+</style>

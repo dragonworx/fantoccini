@@ -1,36 +1,9 @@
-<style lang="scss">
-@import "../theme";
-.menubar {
-  @include linear_gradient(#212434, #343638, 180deg);
-  width: 100%;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  box-sizing: border-box;
-  padding: 1px 5px;
-
-  li {
-    margin-bottom: $spacing_small;
-    display: flex;
-    margin: 0;
-  }
-}
-
-:global([data-component="menubar"] [data-component="button"].menubar-down) {
-  background: linear-gradient(0deg, #2f343c 0, #1d2127 100%) !important;
-}
-
-:global([data-component="menubar"] [data-component="button"].enabled:focus) {
-  outline: none !important;
-}
-</style>
-
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
-import { isAcceptKey, MenuBarItem } from "../";
-import Label from "./Label.svelte";
-import MenuButton from "./MenuButton.svelte";
+import { createEventDispatcher } from 'svelte';
+import { isAcceptKey } from '../filters';
+import { MenuBarItem } from '../menu';
+import Label from './Label.svelte';
+import MenuButton from './MenuButton.svelte';
 
 export let items: MenuBarItem[];
 
@@ -71,7 +44,7 @@ const onMouseOver = (i: number) => (e: MouseEvent) => {
 const onKeyDown = (e: KeyboardEvent) => {
   const { key } = e;
   const menuButton = getCurrentMenuButton();
-  if (key === "ArrowLeft" && currentIndex >= 0) {
+  if (key === 'ArrowLeft' && currentIndex >= 0) {
     if (
       !(menuButton.hasPreviousSubMenu() && menuButton.getStack().length > 1)
     ) {
@@ -79,7 +52,7 @@ const onKeyDown = (e: KeyboardEvent) => {
         setCurrentIndex(currentIndex - 1);
       }
     }
-  } else if (key === "ArrowRight" && currentIndex <= items.length - 1) {
+  } else if (key === 'ArrowRight' && currentIndex <= items.length - 1) {
     if (!menuButton.hasCurrentSubMenu()) {
       if (currentIndex < items.length - 1) {
         setCurrentIndex(currentIndex + 1);
@@ -101,7 +74,7 @@ const onFocusOrOpen = (i: number) => () => {
 };
 
 const onSelect = (e: CustomEvent) => {
-  dispatch("select", {
+  dispatch('select', {
     menu: items[currentIndex],
     item: e.detail,
   });
@@ -128,3 +101,31 @@ const onSelect = (e: CustomEvent) => {
     </li>
   {/each}
 </ul>
+
+<style lang="scss">
+@import '../theme';
+.menubar {
+  @include linear_gradient(#212434, #343638, 180deg);
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  box-sizing: border-box;
+  padding: 1px 5px;
+
+  li {
+    margin-bottom: $spacing_small;
+    display: flex;
+    margin: 0;
+  }
+}
+
+:global([data-component='menubar'] [data-component='button'].menubar-down) {
+  background: linear-gradient(0deg, #2f343c 0, #1d2127 100%) !important;
+}
+
+:global([data-component='menubar'] [data-component='button'].enabled:focus) {
+  outline: none !important;
+}
+</style>

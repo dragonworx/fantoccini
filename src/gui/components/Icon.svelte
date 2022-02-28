@@ -1,33 +1,23 @@
-<style lang="scss">
-@import "../theme";
-.icon {
-  display: inline-block;
-  vertical-align: middle;
-  user-select: none;
-  pointer-events: none;
-}
-</style>
-
 <script lang="ts" context="module">
 export const preload = (filename: string) => {
   const img = new Image();
   img.src = `img/icons/${filename}`;
 };
 [
-  "circle.svg",
-  "cross.svg",
-  "increment-down.svg",
-  "increment-up.svg",
-  "next-frame.svg",
-  "pause.svg",
-  "play.svg",
-  "prev-frame.svg",
-  "record.svg",
-  "search.svg",
-  "select.svg",
-  "stop.svg",
-  "tick.svg",
-].forEach((filename) => preload(filename));
+  'circle.svg',
+  'cross.svg',
+  'increment-down.svg',
+  'increment-up.svg',
+  'next-frame.svg',
+  'pause.svg',
+  'play.svg',
+  'prev-frame.svg',
+  'record.svg',
+  'search.svg',
+  'select.svg',
+  'stop.svg',
+  'tick.svg',
+].forEach(filename => preload(filename));
 </script>
 
 <script lang="ts">
@@ -46,3 +36,13 @@ export let size: number | undefined = undefined;
   width="{size || width}"
   height="{size || height}"
   data-component="icon" />
+
+<style lang="scss">
+@import '../theme';
+.icon {
+  display: inline-block;
+  vertical-align: middle;
+  user-select: none;
+  pointer-events: none;
+}
+</style>

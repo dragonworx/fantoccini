@@ -1,10 +1,10 @@
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
-import { isGeneralInputKey } from "../";
+import { createEventDispatcher } from 'svelte';
+import { isGeneralInputKey } from '../filters';
 
 export let isEnabled: boolean = true;
-export let value: string = "";
-export let placeholder: string = "";
+export let value: string = '';
+export let placeholder: string = '';
 export let width: number = 0;
 export let autofocus: boolean = false;
 export let filter: (
@@ -17,7 +17,7 @@ const dispatch = createEventDispatcher();
 
 let input;
 
-let style = "";
+let style = '';
 $: {
   if (width > 0) {
     style += `width: ${width}px;`;
@@ -43,19 +43,19 @@ function onKeyDown(e: KeyboardEvent) {
 
 function onKeyUp(e: KeyboardEvent) {
   const { key } = e;
-  if (key === "Enter") {
-    dispatch("accept", value);
+  if (key === 'Enter') {
+    dispatch('accept', value);
     input.blur();
-  } else if (key === "Escape") {
+  } else if (key === 'Escape') {
     input.blur();
   } else if (!isGeneralInputKey(key)) {
-    dispatch("change", value);
+    dispatch('change', value);
   }
 }
 
 function onPaste(e: ClipboardEvent) {
   if (filter) {
-    const data = e.clipboardData.getData("text");
+    const data = e.clipboardData.getData('text');
     if (data.length) {
       for (let i = 0; i < data.length; i++) {
         if (!filter(data[i], value, {})) {
@@ -97,7 +97,7 @@ function onPaste(e: ClipboardEvent) {
 </div>
 
 <style lang="scss">
-@import "../theme";
+@import '../theme';
 .textfield {
   box-sizing: border-box;
   flex-grow: 1;
@@ -112,12 +112,12 @@ function onPaste(e: ClipboardEvent) {
   &.disabled {
     @include textfield_disabled;
 
-    input[type="text"] {
+    input[type='text'] {
       color: #7e7e7e;
     }
   }
 
-  input[type="text"] {
+  input[type='text'] {
     box-sizing: border-box;
     flex-grow: 1;
     background-color: transparent;

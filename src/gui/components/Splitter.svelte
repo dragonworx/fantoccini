@@ -1,6 +1,9 @@
 <script lang="ts">
 import { onMount } from 'svelte';
-import { Direction, getLocalStorage, setLocalStorage, Dragger } from '../';
+import { Dragger } from '../drag';
+import { getLocalStorage, setLocalStorage } from '../storage';
+import { Direction } from '../types';
+
 import Icon from './Icon.svelte';
 
 export let direction: Direction = 'horizontal';

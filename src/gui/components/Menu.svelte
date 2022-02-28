@@ -1,78 +1,18 @@
-<style lang="scss">
-@import "../theme";
-
-.menu {
-  position: relative;
-  display: flex;
-
-  & .menu-position {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-
-    & .menu-view {
-      @include linear_gradient(#24282f, #2f343c);
-      @include button_border_up;
-      border-bottom: none;
-      box-shadow: -1px 5px 8px 1px rgba(0, 0, 0, 0.25);
-
-      border-radius: $border_radius_tiny;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-
-      & li {
-        position: relative;
-        min-height: 26px;
-        box-sizing: border-box;
-      }
-
-      & li.separator {
-        min-height: 2px;
-        border-top: 1px solid #24272c;
-        border-bottom: 1px solid #3d4147;
-      }
-
-      :global(& [data-component="label"]:focus) {
-        outline: none;
-      }
-
-      & li.hover {
-        @include linear_gradient(#6d7683, #5a5c5e, 180deg);
-        outline: none;
-
-        :global(& [data-component="label"]) {
-          text-shadow: none;
-        }
-      }
-
-      & li.selected {
-        @include linear_gradient(#73849d, #3a556f, 180deg);
-      }
-    }
-  }
-}
-
-:global([data-component="menu"] [data-component="label"]) {
-  text-shadow: none;
-}
-</style>
-
 <script lang="ts">
 import {
   MenuItem,
   MenuPosition,
-  MenuTrigger,
   MenuStackItem,
+  MenuTrigger,
   onSelectHandler,
-  nextId,
-} from "../";
-import MenuRow from "./MenuRow.svelte";
+} from '../menu';
+import { nextId } from '../util';
+
+import MenuRow from './MenuRow.svelte';
 
 export let items: MenuItem[];
-export let trigger: MenuTrigger = "mousedown";
-export let position: MenuPosition = "dropdown";
+export let trigger: MenuTrigger = 'mousedown';
+export let position: MenuPosition = 'dropdown';
 export let isOpen: boolean = false;
 export let selectedIndex: number = -1;
 export let hoverIndex: number = selectedIndex;
@@ -158,10 +98,10 @@ $: {
     let top: number;
     let left: number;
 
-    if (position === "dropdown") {
+    if (position === 'dropdown') {
       left = 0;
       top = containerRect.height;
-    } else if (position === "popout") {
+    } else if (position === 'popout') {
       left = containerRect.width;
       top = 0;
     }
@@ -199,9 +139,9 @@ $: {
   }
 }
 
-$: hasIcons = items.some((item) => item.hasIcon);
-$: hasSubMenus = items.some((item) => item.hasSubMenu);
-$: hasShortCuts = items.some((item) => item.hasShortcut);
+$: hasIcons = items.some(item => item.hasIcon);
+$: hasSubMenus = items.some(item => item.hasSubMenu);
+$: hasShortCuts = items.some(item => item.hasShortcut);
 
 function clearStack() {
   stack.length = 0;
@@ -222,7 +162,7 @@ const onLIMouseOver = (index: number) => (e: MouseEvent) => {
 };
 
 const onLIMouseUp = (index: number) => (e: MouseEvent) => {
-  if (trigger === "mousedown") {
+  if (trigger === 'mousedown') {
     if (containsEvent(e) && !items[index].hasSubMenu) {
       select(items[index]);
     }
@@ -230,7 +170,7 @@ const onLIMouseUp = (index: number) => (e: MouseEvent) => {
 };
 
 const onLIMouseDown = (index: number) => (e: MouseEvent) => {
-  if (trigger === "mouseup") {
+  if (trigger === 'mouseup') {
     if (containsEvent(e) && !items[index].hasSubMenu) {
       select(items[index]);
     }
@@ -286,3 +226,64 @@ const onLIMouseDown = (index: number) => (e: MouseEvent) => {
     </div>
   {/if}
 </div>
+
+<style lang="scss">
+@import '../theme';
+
+.menu {
+  position: relative;
+  display: flex;
+
+  & .menu-position {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+
+    & .menu-view {
+      @include linear_gradient(#24282f, #2f343c);
+      @include button_border_up;
+      border-bottom: none;
+      box-shadow: -1px 5px 8px 1px rgba(0, 0, 0, 0.25);
+
+      border-radius: $border_radius_tiny;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      & li {
+        position: relative;
+        min-height: 26px;
+        box-sizing: border-box;
+      }
+
+      & li.separator {
+        min-height: 2px;
+        border-top: 1px solid #24272c;
+        border-bottom: 1px solid #3d4147;
+      }
+
+      :global(& [data-component='label']:focus) {
+        outline: none;
+      }
+
+      & li.hover {
+        @include linear_gradient(#6d7683, #5a5c5e, 180deg);
+        outline: none;
+
+        :global(& [data-component='label']) {
+          text-shadow: none;
+        }
+      }
+
+      & li.selected {
+        @include linear_gradient(#73849d, #3a556f, 180deg);
+      }
+    }
+  }
+}
+
+:global([data-component='menu'] [data-component='label']) {
+  text-shadow: none;
+}
+</style>

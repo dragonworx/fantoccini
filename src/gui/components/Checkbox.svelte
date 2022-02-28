@@ -1,37 +1,30 @@
-<style lang="scss">
-@import "../theme";
-:global(button[data-type="checkbox"].button .content) {
-  padding: 4px;
-}
-</style>
-
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
-import type { Position } from "../";
-import Button from "./Button.svelte";
-import Icon from "./Icon.svelte";
-import Label from "./Label.svelte";
+import { createEventDispatcher } from 'svelte';
+import { Position } from '../types';
+import Button from './Button.svelte';
+import Icon from './Icon.svelte';
+import Label from './Label.svelte';
 
 export let isEnabled: boolean = true;
 export let isDown: boolean = false;
 export let label: string | undefined = undefined;
-export let position: Position = "left";
+export let position: Position = 'left';
 
 const dispatch = createEventDispatcher();
 
 let button: Button;
 
-const onButtonToggle = (event) => {
-  dispatch("change", event.detail);
+const onButtonToggle = event => {
+  dispatch('change', event.detail);
   isDown = event.detail;
 };
 
-const onLabelMouseUp = (e) => {
-  const isLabelClick = e.target.classList.contains("label-wrapper");
+const onLabelMouseUp = e => {
+  const isLabelClick = e.target.classList.contains('label-wrapper');
   if (isEnabled && isLabelClick) {
     isDown = !isDown;
     button.setIsDown(isDown);
-    dispatch("change", isDown);
+    dispatch('change', isDown);
   }
 };
 </script>
@@ -60,3 +53,10 @@ const onLabelMouseUp = (e) => {
     type="checkbox"
     on:change="{onButtonToggle}"><Icon name="cross" width="{12}" /></Button>
 {/if}
+
+<style lang="scss">
+@import '../theme';
+:global(button[data-type='checkbox'].button .content) {
+  padding: 4px;
+}
+</style>

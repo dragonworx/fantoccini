@@ -1,28 +1,24 @@
-<style lang="scss">
-@import "../theme";
-</style>
-
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
+import { createEventDispatcher } from 'svelte';
+import Button from './Button.svelte';
+import Menu from './Menu.svelte';
+import { isAcceptKey, isModifier } from '../filters';
 import {
   MenuItem,
   MenuPosition,
-  MenuTrigger,
   MenuStackItem,
+  MenuTrigger,
   onSelectHandler,
-  Action,
-  nextId,
-} from "../";
-import Button from "./Button.svelte";
-import Menu from "./Menu.svelte";
-import { isAcceptKey, isModifier } from "../filters";
+} from '../menu';
+import { nextId } from '../util';
+import { Action } from '../action';
 
 export let isEnabled: boolean = true;
 export let items: MenuItem[];
 export let selectedIndex: number = -1;
 export let hoverIndex: number = selectedIndex;
-export let trigger: MenuTrigger = "mousedown";
-export let position: MenuPosition = "dropdown";
+export let trigger: MenuTrigger = 'mousedown';
+export let position: MenuPosition = 'dropdown';
 export let isOpen: boolean = false;
 export let noStyle: boolean = false;
 export let retainSelection: boolean = false;
@@ -37,7 +33,7 @@ let menu: Menu;
 let onMouseDown: (e: MouseEvent) => void;
 let onInternalKeyDown: (e: KeyboardEvent) => void;
 
-Action.notifications.on("execute", (action) => {
+Action.notifications.on('execute', action => {
   if (isOpen) {
     close();
   }
@@ -52,19 +48,19 @@ export function open() {
   hoverIndex = selectedIndex;
   stack.length && stack[0].setHoverIndex(selectedIndex);
   button.setIsDown(true);
-  dispatch("open");
+  dispatch('open');
 
   setTimeout(() => {
     onMouseDown = (e: MouseEvent) => {
       if (button && !button.containsEvent(e.target as Node)) {
-        const contains = stack.some((item) => item.containsEvent(e));
+        const contains = stack.some(item => item.containsEvent(e));
         if (!contains) {
           close();
         }
       }
       clearBlurHandlers();
     };
-    window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener('mousedown', onMouseDown);
     onInternalKeyDown = (e: KeyboardEvent) => {
       if (isModifier(e.key)) {
         return;
@@ -74,7 +70,7 @@ export function open() {
         close();
       }
     };
-    window.addEventListener("keydown", onInternalKeyDown);
+    window.addEventListener('keydown', onInternalKeyDown);
   }, 0);
 }
 
@@ -87,18 +83,18 @@ export function close(shouldDispatch: boolean = true) {
   } else {
     menu.clear();
   }
-  shouldDispatch && dispatch("close");
+  shouldDispatch && dispatch('close');
   stack.length = 0;
   clearBlurHandlers();
 }
 
 function clearBlurHandlers() {
   if (onMouseDown) {
-    window.removeEventListener("mousedown", onMouseDown);
+    window.removeEventListener('mousedown', onMouseDown);
     onMouseDown = undefined;
   }
   if (onInternalKeyDown) {
-    window.removeEventListener("keydown", onInternalKeyDown);
+    window.removeEventListener('keydown', onInternalKeyDown);
     onInternalKeyDown = undefined;
   }
 }
@@ -154,7 +150,7 @@ export function increment(startFrom: number = -1) {
   );
   if (
     currentItems[nextIndex].isEnabled === false ||
-    currentItems[nextIndex].label === "-"
+    currentItems[nextIndex].label === '-'
   ) {
     if (nextIndex < currentItems.length - 1) {
       increment(nextIndex);
@@ -183,27 +179,27 @@ export function decrement(startFrom: number = -1) {
 const onSelect: onSelectHandler = (item: MenuItem) => {
   if (item.isInteractive) {
     item.execute();
-    dispatch("select", item);
-    if (trigger === "mouseup") {
+    dispatch('select', item);
+    if (trigger === 'mouseup') {
       close(false);
     }
   }
 };
 
 const onDown = () => {
-  if (trigger === "mousedown") {
+  if (trigger === 'mousedown') {
     open();
   }
 };
 
 const onUp = () => {
-  if (trigger === "mousedown") {
+  if (trigger === 'mousedown') {
     close();
   }
 };
 
 const onToggle = (e: CustomEvent) => {
-  if (trigger === "mouseup") {
+  if (trigger === 'mouseup') {
     if (e.detail) {
       open();
     } else {
@@ -214,9 +210,9 @@ const onToggle = (e: CustomEvent) => {
 
 const onKeyDown = (e: KeyboardEvent) => {
   const { key } = e;
-  if (key === "ArrowUp" && isOpen) {
+  if (key === 'ArrowUp' && isOpen) {
     decrement();
-  } else if (key === "ArrowDown") {
+  } else if (key === 'ArrowDown') {
     if (!isOpen) {
       open();
     } else if (isOpen) {
@@ -227,18 +223,18 @@ const onKeyDown = (e: KeyboardEvent) => {
       const item = getActiveStack().getCurrentItem();
       if (!item.hasSubMenu) {
         item.execute();
-        dispatch("select", item);
+        dispatch('select', item);
       }
     }
-  } else if (key === "Escape") {
+  } else if (key === 'Escape') {
     close();
-  } else if (key === "ArrowLeft") {
+  } else if (key === 'ArrowLeft') {
     if (hasPreviousSubMenu() && getStack().length) {
       getActiveStack().setHoverIndex(-1);
       getActiveStack().isActive = false;
       // console.log("back");
     }
-  } else if (key === "ArrowRight") {
+  } else if (key === 'ArrowRight') {
     if (hasCurrentSubMenu()) {
       getStackTop().isActive = true;
       increment();
@@ -297,3 +293,7 @@ const onShouldClose = () => {
     on:mouseout>
     <slot />
   </Button></Menu>
+
+<style lang="scss">
+@import '../theme';
+</style>

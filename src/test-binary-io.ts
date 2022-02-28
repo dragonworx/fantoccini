@@ -47,7 +47,7 @@ console.log(doc);
 
 selectLocalFile().then(file => {
   const reader = new DataReader();
-  reader.deserialise(file as Blob).then(obj => {
+  reader.deserialise(file as Blob).then((obj: any) => {
     console.log(obj);
     blobToImg(obj.p, 0, 300);
   });

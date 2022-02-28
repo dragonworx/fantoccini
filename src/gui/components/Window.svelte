@@ -34,19 +34,20 @@ export type WindowAPI = {
 </script>
 
 <script lang="ts">
-import { createEventDispatcher, onMount } from "svelte";
-import { fade } from "svelte/transition";
-import { MenuBarItem, Dragger } from "../";
-import PushButton from "./PushButton.svelte";
-import Icon from "./Icon.svelte";
-import Panel from "./Panel.svelte";
-import { getLocalStorage, setLocalStorage } from "../storage";
+import { createEventDispatcher, onMount } from 'svelte';
+import { fade } from 'svelte/transition';
+import PushButton from './PushButton.svelte';
+import Icon from './Icon.svelte';
+import Panel from './Panel.svelte';
+import { getLocalStorage, setLocalStorage } from '../storage';
+import { MenuBarItem } from '../menu';
+import { Dragger } from '../drag';
 
 export let id: string;
 export let isOpen: boolean = true;
-export let title: string = "";
+export let title: string = '';
 export let icon: string | undefined = undefined;
-export let appearance: "window" | "tool" = "window";
+export let appearance: 'window' | 'tool' = 'window';
 export let modal: boolean = false;
 export let menuBar: MenuBarItem[] | undefined = undefined;
 export let width: number = 0;
@@ -149,10 +150,10 @@ function dragEdge<T>(
   }) => void
 ): DragEdge<T> {
   const dragger = new Dragger<T>();
-  dragger.on("dragstart", onDragStart);
-  dragger.on("dragmove", onDragMove);
+  dragger.on('dragstart', onDragStart);
+  dragger.on('dragmove', onDragMove);
   dragger.on(
-    "dragcomplete",
+    'dragcomplete',
     () => useStorage && setLocalStorage(storageKey, { x, y, width, height })
   );
   return {
@@ -172,7 +173,7 @@ function dragCorner(
   }) => void
 ) {
   return dragEdge<{ x: number; y: number; width: number; height: number }>(
-    (setStartValue) => {
+    setStartValue => {
       isDragging = true;
       setStartValue({ x, y, width, height });
     },
@@ -193,11 +194,11 @@ let restore: {
 };
 
 const titleDragger = new Dragger<{ x: number; y: number }>()
-  .on("dragstart", (setStartValue) => {
+  .on('dragstart', setStartValue => {
     isDragging = true;
     setStartValue({ x, y });
   })
-  .on("dragmove", ({ dragger, deltaX, deltaY }) => {
+  .on('dragmove', ({ dragger, deltaX, deltaY }) => {
     x = dragger.startValue.x + deltaX;
     y = dragger.startValue.y + deltaY;
     x = Math.min(Math.max(0, x), document.documentElement.clientWidth - width);
@@ -206,13 +207,13 @@ const titleDragger = new Dragger<{ x: number; y: number }>()
       document.documentElement.clientHeight - height
     );
   })
-  .on("dragcomplete", () => {
+  .on('dragcomplete', () => {
     isDragging = false;
     useStorage && setLocalStorage(storageKey, { x, y, width, height });
   });
 
 const top = dragEdge<{ y: number; height: number }>(
-  (setStartValue) => {
+  setStartValue => {
     isDragging = true;
     setStartValue({ y, height });
   },
@@ -227,7 +228,7 @@ const top = dragEdge<{ y: number; height: number }>(
 );
 
 const left = dragEdge<{ x: number; width: number }>(
-  (setStartValue) => {
+  setStartValue => {
     isDragging = true;
     setStartValue({ x, width });
   },
@@ -242,7 +243,7 @@ const left = dragEdge<{ x: number; width: number }>(
 );
 
 const right = dragEdge<{ width: number }>(
-  (setStartValue) => {
+  setStartValue => {
     isDragging = true;
     setStartValue({ width });
   },
@@ -256,7 +257,7 @@ const right = dragEdge<{ width: number }>(
 );
 
 const bottom = dragEdge<{ height: number }>(
-  (setStartValue) => {
+  setStartValue => {
     isDragging = true;
     setStartValue({ height });
   },
@@ -269,22 +270,22 @@ const bottom = dragEdge<{ height: number }>(
   }
 );
 
-const topLeft = dragCorner((values) => {
+const topLeft = dragCorner(values => {
   top.onDragMove(values);
   left.onDragMove(values);
 });
 
-const topRight = dragCorner((values) => {
+const topRight = dragCorner(values => {
   top.onDragMove(values);
   right.onDragMove(values);
 });
 
-const bottomLeft = dragCorner((values) => {
+const bottomLeft = dragCorner(values => {
   bottom.onDragMove(values);
   left.onDragMove(values);
 });
 
-const bottomRight = dragCorner((values) => {
+const bottomRight = dragCorner(values => {
   bottom.onDragMove(values);
   right.onDragMove(values);
 });
@@ -310,10 +311,10 @@ onMount(() => {
 $: storageKey = `window-${id}`;
 $: isMinimised = false;
 $: isDragging = false;
-$: isTool = appearance === "tool";
+$: isTool = appearance === 'tool';
 $: isPositioned = x !== 0 || y !== 0 || width !== 0 || height !== 0;
 $: buttonIconSize = isTool ? 10 : 16;
-$: style = "";
+$: style = '';
 $: {
   if (isOpen && modal) {
     openModal();
@@ -330,15 +331,15 @@ $: {
 }
 
 const onMinimiseClick = () => {
-  dispatch("minimise");
+  dispatch('minimise');
 };
 
 const onMaximiseClick = () => {
-  dispatch("maximise");
+  dispatch('maximise');
 };
 
 const onCloseClick = () => {
-  dispatch("close");
+  dispatch('close');
 };
 
 const onTitleMouseDown = (e: MouseEvent) => {
@@ -435,7 +436,7 @@ const onTitleMouseDown = (e: MouseEvent) => {
 {/if}
 
 <style lang="scss">
-@import "../theme";
+@import '../theme';
 $resize: 3px;
 $resizeLarge: $resize * 2;
 
@@ -608,11 +609,11 @@ $resizeLarge: $resize * 2;
         display: flex;
         align-items: center;
 
-        :global([data-component="button"]) {
+        :global([data-component='button']) {
           margin-left: $spacing_small;
         }
 
-        :global([data-component="button"]) {
+        :global([data-component='button']) {
           @include linear_gradient(#264e95, #2f343c);
         }
       }

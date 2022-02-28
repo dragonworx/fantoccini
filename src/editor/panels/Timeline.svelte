@@ -1,9 +1,14 @@
 <script lang="ts">
-import Panel from 'src/gui/components/Panel.svelte';
-import Panel from 'src/gui/components/ButtonGroup.svelte';
+import { Panel, ButtonGroup } from 'src/gui/';
 </script>
 
-<div id="timeline">Timeline</div>
+<div id="timeline">
+  <div class="transport">
+    <ButtonGroup
+      options="{[{ label: 'Play', name: 'play' }]}"
+      on:change="{e => console.log('ButtonGroup', 'change', e.detail)}" />
+  </div>
+</div>
 
 <style lang="scss">
 #timeline {

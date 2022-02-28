@@ -1,48 +1,13 @@
-<style lang="scss">
-@import "../theme";
-.tooltip {
-  .tooltip-content {
-    position: relative;
-
-    .tooltip-label {
-      @include linear_gradient(#43546a, #546995);
-      box-sizing: border-box;
-      position: absolute;
-      padding: 2px 3px;
-      border-radius: 3px;
-      border: 1px outset #7d8390;
-      box-shadow: 0px 5px 3px -3px rgba(0, 0, 0, 0.2);
-    }
-  }
-
-  &[data-position="bottom"] .tooltip-label {
-    margin-top: $spacing_small;
-  }
-
-  &[data-position="top"] .tooltip-label {
-    margin-top: $spacing_small * -1;
-  }
-
-  &[data-position="left"] .tooltip-label {
-    margin-left: $spacing_small * -1;
-  }
-
-  &[data-position="right"] .tooltip-label {
-    margin-left: $spacing_small;
-  }
-}
-</style>
-
 <script lang="ts" context="module">
 export const staticVar = 500;
 </script>
 
 <script lang="ts">
-import { Position } from "../";
-import Label from "./Label.svelte";
+import { Position } from '../types';
+import Label from './Label.svelte';
 
-export let text: string = "foo";
-export let position: Position = "bottom";
+export let text: string = 'foo';
+export let position: Position = 'bottom';
 
 let isOpen: boolean = false;
 
@@ -56,16 +21,16 @@ $: {
   if (isOpen && contentEl && labelEl) {
     const contentRect = contentEl.getBoundingClientRect();
     const labelRect = labelEl.getBoundingClientRect();
-    if (position === "bottom") {
+    if (position === 'bottom') {
       top = contentRect.height;
       left = Math.round((contentRect.width - labelRect.width) / 2);
-    } else if (position === "top") {
+    } else if (position === 'top') {
       top = contentRect.height * -1;
       left = Math.round((contentRect.width - labelRect.width) / 2);
-    } else if (position === "left") {
+    } else if (position === 'left') {
       top = Math.round((contentRect.height - labelRect.height) / 2);
       left = labelRect.width * -1;
-    } else if (position === "right") {
+    } else if (position === 'right') {
       top = Math.round((contentRect.height - labelRect.height) / 2);
       left = contentRect.width;
     }
@@ -104,3 +69,38 @@ const onMouseOut = () => {
     {/if}
   </div>
 </div>
+
+<style lang="scss">
+@import '../theme';
+.tooltip {
+  .tooltip-content {
+    position: relative;
+
+    .tooltip-label {
+      @include linear_gradient(#43546a, #546995);
+      box-sizing: border-box;
+      position: absolute;
+      padding: 2px 3px;
+      border-radius: 3px;
+      border: 1px outset #7d8390;
+      box-shadow: 0px 5px 3px -3px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  &[data-position='bottom'] .tooltip-label {
+    margin-top: $spacing_small;
+  }
+
+  &[data-position='top'] .tooltip-label {
+    margin-top: $spacing_small * -1;
+  }
+
+  &[data-position='left'] .tooltip-label {
+    margin-left: $spacing_small * -1;
+  }
+
+  &[data-position='right'] .tooltip-label {
+    margin-left: $spacing_small;
+  }
+}
+</style>

@@ -1,22 +1,15 @@
-<style lang="scss">
-@import "../theme";
-:global(button[data-type="radio"].button .content) {
-  padding: 4px;
-}
-</style>
-
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
-import type { Position } from "../";
-import Label from "./Label.svelte";
-import Button from "./Button.svelte";
-import Icon from "./Icon.svelte";
+import { createEventDispatcher } from 'svelte';
+import Label from './Label.svelte';
+import Button from './Button.svelte';
+import Icon from './Icon.svelte';
+import { Position } from '../types';
 
 export let isEnabled: boolean = true;
 export let label: string;
 export let isDown: boolean = false;
 export let index: number = -1;
-export let position: Position = "right";
+export let position: Position = 'right';
 
 const dispatch = createEventDispatcher();
 
@@ -24,7 +17,7 @@ let button;
 
 function onButtonChange(event) {
   if (event.detail.isDown) {
-    dispatch("pressed", {
+    dispatch('pressed', {
       index,
     });
     isDown = true;
@@ -35,7 +28,7 @@ function onLabelMouseUp() {
   if (isEnabled && !isDown) {
     button.click();
     button.focus();
-    dispatch("pressed", {
+    dispatch('pressed', {
       index,
     });
   }
@@ -43,12 +36,12 @@ function onLabelMouseUp() {
 
 function onButtonKeyDown(e: KeyboardEvent) {
   const { key } = e;
-  if (key == "ArrowUp" || key === "ArrowLeft") {
+  if (key == 'ArrowUp' || key === 'ArrowLeft') {
     e.preventDefault();
-    dispatch("decrement");
-  } else if (key == "ArrowDown" || key === "ArrowRight") {
+    dispatch('decrement');
+  } else if (key == 'ArrowDown' || key === 'ArrowRight') {
     e.preventDefault();
-    dispatch("increment");
+    dispatch('increment');
   }
 }
 </script>
@@ -75,3 +68,10 @@ function onButtonKeyDown(e: KeyboardEvent) {
     on:change="{onButtonChange}"
     >{#if isDown}<Icon name="circle" width="{8}" />{/if}</Button
   ></Label>
+
+<style lang="scss">
+@import '../theme';
+:global(button[data-type='radio'].button .content) {
+  padding: 4px;
+}
+</style>

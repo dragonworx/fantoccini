@@ -1,112 +1,91 @@
-<style lang="scss">
-main {
-  position: relative;
-  padding: 10px;
-  padding-bottom: 100px;
-}
-
-@media (min-width: 640px) {
-  main {
-    box-sizing: border-box;
-    max-width: none;
-  }
-}
-</style>
-
 <script lang="ts">
 /** example */
-import Section from "./gui/examples/Section.svelte";
-import Area from "./gui/examples/Area.svelte";
-import Events from "./gui/examples/Events.svelte";
+import Section from './examples/Section.svelte';
+import Area from './examples/Area.svelte';
+import Events from './examples/Events.svelte';
 
 /** gui */
-import { isAlphaNumeric } from "./gui/filters";
-import {
-  RadioGroupOption,
-  ButtonGroupOption,
-  MenuBarItem,
-  MenuItem,
-  separator,
-  Action,
-  action,
-} from "./gui";
-import Label from "./gui/components/Label.svelte";
-import Icon from "./gui/components/Icon.svelte";
-import PushButton from "./gui/components/PushButton.svelte";
-import ButtonGroup from "./gui/components/ButtonGroup.svelte";
-import Checkbox from "./gui/components/Checkbox.svelte";
-import RadioGroup from "./gui/components/RadioGroup.svelte";
-import TextField from "./gui/components/TextField.svelte";
-import Spinner from "./gui/components/Spinner.svelte";
-import MenuButton from "./gui/components/MenuButton.svelte";
-import Select from "./gui/components/Select.svelte";
-import ScrollBar from "./gui/components/ScrollBar.svelte";
-import ScrollView from "./gui/components/ScrollView.svelte";
-import MenuBar from "./gui/components/MenuBar.svelte";
-import Tooltip from "./gui/components/Tooltip.svelte";
-import Panel from "./gui/components/Panel.svelte";
-import TabView from "./gui/components/TabView.svelte";
-import TabDoc from "./gui/components/TabDoc.svelte";
-import Splitter from "./gui/components/Splitter.svelte";
-import Window, { getWindow } from "./gui/components/Window.svelte";
+import { isAlphaNumeric } from './filters';
+import Label from './components/Label.svelte';
+import Icon from './components/Icon.svelte';
+import PushButton from './components/PushButton.svelte';
+import ButtonGroup from './components/ButtonGroup.svelte';
+import Checkbox from './components/Checkbox.svelte';
+import RadioGroup from './components/RadioGroup.svelte';
+import TextField from './components/TextField.svelte';
+import Spinner from './components/Spinner.svelte';
+import MenuButton from './components/MenuButton.svelte';
+import Select from './components/Select.svelte';
+import ScrollBar from './components/ScrollBar.svelte';
+import ScrollView from './components/ScrollView.svelte';
+import MenuBar from './components/MenuBar.svelte';
+import Tooltip from './components/Tooltip.svelte';
+import Panel from './components/Panel.svelte';
+import TabView from './components/TabView.svelte';
+import TabDoc from './components/TabDoc.svelte';
+import Splitter from './components/Splitter.svelte';
+import Window, { getWindow } from './components/Window.svelte';
+import { MenuBarItem, MenuItem, separator } from './menu';
+import { ButtonGroupOption, RadioGroupOption } from './option';
+import { action, Action } from './action';
 
 const radioOptions: RadioGroupOption[] = [
-  { label: "Option 1", value: "a" },
-  { label: "Option 2", value: "b" },
-  { label: "Option 3", value: "c" },
+  { label: 'Option 1', value: 'a' },
+  { label: 'Option 2', value: 'b' },
+  { label: 'Option 3', value: 'c' },
 ];
 
 const alphaNumericFilter = (key: string) => isAlphaNumeric(key);
 
 const simpleMenu1: MenuItem[] = [
   new MenuItem({
-    label: "1. Action",
-    action: new Action(() => console.log("Action 1!"), "f5"),
+    label: '1. Action',
+    action: new Action(() => console.log('Action 1!'), 'f5'),
   }),
-  new MenuItem({ label: "Item 1.2" }),
-  new MenuItem({ label: "1.3", icon: "img/test-small.png" }),
+  new MenuItem({ label: 'Item 1.2' }),
+  new MenuItem({ label: '1.3', icon: 'img/test-small.png' }),
   separator,
-  new MenuItem({ label: "1.4", canToggle: true, isChecked: true }),
+  new MenuItem({ label: '1.4', canToggle: true, isChecked: true }),
   new MenuItem({
-    label: "1.5",
+    label: '1.5',
     canToggle: true,
-    action: new Action(() => console.log("1.5!"), "f4"),
+    action: new Action(() => console.log('1.5!'), 'f4'),
   }),
 ];
 
 const simpleMenu2: MenuItem[] = [
   new MenuItem({
-    label: "2. Action",
-    action: new Action(() => console.log("Action 2!"), "f6"),
+    label: '2. Action',
+    action: new Action(() => console.log('Action 2!'), 'f6'),
   }),
-  new MenuItem({ label: "Item 2.2", icon: "img/test-small.png" }),
-  new MenuItem({ label: "The Item 2.3" }),
-  new MenuItem({ label: "Item 2.4" }),
+  new MenuItem({ label: 'Item 2.2', icon: 'img/test-small.png' }),
+  new MenuItem({ label: 'The Item 2.3' }),
+  new MenuItem({ label: 'Item 2.4' }),
 ];
 
 const simpleMenu3: MenuItem[] = [
   new MenuItem({
-    label: "3. Action",
-    action: new Action(() => console.log("Action 3!"), "ctrl+k"),
+    label: '3. Action',
+    action: new Action(() => console.log('Action 3!'), 'ctrl+k'),
   }),
-  new MenuItem({ label: "Item 3.2" }),
-  new MenuItem({ label: "Item 3.3" }),
-  new MenuItem({ label: "Item 3.4", isEnabled: false }),
+  new MenuItem({ label: 'Item 3.2' }),
+  new MenuItem({ label: 'Item 3.3' }),
+  new MenuItem({ label: 'Item 3.4', isEnabled: false }),
   separator,
-  new MenuItem({ label: "Item 3.5" }),
+  new MenuItem({ label: 'Item 3.5' }),
 ];
 
 const simpleMenu4: MenuItem[] = [
   new MenuItem({
-    label: "4. Action",
+    label: '4. Action',
     isEnabled: false,
-    action: new Action(() => console.log("Action 4!"), "ctrl+a"),
+    action: new Action(() => console.log('Action 4!'), 'ctrl+a'),
   }),
-  new MenuItem({ label: "Item 4.2", isEnabled: false }),
-  new MenuItem({ label: "Item 4.3", isEnabled: false }),
-  new MenuItem({ label: "Item 4.4", isEnabled: false }),
+  new MenuItem({ label: 'Item 4.2', isEnabled: false }),
+  new MenuItem({ label: 'Item 4.3', isEnabled: false }),
+  new MenuItem({ label: 'Item 4.4', isEnabled: false }),
   separator,
-  new MenuItem({ label: "Item 4.5", isEnabled: false }),
+  new MenuItem({ label: 'Item 4.5', isEnabled: false }),
 ];
 
 simpleMenu1[1].items = simpleMenu4;
@@ -115,20 +94,20 @@ simpleMenu2[2].items = simpleMenu3;
 simpleMenu2[3].items = simpleMenu3;
 
 const buttonGroupOptions: ButtonGroupOption[] = [
-  { icon: "img/icons/play.svg", name: "play" },
-  { icon: "img/icons/pause.svg", name: "pause" },
-  { icon: "img/icons/record.svg", name: "record" },
-  { label: "Label", name: "foo" },
+  { icon: 'img/icons/play.svg', name: 'play' },
+  { icon: 'img/icons/pause.svg', name: 'pause' },
+  { icon: 'img/icons/record.svg', name: 'record' },
+  { label: 'Label', name: 'foo' },
 ];
 
 const simpleMenuBar: MenuBarItem[] = [
-  { label: "File", items: simpleMenu1 },
-  { label: "Edit", items: simpleMenu1 },
-  { label: "Window", items: simpleMenu1 },
-  { label: "Disabled", items: simpleMenu4 },
+  { label: 'File', items: simpleMenu1 },
+  { label: 'Edit', items: simpleMenu1 },
+  { label: 'Window', items: simpleMenu1 },
+  { label: 'Disabled', items: simpleMenu4 },
 ];
 
-let simpleTabs = ["Tool A", "Tool B", "Tool C", "Tool D"];
+let simpleTabs = ['Tool A', 'Tool B', 'Tool C', 'Tool D'];
 let isDialogOpen = false;
 let dialog: Window;
 
@@ -139,12 +118,12 @@ function log(component: string, event: string, detail?: any) {
   console.log(
     `%c${component}🔆%c${event}%c${
       detail !== undefined
-        ? ": " + JSON.stringify(detail).replace(/,/g, ", ").replace(/:/g, ": ")
-        : ""
+        ? ': ' + JSON.stringify(detail).replace(/,/g, ', ').replace(/:/g, ': ')
+        : ''
     }`,
-    "color:cyan",
-    "color:yellow",
-    "color:white"
+    'color:cyan',
+    'color:yellow',
+    'color:white'
   );
 }
 
@@ -230,39 +209,39 @@ const onOpenDialog = () => {
       <Events>
         <PushButton
           label="Push"
-          on:push="{(e) => log('PushButton', 'push')}"
-          on:down="{(e) => log('PushButton', 'down')}"
-          on:up="{(e) => log('PushButton', 'up')}"
-          on:click="{(e) => log('PushButton', 'click')}"
-          on:longpress="{(e) => log('PushButton', 'longpress')}" />
+          on:push="{e => log('PushButton', 'push')}"
+          on:down="{e => log('PushButton', 'down')}"
+          on:up="{e => log('PushButton', 'up')}"
+          on:click="{e => log('PushButton', 'click')}"
+          on:longpress="{e => log('PushButton', 'longpress')}" />
       </Events>
       <Events mute="{true}">
         <PushButton
           label="Push"
           isEnabled="{false}"
-          on:push="{(e) => log('PushButton', 'push')}"
-          on:down="{(e) => log('PushButton', 'down')}"
-          on:up="{(e) => log('PushButton', 'up')}" />
+          on:push="{e => log('PushButton', 'push')}"
+          on:down="{e => log('PushButton', 'down')}"
+          on:up="{e => log('PushButton', 'up')}" />
       </Events>
       <PushButton label="Push it" iconName="tick" />
       <Events>
         <PushButton
           label="No Style"
           noStyle="{true}"
-          on:push="{(e) => log('PushButton', 'push')}"
-          on:down="{(e) => log('PushButton', 'down')}"
-          on:up="{(e) => log('PushButton', 'up')}"
-          on:longpress="{(e) => log('PushButton', 'longpress')}" />
+          on:push="{e => log('PushButton', 'push')}"
+          on:down="{e => log('PushButton', 'down')}"
+          on:up="{e => log('PushButton', 'up')}"
+          on:longpress="{e => log('PushButton', 'longpress')}" />
       </Events>
       <Events mute="{true}">
         <PushButton
           isEnabled="{false}"
           label="No Style"
           noStyle="{true}"
-          on:push="{(e) => log('PushButton', 'push')}"
-          on:down="{(e) => log('PushButton', 'down')}"
-          on:up="{(e) => log('PushButton', 'up')}"
-          on:longpress="{(e) => log('PushButton', 'longpress')}" />
+          on:push="{e => log('PushButton', 'push')}"
+          on:down="{e => log('PushButton', 'down')}"
+          on:up="{e => log('PushButton', 'up')}"
+          on:longpress="{e => log('PushButton', 'longpress')}" />
       </Events>
     </Area>
     <Area>
@@ -271,11 +250,11 @@ const onOpenDialog = () => {
           label="Toggle"
           iconName="tick"
           canToggle="{true}"
-          on:push="{(e) => log('PushButton', 'push')}"
-          on:down="{(e) => log('PushButton', 'down')}"
-          on:toggle="{(e) => log('PushButton', 'toggle', e.detail)}"
-          on:up="{(e) => log('PushButton', 'up')}"
-          on:click="{(e) => log('PushButton', 'click')}" />
+          on:push="{e => log('PushButton', 'push')}"
+          on:down="{e => log('PushButton', 'down')}"
+          on:toggle="{e => log('PushButton', 'toggle', e.detail)}"
+          on:up="{e => log('PushButton', 'up')}"
+          on:click="{e => log('PushButton', 'click')}" />
       </Events>
       <PushButton
         label="Toggle"
@@ -289,7 +268,7 @@ const onOpenDialog = () => {
           iconName="tick"
           canToggle="{true}"
           isDown="{true}"
-          on:toggle="{(e) => log('PushButton', 'toggle', e.detail)}" />
+          on:toggle="{e => log('PushButton', 'toggle', e.detail)}" />
       </Events>
     </Area>
     <Area>
@@ -313,21 +292,18 @@ const onOpenDialog = () => {
       <Events
         ><ButtonGroup
           options="{buttonGroupOptions}"
-          on:change="{(e) =>
-            log('ButtonGroup', 'change', e.detail)}" /></Events>
+          on:change="{e => log('ButtonGroup', 'change', e.detail)}" /></Events>
       <Events mute="{true}"
         ><ButtonGroup
           isEnabled="{false}"
           selectedIndex="{1}"
           options="{buttonGroupOptions}"
-          on:change="{(e) =>
-            log('ButtonGroup', 'change', e.detail)}" /></Events>
+          on:change="{e => log('ButtonGroup', 'change', e.detail)}" /></Events>
       <Events
         ><ButtonGroup
           options="{buttonGroupOptions}"
           canReset="{true}"
-          on:change="{(e) =>
-            log('ButtonGroup', 'change', e.detail)}" /></Events>
+          on:change="{e => log('ButtonGroup', 'change', e.detail)}" /></Events>
     </Area>
   </Section>
 
@@ -342,13 +318,13 @@ const onOpenDialog = () => {
   <Section title="Checkbox">
     <Area>
       <Events>
-        <Checkbox on:change="{(e) => log('Checkbox', 'change', e.detail)}" />
+        <Checkbox on:change="{e => log('Checkbox', 'change', e.detail)}" />
       </Events>
       <Checkbox isDown="{true}" />
       <Events mute="{true}">
         <Checkbox
           isEnabled="{false}"
-          on:change="{(e) => log('Checkbox', 'change', e.detail)}" />
+          on:change="{e => log('Checkbox', 'change', e.detail)}" />
       </Events>
       <Checkbox isEnabled="{false}" isDown="{true}" />
     </Area>
@@ -356,7 +332,7 @@ const onOpenDialog = () => {
       <Events>
         <Checkbox
           label="Left"
-          on:change="{(e) => log('Checkbox', 'change', e.detail)}" />
+          on:change="{e => log('Checkbox', 'change', e.detail)}" />
       </Events>
       <Checkbox label="Right" position="right" />
       <Checkbox label="Top" position="top" />
@@ -365,7 +341,7 @@ const onOpenDialog = () => {
         <Checkbox
           label="Disabled"
           isEnabled="{false}"
-          on:change="{(e) => log('Checkbox', 'change', e.detail)}" />
+          on:change="{e => log('Checkbox', 'change', e.detail)}" />
       </Events>
       <Checkbox label="Down" isDown="{true}" isEnabled="{false}" />
     </Area>
@@ -376,13 +352,13 @@ const onOpenDialog = () => {
       <Events>
         <RadioGroup
           options="{radioOptions}"
-          on:change="{(e) => log('Radio', 'change', e.detail)}" />
+          on:change="{e => log('Radio', 'change', e.detail)}" />
       </Events>
       <Events mute="{true}">
         <RadioGroup
           isEnabled="{false}"
           options="{radioOptions}"
-          on:change="{(e) => log('Radio', 'change', e.detail)}" />
+          on:change="{e => log('Radio', 'change', e.detail)}" />
       </Events>
       <RadioGroup options="{radioOptions}" position="left" />
       <RadioGroup options="{radioOptions}" position="top" />
@@ -393,10 +369,10 @@ const onOpenDialog = () => {
   <Section title="TextField">
     <Events>
       <TextField
-        on:change="{(e) => log('TextField', 'change', e.detail)}"
-        on:accept="{(e) => log('TextField', 'accept', e.detail)}"
-        on:focus="{(e) => log('TextField', 'focus')}"
-        on:blur="{(e) => log('TextField', 'blur')}" />
+        on:change="{e => log('TextField', 'change', e.detail)}"
+        on:accept="{e => log('TextField', 'accept', e.detail)}"
+        on:focus="{e => log('TextField', 'focus')}"
+        on:blur="{e => log('TextField', 'blur')}" />
     </Events>
     <TextField isEnabled="{false}" value="{'This is some text'}" />
     <TextField
@@ -410,9 +386,9 @@ const onOpenDialog = () => {
     <Area>
       <Events>
         <Spinner
-          on:change="{(e) => log('Spinner', 'change', e.detail)}"
-          on:focus="{(e) => log('Spinner', 'focus')}"
-          on:blur="{(e) => log('Spinner', 'blur')}" />
+          on:change="{e => log('Spinner', 'change', e.detail)}"
+          on:focus="{e => log('Spinner', 'focus')}"
+          on:blur="{e => log('Spinner', 'blur')}" />
       </Events>
       <Events mute="{true}">
         <Spinner isEnabled="{false}" />
@@ -437,9 +413,9 @@ const onOpenDialog = () => {
       <Events>
         <MenuButton
           items="{simpleMenu1}"
-          on:open="{(e) => log('MenuButton', 'open')}"
-          on:close="{(e) => log('MenuButton', 'close')}"
-          on:select="{(e) => log('MenuButton', 'select', e.detail)}">
+          on:open="{e => log('MenuButton', 'open')}"
+          on:close="{e => log('MenuButton', 'close')}"
+          on:select="{e => log('MenuButton', 'select', e.detail)}">
           <Label text="MouseDown" />
         </MenuButton>
       </Events>
@@ -455,9 +431,9 @@ const onOpenDialog = () => {
         <MenuButton
           items="{simpleMenu1}"
           trigger="mouseup"
-          on:open="{(e) => log('MenuButton', 'open')}"
-          on:close="{(e) => log('MenuButton', 'close')}"
-          on:select="{(e) => log('MenuButton', 'select', e.detail)}">
+          on:open="{e => log('MenuButton', 'open')}"
+          on:close="{e => log('MenuButton', 'close')}"
+          on:select="{e => log('MenuButton', 'select', e.detail)}">
           <Label text="Mouseup" />
         </MenuButton>
       </Events>
@@ -471,13 +447,13 @@ const onOpenDialog = () => {
     <Events
       ><Select
         items="{simpleMenu1}"
-        on:change="{(e) => log('Select', 'change', e.detail)}" /></Events>
+        on:change="{e => log('Select', 'change', e.detail)}" /></Events>
     <Events mute="{true}"
       ><Select
         isEnabled="{false}"
         items="{simpleMenu1}"
         selectedIndex="{1}"
-        on:change="{(e) => log('Select', 'change', e.detail)}" /></Events>
+        on:change="{e => log('Select', 'change', e.detail)}" /></Events>
     <Select items="{simpleMenu1}" width="{100}" />
     <Select items="{simpleMenu1}" placeholder="-- Select --" />
   </Section>
@@ -489,7 +465,7 @@ const onOpenDialog = () => {
           direction="horizontal"
           value="{0}"
           size="{100}"
-          on:change="{(e) => log('ScrollBar', 'change', e.detail)}" /></Events>
+          on:change="{e => log('ScrollBar', 'change', e.detail)}" /></Events>
       <ScrollBar direction="horizontal" value="{0.5}" />
       <ScrollBar direction="horizontal" value="{1}" />
       <ScrollBar isEnabled="{false}" direction="horizontal" value="{1}" />
@@ -519,7 +495,7 @@ const onOpenDialog = () => {
     <Events>
       <MenuBar
         items="{simpleMenuBar}"
-        on:select="{(e) => log('MenuBar', 'select', e.detail.item.label)}" />
+        on:select="{e => log('MenuBar', 'select', e.detail.item.label)}" />
     </Events>
   </Section>
 
@@ -534,8 +510,8 @@ const onOpenDialog = () => {
     <Events>
       <Area height="{100}">
         <TabView
-          on:change="{(e) => log('TabView', 'change', e.detail)}"
-          on:closing="{(e) => log('TabView', 'closing', e.detail)}">
+          on:change="{e => log('TabView', 'change', e.detail)}"
+          on:closing="{e => log('TabView', 'closing', e.detail)}">
           <TabDoc title="Document.a" menuBar="{simpleMenuBar}"
             ><Label text="Content A..." /></TabDoc>
           <TabDoc title="Document.b"><Label text="Content B..." /></TabDoc>
@@ -550,7 +526,7 @@ const onOpenDialog = () => {
           icon="img/test-small.png"><Label text="Content C..." /></TabDoc>
         <TabDoc
           title="Document.d"
-          onCanClose="{(index) => {
+          onCanClose="{index => {
             log('TabDoc', 'onCanClose', index);
             return false;
           }}"><Label text="Content D...Can't close this" /></TabDoc>
@@ -594,9 +570,9 @@ const onOpenDialog = () => {
           icon="img/test-small.png"
           title="Window with really really really really really long title.txt"
           menuBar="{simpleMenuBar}"
-          on:minimise="{(e) => log('Window', 'minimise')}"
-          on:maximise="{(e) => log('Window', 'maximise')}"
-          on:close="{(e) => log('Window', 'close')}">
+          on:minimise="{e => log('Window', 'minimise')}"
+          on:maximise="{e => log('Window', 'maximise')}"
+          on:close="{e => log('Window', 'close')}">
           <Label text="Content..." />
           <PushButton label="Open Dialog" on:click="{onOpenDialog}" />
           <Window
@@ -612,14 +588,14 @@ const onOpenDialog = () => {
             width="{window.innerWidth / 2}"
             height="{window.innerHeight / 2}"
             isResizable="{true}"
-            on:minimise="{(e) => {
+            on:minimise="{e => {
               dialog.toggleMinimise();
               log('Window', 'minimise');
             }}"
-            on:maximise="{(e) => {
+            on:maximise="{e => {
               dialog.maximise();
             }}"
-            on:close="{(e) => (isDialogOpen = false)}">
+            on:close="{e => (isDialogOpen = false)}">
             <Label text="Content..." />
             <PushButton
               label="Close"
@@ -640,3 +616,18 @@ const onOpenDialog = () => {
     </Area>
   </Section>
 </main>
+
+<style lang="scss">
+main {
+  position: relative;
+  padding: 10px;
+  padding-bottom: 100px;
+}
+
+@media (min-width: 640px) {
+  main {
+    box-sizing: border-box;
+    max-width: none;
+  }
+}
+</style>

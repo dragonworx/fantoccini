@@ -1,5 +1,22 @@
+<script lang="ts">
+import type { Direction } from '../types';
+
+export let title: string = '';
+export let direction: Direction = 'horizontal';
+</script>
+
+<fieldset class="section">
+  <legend>{title}</legend>
+  <div
+    class="content"
+    class:horizontal="{direction === 'horizontal'}"
+    class:vertical="{direction === 'vertical'}">
+    <slot />
+  </div>
+</fieldset>
+
 <style lang="scss">
-@import "../theme";
+@import '../theme';
 
 .section {
   @include noselect();
@@ -41,20 +58,3 @@
   }
 }
 </style>
-
-<script lang="ts">
-import type { Direction } from "../types";
-
-export let title: string = "";
-export let direction: Direction = "horizontal";
-</script>
-
-<fieldset class="section">
-  <legend>{title}</legend>
-  <div
-    class="content"
-    class:horizontal="{direction === 'horizontal'}"
-    class:vertical="{direction === 'vertical'}">
-    <slot />
-  </div>
-</fieldset>

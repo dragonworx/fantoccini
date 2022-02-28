@@ -1,13 +1,14 @@
 <script lang="ts">
-import { setContext, createEventDispatcher } from "svelte";
-import EventEmitter from "eventemitter3";
-import { nextId, TabDocument } from "../";
-import Label from "./Label.svelte";
-import Icon from "./Icon.svelte";
-import PushButton from "./PushButton.svelte";
+import { setContext, createEventDispatcher } from 'svelte';
+import EventEmitter from 'eventemitter3';
+import Label from './Label.svelte';
+import Icon from './Icon.svelte';
+import PushButton from './PushButton.svelte';
+import { TabDocument } from '../tabs';
+import { nextId } from '../util';
 
 export let selectedIndex: number = 0;
-export let appearance: "document" | "tool" = "document";
+export let appearance: 'document' | 'tool' = 'document';
 
 const dispatch = createEventDispatcher();
 
@@ -16,7 +17,7 @@ let tabs: TabDocument[] = [];
 const id = nextId();
 const notifications = new EventEmitter();
 
-setContext("tabs", {
+setContext('tabs', {
   registerTab(tabDoc: TabDocument) {
     tabs = [...tabs, tabDoc];
     if (selectedIndex === -1) {
@@ -40,8 +41,8 @@ setContext("tabs", {
 const onMouseDown = (i: number) => (e: MouseEvent) => {
   if (selectedIndex !== i) {
     selectedIndex = i;
-    notifications.emit("change");
-    dispatch("change", selectedIndex);
+    notifications.emit('change');
+    dispatch('change', selectedIndex);
   }
 };
 
@@ -53,13 +54,13 @@ const onCloseClick = (index: number) => () => {
       return;
     }
   }
-  dispatch("closing", index);
+  dispatch('closing', index);
   tabs.splice(index, 1);
   tabs = [...tabs];
   if (selectedIndex === tabs.length) {
     selectedIndex--;
   }
-  notifications.emit("change");
+  notifications.emit('change');
 };
 </script>
 
@@ -94,7 +95,7 @@ const onCloseClick = (index: number) => () => {
 </div>
 
 <style lang="scss">
-@import "../theme";
+@import '../theme';
 .tabview {
   width: 100%;
   height: 100%;
@@ -173,21 +174,21 @@ const onCloseClick = (index: number) => () => {
   }
 }
 
-:global([data-component="tabview"] .tabview-tab *) {
+:global([data-component='tabview'] .tabview-tab *) {
   margin-right: $spacing_small;
 }
 
-:global([data-component="tabview"] .tabview-tab *:last-child) {
+:global([data-component='tabview'] .tabview-tab *:last-child) {
   margin-right: 0;
 }
 
-:global([data-component="tabview"] .tabview-tab [data-component="button"]) {
+:global([data-component='tabview'] .tabview-tab [data-component='button']) {
   @include button_close();
   border: none !important;
   box-shadow: none !important;
 }
 
-:global([data-component="tabview"].tool .tabview-tab [data-component="label"]) {
+:global([data-component='tabview'].tool .tabview-tab [data-component='label']) {
   font-size: 10px !important;
 }
 </style>

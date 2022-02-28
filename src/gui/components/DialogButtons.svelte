@@ -1,26 +1,8 @@
-<style lang="scss">
-@import "../theme";
-.dialogButtons {
-  display: flex;
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-
-  &.isMac {
-    flex-direction: row-reverse;
-  }
-}
-
-:global([data-component="dialog-buttons"] > *) {
-  margin-left: 10px;
-}
-</style>
-
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
-import PushButton from "./PushButton.svelte";
+import { createEventDispatcher } from 'svelte';
+import PushButton from './PushButton.svelte';
 
-export let acceptText: string = "Ok";
+export let acceptText: string = 'Ok';
 
 const dispatch = createEventDispatcher();
 </script>
@@ -35,3 +17,21 @@ const dispatch = createEventDispatcher();
     label="Cancel"
     on:click="{() => dispatch('cancel')}" />
 </div>
+
+<style lang="scss">
+@import '../theme';
+.dialogButtons {
+  display: flex;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+
+  &.isMac {
+    flex-direction: row-reverse;
+  }
+}
+
+:global([data-component='dialog-buttons'] > *) {
+  margin-left: 10px;
+}
+</style>

@@ -1,10 +1,10 @@
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
-import { Direction } from "../";
-import ScrollBar, { scrollSize } from "./ScrollBar.svelte";
+import { createEventDispatcher } from 'svelte';
+import { Direction } from '../types';
+import ScrollBar, { scrollSize } from './ScrollBar.svelte';
 
 export let isEnabled: boolean = true;
-export let scroll: Direction | "both" = "both";
+export let scroll: Direction | 'both' = 'both';
 export let width: number = -1;
 export let height: number = -1;
 export let hScroll: number = 0;
@@ -13,7 +13,7 @@ export let hIncrementSmall: number = 0.1;
 export let hIncrementLarge: number = 0.3;
 export let vIncrementSmall: number = 0.1;
 export let vIncrementLarge: number = 0.3;
-export let align: "origin" | "center" = "origin";
+export let align: 'origin' | 'center' = 'origin';
 
 const dispatch = createEventDispatcher();
 
@@ -94,7 +94,7 @@ const onMouseWheel = (e: WheelEvent) => {
         </div>
       </div>
     </div>
-    {#if scroll === "vertical" || scroll === "both"}
+    {#if scroll === 'vertical' || scroll === 'both'}
       <ScrollBar
         isEnabled="{isVScrollEnabled}"
         direction="vertical"
@@ -105,7 +105,7 @@ const onMouseWheel = (e: WheelEvent) => {
         on:change="{onVScrollChange}" />
     {/if}
   </div>
-  {#if scroll === "horizontal" || scroll === "both"}
+  {#if scroll === 'horizontal' || scroll === 'both'}
     <ScrollBar
       isEnabled="{isHScrollEnabled}"
       direction="horizontal"
@@ -118,7 +118,7 @@ const onMouseWheel = (e: WheelEvent) => {
 </div>
 
 <style lang="scss">
-@import "../theme";
+@import '../theme';
 .scrollview {
   display: flex;
   flex-direction: column;
@@ -160,12 +160,12 @@ const onMouseWheel = (e: WheelEvent) => {
   }
 }
 
-:global([data-component="scrollview"] .scrollview-view > *) {
+:global([data-component='scrollview'] .scrollview-view > *) {
   flex-grow: 0;
 }
 
-:global([data-component="scrollview"]
-    [data-component="scrollbar"][data-direction="horizontal"]) {
+:global([data-component='scrollview']
+    [data-component='scrollbar'][data-direction='horizontal']) {
   width: calc(100% - 20px) !important;
 }
 </style>

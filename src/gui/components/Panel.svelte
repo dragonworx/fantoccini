@@ -3,9 +3,10 @@ export const staticVar = 500;
 </script>
 
 <script lang="ts">
-import { MenuBarItem } from "../";
-import Label from "./Label.svelte";
-import MenuBar from "./MenuBar.svelte";
+import { MenuBarItem } from '../menu';
+
+import Label from './Label.svelte';
+import MenuBar from './MenuBar.svelte';
 
 export let title: string | undefined = undefined;
 export let menuBar: MenuBarItem[] | undefined = undefined;
@@ -22,7 +23,7 @@ export let menuBar: MenuBarItem[] | undefined = undefined;
 </div>
 
 <style lang="scss">
-@import "../theme";
+@import '../theme';
 .panel {
   box-sizing: border-box;
   /* border-top: 1px solid #686868;

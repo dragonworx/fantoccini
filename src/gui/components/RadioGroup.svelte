@@ -1,27 +1,13 @@
-<style lang="scss">
-@import "../theme";
-
-.radiogroup {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-
-  li {
-    margin: 0;
-    margin-bottom: $spacing_small;
-  }
-}
-</style>
-
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
-import type { RadioGroupOption, Position } from "../";
-import Radio from "./Radio.svelte";
+import { createEventDispatcher } from 'svelte';
+import { RadioGroupOption } from '../option';
+import { Position } from '../types';
+import Radio from './Radio.svelte';
 
 export let isEnabled: boolean = true;
 export let options: RadioGroupOption[] = [];
 export let selectedIndex: number = -1;
-export let position: Position = "right";
+export let position: Position = 'right';
 
 const dispatch = createEventDispatcher();
 
@@ -29,7 +15,7 @@ function onPressed(event) {
   const index = event.detail.index;
   if (selectedIndex !== index) {
     selectedIndex = index;
-    dispatch("change", {
+    dispatch('change', {
       selectedIndex,
       selectedValue: options[selectedIndex].value,
     });
@@ -38,7 +24,7 @@ function onPressed(event) {
 
 function onIncrement() {
   selectedIndex = Math.max(0, selectedIndex - 1);
-  dispatch("change", {
+  dispatch('change', {
     selectedIndex,
     selectedValue: options[selectedIndex].value,
   });
@@ -46,7 +32,7 @@ function onIncrement() {
 
 function onDecrement() {
   selectedIndex = Math.min(options.length - 1, selectedIndex + 1);
-  dispatch("change", {
+  dispatch('change', {
     selectedIndex,
     selectedValue: options[selectedIndex].value,
   });
@@ -68,3 +54,18 @@ function onDecrement() {
     </li>
   {/each}
 </ul>
+
+<style lang="scss">
+@import '../theme';
+
+.radiogroup {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    margin: 0;
+    margin-bottom: $spacing_small;
+  }
+}
+</style>

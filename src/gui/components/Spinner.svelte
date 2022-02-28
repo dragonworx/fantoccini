@@ -1,102 +1,14 @@
-<style lang="scss">
-@import "../theme";
-$digitWidth: 6;
-
-$minWidth: 32px;
-
-@mixin width($digitCount) {
-  width: $minWidth + ($digitWidth * ($digitCount - 1));
-}
-
-.spinner {
-  &.digitCount1 {
-    @include width(1);
-  }
-
-  &.digitCount2 {
-    @include width(2);
-  }
-
-  &.digitCount3 {
-    @include width(3);
-  }
-
-  &.digitCount4 {
-    @include width(4);
-  }
-
-  &.digitCount5 {
-    @include width(5);
-  }
-
-  &.digitCount6 {
-    @include width(6);
-  }
-
-  &.digitCount7 {
-    @include width(7);
-  }
-
-  &.digitCount8 {
-    @include width(8);
-  }
-
-  &.digitCount9 {
-    @include width(9);
-  }
-
-  &.digitCount10 {
-    @include width(10);
-  }
-
-  .buttons {
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-:global([data-component="spinner"]
-    [data-component="textfield"]
-    input[type="text"]) {
-  text-align: center;
-}
-
-:global([data-component="spinner"]
-    [data-component="textfield"]
-    button[data-type="pushbutton"]
-    .content) {
-  padding: 0;
-}
-
-:global([data-component="spinner"]
-    [data-component="textfield"]
-    button[data-type="pushbutton"]) {
-  border-radius: 0 !important;
-}
-
-:global([data-component="spinner"]
-    [data-component="textfield"]
-    button[data-type="pushbutton"]:before) {
-  border-radius: 0 !important;
-}
-
-:global([data-component="spinner"] [data-component="textfield"]) {
-  border-top-right-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-}
-</style>
-
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
+import { createEventDispatcher } from 'svelte';
+import TextField from './TextField.svelte';
+import PushButton from './PushButton.svelte';
 import {
-  isNumericInput,
-  isDeleteKey,
   isArrowKey,
-  isIncrementKey,
   isDecrementKey,
-} from "../";
-import TextField from "./TextField.svelte";
-import PushButton from "./PushButton.svelte";
+  isDeleteKey,
+  isIncrementKey,
+  isNumericInput,
+} from '../filters';
 
 export let isEnabled: boolean = true;
 export let autofocus: boolean = false;
@@ -109,14 +21,14 @@ let val: string = String(value);
 let incTimeout;
 
 function inc(amount: number) {
-  val = String((parseFloat(val) + amount).toFixed(2)).replace(/\.00$|0+$/, "");
-  dispatch("change", parseFloat(val));
+  val = String((parseFloat(val) + amount).toFixed(2)).replace(/\.00$|0+$/, '');
+  dispatch('change', parseFloat(val));
 }
 
 function filter(key: string) {
-  if (key === "-") {
-    if (val === "0") {
-      val = "-";
+  if (key === '-') {
+    if (val === '0') {
+      val = '-';
     } else {
       const num = parseFloat(val) * -1;
       val = String(num);
@@ -126,7 +38,7 @@ function filter(key: string) {
   if (!isNumericInput(key) && !isDeleteKey(key)) {
     return false;
   }
-  if (val === "0" && key !== "." && !isDeleteKey(key)) {
+  if (val === '0' && key !== '.' && !isDeleteKey(key)) {
     val = key;
     return false;
   }
@@ -135,9 +47,9 @@ function filter(key: string) {
 
 function onBlur() {
   if (isNaN(parseFloat(val))) {
-    val = "0";
+    val = '0';
   }
-  val = val.replace(/\.$/, "");
+  val = val.replace(/\.$/, '');
 }
 
 function onKeyDown(e: KeyboardEvent) {
@@ -193,7 +105,7 @@ function onIncKeydown(e: KeyboardEvent) {
 
 function onTextChange() {
   const num = parseFloat(val);
-  !isNaN(num) && dispatch("change", parseFloat(val));
+  !isNaN(num) && dispatch('change', parseFloat(val));
 }
 </script>
 
@@ -242,3 +154,91 @@ function onTextChange() {
     </div>
   </TextField>
 </div>
+
+<style lang="scss">
+@import '../theme';
+$digitWidth: 6;
+
+$minWidth: 32px;
+
+@mixin width($digitCount) {
+  width: $minWidth + ($digitWidth * ($digitCount - 1));
+}
+
+.spinner {
+  &.digitCount1 {
+    @include width(1);
+  }
+
+  &.digitCount2 {
+    @include width(2);
+  }
+
+  &.digitCount3 {
+    @include width(3);
+  }
+
+  &.digitCount4 {
+    @include width(4);
+  }
+
+  &.digitCount5 {
+    @include width(5);
+  }
+
+  &.digitCount6 {
+    @include width(6);
+  }
+
+  &.digitCount7 {
+    @include width(7);
+  }
+
+  &.digitCount8 {
+    @include width(8);
+  }
+
+  &.digitCount9 {
+    @include width(9);
+  }
+
+  &.digitCount10 {
+    @include width(10);
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+:global([data-component='spinner']
+    [data-component='textfield']
+    input[type='text']) {
+  text-align: center;
+}
+
+:global([data-component='spinner']
+    [data-component='textfield']
+    button[data-type='pushbutton']
+    .content) {
+  padding: 0;
+}
+
+:global([data-component='spinner']
+    [data-component='textfield']
+    button[data-type='pushbutton']) {
+  border-radius: 0 !important;
+}
+
+:global([data-component='spinner']
+    [data-component='textfield']
+    button[data-type='pushbutton']:before) {
+  border-radius: 0 !important;
+}
+
+:global([data-component='spinner'] [data-component='textfield']) {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+</style>
