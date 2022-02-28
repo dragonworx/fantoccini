@@ -8,7 +8,7 @@ hub
   .on('frame.tick', (hours, minutes, seconds, frames) => {
     smpte = `${hours}:${minutes}:${seconds}:${frames}`;
   })
-  .on('transport.rewind', () => {
+  .on('transport.stop', () => {
     smpte = '0:0:0:0';
   });
 </script>
@@ -16,12 +16,11 @@ hub
 <div id="timeline">
   <div class="transport">
     <ButtonGroup
-      canReset="{true}"
+      selectedIndex="{3}"
       options="{[
-        { label: 'Play', name: event('transport.play') },
-        { label: 'Pause', name: event('transport.pause') },
-        { label: 'Stop', name: event('transport.stop') },
-        { label: 'Rewind', name: event('transport.rewind') },
+        { icon: 'img/icons/play.svg', name: event('transport.play') },
+        { icon: 'img/icons/pause.svg', name: event('transport.pause') },
+        { icon: 'img/icons/record.svg', name: event('transport.stop') },
       ]}"
       on:change="{e => {
         const {

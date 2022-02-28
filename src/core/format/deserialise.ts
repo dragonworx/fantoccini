@@ -7,6 +7,7 @@ export function deserialiseProject({
   fps,
   width,
   height,
+  duration,
   scenes,
   currentScene,
 }: ProjectDescriptor): Project {
@@ -15,6 +16,7 @@ export function deserialiseProject({
   project.fps = fps;
   project.width = width;
   project.height = height;
+  project.duration = duration;
   if (scenes) {
     scenes.forEach(sceneDescriptor => {
       const scene = deserialiseScene(sceneDescriptor);

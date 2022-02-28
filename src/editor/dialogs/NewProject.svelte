@@ -10,15 +10,18 @@ import {
 } from 'src/gui';
 import { screenWidth, screenHeight } from '../screen';
 import { defaults } from 'src/core/project';
+import Timecode from 'timecode-boss';
 
 let isOpen: boolean = false;
+
+let timecode: Timecode = new Timecode(0, defaults.fps);
 
 hub.on('menu.file.new.project', () => (isOpen = true));
 
 $: descriptor = { ...defaults };
 
 $: windowWidth = 300;
-$: windowHeight = 200;
+$: windowHeight = 240;
 
 const onClose = () => {
   isOpen = false;
@@ -59,6 +62,21 @@ const onAccept = () => {
           <Spinner
             value="{descriptor.height}"
             on:change="{e => (descriptor.height = e.detail)}" />
+        </div>
+        <Label text="H:M:S:" />
+        <div class="dimension">
+          <Spinner
+            digitCount="{2}"
+            value="{descriptor.duration.hours}"
+            on:change="{e => (descriptor.duration.hours = e.detail)}" />
+          <Spinner
+            digitCount="{2}"
+            value="{descriptor.duration.minutes}"
+            on:change="{e => (descriptor.duration.minutes = e.detail)}" />
+          <Spinner
+            digitCount="{2}"
+            value="{descriptor.duration.seconds}"
+            on:change="{e => (descriptor.duration.seconds = e.detail)}" />
         </div>
       </Form>
       <DialogButtons

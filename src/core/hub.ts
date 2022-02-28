@@ -5,7 +5,6 @@ export type TransportEvent =
   | 'transport.play'
   | 'transport.pause'
   | 'transport.stop'
-  | 'transport.rewind'
   | 'transport.seek';
 export type AnimationEvent = 'frame.tick' | 'framerate.change';
 

@@ -20,8 +20,7 @@ export class Timeline {
           ticker.resume();
         }
       })
-      .on('transport.stop', () => ticker.stop())
-      .on('transport.rewind', () => ticker.rewind());
+      .on('transport.stop', () => ticker.stop());
   }
 
   setFps(fps: number) {

@@ -3,7 +3,7 @@ import { Scene } from 'src/core/scene';
 import { ProjectDescriptor, SceneDescriptor } from 'src/core/format';
 
 export function serialiseProject(project: Project): ProjectDescriptor {
-  const { title, fps, width, height, currentScene } = project;
+  const { title, fps, width, height, currentScene, duration } = project;
 
   const scenes = Array.from(project.scenes.values()).map(scene =>
     serialiseScene(scene)
@@ -15,6 +15,7 @@ export function serialiseProject(project: Project): ProjectDescriptor {
     width,
     height,
     scenes,
+    duration,
     currentScene,
   };
 

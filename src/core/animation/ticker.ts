@@ -56,10 +56,6 @@ export class Ticker {
   stop() {
     this.clearTimeout();
     this.isRunning = false;
-  }
-
-  rewind() {
-    this.stop();
     this.frame = 0;
   }
 
