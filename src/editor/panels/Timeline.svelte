@@ -1,13 +1,32 @@
 <script lang="ts">
-import { Panel, ButtonGroup } from 'src/gui/';
+import { ButtonGroup } from 'src/gui/';
+import hub, { event } from 'src/core/hub';
+
+let smpte: string = '';
+
+hub.on('frame.tick', (hours, minutes, seconds, frames) => {
+  smpte = `${hours}:${minutes}:${seconds}:${frames}`;
+});
 </script>
 
 <div id="timeline">
   <div class="transport">
     <ButtonGroup
-      options="{[{ label: 'Play', name: 'play' }]}"
-      on:change="{e => console.log('ButtonGroup', 'change', e.detail)}" />
+      canReset="{true}"
+      options="{[
+        { label: 'Play', name: event('transport.play') },
+        { label: 'Pause', name: event('transport.pause') },
+        { label: 'Stop', name: event('transport.stop') },
+        { label: 'Rewind', name: event('transport.rewind') },
+      ]}"
+      on:change="{e => {
+        const {
+          detail: { selectedValue: event },
+        } = e;
+        hub.emit(event);
+      }}" />
   </div>
+  <div>{smpte}</div>
 </div>
 
 <style lang="scss">

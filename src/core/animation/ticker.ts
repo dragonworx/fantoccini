@@ -1,4 +1,4 @@
-import hub from 'src/core/hub';
+// TODO: refactor to use requestAnimationFrame
 
 export class Ticker {
   private fps: number;
@@ -9,35 +9,31 @@ export class Ticker {
 
   isRunning: boolean = false;
   frame: number = 0;
-  elapsed: number = 0;
 
-  constructor(fps: number = 24) {
+  constructor(readonly target: { onTick: () => boolean | void }, fps: number) {
     this.fps = fps;
     this.msPerFrame = 1000 / this.fps;
   }
 
-  private clearTimeout() {
-    if (this.timeoutId) {
-      window.clearTimeout(this.timeoutId);
-    }
-  }
-
   private tick = () => {
-    const {
-      expectedNextFrameTime,
-      startTime,
-      frame: frameIndex,
-      msPerFrame,
-    } = this;
+    const { expectedNextFrameTime, msPerFrame } = this;
     const now = Date.now();
     const quantiseOffset = now - expectedNextFrameTime;
     const adjustedMsPerFrame = msPerFrame - quantiseOffset;
     this.expectedNextFrameTime = now + adjustedMsPerFrame;
-    this.elapsed = now - startTime;
-    hub.emit('frame.tick', this.elapsed, frameIndex);
-    this.frame++;
-    this.timeoutId = window.setTimeout(this.tick, adjustedMsPerFrame);
+    const shouldStop = this.target.onTick();
+    if (shouldStop === true) {
+      return;
+    } else {
+      this.frame++;
+      this.timeoutId = window.setTimeout(this.tick, adjustedMsPerFrame);
+    }
   };
+
+  private clearTimeout() {
+    window.clearTimeout(this.timeoutId);
+    delete this.timeoutId;
+  }
 
   start() {
     this.clearTimeout();
@@ -47,7 +43,6 @@ export class Ticker {
 
   pause() {
     this.clearTimeout();
-    this.isRunning = false;
   }
 
   resume() {
@@ -60,7 +55,19 @@ export class Ticker {
 
   stop() {
     this.clearTimeout();
-    this.frame = 0;
     this.isRunning = false;
+  }
+
+  rewind() {
+    this.stop();
+    this.frame = 0;
+  }
+
+  setFPS(fps: number) {
+    if (this.isRunning) {
+      this.clearTimeout();
+    }
+    this.fps = fps;
+    this.msPerFrame = 1000 / fps;
   }
 }

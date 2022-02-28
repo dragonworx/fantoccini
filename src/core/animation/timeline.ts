@@ -8,17 +8,31 @@ export class Timeline {
   timecode: Timecode;
 
   constructor(fps: number) {
-    this.ticker = new Ticker(fps);
+    const ticker = (this.ticker = new Ticker(this, fps));
     this.timecode = new Timecode(0, fps);
+
+    hub
+      .on('transport.play', () => ticker.start())
+      .on('transport.pause', () => {
+        if (ticker.isRunning) {
+          ticker.pause();
+        } else {
+          ticker.resume();
+        }
+      })
+      .on('transport.stop', () => ticker.stop())
+      .on('transport.rewind', () => ticker.rewind());
   }
 
   setFps(fps: number) {
-    if (this.ticker.isRunning) {
-      this.ticker.stop();
-    }
-    this.ticker = new Ticker(fps);
+    this.ticker.setFPS(fps);
     this.timecode = new Timecode(0, fps);
   }
 
-  tick(deltaMs: number, frameIndex: number) {}
+  onTick() {
+    const { ticker, timecode } = this;
+    timecode.setFrames(ticker.frame);
+    const { hours, minutes, seconds, frames } = timecode;
+    hub.emit('frame.tick', hours, minutes, seconds, frames);
+  }
 }

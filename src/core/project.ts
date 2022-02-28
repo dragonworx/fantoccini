@@ -39,7 +39,6 @@ export class Project {
   }
 
   tick = (deltaMs: number, frameIndex: number) => {
-    this.timeline.tick(deltaMs, frameIndex);
     this.renderer.render();
   };
 }
