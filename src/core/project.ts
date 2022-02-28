@@ -44,6 +44,7 @@ export class Project {
   }
 
   init() {
+    this.timeline.setFps(this.fps);
     hub.on('frame.tick', this.tick);
   }
 

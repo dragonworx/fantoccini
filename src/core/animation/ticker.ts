@@ -1,12 +1,12 @@
 // TODO: refactor to use requestAnimationFrame
 
 export class Ticker {
-  private fps: number;
   private startTime: number = -1;
   private msPerFrame: number = 0;
   private timeoutId?: number;
   private expectedNextFrameTime: number = 0;
 
+  fps: number;
   isRunning: boolean = false;
   frame: number = 0;
 
@@ -16,6 +16,7 @@ export class Ticker {
   }
 
   private tick = () => {
+    console.log(this.fps, this.msPerFrame);
     const { expectedNextFrameTime, msPerFrame } = this;
     const now = Date.now();
     const quantiseOffset = now - expectedNextFrameTime;

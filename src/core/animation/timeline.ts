@@ -20,7 +20,10 @@ export class Timeline {
           ticker.resume();
         }
       })
-      .on('transport.stop', () => ticker.stop());
+      .on('transport.stop', () => {
+        ticker.stop();
+        this.timecode = new Timecode(0, this.ticker.fps);
+      });
   }
 
   setFps(fps: number) {
@@ -30,7 +33,7 @@ export class Timeline {
 
   onTick() {
     const { ticker, timecode } = this;
-    timecode.setFrames(ticker.frame);
+    this.timecode = timecode.add({ frames: 1 });
     const { hours, minutes, seconds, frames } = timecode;
     hub.emit('frame.tick', hours, minutes, seconds, frames);
   }
