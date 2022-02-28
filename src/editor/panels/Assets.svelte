@@ -1,5 +1,5 @@
 <script lang="ts">
-import Panel from "../../gui/components/Panel.svelte";
+import Panel from 'src/gui/components/Panel.svelte';
 </script>
 
 <div id="assets">Assets</div>
