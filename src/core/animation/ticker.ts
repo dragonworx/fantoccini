@@ -1,7 +1,7 @@
 import hub from 'src/core/hub';
 
 export class Ticker {
-  private _isRunning: boolean = false;
+  private isRunning: boolean = false;
   private fps: number;
   private frameIndex: number = 0;
   private startTime: number = -1;
@@ -13,18 +13,6 @@ export class Ticker {
   constructor(fps: number = 24) {
     this.fps = fps;
     this.msPerFrame = 1000 / this.fps;
-  }
-
-  get frameRate() {
-    return this.fps;
-  }
-
-  get frameCount() {
-    return this.frameIndex;
-  }
-
-  get isRunning() {
-    return this._isRunning;
   }
 
   private clearTimeout() {
@@ -48,6 +36,7 @@ export class Ticker {
     this.fps = fps;
     this.msPerFrame = 1000 / this.fps;
     this.clearTimeout();
+    hub.emit('framerate.change', fps);
   }
 
   start() {
@@ -58,11 +47,11 @@ export class Ticker {
 
   pause() {
     this.clearTimeout();
-    this._isRunning = false;
+    this.isRunning = false;
   }
 
   resume() {
-    this._isRunning = true;
+    this.isRunning = true;
     this.startTime = Date.now();
     this.msPerFrame = 1000 / this.fps;
     this.expectedNextFrameTime = this.startTime;
@@ -72,6 +61,6 @@ export class Ticker {
   stop() {
     this.clearTimeout();
     this.frameIndex = 0;
-    this._isRunning = false;
+    this.isRunning = false;
   }
 }

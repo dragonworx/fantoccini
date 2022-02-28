@@ -9,7 +9,3 @@ const app = new Editor({
 new Application();
 
 export default app;
-
-import Timecode from 'timecode-boss';
-const tc = new Timecode({ seconds: 2 }, 24);
-console.log(tc.toString());

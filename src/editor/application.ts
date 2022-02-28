@@ -29,7 +29,7 @@ export class Application {
         hub.emit('project.init', project);
         console.log('project created', this.project);
       })
-      .on('project.save', () => {
+      .on('menu.file.save', () => {
         this.saveProject();
       });
   }
@@ -40,7 +40,6 @@ export class Application {
     await writer.serialise(descriptor);
     const base64 = writer.toBase64();
     localStorage.setItem(projectStorageKey, base64);
-
     console.log('project saved', descriptor, base64);
   }
 
@@ -49,12 +48,8 @@ export class Application {
     if (base64 !== null) {
       const reader = new DataReader();
       reader.deserialise<ProjectDescriptor>(base64).then(descriptor => {
-        this.loadProject(descriptor);
+        hub.emit('project.create', descriptor);
       });
     }
-  }
-
-  loadProject(descriptor: ProjectDescriptor) {
-    hub.emit('project.create', descriptor);
   }
 }

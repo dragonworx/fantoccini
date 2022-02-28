@@ -5,7 +5,7 @@ import hub from 'src/core/hub';
 const save = new MenuItem({
   label: 'Save',
   isEnabled: false,
-  action: new Action('project.save', 'Ctrl+S'),
+  action: new Action('menu.file.save', 'Ctrl+S'),
 });
 
 hub.on('project.init', () => (save.isEnabled = true));
@@ -13,12 +13,12 @@ hub.on('project.init', () => (save.isEnabled = true));
 const fileMenu: MenuItem[] = [
   new MenuItem({
     label: 'New Project',
-    action: new Action('project.new', 'Ctrl+N'),
+    action: new Action('menu.file.new.project', 'Ctrl+N'),
   }),
   separator,
   new MenuItem({
     label: 'Open Project',
-    action: new Action('project.open', 'Ctrl+O'),
+    action: new Action('menu.file.open.project', 'Ctrl+O'),
   }),
   separator,
   save,
